@@ -1,0 +1,64 @@
+
+The fundamental element of testing is the assertion.  A test can be one or more assertions.  Where there are no assertions, there is no testing.
+
+Results from assertions are stored in a Nested Table in the WTPLSQL package.  When the WTPSQL.run_all procedure finds a procedure in a package in a schema with no parameters called "WTPLSQL_RUN", the package is recorded as the Test Runner.  All packages are run in conanical order.  This is the only way a Test Runner can be defined.  Subsequently the WTPLSQL package runs the WTPLSQL_RUN procedure in each package.  An exception handler is used in the WTPLSQL package to catch any exceptions.
+
+Save the last 20 schema_runs for each schema.
+
+Use an Annotation to identify the DBOUT in a package.
+
+Use Annotations to identify source lines used for testing and should not be included in the Code Coverage Calculation.
+
+DBOUTS: id, owner, type, name
+TEST_RUNNERS: id, dbout_id, owner, name
+SCHEMA_RUNS: id, owner, start_dtm, duration_msecs, error_message
+TEST_RUNS: id, schema_run_id, test_runner_id, start_dtm, duration_msecs, profiler_runid, lines, hits, error_message
+RESULTS: id, test_run_id, result_seq, testcase_name, message, executed_dtm, elapsed_msecs, assertion, result, expected_value, actual_value, error_message
+EXCLUDED_LINES: id, test_run_id, line#, reason
+
+When control is returned to the WTPLSQL package from the Test Runner, 1) the test results are copied from the nested table to the database, 2) the Test Runner name is cleared, 3) If a DBOUT is defined, the code coverage data is copied to the database, 4) and (if a DBOUT is defined) the DBOUT name is cleared.  No reporting is done at the end of the WTPLSQL package.  If an assertion is run without a Test Runner defined, the assettion results are reported to DBMS_OUTPUT (not stored).  Only 1 DBOUT can be defined in a Test Runner.  Subsequent DBOUT definitions will be ignored.
+
+The procedure WTPLSQL.run_all will automatically run all WTPLSQL_run procedures in all PL/SQL packages in a schema.  (Extend WTPLSQL to run a WTPLSQL_run method in user defined types?)  
+
+
+-) Test anything in the Oracle database:
+   -) PL/SQL Packages, Procedures, Functions
+   -) Table Constraints and Triggers
+   -) Types and Type Bodies
+-) Testing of Private Procedure/Function within a Packages
+-) Automatic Code Coverage
+-) Automatic Test Execution
+-) Test Result Capture
+-) Test Result Reporting
+   -) Database Query
+   -) DBMS_OUTPUT
+   -) Application Express
+-) Historical Test Result Storage
+-) Minimal Database Footprint
+
+utPLSQL (http://utplsql.org/) is an excellent JUnit framework.  The functionality is very comprehensive.  It works better for testing Oracle PL/SQL that is heavily Object Oriented.  It also contains utPLSQL V2 and utPLSQL V1 compatible test interfaces.  wtPLSQL is intended for a different audience.
+
+The XUnit (including JUnit) testing framework was created to test Object Oriented languages.  Given the PL/SQL language is procedural, the execution sequence (or lack thereof) is fundamentally different.  wtPLSQL seeks to bring the useful aspects of JUnit testing into PL/SQL procedural objects.  A consequence is that some terminology is different.  Objects in the Oracle Database are "schema items" of various kinds (not OO Objects).  Test Fixtures can be established in the Test Runner, but are not specifically required (setup/teardown).  Test Suites are not implemented.
+
+PL/SQL is the Oracle procedural extension of SQL (https://docs.oracle.com/database/122/LNPLS/overview.htm) which supports object-oriented programming with "Abstract Data Types" (https://docs.oracle.com/database/122/LNPLS/overview.htm#LNPLS137).  Testing is typically procedural, not event driven.
+
+Best practices:
+---------------
+-) Embed unit tests at the end of DBOUT packages.
+   -) Allows test and package to remain together.
+   -) Allows testing of internal/private functions/procedures.
+   -) Use "PLSQL_CCFLAGS" "WTPLSQL:FALSE" conditional compilation select directive to remove tests from production executable.
+-) Use the word "setup" in the names of procedures that peform setup operations.
+-) Use the word "teardown" in the names of procedures that peform teardown operations.
+-) Use individual procedures to run test cases.  Wrap those procedures with an exception handler to continue with the next test case.
+-) Identify test suites at the beginning of each "wtplsql_run" procedure.
+
+Definitions:
+------------
+Loosely based on Wikipedia Xunit (https://en.wikipedia.org/wiki/XUnit)
+-) Test Runner - An executable program that runs test cases.
+-) Test Case - A logical grouping of assertions to run happy path, decision tree, boundary condition, and/or fault insertion tests.
+-) Assertions - A function that performs a single test and records/reports the result.
+-) Test Peconditions - State needed to run a test (also known as a test context or test fixture).
+-) DBOUT (Database Object Under Test) - The database object that is the target of testing.  White-box testing is oriented toward a specific DBOUT.  Code coverage is also oriented toward a specific DBOUT.
+-) Test Result Formatter - Creates one or more output formats of the test results.
