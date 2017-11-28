@@ -1,19 +1,37 @@
 
-The fundamental element of testing is the assertion.  A test can be one or more assertions.  Where there are no assertions, there is no testing.
+The fundamental element of testing is an assertion.  It is a simple comparison of an expected result with an actual result.  A test can be one or more assertions.  Where there are no assertions, there is no testing.
 
-Results from assertions are stored in a Nested Table in the WTPLSQL package.  When the WTPSQL.run_all procedure finds a procedure in a package in a schema with no parameters called "WTPLSQL_RUN", the package is recorded as the Test Runner.  All packages are run in conanical order.  This is the only way a Test Runner can be defined.  Subsequently the WTPLSQL package runs the WTPLSQL_RUN procedure in each package.  An exception handler is used in the WTPLSQL package to catch any exceptions.
+Results from assertions are stored in a Nested Table in the WTPLSQL package.  When the WTPSQL.run_all procedure finds a procedure in a package with no parameters called "WTPLSQL_RUN", the package is recorded as the Test Runner Package.  All packages are run in conanical order within a schema.  This is the only way a Test Runner can be defined.  An exception handler is used in the WTPLSQL package to catch any exceptions.  The results from the last 20 schema_runs (configurable) are saved for each schema.
 
-Save the last 20 schema_runs for each schema.
+"xUnit" defines a Test Suite as a group of tests that use the same Test Fixture. This is not easily identified during the initial stages of test development.  It is much easier to start with a series of assertion tests within a package and build from there.  As such, wtPLSQL has no Test Suites.  "Test Runner Packages" are used instead of Test Suites.  The Test Runner Package is developed into a set of tests, whether they use the same Test Ficture or not.  A Test Runner Package can call other packages.  The Test Runner Package can be the same as the package that is being tested (tests are included in the package).
 
-Use an Annotation to identify the DBOUT in a package.
 
-Use Annotations to identify source lines used for testing and should not be included in the Code Coverage Calculation.
+This annotation is used to identify the Datbase Object Under Test (DBOUT) in a Test Runner Package.  It it is missing from a Test Runner Package, no code coverage data is collected.  If more than one occurs in a Test Runner Package, the first occurance is used.
+
+RegExp:
+   "--%wtplsql_set_dbout[(][[:alnum:]_$#]+[)]%--"
+
+Example Annotation:
+   --%wtplsql_set_dbout(SAMPLE_DB_OBJECT)%--
+
+
+This annotation is used to identify source lines in a Datbase Object Under Test (DBOUT) that should not be included in the Code Coverage Calculation.  The lines between "begin_ignore_lines" and "end_ignore_lines" annotations are ignored (inclusive of the lines with the annotations).  All lines after a "begin_ignore_lines" annotation are ignored it the "end_ignore_lines" annotation is missing.  A single line is ignored if both annotations occur on the same line.
+
+RegExp:
+   "--%wtplsql_(begin|end)_ignore_lines%--"
+
+Example Annotation:
+   --%wtplsql_begin_ignore_lines%--
+
+
+Further testing in a Test Runner Package is halted if an un-handled expection is raised in the package.
+
 
 DBOUTS: id, owner, type, name
 TEST_RUNNERS: id, dbout_id, owner, name
 SCHEMA_RUNS: id, owner, start_dtm, duration_msecs, error_message
 TEST_RUNS: id, schema_run_id, test_runner_id, start_dtm, duration_msecs, profiler_runid, lines, hits, error_message
-RESULTS: id, test_run_id, result_seq, testcase_name, message, executed_dtm, elapsed_msecs, assertion, result, expected_value, actual_value, error_message
+RESULTS: id, test_run_id, result_seq, testcase, message, executed_dtm, elapsed_msecs, assertion, result, expected_value, actual_value, error_message
 EXCLUDED_LINES: id, test_run_id, line#, reason
 
 When control is returned to the WTPLSQL package from the Test Runner, 1) the test results are copied from the nested table to the database, 2) the Test Runner name is cleared, 3) If a DBOUT is defined, the code coverage data is copied to the database, 4) and (if a DBOUT is defined) the DBOUT name is cleared.  No reporting is done at the end of the WTPLSQL package.  If an assertion is run without a Test Runner defined, the assettion results are reported to DBMS_OUTPUT (not stored).  Only 1 DBOUT can be defined in a Test Runner.  Subsequent DBOUT definitions will be ignored.
