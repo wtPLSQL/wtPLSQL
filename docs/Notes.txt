@@ -20,34 +20,65 @@ The fundamental element of testing is an assertion.  It is a simple comparison o
 
 "xUnit" defines a Test Suite as a group of tests that use the same Test Fixture.  This is not easily identified during the initial stages of test development.  It is much easier to start with a series of assertion tests and build from there.
 
-There are no Test Suites in wtPLSQL.  Test Runner Packages are used instead of Test Suites.  The Test Runner Package is developed into a set of tests.  A Test Runner Package can call other packages.  The Test Runner Package can be in the same package that is being tested.
+There are no Test Suites in WT_PLSQL.  Test Runner Packages are used instead of Test Suites.  The Test Runner Package is developed into a set of tests.  A Test Runner Package can call other packages.  The Test Runner Package can be in the same package that is being tested.
 
-When the WTPSQL.run_all procedure scans the packages in a schema and finds a procedure with no parameters called "WTPLSQL_RUN", the package is recorded as a Test Runner Package.  The WTPSQL.run_all procedure then runs all Test Runner Packages within the schema in conanical order.  An exception handler is used in the WTPLSQL package to catch any exceptions raised from a Test Runner Package.  Results from assertions are stored in a Nested Table in the WTPLSQL package.  The results from the last 20 schema_runs (configurable) are saved for each schema.
+When the WT_PLSQL.RUN_ALL procedure scans the packages in a schema and finds a procedure with no parameters called "WT_PLSQL_RUN", the package is recorded as a Test Runner Package.  The WT_PLSQL.RUN_ALL procedure then runs all Test Runner Packages within the schema in conanical order.  An exception handler is used in the WT_PLSQL package to catch any exceptions raised from a Test Runner Package.  Results from assertions are stored in a Nested Table in the WT_PLSQL package.  The results from the last 20 schema_runs (configurable) are saved for each schema.
 
 The Datbase Object Under Test, or DBOUT, is a database object that is the target of a set of tests.  An annotation is used to identify the DBOUT in a Test Runner Package.  If the DBOUT annotation is missing from a Test Runner Package, no code coverage data is collected.  If more than one annotation occurs in a Test Runner Package, the first occurance is used.
 
 RegExp:
-   "--%wtplsql_set_dbout[(][[:alnum:]_$#]+[)]%--"
+   "--%WT_PLSQL_set_dbout[(][[:alnum:]_$#]+[)]%--"
 
 Example Annotation:
-   --%wtplsql_set_dbout(SAMPLE_DB_OBJECT)%--
+   --%WT_PLSQL_set_dbout(SAMPLE_DB_OBJECT)%--
 
 If there are source lines in a DBOUT that should not be included in the Code Coverage Calculation, annotations are used to identify them.  The lines between the "begin_ignore_lines" and "end_ignore_lines" annotations are ignored (inclusive of the lines with the annotations).  All lines after a "begin_ignore_lines" annotation are ignored if the "end_ignore_lines" annotation is missing.  A single line is ignored if both annotations occur on the same line.
 
 RegExp:
-   "--%wtplsql_(begin|end)_ignore_lines%--"
+   "--%WT_PLSQL_(begin|end)_ignore_lines%--"
 
 Example Annotation:
-   --%wtplsql_begin_ignore_lines%--
+   --%WT_PLSQL_begin_ignore_lines%--
 
-When control is returned to the WTPLSQL package from the Test Runner, 1) the test results are copied from the nested table to the database, 2) the Test Runner name is cleared, 3) If a DBOUT is defined, the code coverage data is copied to the database, 4) and (if a DBOUT is defined) the DBOUT name is cleared.  No reporting is done at the end of the WTPLSQL package.  If an assertion is run without a Test Runner defined, the assettion results are reported to DBMS_OUTPUT (not stored).  Only 1 DBOUT can be defined in a Test Runner.  Subsequent DBOUT definitions will be ignored.
+Run All:
+ -) Load Test Runners into array
+ -) Create SCHEMA_RUNS record
+ -) Loop through Test Runners
+    -) Create TEST_RUNS record
+    -) Results Initialize
+    -) Profiler Initialize (return profiler_runid)
+    -) Call Test Runner
+    -) Profiler Finalize (If profiler_runid set)
+    -) Results Finalize
+    -) Update TEST_RUNS record
+ -) Update SCHEMA_RUNS record
+
+Results Initialize:
+ -) Clear Results Array
+
+Results Finalize:
+ -) Copy Results Array to database tables.
+
+Profiler Initialize:
+ -) Find DBOUT Annotations
+ -) If DBOUT is not found, return null profiler_run_id
+ -) Find Ignore Annotations
+ -) Start DBMS_PROFILER
+ -) Return profiler_runid
+
+Profiler Finalize:
+ -) If a DBOUT is not defined, Return
+ -) Stop DBMS_PROFILER
+ -) DBMS_PROFILER.stop_profiler also copies data to database tables.
+ -) Remove non-DBOUT Lines from database tables
+ -) Capture and remove Excluded Lines from database tables.
+
+If an assertion is run without a Test Runner defined, the assertion results are reported to DBMS_OUTPUT, but not stored.
 
 Data Structures:
 ----------------
-DBOUTS: id, owner, type, name
-TEST_RUNNERS: id, dbout_id, owner, name
 SCHEMA_RUNS: id, owner, start_dtm, duration_msecs, error_message
-TEST_RUNS: id, schema_run_id, test_runner_id, start_dtm, duration_msecs, profiler_runid, lines, hits, error_message
+TEST_RUNS: id, schema_run_id, test_runner_name, start_dtm, duration_msecs, profiler_runid, lines, hits, error_message
 RESULTS: id, test_run_id, result_seq, testcase, message, executed_dtm, elapsed_msecs, assertion, result, expected_value, actual_value, error_message
 EXCLUDED_LINES: id, test_run_id, line#, reason
 
@@ -56,11 +87,11 @@ Best practices:
 -) Embed unit tests at the end of DBOUT packages.
    -) Allows test and package to remain together.
    -) Allows testing of internal/private functions/procedures.
-   -) Use "PLSQL_CCFLAGS" "WTPLSQL:FALSE" conditional compilation select directive to remove tests from production executable.
+   -) Use "PLSQL_CCFLAGS" "WT_PLSQL:FALSE" conditional compilation select directive to remove tests from production executable.
 -) Use the word "setup" in the names of procedures that peform setup operations.
 -) Use the word "teardown" in the names of procedures that peform teardown operations.
 -) Use individual procedures to run test cases.  Wrap those procedures with an exception handler to continue with the next test case.
--) Identify test suites at the beginning of each "wtplsql_run" procedure.
+-) Identify test suites at the beginning of each "WT_PLSQL_RUN" procedure.
 
 Definitions:
 ------------
