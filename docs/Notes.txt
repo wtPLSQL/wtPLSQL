@@ -77,10 +77,56 @@ If an assertion is run without a Test Runner defined, the assertion results are 
 
 Data Structures:
 ----------------
-SCHEMA_RUNS: id, owner, start_dtm, duration_msecs, error_message
-TEST_RUNS: id, schema_run_id, test_runner_name, start_dtm, duration_msecs, profiler_runid, lines, hits, error_message
-RESULTS: id, test_run_id, result_seq, testcase, message, executed_dtm, elapsed_msecs, assertion, result, expected_value, actual_value, error_message
-EXCLUDED_LINES: id, test_run_id, line#, reason
+
+SCHEMA_RUNS:
+  id - NN, PK
+  owner - NN, NK1
+  beg_dtm - NN, NK1
+  end_dtm
+  error_message
+
+TEST_RUNS:
+  id - NN, PK
+  test_runner_name - NN, NK1
+  start_dtm - NN, NK1
+  end_dtm - NN
+  schema_run_id - NN, FK1
+  dbout_owner
+  dbout_name
+  dbout_type
+  error_message
+
+RESULTS:
+  test_run_id - NN, PK, FK
+  result_seq - NN, PK
+  executed_dtm - NN
+  elapsed_msecs - NN
+  assertion - NN
+  result - NN
+  expected_value - NN
+  actual_value - NN
+  testcase
+  message
+  error_message
+
+DBOUT_PROFILE:
+  test_run_id - NN, PK, FK
+  line# - NN, PK
+  text - NN
+  total_occur - NN
+  total_time - NN
+  min_time - NN
+  max_time - NN
+
+NOT_EXECUTABLE:
+  text - NN, PK
+  note - NN
+
+EXCLUDED_LINES:
+  test_run_id - NN, PK, FK
+  line# - NN, PK
+  text - NN
+  reason
 
 Best practices:
 ---------------
