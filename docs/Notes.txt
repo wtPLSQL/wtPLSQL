@@ -1,20 +1,26 @@
 
-Basic Features:
+Core Features:
 ---------------
 -) Test anything in the Oracle database:
    -) PL/SQL Packages, Procedures, Functions
    -) Table Constraints and Triggers
    -) Types and Type Bodies
--) Testing of Private Procedure/Function within a Packages
--) Automatic Code Coverage
--) Automatic Test Execution
+-) Private Procedure/Function Testing within a Package
+-) Built-in Code Coverage
 -) Test Result Capture
 -) Test Result Reporting
    -) Database Query
    -) DBMS_OUTPUT
-   -) Application Express
--) Historical Test Result Storage
+-) Single Assertion Execution
 -) Minimal Database Footprint
+
+APEX-CI Add-on Features:
+------------------------
+-) Application Express User Interface
+-) Auto execute all Test Runners in a schema.
+-) Auto test a collection of schema.
+-) Historical test result storage.
+-) Has a larger Database Footprint
 
 The fundamental element of testing is an assertion.  It is a simple comparison of an expected result with an actual result.  A test can be one or more assertions.  Where there are no assertions, there is no testing.
 
@@ -22,7 +28,11 @@ The fundamental element of testing is an assertion.  It is a simple comparison o
 
 There are no Test Suites in WT_PLSQL.  Test Runner Packages are used instead of Test Suites.  The Test Runner Package is developed into a set of tests.  A Test Runner Package can call other packages.  The Test Runner Package can be in the same package that is being tested.
 
-When the WT_PLSQL.RUN_ALL procedure scans the packages in a schema and finds a procedure with no parameters called "WT_PLSQL_RUN", the package is recorded as a Test Runner Package.  The WT_PLSQL.RUN_ALL procedure then runs all Test Runner Packages within the schema in conanical order.  An exception handler is used in the WT_PLSQL package to catch any exceptions raised from a Test Runner Package.  Results from assertions are stored in a Nested Table in the WT_PLSQL package.  The results from the last 20 schema_runs (configurable) are saved for each schema.
+When the WT_PLSQL.test_run procedure is called, a Test Runner package name is passed in as a parameter.  The "WT_PLSQL_RUN" procedure in the Test Runner is called after the DBOUT and IGNORED_LINES are determined.  An exception handler is used in the WT_PLSQL package to catch any exceptions raised from a Test Runner Package.  Results from assertions are immediately stored in a Nested Table in the WT_PLSQL package.  After the Test Runner completes execution, the results are transfered into temporary tables.
+
+A single assertion can be executed outside of the WT_PLSQL.test_run procedure.  The results of the assertion will be output to DBMS_OUTPUT.  This also applies to a Test Runner WT_PLSQL_RUN procedure that is executed that outside of the WT_PLSQL.test_run procedure.
+
+The APEX-CI Add-on scans the packages in a schema.  If the scan finds a procedure in a package with no parameters called "WT_PLSQL_RUN", the package is recorded as a Test Runner Package.  The APEX-CI Add-on then runs all Test Runner Packages within the schema in conanical order.  The results from the last 20 schema runs (configurable) are saved for each schema.  Multiple schema can be defined as a System Under Test (SUT) run.
 
 The Datbase Object Under Test, or DBOUT, is a database object that is the target of a set of tests.  An annotation is used to identify the DBOUT in a Test Runner Package.  If the DBOUT annotation is missing from a Test Runner Package, no code coverage data is collected.  If more than one annotation occurs in a Test Runner Package, the first occurance is used.
 
@@ -34,26 +44,32 @@ Example Annotation:
 
 If there are source lines in a DBOUT that should not be included in the Code Coverage Calculation, annotations are used to identify them.  The lines between the "begin_ignore_lines" and "end_ignore_lines" annotations are ignored (inclusive of the lines with the annotations).  All lines after a "begin_ignore_lines" annotation are ignored if the "end_ignore_lines" annotation is missing.  A single line is ignored if both annotations occur on the same line.
 
+DBMS_PROFILER is unable to capture the execution of some types of PL/SQL source.
+
 RegExp:
    "--%WT_PLSQL_(begin|end)_ignore_lines%--"
 
 Example Annotation:
    --%WT_PLSQL_begin_ignore_lines%--
 
-Run All:
- -) Load Test Runners into array
- -) Create SCHEMA_RUNS record
- -) Loop through Test Runners
-    -) Create TEST_RUNS record
-    -) Results Initialize
-    -) Profiler Initialize (return profiler_runid)
-    -) Call Test Runner
-    -) Profiler Finalize (If profiler_runid set)
-    -) Results Finalize
-    -) Update TEST_RUNS record
- -) Update SCHEMA_RUNS record
+APEX-CI:
+ -) Loop through all Schema Defined for the SUT
+    -) Create SCHEMA_RUNS record
+    -) Load Test Runners into array
+    -) Loop through Test Runners
+    -) Update SCHEMA_RUNS record
+
+Test Run:
+ -) Create TEST_RUNS record
+ -) Results Initialize
+ -) Profiler Initialize (return profiler_runid)
+ -) Call Test Runner
+ -) Profiler Finalize (If profiler_runid set)
+ -) Results Finalize
+ -) Update TEST_RUNS record
 
 Results Initialize:
+ -) Receive/Set in TEST_RUN_ID
  -) Clear Results Array
 
 Results Finalize:
@@ -75,22 +91,21 @@ Profiler Finalize:
 
 If an assertion is run without a Test Runner defined, the assertion results are reported to DBMS_OUTPUT, but not stored.
 
-Data Structures:
-----------------
+Core Data Structures:
+---------------------
 
-TEST_RUNS:
+TEST_RUNS (Temporary Table):
   id - NN, PK
   start_dtm - NN, NK1
-  test_runner_name - NN, NK1
-  test_runner_owner - NN, NK1
+  runner_name - NN, NK1
+  runner_owner - NN, NK1
   end_dtm - NN
-  schema_run_id - NN, FK1
   dbout_owner
   dbout_name
   dbout_type
   error_message
 
-RESULTS:
+RESULTS (Temporary Table):
   test_run_id - NN, PK, FK
   result_seq - NN, PK
   executed_dtm - NN
@@ -103,7 +118,7 @@ RESULTS:
   message
   error_message
 
-DBOUT_PROFILE:
+DBOUT_PROFILE (Temporary Table):
   test_run_id - NN, PK, FK
   line# - NN, PK
   text - NN
@@ -112,15 +127,20 @@ DBOUT_PROFILE:
   min_time - NN
   max_time - NN
 
-NOT_EXECUTABLE:
-  text - NN, PK
-  note - NN
-
-EXCLUDED_LINES:
+EXCLUDED_LINES (Temporary Table):
   test_run_id - NN, PK, FK
   line# - NN, PK
+  exclude_code - NN
   text - NN
-  reason
+
+NOT_EXECUTABLE:
+  text - NN, PK
+  note
+
+Table Definitions Provided by DBMS_PROFILER:
+PLSQL_PROFILER_RUNS (Temporary Table)
+PLSQL_PROFILER_UNITS (Temporary Table)
+PLSQL_PROFILER_DATA (Temporary Table)
 
 Best practices:
 ---------------
@@ -141,4 +161,4 @@ Loosely based on Wikipedia Xunit (https://en.wikipedia.org/wiki/XUnit)
 -) Assertions - A function that performs a single test and records/reports the result.
 -) Test Peconditions - State needed to run a test (also known as a test context or test fixture).
 -) DBOUT (Database Object Under Test) - The database object that is the target of testing.  White-box testing is oriented toward a specific DBOUT.  Code coverage is also oriented toward a specific DBOUT.
--) Test Result Formatter - Creates one or more output formats of the test results.
+-) SUT (System Under Test) - One or more database schema that comprise an application or system.  Continuous Integration (CI) testing is typically done at a system level.
