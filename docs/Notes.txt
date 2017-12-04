@@ -78,17 +78,11 @@ If an assertion is run without a Test Runner defined, the assertion results are 
 Data Structures:
 ----------------
 
-SCHEMA_RUNS:
-  id - NN, PK
-  owner - NN, NK1
-  beg_dtm - NN, NK1
-  end_dtm
-  error_message
-
 TEST_RUNS:
   id - NN, PK
-  test_runner_name - NN, NK1
   start_dtm - NN, NK1
+  test_runner_name - NN, NK1
+  test_runner_owner - NN, NK1
   end_dtm - NN
   schema_run_id - NN, FK1
   dbout_owner
