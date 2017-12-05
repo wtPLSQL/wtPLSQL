@@ -1,58 +1,18 @@
 
-Core Features:
----------------
--) Test anything in the Oracle database:
-   -) PL/SQL Packages, Procedures, Functions
-   -) Table Constraints and Triggers
-   -) Types and Type Bodies
--) Private Procedure/Function Testing within a Package
--) Built-in Code Coverage
--) Test Result Capture
--) Test Result Reporting
-   -) Database Query
-   -) DBMS_OUTPUT
--) Single Assertion Execution
--) Minimal Database Footprint
-
-APEX-CI Add-on Features:
-------------------------
--) Application Express User Interface
--) Auto execute all Test Runners in a schema.
--) Auto test a collection of schema.
--) Historical test result storage.
--) Has a larger Database Footprint
-
-The fundamental element of testing is an assertion.  It is a simple comparison of an expected result with an actual result.  A test can be one or more assertions.  Where there are no assertions, there is no testing.
-
-"xUnit" defines a Test Suite as a group of tests that use the same Test Fixture.  This is not easily identified during the initial stages of test development.  It is much easier to start with a series of assertion tests and build from there.
-
-There are no Test Suites in WT_PLSQL.  Test Runner Packages are used instead of Test Suites.  The Test Runner Package is developed into a set of tests.  A Test Runner Package can call other packages.  The Test Runner Package can be in the same package that is being tested.
-
-When the WT_PLSQL.test_run procedure is called, a Test Runner package name is passed in as a parameter.  The "WT_PLSQL_RUN" procedure in the Test Runner is called after the DBOUT and IGNORED_LINES are determined.  An exception handler is used in the WT_PLSQL package to catch any exceptions raised from a Test Runner Package.  Results from assertions are immediately stored in a Nested Table in the WT_PLSQL package.  After the Test Runner completes execution, the results are transfered into temporary tables.
-
-A single assertion can be executed outside of the WT_PLSQL.test_run procedure.  The results of the assertion will be output to DBMS_OUTPUT.  This also applies to a Test Runner WT_PLSQL_RUN procedure that is executed that outside of the WT_PLSQL.test_run procedure.
-
-The APEX-CI Add-on scans the packages in a schema.  If the scan finds a procedure in a package with no parameters called "WT_PLSQL_RUN", the package is recorded as a Test Runner Package.  The APEX-CI Add-on then runs all Test Runner Packages within the schema in conanical order.  The results from the last 20 schema runs (configurable) are saved for each schema.  Multiple schema can be defined as a System Under Test (SUT) run.
-
-The Datbase Object Under Test, or DBOUT, is a database object that is the target of a set of tests.  An annotation is used to identify the DBOUT in a Test Runner Package.  If the DBOUT annotation is missing from a Test Runner Package, no code coverage data is collected.  If more than one annotation occurs in a Test Runner Package, the first occurance is used.
 
 RegExp:
-   "--%WT_PLSQL_set_dbout[(][[:alnum:]_$#]+[)]%--"
+   "--%WTPLSQL_set_dbout[(][[:alnum:]_$#]+[)]%--"
 
 Example Annotation:
-   --%WT_PLSQL_set_dbout(SAMPLE_DB_OBJECT)%--
-
-If there are source lines in a DBOUT that should not be included in the Code Coverage Calculation, annotations are used to identify them.  The lines between the "begin_ignore_lines" and "end_ignore_lines" annotations are ignored (inclusive of the lines with the annotations).  All lines after a "begin_ignore_lines" annotation are ignored if the "end_ignore_lines" annotation is missing.  A single line is ignored if both annotations occur on the same line.
-
-DBMS_PROFILER is unable to capture the execution of some types of PL/SQL source.
+   --%WTPLSQL_set_dbout(SAMPLE_DB_OBJECT)%--
 
 RegExp:
-   "--%WT_PLSQL_(begin|end)_ignore_lines%--"
+   "--%WTPLSQL_(begin|end)_ignore_lines%--"
 
 Example Annotation:
-   --%WT_PLSQL_begin_ignore_lines%--
+   --%WTPLSQL_begin_ignore_lines%--
 
-APEX-CI:
+Run All:
  -) Loop through all Schema Defined for the SUT
     -) Create SCHEMA_RUNS record
     -) Load Test Runners into array
@@ -85,11 +45,10 @@ Profiler Initialize:
 Profiler Finalize:
  -) If a DBOUT is not defined, Return
  -) Stop DBMS_PROFILER
- -) DBMS_PROFILER.stop_profiler also copies data to database tables.
- -) Remove non-DBOUT Lines from database tables
- -) Capture and remove Excluded Lines from database tables.
-
-If an assertion is run without a Test Runner defined, the assertion results are reported to DBMS_OUTPUT, but not stored.
+ -) DBMS_PROFILER.stop_profiler also copies data to DBMS_PROFILER tables.
+ -) Remove non-DBOUT Lines from the DBMS_PROFILER tables
+ -) Copy results into DBOUT_PROFILE table.
+ -) Move Excluded Lines to EXCLUDED_LINES table.
 
 Core Data Structures:
 ---------------------
@@ -106,8 +65,9 @@ TEST_RUNS (Temporary Table):
   error_message
 
 RESULTS (Temporary Table):
-  test_run_id - NN, PK, FK
-  result_seq - NN, PK
+  id - PK
+  test_run_id - NN, UK1, FK
+  result_seq - NN, UK1
   executed_dtm - NN
   elapsed_msecs - NN
   assertion - NN
@@ -119,8 +79,9 @@ RESULTS (Temporary Table):
   error_message
 
 DBOUT_PROFILE (Temporary Table):
-  test_run_id - NN, PK, FK
-  line# - NN, PK
+  id - PK
+  test_run_id - NN, NK1, FK
+  line# - NN, NK1
   text - NN
   total_occur - NN
   total_time - NN
@@ -128,8 +89,9 @@ DBOUT_PROFILE (Temporary Table):
   max_time - NN
 
 EXCLUDED_LINES (Temporary Table):
-  test_run_id - NN, PK, FK
-  line# - NN, PK
+  id - PK
+  test_run_id - NN, NK1, FK
+  line# - NN, NK1
   exclude_code - NN
   text - NN
 
@@ -141,24 +103,3 @@ Table Definitions Provided by DBMS_PROFILER:
 PLSQL_PROFILER_RUNS (Temporary Table)
 PLSQL_PROFILER_UNITS (Temporary Table)
 PLSQL_PROFILER_DATA (Temporary Table)
-
-Best practices:
----------------
--) Embed unit tests at the end of DBOUT packages.
-   -) Allows test and package to remain together.
-   -) Allows testing of internal/private functions/procedures.
-   -) Use "PLSQL_CCFLAGS" "WT_PLSQL:FALSE" conditional compilation select directive to remove tests from production executable.
--) Use the word "setup" in the names of procedures that peform setup operations.
--) Use the word "teardown" in the names of procedures that peform teardown operations.
--) Use individual procedures to run test cases.  Wrap those procedures with an exception handler to continue with the next test case.
--) Identify test suites at the beginning of each "WT_PLSQL_RUN" procedure.
-
-Definitions:
-------------
-Loosely based on Wikipedia Xunit (https://en.wikipedia.org/wiki/XUnit)
--) Test Runner - An executable program that runs test cases.
--) Test Case - A logical grouping of assertions to run happy path, decision tree, boundary condition, and/or fault insertion tests.
--) Assertions - A function that performs a single test and records/reports the result.
--) Test Peconditions - State needed to run a test (also known as a test context or test fixture).
--) DBOUT (Database Object Under Test) - The database object that is the target of testing.  White-box testing is oriented toward a specific DBOUT.  Code coverage is also oriented toward a specific DBOUT.
--) SUT (System Under Test) - One or more database schema that comprise an application or system.  Continuous Integration (CI) testing is typically done at a system level.
