@@ -12,6 +12,7 @@ RegExp:
 Example Annotation:
    --%WTPLSQL_begin_ignore_lines%--
 
+
 Run All:
  -) Loop through all Schema Defined for the SUT
     -) Create SCHEMA_RUNS record
@@ -49,6 +50,7 @@ Profiler Finalize:
  -) Remove non-DBOUT Lines from the DBMS_PROFILER tables
  -) Copy results into DBOUT_PROFILE table.
  -) Move Excluded Lines to EXCLUDED_LINES table.
+
 
 Core Data Structures:
 ---------------------
@@ -98,6 +100,7 @@ EXCLUDED_LINES (Temporary Table):
 NOT_EXECUTABLE:
   text - NN, PK
   note
+
 
 Table Definitions Provided by DBMS_PROFILER:
 PLSQL_PROFILER_RUNS (Temporary Table)
