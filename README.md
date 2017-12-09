@@ -1,9 +1,16 @@
 # wtPLSQL
 Whitebox Testing Framework for Oracle's PL/SQL Language
 
-Scoping/Planning phase is complete.  Documentation is in the Wiki and the "docs" directory.
+##Files and Directories
 
-Starting implementation.
+File Name            | Description
+---------------------|------------
+docs                 | Directory of project documentation. Also contains GitHub.io source.
+README.md            | Top level Markdown file for wtPLSQL project on GitHub
+
+## Participation
+
+See the "Ready" column in [Projects](https://github.com/DDieterich/wtPLSQL/projects) for issues that are ready to work.
 
 ---
 
