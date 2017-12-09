@@ -1,7 +1,9 @@
 # wtPLSQL
 Whitebox Testing Framework for Oracle's PL/SQL Language
 
-This project is in the scoping/requirements phase.  All work is currently in the Wiki.
+Scoping/Planning phase is complete.  Documentation is in the Wiki and the "docs" directory.
+
+Starting implementation.
 
 ---
 
