@@ -1,7 +1,7 @@
 # wtPLSQL
 Whitebox Testing Framework for Oracle's PL/SQL Language
 
-This is the top level page for the https://ddieterich.github.io/wtPLSQL/ website. This is also the "docs" directory for the project.
+This is the top level page for the [DDieterich.github.io](https://ddieterich.github.io/wtPLSQL) website. This is also the "docs" directory for the project.
 
 [Process Flow Diagrams - PDF](Process_Flow.pdf)
 
