@@ -11,7 +11,9 @@ README.md            | Top level Markdown file for wtPLSQL project on GitHub
 
 ### Participation
 
-See the "Ready" column in [Projects](https://github.com/DDieterich/wtPLSQL/projects) for issues that are ready to work.
+The main website is at [DDieterich.GitHub.io](https://ddieterich.github.io/wtPLSQL/).
+
+See the "Ready" column in [Projects](https://github.com/DDieterich/wtPLSQL/projects) for cards/issues that are ready to work.
 
 ---
 
