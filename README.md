@@ -1,7 +1,7 @@
 # wtPLSQL
 Whitebox Testing Framework for Oracle's PL/SQL Language
 
-##Files and Directories
+## Files and Directories
 
 File Name            | Description
 ---------------------|------------
