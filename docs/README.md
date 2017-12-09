@@ -5,6 +5,10 @@ This is the top level page for the https://ddieterich.github.io/wtPLSQL/ website
 
 [Process Flow Diagrams - PDF](Process_Flow.pdf)
 
+ER Diagrams - Coming Soon
+
+DBDocs - Coming Soon
+
 ---
 
 _Oracle and Java are registered trademarks of Oracle and/or its affiliates. Other names may be trademarks of their respective owners._
