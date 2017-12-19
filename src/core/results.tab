@@ -1,0 +1,35 @@
+
+--
+--  Results Table Installation
+--
+
+create global temporary table results
+   (test_run_id    number(38)     constraint results_nn2 not null
+   ,result_seq     number(8)      constraint results_nn3 not null
+   ,executed_dtm   timestamp      constraint results_nn4 not null
+   ,elapsed_msecs  number(6)      constraint results_nn5 not null
+   ,assertion      varchar2(30)   constraint results_nn6 not null
+   ,status         varchar2(4)    constraint results_nn7 not null
+   ,expected_value varchar2(4000) constraint results_nn8 not null
+   ,actual_value   varchar2(4000) constraint results_nn9 not null
+   ,testcase       varchar2(30)
+   ,message        varchar2(4000)
+   ,error_message  varchar2(4000)
+   ,constraint results_pk primary key (test_run_id, result_seq)
+   --,constraint results_fk1 foreign key (test_run_id)
+   --    references test_runs (id)
+   ,constraint results_ck1 check (status in ('PASS','FAIL','ERR'))
+   ) on commit preserve rows;
+
+comment on table results is 'Results data from Test Runs.';
+comment on column results.test_run_id is 'Foreign Key for the Test Run, Primary Key part 1.';
+comment on column results.result_seq is 'Sequence number for this Result, Primary Key part 2.';
+comment on column results.executed_dtm is 'Date/Time (with Fractional Seconds) this Result was captured';
+comment on column results.elapsed_msecs is 'Elapsed time in milliseonds since the previous Result or start ot the Test Run.';
+comment on column results.assertion is 'Name of the Assertion Test performed';
+comment on column results.status is 'PASS/FAIL/ERR Status from the Assertion';
+comment on column results.expected_value is 'Expected Value from the Assertion';
+comment on column results.actual_value is 'Actual Value from the Assertion';
+comment on column results.testcase is 'Optional Test Case name.';
+comment on column results.message is 'Optional Assetion message.';
+comment on column results.error_message is 'Error Message from the Assertion.';

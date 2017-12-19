@@ -1,0 +1,14 @@
+
+--
+--  Not Executable Table Installation
+--
+
+create table not_executable
+   (text  varchar2(4000)  constraint not_executable_nn1 not null
+   ,note  varchar2(4000)
+   ,constraint not_executable_pk primary key (text)
+   );
+
+comment on table not_executable is 'Table to exclude non-executable lines from code coverage';
+comment on column not_executable.text is 'Primary key, source text to exclude from code coverage';
+comment on column not_executable.note is 'Notes regarding this non-exectuable line of code';

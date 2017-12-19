@@ -15,94 +15,41 @@ Example Annotation:
 
 Run All:
  -) Loop through all Schema Defined for the SUT
-    -) Create SCHEMA_RUNS record
     -) Load Test Runners into array
     -) Loop through Test Runners
-    -) Update SCHEMA_RUNS record
 
 Test Run:
  -) Create TEST_RUNS record
  -) Results Initialize
- -) Profiler Initialize (return profiler_runid)
+ -) Profiler Initialize
  -) Call Test Runner
- -) Profiler Finalize (If profiler_runid set)
+ -) Profiler Finalize
  -) Results Finalize
  -) Update TEST_RUNS record
 
 Results Initialize:
- -) Receive/Set in TEST_RUN_ID
+ -) Receive/Set TEST_RUN_ID
  -) Clear Results Array
 
 Results Finalize:
  -) Copy Results Array to database tables.
 
 Profiler Initialize:
+ -) Receive/Set TEST_RUN_ID
+ -) Clear Profiler Array
+ -) Clear profiler_run_id
  -) Find DBOUT Annotations
- -) If DBOUT is not found, return null profiler_run_id
- -) Find Ignore Annotations
+ -) If DBOUT is not found, return
+ -) Update TEST_RUNS
+ -) Find Ignore Annotations and capture EXCLUDED_LINES array
  -) Start DBMS_PROFILER
- -) Return profiler_runid
 
 Profiler Finalize:
- -) If a DBOUT is not defined, Return
+ -) If profiler_run_id is clear, Return
  -) Stop DBMS_PROFILER
  -) DBMS_PROFILER.stop_profiler also copies data to DBMS_PROFILER tables.
  -) Remove non-DBOUT Lines from the DBMS_PROFILER tables
+ -) Remove EXCLUDED_LINES from the DBMS_PROFILER tables
+ -) Remove Non-Executable lines from the DBMS_PROFILER tables
  -) Copy results into DBOUT_PROFILE table.
- -) Move Excluded Lines to EXCLUDED_LINES table.
-
-
-Core Data Structures:
----------------------
-
-TEST_RUNS (Temporary Table):
-  id - NN, PK
-  start_dtm - NN, NK1
-  runner_name - NN, NK1
-  runner_owner - NN, NK1
-  end_dtm - NN
-  dbout_owner
-  dbout_name
-  dbout_type
-  error_message
-
-RESULTS (Temporary Table):
-  id - PK
-  test_run_id - NN, UK1, FK
-  result_seq - NN, UK1
-  executed_dtm - NN
-  elapsed_msecs - NN
-  assertion - NN
-  status - NN
-  expected_value - NN
-  actual_value - NN
-  testcase
-  message
-  error_message
-
-DBOUT_PROFILE (Temporary Table):
-  id - PK
-  test_run_id - NN, NK1, FK
-  line# - NN, NK1
-  text - NN
-  total_occur - NN
-  total_time - NN
-  min_time - NN
-  max_time - NN
-
-EXCLUDED_LINES (Temporary Table):
-  id - PK
-  test_run_id - NN, NK1, FK
-  line# - NN, NK1
-  exclude_code - NN
-  text - NN
-
-NOT_EXECUTABLE:
-  text - NN, PK
-  note
-
-
-Table Definitions Provided by DBMS_PROFILER:
-PLSQL_PROFILER_RUNS (Temporary Table)
-PLSQL_PROFILER_UNITS (Temporary Table)
-PLSQL_PROFILER_DATA (Temporary Table)
+ -) Copy Excluded Lines array to EXCLUDED_LINES table.
