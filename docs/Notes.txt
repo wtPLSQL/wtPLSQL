@@ -73,7 +73,7 @@ RESULTS (Temporary Table):
   executed_dtm - NN
   elapsed_msecs - NN
   assertion - NN
-  result - NN
+  status - NN
   expected_value - NN
   actual_value - NN
   testcase
