@@ -4,6 +4,7 @@ as
    g_owner       test_runs.dbout_owner%TYPE;
    g_name        test_runs.dbout_name%TYPE;
    g_type        test_runs.dbout_type%TYPE;
+   g_message     varchar2(4000);
 
 ----------------------
 --  Private Procedures
@@ -79,7 +80,9 @@ begin
        from  all_objects
        where owner        = nvl(substr(target,1,pos-1),USER)
         and  object_name  = substr(target,pos+1,256);
-   exception when NO_DATA_FOUND then return;
+   exception when NO_DATA_FOUND
+   then
+      g_message := 'Unable to find Database Object "' || target || '". ';
    end;
 end find_dbout;
 
@@ -91,22 +94,21 @@ procedure initialize
       (in_test_run_id  in  number)
 is
 begin
-   g_owner := NULL;
-   g_name  := NULL;
-   g_type  := NULL;
+   g_owner   := NULL;
+   g_name    := NULL;
+   g_type    := NULL;
+   g_message := NULL;
    if in_test_run_id is null
    then
       raise_application_error  (-20000, 'i_test_run_id is null');
    end if;
    find_dbout(in_test_run_id);
-   if g_name is not null
-   then
-      update test_runs
-        set  dbout_owner = g_owner
-            ,dbout_name  = g_name
-            ,dbout_type  = g_type
-       where id = in_test_run_id;
-   end if;
+   update test_runs
+     set  dbout_owner = g_owner
+         ,dbout_name  = g_name
+         ,dbout_type  = g_type
+         ,message     = substr(message || g_message)
+    where id = in_test_run_id;
 end initialize;
 
 procedure finalize
