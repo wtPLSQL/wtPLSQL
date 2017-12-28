@@ -47,8 +47,9 @@ begin
    g_test_runs_rec.runner_name  := in_package_name;
    g_test_runs_rec.runner_owner := USER;
    insert into test_runs values g_test_runs_rec;
-   --results.initialize(g_test_runs_rec.id);
+   result.initialize(g_test_runs_rec.id);
    profiler.initialize(g_test_runs_rec.id);
+   COMMIT;
    begin
       execute immediate in_package_name || '.WTPLSQL_RUN';
    exception when others then
@@ -56,14 +57,17 @@ begin
                                               dbms_utility.format_error_backtrace
                                              ,1,4000);
    end;
-   profiler.finalize;
-   --results.finalize;
+   profiler.pause;
+   ROLLBACK;
    if g_test_runs_rec.error_message is not null
    then
       update test_runs
         set  error_message = g_test_runs_rec.error_message
        where id = g_test_runs_rec.id;
    end if;
+   profiler.finalize;
+   result.finalize;
+   COMMIT;
 end test_run;
 
 procedure test_all
