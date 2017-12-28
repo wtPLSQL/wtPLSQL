@@ -6,6 +6,7 @@ as
    g_name                test_runs.dbout_name%TYPE;
    g_type                test_runs.dbout_type%TYPE;
    g_runid               binary_integer;
+   g_message             varchar2(4000);
 
 ----------------------
 --  Private Procedures
@@ -103,7 +104,9 @@ begin
        from  all_objects
        where owner        = nvl(substr(target,1,pos-1),USER)
         and  object_name  = substr(target,pos+1,256);
-   exception when NO_DATA_FOUND then return;
+   exception when NO_DATA_FOUND
+   then
+      g_message := 'Unable to find Database Object "' || target || '". ';
    end;
 end find_dbout;
 
@@ -121,23 +124,26 @@ begin
    then
       raise_application_error  (-20000, 'i_test_run_id is null');
    end if;
-   g_owner := NULL;
-   g_name  := NULL;
-   g_type  := NULL;
+   g_owner   := NULL;
+   g_name    := NULL;
+   g_type    := NULL;
+   g_message := NULL;
    find_dbout(in_test_run_id);
+   update test_runs
+     set  dbout_owner   = g_owner
+         ,dbout_name    = g_name
+         ,dbout_type    = g_type
+         ,error_message = substr(error_message || g_message, 1, 4000)
+    where id = g_dbout_profiles_rec.test_run_id;
    if g_name is not null
    then
       g_dbout_profiles_rec.test_run_id := in_test_run_id;
-      update test_runs
-        set  dbout_owner = g_owner
-            ,dbout_name  = g_name
-            ,dbout_type  = g_type
-       where id = g_dbout_profiles_rec.test_run_id;
       retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
       if retnum <> 0 then
          raise_application_error(-20000,
             'dbms_profiler.INTERNAL_VERSION_CHECK returned: ' || get_error_msg(retnum));
       end if;
+      -- This starts the PROFILER Running!!!
       retnum := dbms_profiler.START_PROFILER(run_number => g_runid);
       if retnum <> 0 then
          raise_application_error(-20000,
