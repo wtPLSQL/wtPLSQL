@@ -73,6 +73,10 @@ is
    target        varchar2(256);
    pos           number;
 begin
+   g_owner   := NULL;
+   g_name    := NULL;
+   g_type    := NULL;
+   g_message := NULL;
    open c_annotation;
    fetch c_annotation into b_annotation;
    if c_annotation%NOTFOUND
@@ -124,10 +128,7 @@ begin
    then
       raise_application_error  (-20000, 'i_test_run_id is null');
    end if;
-   g_owner   := NULL;
-   g_name    := NULL;
-   g_type    := NULL;
-   g_message := NULL;
+   g_dbout_profiles_rec.test_run_id := in_test_run_id;
    find_dbout(in_test_run_id);
    update test_runs
      set  dbout_owner   = g_owner
@@ -137,7 +138,6 @@ begin
     where id = g_dbout_profiles_rec.test_run_id;
    if g_name is not null
    then
-      g_dbout_profiles_rec.test_run_id := in_test_run_id;
       retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
       if retnum <> 0 then
          raise_application_error(-20000,
@@ -206,9 +206,10 @@ begin
       g_dbout_profiles_rec.max_time    := buff.max_time;
       insert into dbout_profiles values g_dbout_profiles_rec;
    end loop;
-   g_owner := NULL;
-   g_name  := NULL;
-   g_type  := NULL;
+   g_owner   := NULL;
+   g_name    := NULL;
+   g_type    := NULL;
+   g_message := NULL;
    g_dbout_profiles_rec.test_run_id := NULL;
 end finalize;
 
