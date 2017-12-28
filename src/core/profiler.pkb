@@ -38,6 +38,18 @@ begin
 end get_error_msg;
 
 ------------------------------------------------------------
+procedure reset_variables
+is
+   l_dbout_profiles_NULL  dbout_profiles%ROWTYPE;
+begin
+   g_owner   := NULL;
+   g_name    := NULL;
+   g_type    := NULL;
+   g_message := NULL;
+   g_dbout_profiles_rec := l_dbout_profiles_NULL;
+end reset_variables;
+
+------------------------------------------------------------
 procedure find_dbout
       (in_test_run_id  in  number)
 is
@@ -73,10 +85,6 @@ is
    target        varchar2(256);
    pos           number;
 begin
-   g_owner   := NULL;
-   g_name    := NULL;
-   g_type    := NULL;
-   g_message := NULL;
    open c_annotation;
    fetch c_annotation into b_annotation;
    if c_annotation%NOTFOUND
@@ -128,6 +136,7 @@ begin
    then
       raise_application_error  (-20000, 'i_test_run_id is null');
    end if;
+   reset_variables;
    g_dbout_profiles_rec.test_run_id := in_test_run_id;
    find_dbout(in_test_run_id);
    update test_runs
@@ -206,11 +215,7 @@ begin
       g_dbout_profiles_rec.max_time    := buff.max_time;
       insert into dbout_profiles values g_dbout_profiles_rec;
    end loop;
-   g_owner   := NULL;
-   g_name    := NULL;
-   g_type    := NULL;
-   g_message := NULL;
-   g_dbout_profiles_rec.test_run_id := NULL;
+   reset_variables;
 end finalize;
 
 ------------------------------------------------------------
