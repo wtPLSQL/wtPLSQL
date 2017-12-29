@@ -26,7 +26,7 @@ comment on column results.result_seq is 'Sequence number for this Result, Primar
 comment on column results.executed_dtm is 'Date/Time (with Fractional Seconds) this Result was captured';
 comment on column results.elapsed_msecs is 'Elapsed time in milliseonds since the previous Result or start ot the Test Run.';
 comment on column results.assertion is 'Name of the Assertion Test performed';
-comment on column results.status is 'PASS/FAIL/ERR Status from the Assertion';
+comment on column results.status is 'Passed/Failed/Errored Status from the Assertion';
 comment on column results.details is 'Assertion Details, i.e. Expected Value and Actual Value';
 comment on column results.testcase is 'Optional Test Case name.';
 comment on column results.message is 'Optional Assetion message.';

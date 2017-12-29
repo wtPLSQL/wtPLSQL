@@ -14,6 +14,7 @@ as
 --  Public Procedures
 ---------------------
 
+------------------------------------------------------------
 procedure initialize
       (in_test_run_id   in test_runs.id%TYPE)
 is
@@ -24,6 +25,7 @@ begin
    g_results_nt := results_nt_type(null);
 end initialize;
 
+------------------------------------------------------------
 procedure finalize
 is
 begin
@@ -33,6 +35,7 @@ begin
    g_results_rec.test_run_id := NULL;
 end finalize;
 
+------------------------------------------------------------
 procedure save
       (in_assertion      in results.assertion%TYPE
       ,in_status         in results.status%TYPE
@@ -45,11 +48,13 @@ is
 begin
    if g_results_rec.test_run_id IS NULL
    then
-      DBMS_OUTPUT.PUT_LINE(in_status    || ' - ' ||
-                           in_testcase  || ': ' ||
-                           in_assertion || ' "' ||
-                           in_message   || '" ' ||
-                           in_details   );
+      text_report.ad_hoc_result
+         (in_assertion
+         ,in_status
+         ,in_details
+         ,in_testcase
+         ,in_message
+         ,in_error_message);
       return;
    end if;
    -- Set the time and elapsed

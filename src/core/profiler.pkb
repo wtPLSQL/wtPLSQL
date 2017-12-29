@@ -1,12 +1,14 @@
 create or replace package body profiler
 as
 
-   g_dbout_profiles_rec  dbout_profiles%ROWTYPE;
-   g_owner               test_runs.dbout_owner%TYPE;
-   g_name                test_runs.dbout_name%TYPE;
-   g_type                test_runs.dbout_type%TYPE;
-   g_runid               binary_integer;
-   g_message             varchar2(4000);
+   TYPE rec_type is record
+      (test_run_id     test_runs.id%TYPE
+      ,owner           test_runs.dbout_owner%TYPE
+      ,name            test_runs.dbout_name%TYPE
+      ,type            test_runs.dbout_type%TYPE
+      ,prof_runid      binary_integer
+      ,error_message   varchar2(4000));
+   g_rec  rec_type;
 
 ----------------------
 --  Private Procedures
@@ -38,20 +40,15 @@ begin
 end get_error_msg;
 
 ------------------------------------------------------------
-procedure reset_variables
+procedure reset_g_rec
 is
-   l_dbout_profiles_NULL  dbout_profiles%ROWTYPE;
+   l_rec_NULL  rec_type;
 begin
-   g_owner   := NULL;
-   g_name    := NULL;
-   g_type    := NULL;
-   g_message := NULL;
-   g_dbout_profiles_rec := l_dbout_profiles_NULL;
-end reset_variables;
+   g_rec := l_rec_NULL;
+end reset_g_rec;
 
 ------------------------------------------------------------
 procedure find_dbout
-      (in_test_run_id  in  number)
 is
    C_HEAD_RE CONSTANT varchar2(30) := '--%WTPLSQL_set_dbout[(]';
    C_MAIN_RE CONSTANT varchar2(30) := '[[:alnum:]._$#]+';
@@ -77,7 +74,7 @@ is
        from  user_source  src
              join test_runs  tr
                   on  tr.runner_name = src.name
-                  and tr.id          = in_test_run_id
+                  and tr.id          = g_rec.test_run_id
        where src.type = 'PACKAGE BODY'
         and  regexp_like(src.text, C_HEAD_RE || C_MAIN_RE || C_TAIL_RE)
        order by src.line;
@@ -110,15 +107,15 @@ begin
    pos := instr(target,'.');
    begin
       select owner, object_name, object_type
-        into g_owner
-            ,g_name
-            ,g_type
+        into g_rec.owner
+            ,g_rec.name
+            ,g_rec.type
        from  all_objects
        where owner        = nvl(substr(target,1,pos-1),USER)
         and  object_name  = substr(target,pos+1,256);
    exception when NO_DATA_FOUND
    then
-      g_message := 'Unable to find Database Object "' || target || '". ';
+      g_rec.error_message := 'Unable to find Database Object "' || target || '". ';
    end;
 end find_dbout;
 
@@ -136,16 +133,16 @@ begin
    then
       raise_application_error  (-20000, 'i_test_run_id is null');
    end if;
-   reset_variables;
-   g_dbout_profiles_rec.test_run_id := in_test_run_id;
-   find_dbout(in_test_run_id);
+   reset_g_rec;
+   g_rec.test_run_id := in_test_run_id;
+   find_dbout;
    update test_runs
-     set  dbout_owner   = g_owner
-         ,dbout_name    = g_name
-         ,dbout_type    = g_type
-         ,error_message = substr(error_message || g_message, 1, 4000)
-    where id = g_dbout_profiles_rec.test_run_id;
-   if g_name is not null
+     set  dbout_owner   = g_rec.owner
+         ,dbout_name    = g_rec.name
+         ,dbout_type    = g_rec.type
+         ,error_message = substr(error_message || g_rec.error_message, 1, 4000)
+    where id = g_rec.test_run_id;
+   if g_rec.name is not null
    then
       retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
       if retnum <> 0 then
@@ -153,7 +150,7 @@ begin
             'dbms_profiler.INTERNAL_VERSION_CHECK returned: ' || get_error_msg(retnum));
       end if;
       -- This starts the PROFILER Running!!!
-      retnum := dbms_profiler.START_PROFILER(run_number => g_runid);
+      retnum := dbms_profiler.START_PROFILER(run_number => g_rec.prof_runid);
       if retnum <> 0 then
          raise_application_error(-20000,
             'dbms_profiler.START_PROFILER returned: ' || get_error_msg(retnum));
@@ -165,7 +162,19 @@ end initialize;
 procedure finalize
 is
    cursor c_main is
-      select ppd.line#
+      select g_rec.test_run_id              TEST_RUN_ID
+            ,ppd.line#
+            ,case
+             when ne.text is not null
+             then
+                  'EXCL'
+             when    ppd.total_occur != 0 and ppd.total_time != 0
+                  or ppd.total_occur  = 0 and ppd.total_time  = 0
+             then
+                  'MISS'
+             else
+                  'HIT'
+             end                            STATUS
             ,src.text
             ,sum(ppd.total_occur)           TOTAL_OCCUR
             ,sum(ppd.total_time)            TOTAL_TIME
@@ -175,30 +184,31 @@ is
              join plsql_profiler_data  ppd
                   on  ppd.unit_number = ppu.unit_number
                   and ppd.runid       = ppu.runid
-                  and (   ppd.total_occur != 0 and ppd.total_time != 0
-                       or ppd.total_occur  = 0 and ppd.total_time  = 0 )
              join all_source  src
                   on  src.owner = ppu.unit_owner
                   and src.name  = ppu.unit_name
                   and src.type  = ppu.unit_type
-                  and src.line  = ppd.line# + profiler.trigger_offset
-                                                         (ppu.unit_owner
-                                                         ,ppu.unit_name
-                                                         ,ppu.unit_type)
-                  and not exists (select 'x' from not_executable ne
-                                   where ne.text = src.text        )
-       where ppu.unit_owner = g_owner
-        and  ppu.unit_name  = g_name
-        and  ppu.unit_type  = g_type
-        and  ppu.runid      = g_runid;
+                  and (   (    ppu.unit_type != 'TRIGGER'
+                           and src.line       = ppd.line#)
+                       OR (    ppu.unit_type = 'TRIGGER'
+                           and src.line      = ppd.line# + profiler.trigger_offset
+                                                              (ppu.unit_owner
+                                                              ,ppu.unit_name
+                                                              ,ppu.unit_type) ) )
+        left join not_executable ne
+                  on  ne.text = src.text
+       where ppu.unit_owner = g_rec.owner
+        and  ppu.unit_name  = g_rec.name
+        and  ppu.unit_type  = g_rec.type
+        and  ppu.runid      = g_rec.prof_runid;
 begin
-   if g_name is null
+   if g_rec.name is null
    then
       return;
    end if;
-   if g_dbout_profiles_rec.test_run_id is null
+   if g_rec.test_run_id is null
    then
-      raise_application_error  (-20000, 'g_dbout_profiles_rec.test_run_id is null');
+      raise_application_error  (-20000, 'g_rec.test_run_id is null');
    end if;
    delete from plsql_profiler_data;
    delete from plsql_profiler_units;
@@ -207,22 +217,16 @@ begin
    dbms_profiler.STOP_PROFILER;
    for buff in c_main
    loop
-      g_dbout_profiles_rec.line#       := buff.line#;
-      g_dbout_profiles_rec.text        := buff.text;
-      g_dbout_profiles_rec.total_occur := buff.total_occur;
-      g_dbout_profiles_rec.total_time  := buff.total_time;
-      g_dbout_profiles_rec.min_time    := buff.min_time;
-      g_dbout_profiles_rec.max_time    := buff.max_time;
-      insert into dbout_profiles values g_dbout_profiles_rec;
+      insert into dbout_profiles values buff;
    end loop;
-   reset_variables;
+   reset_g_rec;
 end finalize;
 
 ------------------------------------------------------------
 PROCEDURE pause
 IS
 BEGIN
-   if g_name is null
+   if g_rec.name is null
    then
       return;
    end if;
@@ -233,7 +237,7 @@ END pause;
 PROCEDURE resume
 IS
 BEGIN
-   if g_name is null
+   if g_rec.name is null
    then
       return;
    end if;

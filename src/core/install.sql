@@ -16,20 +16,19 @@
 @test_runs.tab
 @results.tab
 @dbout_profiles.tab
-@excluded_lines.tab
 @not_executable.tab
 
 
 -- Package Specifications
 @wtplsql.pks
---@results.pks
+@result.pks
 --@assert.pks
---@profiler.pks
---@text_report.pks
+@profiler.pks
+@text_report.pks
 
 -- Package Bodies
 @wtplsql.pkb
---@results.pkb
+@result.pkb
 --@assert.pkb
---@profiler.pkb
---@text_report.pkb
+@profiler.pkb
+@text_report.pkb
