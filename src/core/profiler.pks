@@ -10,10 +10,9 @@ as
 
    procedure resume;
 
-   function trigger_offset
-      (dout_name_in   in  varchar2
-      ,dout_type_in   in  varchar2
-      ,dout_owner_in  in  varchar2)
+   FUNCTION trigger_offset
+      (dbout_owner_in  in  varchar2
+      ,dbout_name_in   in  varchar2)
    return number;
 
    function calc_pct_coverage

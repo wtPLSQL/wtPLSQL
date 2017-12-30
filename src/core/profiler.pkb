@@ -3,9 +3,9 @@ as
 
    TYPE rec_type is record
       (test_run_id     test_runs.id%TYPE
-      ,owner           test_runs.dbout_owner%TYPE
-      ,name            test_runs.dbout_name%TYPE
-      ,type            test_runs.dbout_type%TYPE
+      ,dbout_owner     test_runs.dbout_owner%TYPE
+      ,dbout_name      test_runs.dbout_name%TYPE
+      ,dbout_type      test_runs.dbout_type%TYPE
       ,prof_runid      binary_integer
       ,error_message   varchar2(4000));
    g_rec  rec_type;
@@ -50,6 +50,7 @@ end reset_g_rec;
 ------------------------------------------------------------
 procedure find_dbout
 is
+
    C_HEAD_RE CONSTANT varchar2(30) := '--%WTPLSQL_set_dbout[(]';
    C_MAIN_RE CONSTANT varchar2(30) := '[[:alnum:]._$#]+';
    C_TAIL_RE CONSTANT varchar2(30) := '[)]%--';
@@ -79,9 +80,12 @@ is
         and  regexp_like(src.text, C_HEAD_RE || C_MAIN_RE || C_TAIL_RE)
        order by src.line;
    b_annotation  c_annotation%ROWTYPE;
+
    target        varchar2(256);
    pos           number;
+
 begin
+
    open c_annotation;
    fetch c_annotation into b_annotation;
    if c_annotation%NOTFOUND
@@ -90,6 +94,7 @@ begin
       return;
    end if;
    close c_annotation;
+
    target := b_annotation.text;
    -- Strip the Head Sub-String
    target := regexp_replace(SRCSTR      => target
@@ -103,13 +108,14 @@ begin
                            ,REPLACESTR  => ''
                            ,POSITION    => 1
                            ,OCCURRENCE  => 1);
+
    -- Locate the Owner/Name separator
    pos := instr(target,'.');
    begin
       select owner, object_name, object_type
-        into g_rec.owner
-            ,g_rec.name
-            ,g_rec.type
+        into g_rec.dbout_owner
+            ,g_rec.dbout_name
+            ,g_rec.dbout_type
        from  all_objects
        where owner        = nvl(substr(target,1,pos-1),USER)
         and  object_name  = substr(target,pos+1,256);
@@ -117,61 +123,26 @@ begin
    then
       g_rec.error_message := 'Unable to find Database Object "' || target || '". ';
    end;
+
 end find_dbout;
 
----------------------
---  Public Procedures
----------------------
-
 ------------------------------------------------------------
-procedure initialize
-      (in_test_run_id  in  number)
+procedure insert_dbout_profile
 is
-   retnum  binary_integer;
-begin
-   if in_test_run_id is null
-   then
-      raise_application_error  (-20000, 'i_test_run_id is null');
-   end if;
-   reset_g_rec;
-   g_rec.test_run_id := in_test_run_id;
-   find_dbout;
-   update test_runs
-     set  dbout_owner   = g_rec.owner
-         ,dbout_name    = g_rec.name
-         ,dbout_type    = g_rec.type
-         ,error_message = substr(error_message || g_rec.error_message, 1, 4000)
-    where id = g_rec.test_run_id;
-   if g_rec.name is not null
-   then
-      retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
-      if retnum <> 0 then
-         raise_application_error(-20000,
-            'dbms_profiler.INTERNAL_VERSION_CHECK returned: ' || get_error_msg(retnum));
-      end if;
-      -- This starts the PROFILER Running!!!
-      retnum := dbms_profiler.START_PROFILER(run_number => g_rec.prof_runid);
-      if retnum <> 0 then
-         raise_application_error(-20000,
-            'dbms_profiler.START_PROFILER returned: ' || get_error_msg(retnum));
-      end if;
-   end if;
-end initialize;
-
-------------------------------------------------------------
-procedure finalize
-is
-   cursor c_main is
+   cursor c_main_insert is
       select g_rec.test_run_id              TEST_RUN_ID
             ,ppd.line#
             ,case
              when ne.text is not null
              then
                   'EXCL'
-             when    ppd.total_occur != 0 and ppd.total_time != 0
-                  or ppd.total_occur  = 0 and ppd.total_time  = 0
+             when ppd.total_occur = 0 and ppd.total_time = 0
              then
                   'MISS'
+             when    ppd.total_occur  = 0 and ppd.total_time != 0
+                  or ppd.total_occur != 0 and ppd.total_time  = 0
+             then
+                  'UNKN'
              else
                   'HIT'
              end                            STATUS
@@ -193,16 +164,150 @@ is
                        OR (    ppu.unit_type = 'TRIGGER'
                            and src.line      = ppd.line# + profiler.trigger_offset
                                                               (ppu.unit_owner
-                                                              ,ppu.unit_name
-                                                              ,ppu.unit_type) ) )
+                                                              ,ppu.unit_name) ) )
         left join not_executable ne
                   on  ne.text = src.text
-       where ppu.unit_owner = g_rec.owner
-        and  ppu.unit_name  = g_rec.name
-        and  ppu.unit_type  = g_rec.type
+       where ppu.unit_owner = g_rec.dbout_owner
+        and  ppu.unit_name  = g_rec.dbout_name
+        and  ppu.unit_type  = g_rec.dbout_type
         and  ppu.runid      = g_rec.prof_runid;
 begin
-   if g_rec.name is null
+   for buff in c_main_insert
+   loop
+      insert into dbout_profiles values buff;
+   end loop;
+end insert_dbout_profile;
+
+------------------------------------------------------------
+procedure update_anno_status
+is
+   --
+   cursor c_find_begin is
+      select line
+            ,instr(text,'--%WTPLSQL_begin_ignore_lines%--') col
+       from  all_source
+       where owner = g_rec.dbout_owner
+        and  name  = g_rec.dbout_name
+        and  type  = g_rec.dbout_type
+        and  text like '%--\%WTPLSQL_begin_ignore_lines\%--%' escape '\'
+       order by line;
+   buff_begin  c_find_begin%ROWTYPE;
+   --
+   cursor c_find_end (in_line in number, in_col in number) is
+      with q1 as (
+      select line
+            ,instr(text,'--%WTPLSQL_end_ignore_lines%--') col
+       from  all_source
+       where owner = g_rec.dbout_owner
+        and  name  = g_rec.dbout_name
+        and  type  = g_rec.dbout_type
+        and  line >= in_line
+        and  text like '%--\%WTPLSQL_end_ignore_lines\%--%' escape '\'
+      )
+      select line
+            ,col
+       from  q1
+       where line > in_line
+          or (    line = in_line
+              and col  > in_col)
+       order by line
+            ,col;
+   buff_end  c_find_end%ROWTYPE;
+   --
+   trig_offset  number;
+
+begin
+
+   if g_rec.dbout_type = 'TRIGGER'
+   then
+      trig_offset := profiler.trigger_offset(g_rec.dbout_owner
+                                            ,g_rec.dbout_name);
+   else
+      trig_offset := 0;
+   end if;
+
+   open c_find_begin;
+   loop
+      fetch c_find_begin into buff_begin;
+
+      exit when c_find_begin%NOTFOUND;
+
+      open c_find_end (buff_begin.line, buff_begin.col);
+      fetch c_find_end into buff_end;
+      if c_find_end%NOTFOUND
+      then
+         buff_end.line := NULL;
+      end if;
+      close c_find_end;
+
+      update dbout_profiles
+        set  status = 'ANNO'
+       where test_run_id = g_rec.test_run_id
+        and  line# >= buff_begin.line + trig_offset
+        and  (   buff_end.line is NULL
+              OR line# <= buff_end.line + trig_offset );
+
+      exit when buff_end.line is NULL;
+
+   end loop;
+   close c_find_begin;
+
+end update_anno_status;
+
+
+---------------------
+--  Public Procedures
+---------------------
+
+------------------------------------------------------------
+procedure initialize
+      (in_test_run_id  in  number)
+is
+
+   retnum  binary_integer;
+
+begin
+
+   if in_test_run_id is null
+   then
+      raise_application_error  (-20000, 'i_test_run_id is null');
+   end if;
+
+   reset_g_rec;
+   g_rec.test_run_id := in_test_run_id;
+
+   find_dbout;
+
+   update test_runs
+     set  dbout_owner   = g_rec.dbout_owner
+         ,dbout_name    = g_rec.dbout_name
+         ,dbout_type    = g_rec.dbout_type
+         ,error_message = substr(error_message || g_rec.error_message, 1, 4000)
+    where id = g_rec.test_run_id;
+
+   if g_rec.dbout_name is not null
+   then
+      retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
+      if retnum <> 0 then
+         raise_application_error(-20000,
+            'dbms_profiler.INTERNAL_VERSION_CHECK returned: ' || get_error_msg(retnum));
+      end if;
+      -- This starts the PROFILER Running!!!
+      retnum := dbms_profiler.START_PROFILER(run_number => g_rec.prof_runid);
+      if retnum <> 0 then
+         raise_application_error(-20000,
+            'dbms_profiler.START_PROFILER returned: ' || get_error_msg(retnum));
+      end if;
+   end if;
+
+end initialize;
+
+------------------------------------------------------------
+procedure finalize
+is
+begin
+
+   if g_rec.dbout_name is null
    then
       return;
    end if;
@@ -210,23 +315,27 @@ begin
    then
       raise_application_error  (-20000, 'g_rec.test_run_id is null');
    end if;
+
    delete from plsql_profiler_data;
    delete from plsql_profiler_units;
    delete from plsql_profiler_runs;
+
    -- DBMS_PROFILER.FLUSH_DATA is included with DBMS_PROFILER.STOP_PROFILER
    dbms_profiler.STOP_PROFILER;
-   for buff in c_main
-   loop
-      insert into dbout_profiles values buff;
-   end loop;
+
+   insert_dbout_profile;
+
+   update_anno_status;
+
    reset_g_rec;
+
 end finalize;
 
 ------------------------------------------------------------
 PROCEDURE pause
 IS
 BEGIN
-   if g_rec.name is null
+   if g_rec.dbout_name is null
    then
       return;
    end if;
@@ -237,7 +346,7 @@ END pause;
 PROCEDURE resume
 IS
 BEGIN
-   if g_rec.name is null
+   if g_rec.dbout_name is null
    then
       return;
    end if;
@@ -247,20 +356,16 @@ END resume;
 ------------------------------------------------------------
 -- Find begining of PL/SQL Block in a Trigger
 FUNCTION trigger_offset
-      (dout_name_in   in  varchar2
-      ,dout_type_in   in  varchar2
-      ,dout_owner_in  in  varchar2)
+      (dbout_owner_in  in  varchar2
+      ,dbout_name_in   in  varchar2)
    return number
 IS
 BEGIN
-   if nvl(dout_type_in,'BOGUS') <> 'TRIGGER' then
-      return 0;
-   end if;
    for buff in (
       select line, text from all_source
-       where name  = dout_name_in
-        and  type  = dout_type_in
-        and  owner = dout_owner_in
+       where owner = dbout_owner_in
+        and  name  = dbout_name_in
+        and  type  = 'TRIGGER'
       order by line )
    loop
       if regexp_instr(buff.text,
@@ -286,23 +391,21 @@ function calc_pct_coverage
       (in_test_run_id  in  number)
    return number
 IS
-   coverage_pct        number;
 BEGIN
-   with q1 as (
-   select p.line#
-         ,case when (    p.total_occur = 0
-                     and p.total_time  = 0) then 0
-                                            else 1
-          end                  hit
-    from  dbout_profiles  p
-   )
-   select 100 * nvl(sum(hit),0) /
-          case count(line#) when 0 then 1
-                                   else count(line#)
-          end
-    into  coverage_pct
-    from  q1;
-   return coverage_pct;
+   for buff in (
+      select sum(case status when 'HIT'  then 1 else 0 end)    HITS
+            ,sum(case status when 'MISS' then 1 else 0 end)    MISSES
+       from  dbout_profiles  p
+       where test_run_id = in_test_run_id  )
+   loop
+      if buff.hits + buff.misses = 0
+      then
+         return -1;
+      else
+         return round(100 * buff.hits / (buff.hits + buff.misses),2);
+      end if;
+   end loop;
+   return null;
 END calc_pct_coverage;
 
 end profiler;

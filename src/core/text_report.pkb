@@ -120,7 +120,7 @@ end summary_out;
 ------------------------------------------------------------
 procedure results_out
 is
-   out_str  varchar2(32000);
+   last_testcase  results.testcase%TYPE;
 begin
    p('');
    p('Detailed Results for Test Runner ' || g_test_runs_rec.runner_owner ||
@@ -129,38 +129,47 @@ begin
                                      ')' );
    p('');
    for buff in (
-      select executed_dtm
+      select status
             ,elapsed_msecs
-            ,assertion
-            ,status
-            ,details
             ,testcase
+            ,assertion
+            ,details
             ,message
             ,error_message
        from  results
        where test_run_id = g_test_runs_rec.id
        order by result_seq )
    loop
-      out_str := buff.status || ' - ';
-      if buff.testcase is not null
+      if    buff.testcase = last_testcase
+         OR (    buff.testcase is null
+             AND last_testcase is null )
       then
-         out_str := out_str || '(' || buff.status || ') ';
+         text_report.ad_hoc_result(buff.assertion
+                                  ,buff.status
+                                  ,buff.details
+                                  ,NULL
+                                  ,buff.message
+                                  ,buff.error_message);
+      else
+         text_report.ad_hoc_result(buff.assertion
+                                  ,buff.status
+                                  ,buff.details
+                                  ,buff.testcase
+                                  ,buff.message
+                                  ,buff.error_message);
+         last_testcase := buff.testcase;
       end if;
-      out_str := out_str || buff.assertion || ' "';
-      out_str := out_str || buff.message   || '. ';
-      out_str := out_str || buff.details;
-      p(out_str);
-      if buff.error_message is not null
-      then
-         p('  ERROR: ' || buff.error_message);
-      end if;
-      p('');
    end loop;
+   p('');
 end results_out;
 
 ------------------------------------------------------------
 procedure profile_out
 is
+   header_txt  CONSTANT varchar2(2000) := chr(10) ||
+     'Line   Stat Occurs TotTime MinTime MaxTime Text' || chr(10) ||
+     '------ ---- ------ ------- ------- ------- ------------';
+   last_line  pls_integer := 0;
 begin
    if g_test_runs_rec.dbout_name is null
    then
@@ -169,20 +178,22 @@ begin
    p('');
    p('Detailed Profile for DBOUT ' || g_test_runs_rec.dbout_owner ||
                                '.' || g_test_runs_rec.dbout_name  ||
-                               '(' || g_test_runs_rec.dbout_type  ||
-                '): (Test Run ID ' || g_test_runs_rec.id          ||
+                              ' (' || g_test_runs_rec.dbout_type  ||
                                ')' );
-   p('');
-   p('Line   Stat Occurs TotTime MaxTime MinTime Text');
-   p('------ ---- ------ ------- ------- ------- ------------');
+   p('   from Test Runner ' || g_test_runs_rec.runner_owner ||
+                        '.' || g_test_runs_rec.runner_name  ||
+           ' (Test Run ID ' || g_test_runs_rec.id           ||
+                        ')' );
+   p(header_txt);
    for buff in (
       select line#
             ,status
-            ,text
             ,total_occur
             ,total_time
             ,min_time
             ,max_time
+            ,text
+            ,rownum
        from  dbout_profiles
        where test_run_id = g_test_runs_rec.id
        order by line#  )
@@ -193,9 +204,16 @@ begin
         to_char(buff.total_time,'999999')  || ' ' ||
         to_char(buff.min_time,'999999')    || ' ' ||
         to_char(buff.max_time,'999999')    || ' ' ||
-                buff.text);
-      p('');
+                buff.text                  );
+      if mod(buff.rownum,25) = 0
+      then
+         p(header_txt);
+      elsif buff.line# != last_line + 1
+      then
+         p('');
+      end if;
    end loop;
+   p('');
 end profile_out;
 
 
@@ -251,13 +269,33 @@ procedure ad_hoc_result
       ,in_message        in results.message%TYPE
       ,in_error_message  in results.error_message%TYPE)
 is
+
+   out_str        varchar2(32000);
+
 begin
-   p(in_status    || ' - ' ||
-     in_testcase  || ': ' ||
-     in_assertion || ' "' ||
-     in_message   || '" ' ||
-     in_details   );
-   p('  ' || in_error_message);
+
+   if in_testcase is not null
+   then
+      p('-- TESTCASE: ' || in_testcase || ' --');
+   end if;
+
+   out_str := rpad(in_status,4) || ' ';
+
+   if in_message is not null
+   then
+      out_str := out_str || in_message  || '. ';
+   end if;
+
+   out_str := out_str || in_assertion || ' - ';
+   out_str := out_str || in_details;
+
+   p(out_str);
+
+   if in_error_message is not null
+   then
+      p('       ERROR: ' || in_error_message);
+   end if;
+
 end ad_hoc_result;
 
 end text_report;

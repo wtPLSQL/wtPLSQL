@@ -8,16 +8,16 @@ create global temporary table results
    ,result_seq     number(8)      constraint results_nn3 not null
    ,executed_dtm   timestamp(6)   constraint results_nn4 not null
    ,elapsed_msecs  number(10,3)   constraint results_nn5 not null
-   ,assertion      varchar2(30)   constraint results_nn6 not null
+   ,assertion      varchar2(15)   constraint results_nn6 not null
    ,status         varchar2(4)    constraint results_nn7 not null
    ,details        varchar2(4000) constraint results_nn8 not null
    ,testcase       varchar2(30)
-   ,message        varchar2(4000)
+   ,message        varchar2(50)
    ,error_message  varchar2(4000)
    ,constraint results_pk primary key (test_run_id, result_seq)
    --,constraint results_fk1 foreign key (test_run_id)
    --    references test_runs (id)
-   ,constraint results_ck1 check (status in ('PASS','FAIL','ERR'))
+   ,constraint results_ck1 check (status in ('PASS','FAIL'))
    ) on commit preserve rows;
 
 comment on table results is 'Results data from Test Runs.';
@@ -26,8 +26,8 @@ comment on column results.result_seq is 'Sequence number for this Result, Primar
 comment on column results.executed_dtm is 'Date/Time (with Fractional Seconds) this Result was captured';
 comment on column results.elapsed_msecs is 'Elapsed time in milliseonds since the previous Result or start ot the Test Run.';
 comment on column results.assertion is 'Name of the Assertion Test performed';
-comment on column results.status is 'Passed/Failed/Errored Status from the Assertion';
+comment on column results.status is 'Passed/Failed Status from the Assertion';
 comment on column results.details is 'Assertion Details, i.e. Expected Value and Actual Value';
 comment on column results.testcase is 'Optional Test Case name.';
-comment on column results.message is 'Optional Assetion message.';
+comment on column results.message is 'Optional test identifier that helps connect an Assertion to the Test Runner.';
 comment on column results.error_message is 'Error Message from the Assertion.';
