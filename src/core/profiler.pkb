@@ -10,6 +10,7 @@ as
       ,error_message   varchar2(4000));
    g_rec  rec_type;
 
+
 ----------------------
 --  Private Procedures
 ----------------------
@@ -278,13 +279,6 @@ begin
 
    find_dbout;
 
-   update test_runs
-     set  dbout_owner   = g_rec.dbout_owner
-         ,dbout_name    = g_rec.dbout_name
-         ,dbout_type    = g_rec.dbout_type
-         ,error_message = substr(error_message || g_rec.error_message, 1, 4000)
-    where id = g_rec.test_run_id;
-
    if g_rec.dbout_name is not null
    then
       retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
@@ -298,11 +292,20 @@ begin
          raise_application_error(-20000,
             'dbms_profiler.START_PROFILER returned: ' || get_error_msg(retnum));
       end if;
+      update test_runs
+        set  dbout_owner    = g_rec.dbout_owner
+            ,dbout_name     = g_rec.dbout_name
+            ,dbout_type     = g_rec.dbout_type
+			,profiler_runid = g_rec.prof_runid
+       where id = g_rec.test_run_id;
+
    end if;
 
 end initialize;
 
 ------------------------------------------------------------
+-- Because this procedure is called to cleanup after erorrs,
+--  it must be able to run multiple times without causing damage.
 procedure finalize
 is
 begin

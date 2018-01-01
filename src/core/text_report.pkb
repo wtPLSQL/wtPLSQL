@@ -135,7 +135,6 @@ begin
             ,assertion
             ,details
             ,message
-            ,error_message
        from  results
        where test_run_id = g_test_runs_rec.id
        order by result_seq )
@@ -144,19 +143,19 @@ begin
          OR (    buff.testcase is null
              AND last_testcase is null )
       then
-         text_report.ad_hoc_result(buff.assertion
-                                  ,buff.status
-                                  ,buff.details
-                                  ,NULL
-                                  ,buff.message
-                                  ,buff.error_message);
+         p(text_report.format_test_result
+                        (in_assertion      => buff.assertion
+                        ,in_status         => buff.status
+                        ,in_details        => buff.details
+                        ,in_testcase       => NULL
+                        ,in_message        => buff.message) );
       else
-         text_report.ad_hoc_result(buff.assertion
-                                  ,buff.status
-                                  ,buff.details
-                                  ,buff.testcase
-                                  ,buff.message
-                                  ,buff.error_message);
+         p(text_report.format_test_result
+                        (in_assertion      => buff.assertion
+                        ,in_status         => buff.status
+                        ,in_details        => buff.details
+                        ,in_testcase       => buff.testcase
+                        ,in_message        => buff.message) );
          last_testcase := buff.testcase;
       end if;
    end loop;
@@ -222,6 +221,61 @@ end profile_out;
 ---------------------
 
 ------------------------------------------------------------
+function format_test_result
+      (in_assertion      in results.assertion%TYPE
+      ,in_status         in results.status%TYPE
+      ,in_details        in results.details%TYPE
+      ,in_testcase       in results.testcase%TYPE
+      ,in_message        in results.message%TYPE)
+   return varchar2
+is
+
+   out_str  varchar2(32000) := '';
+
+begin
+
+   if in_testcase is not null
+   then
+      out_str := ' --  ' || in_testcase || '  --' || CHR(10);
+   end if;
+
+   if in_status = result.C_PASS
+   then
+      out_str := ' ' || rpad(in_status,4) || ' ';
+   else
+      out_str := '#' || rpad(in_status,4) || '#';
+   end if;
+
+   if in_message is not null
+   then
+      out_str := out_str || in_message  || '. ';
+   end if;
+
+   out_str := out_str || in_assertion || ' - ';
+   out_str := out_str || in_details;
+
+   return out_str;
+   
+end format_test_result;
+
+------------------------------------------------------------
+procedure ad_hoc_result
+      (in_assertion      in results.assertion%TYPE
+      ,in_status         in results.status%TYPE
+      ,in_details        in results.details%TYPE
+      ,in_testcase       in results.testcase%TYPE
+      ,in_message        in results.message%TYPE)
+is
+begin
+   p(format_test_result
+        (in_assertion  => in_assertion
+        ,in_status     => in_status
+        ,in_details    => in_details
+        ,in_testcase   => in_testcase
+        ,in_message    => in_message));
+end ad_hoc_result;
+
+------------------------------------------------------------
 procedure dbms_out
       (in_test_run_id    in  number
       ,in_hide_details   in  boolean default FALSE
@@ -260,42 +314,5 @@ exception
    then
       p('ERROR: Unable to find Test Run ID ' || in_test_run_id);
 end dbms_out;
-
-procedure ad_hoc_result
-      (in_assertion      in results.assertion%TYPE
-      ,in_status         in results.status%TYPE
-      ,in_details        in results.details%TYPE
-      ,in_testcase       in results.testcase%TYPE
-      ,in_message        in results.message%TYPE
-      ,in_error_message  in results.error_message%TYPE)
-is
-
-   out_str        varchar2(32000);
-
-begin
-
-   if in_testcase is not null
-   then
-      p('-- TESTCASE: ' || in_testcase || ' --');
-   end if;
-
-   out_str := rpad(in_status,4) || ' ';
-
-   if in_message is not null
-   then
-      out_str := out_str || in_message  || '. ';
-   end if;
-
-   out_str := out_str || in_assertion || ' - ';
-   out_str := out_str || in_details;
-
-   p(out_str);
-
-   if in_error_message is not null
-   then
-      p('       ERROR: ' || in_error_message);
-   end if;
-
-end ad_hoc_result;
 
 end text_report;

@@ -11,151 +11,80 @@ is
    --   Modify as required
    g_testcase         results.testcase%TYPE;
 
-   -- Conversion Formats
-   --   Modify as required
-   g_date_format     varchar2(50);
-   g_tstamp_format   varchar2(50);
-   g_tstamp_tz_fmt   varchar2(50);
-
    -- Data from the last assertion
    --   Do Not Modify
    g_last_pass        boolean;
    g_last_assert      results.assertion%TYPE;
    g_last_msg         results.message%TYPE;
    g_last_details     results.details%TYPE;
-   g_last_error       results.error_message%TYPE;
 
    procedure reset_globals;
+
+   -- Date/Time Formats are configured at the Session Level
+   function get_NLS_DATE_FORMAT
+      return varchar2;
+   procedure set_NLS_DATE_FORMAT
+      (in_format in varchar2);
+   function get_NLS_TIMESTAMP_FORMAT
+      return varchar2;
+   procedure set_NLS_TIMESTAMP_FORMAT
+      (in_format in varchar2);
+   function get_NLS_TIMESTAMP_TZ_FORMAT
+       return varchar2;
+   procedure set_NLS_TIMESTAMP_TZ_FORMAT
+       (in_format in varchar2);
+
+   ------------------------
+   --   Datatypes Supported
+   --     Oracle Data Type Families
+   --   https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/predefined.htm#LNPLS2047
+   --
+   -- BFILE*
+   -- BLOB*
+   -- BOOLEAN
+   -- VARCHAR2 - Includes ROWID, LONG, RAW, and NVARCHAR2
+   -- CLOB* - Includes NCLOB
+   -- DATE - Includes TIMESTAMP and INTERVAL
+   -- NUMBER - Includes PLS_INTEGER
+   -- XMLTYPE*
+   --
+   --     Implicit Data Conversion
+   --   Note: VARCHAR2, DATE, and NUMBER are combined into VARCHAR2
+   --   https://docs.oracle.com/cd/E11882_01/server.112/e41084/sql_elements002.htm#i163326
+   --
 
    procedure this (
       msg_in          in   varchar2,
       check_this_in   in   boolean,
       null_ok_in      in   boolean := false);
 
-   -- string inputs overload
    procedure eq (
       msg_in            in   varchar2,
       check_this_in     in   varchar2,
       against_this_in   in   varchar2,
       null_ok_in        in   boolean := false);
 
-   -- boolean inputs overload
    procedure eq (
       msg_in            in   varchar2,
       check_this_in     in   boolean,
       against_this_in   in   boolean,
       null_ok_in        in   boolean := false);
 
-   -- date inputs overload
-   procedure eq (
-      msg_in            in   varchar2,
-      check_this_in     in   date,
-      against_this_in   in   date,
-      null_ok_in        in   boolean := false);
-
-   -- string version
    procedure isnotnull (
       msg_in          in   varchar2,
       check_this_in   in   varchar2);
 
-   -- boolean version
    procedure isnotnull (
       msg_in          in   varchar2,
       check_this_in   in   boolean);
 
-   -- string version
    procedure isnull (
       msg_in          in   varchar2,
       check_this_in   in   varchar2);
 
-   -- boolean version
    procedure isnull (
       msg_in          in   varchar2,
       check_this_in   in   boolean);
 
-/*
-   procedure eqquery (
-      msg_in            in   varchar2,
-      check_this_in     in   varchar2,
-      against_this_in   in   varchar2);
-
-   -- check a query against a single varchar2 value overload
-   procedure eqqueryvalue (
-      msg_in             in   varchar2,
-      check_query_in     in   varchar2,
-      against_value_in   in   varchar2,
-      null_ok_in         in   boolean := false);
-
-   -- check a query against a single date value overload
-   procedure eqqueryvalue (
-      msg_in             in   varchar2,
-      check_query_in     in   varchar2,
-      against_value_in   in   date,
-      null_ok_in         in   boolean := false);
-
-   -- check a query against a single number value overload
-   procedure eqqueryvalue (
-      msg_in             in   varchar2,
-      check_query_in     in   varchar2,
-      against_value_in   in   number,
-      null_ok_in         in   boolean := false);
-
-   --check a given call throws a named exception overload
-   procedure raises (
-      msg_in           in   varchar2,
-      check_call_in    in   varchar2,
-      against_exc_in   in   varchar2);
-
-   --check a given call throws an exception with a given sqlcode overload
-   procedure raises (
-      msg_in                varchar2,
-      check_call_in    in   varchar2,
-      against_exc_in   in   number );
-
-   --check a given call throws a named exception overload
-   --  note: this assertion name is "raises"
-   procedure throws (
-      msg_in           in   varchar2,
-      check_call_in    in   varchar2,
-      against_exc_in   in   varchar2 );
-
-   --check a given call throws an exception with a given sqlcode overload
-   --  note: this assertion name is "raises"
-   procedure throws (
-      msg_in                varchar2,
-      check_call_in    in   varchar2,
-      against_exc_in   in   number );
-
-   -- description: checking object exist
-   procedure objexists (
-      msg_in            in   varchar2,
-      check_this_in     in   varchar2,
-      null_ok_in        in   boolean := false);
-
-   procedure objnotexists (
-      msg_in            in   varchar2,
-      check_this_in     in   varchar2,
-      null_ok_in        in   boolean := false);
-
-   -- character array version overload
-   procedure eqoutput (
-      msg_in                in   varchar2,
-      check_this_in         in   dbms_output.chararr,                     
-      against_this_in       in   dbms_output.chararr,
-      ignore_case_in        in   boolean := false,
-      ignore_whitespace_in  in   boolean := false,
-      null_ok_in            in   boolean := true);
-
-   -- string & delimiter version overload
-   procedure eqoutput (
-      msg_in                in   varchar2,
-      check_this_in         in   dbms_output.chararr,                     
-      against_this_in       in   varchar2,
-      line_delimiter_in     in   char := null,
-      ignore_case_in        in   boolean := false,
-      ignore_whitespace_in  in   boolean := false,
-      null_ok_in            in   boolean := true);
-*/
-  
 end assert;
 /

@@ -13,7 +13,6 @@ create global temporary table results
    ,details        varchar2(4000) constraint results_nn8 not null
    ,testcase       varchar2(30)
    ,message        varchar2(50)
-   ,error_message  varchar2(4000)
    ,constraint results_pk primary key (test_run_id, result_seq)
    --,constraint results_fk1 foreign key (test_run_id)
    --    references test_runs (id)
@@ -30,4 +29,3 @@ comment on column results.status is 'Passed/Failed Status from the Assertion';
 comment on column results.details is 'Assertion Details, i.e. Expected Value and Actual Value';
 comment on column results.testcase is 'Optional Test Case name.';
 comment on column results.message is 'Optional test identifier that helps connect an Assertion to the Test Runner.';
-comment on column results.error_message is 'Error Message from the Assertion.';

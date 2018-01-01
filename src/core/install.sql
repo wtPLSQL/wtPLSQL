@@ -22,13 +22,13 @@
 -- Package Specifications
 @wtplsql.pks
 @result.pks
---@assert.pks
+@assert.pks
 @profiler.pks
 @text_report.pks
 
 -- Package Bodies
 @wtplsql.pkb
 @result.pkb
---@assert.pkb
+@assert.pkb
 @profiler.pkb
 @text_report.pkb

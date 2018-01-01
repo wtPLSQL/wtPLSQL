@@ -10,10 +10,11 @@ create global temporary table test_runs
    ,start_dtm      timestamp      constraint test_runs_nn2 not null
    ,runner_name    varchar2(128)  constraint test_runs_nn3 not null
    ,runner_owner   varchar2(128)  constraint test_runs_nn4 not null
-   ,end_dtm        timestamp      constraint test_runs_nn5 not null
    ,dbout_owner    varchar2(128)
    ,dbout_name     varchar2(128)
    ,dbout_type     varchar2(20)
+   ,profiler_runid number
+   ,end_dtm        timestamp
    ,error_message  varchar2(4000)
    ,constraint test_runs_pk primary key (id)
    ,constraint test_runs_nk1 unique (start_dtm, runner_name, runner_owner)
@@ -28,4 +29,5 @@ comment on column test_runs.end_dtm is 'Date/time (and fractional seconds) this 
 comment on column test_runs.dbout_owner is 'Optional Owner of the Database Object Under Test (DBOUT).';
 comment on column test_runs.dbout_name is 'Optional Name of the Database Object Under Test (DBOUT).';
 comment on column test_runs.dbout_type is 'Optional Type of the Database Object Under Test (DBOUT).';
-comment on column test_runs.error_message is 'Last error messages from this Test Run.';
+comment on column test_runs.profiler_runid is 'Optional DBMS_PROFILER unique run identifier from plsql_profiler_runnumber sequence';
+comment on column test_runs.error_message is 'Optional Last error messages from this Test Run.';
