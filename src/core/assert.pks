@@ -86,5 +86,52 @@ is
       msg_in          in   varchar2,
       check_this_in   in   boolean);
 
+   procedure raises (
+      msg_in                varchar2,
+      check_call_in    in   varchar2,
+      against_exc_in   in   varchar2);
+
+   procedure eqqueryvalue (
+      msg_in             in   varchar2,
+      check_query_in     in   varchar2,
+      against_value_in   in   varchar2,
+      null_ok_in         in   boolean := false);
+
+   procedure eqquery (
+      msg_in             in   varchar2,
+      check_query_in     in   varchar2,
+      against_query_in   in   varchar2);
+
+   procedure eqtable (
+      msg_in             in   varchar2,
+      check_this_in      in   varchar2,
+      against_this_in    in   varchar2,
+      check_where_in     in   varchar2 := null,
+      against_where_in   in   varchar2 := null);
+
+   procedure eqtabcount (
+      msg_in             in   varchar2,
+      check_this_in      in   varchar2,
+      against_this_in    in   varchar2,
+      check_where_in     in   varchar2 := null,
+      against_where_in   in   varchar2 := null);
+
+   procedure objexists (
+      msg_in        in   varchar2,
+      obj_owner_in  in   varchar2,
+      obj_name_in   in   varchar2);
+
+   procedure objexists (
+      msg_in          in   varchar2,
+      check_this_in   in   varchar2);
+
+   procedure objnotexists (
+      msg_in        in   varchar2,
+      obj_owner_in  in   varchar2,
+      obj_name_in   in   varchar2);
+
+   procedure objnotexists (
+      msg_in          in   varchar2,
+      check_this_in   in   varchar2);
+
 end assert;
-/

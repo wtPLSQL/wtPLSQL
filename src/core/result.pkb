@@ -69,13 +69,47 @@ begin
    -- Set the IN variables
    g_results_rec.assertion     := in_assertion;
    g_results_rec.status        := in_status;
-   g_results_rec.details       := in_details;
-   g_results_rec.testcase      := in_testcase;
-   g_results_rec.message       := in_message;
+   g_results_rec.details       := substr(in_details,1,4000);
+   g_results_rec.testcase      := substr(in_testcase,1,30);
+   g_results_rec.message       := substr(in_message,1,50);
    -- Increment, Extend, and Load
    g_results_rec.result_seq    := g_results_rec.result_seq + 1;
    g_results_nt.extend;
-   g_results_nt(g_results_rec.result_seq) := g_results_rec;
+   g_results_nt(g_results_nt.COUNT) := g_results_rec;
 end save;
+
+
+--=======================================================--
+--  WtPLSQL Procedures
+$IF $$WTPLSQL_ENABLE
+$THEN
+
+----------------------------------------
+procedure wtplsql_setup
+is
+begin
+   -- Nothing to do
+   null;
+end wtplsql_setup;
+
+----------------------------------------
+procedure wtplsql_teardown
+is
+begin
+   delete from results
+    where test_run_id = -1;
+end wtplsql_teardown;
+
+----------------------------------------
+procedure WTPLSQL_RUN
+is
+begin
+   wtplsql_setup;
+   wtplsql_teardown;
+end;
+
+$END
+--=======================================================--
+
 
 end result;

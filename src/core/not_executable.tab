@@ -12,3 +12,5 @@ create table not_executable
 comment on table not_executable is 'Table to exclude non-executable lines from code coverage';
 comment on column not_executable.text is 'Primary key, source text to exclude from code coverage';
 comment on column not_executable.note is 'Notes regarding this non-exectuable line of code';
+
+grant select on not_executable to public;

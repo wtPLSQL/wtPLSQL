@@ -31,3 +31,7 @@ comment on column test_runs.dbout_name is 'Optional Name of the Database Object 
 comment on column test_runs.dbout_type is 'Optional Type of the Database Object Under Test (DBOUT).';
 comment on column test_runs.profiler_runid is 'Optional DBMS_PROFILER unique run identifier from plsql_profiler_runnumber sequence';
 comment on column test_runs.error_message is 'Optional Last error messages from this Test Run.';
+
+grant select on test_runs to public;
+grant insert on test_runs to public;
+grant update on test_runs to public;

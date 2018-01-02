@@ -29,3 +29,7 @@ comment on column results.status is 'Passed/Failed Status from the Assertion';
 comment on column results.details is 'Assertion Details, i.e. Expected Value and Actual Value';
 comment on column results.testcase is 'Optional Test Case name.';
 comment on column results.message is 'Optional test identifier that helps connect an Assertion to the Test Runner.';
+
+grant select on results to public;
+grant insert on results to public;
+grant update on results to public;

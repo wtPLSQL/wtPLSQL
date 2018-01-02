@@ -27,3 +27,7 @@ comment on column dbout_profiles.total_occur is 'Number of times this line was e
 comment on column dbout_profiles.total_time is 'Total time spent excuting this line.';
 comment on column dbout_profiles.min_time is 'Minimum execution time for this line.';
 comment on column dbout_profiles.max_time is 'Maximum execution time for this line.';
+
+grant select on dbout_profiles to public;
+grant insert on dbout_profiles to public;
+grant update on dbout_profiles to public;

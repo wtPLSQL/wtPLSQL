@@ -16,4 +16,10 @@ as
       ,in_testcase       in results.testcase%TYPE
       ,in_message        in results.message%TYPE);
 
+   --  WtPLSQL Procedures
+$IF $$WTPLSQL_ENABLE
+$THEN
+   procedure WTPLSQL_RUN;
+$END
+
 end result;
