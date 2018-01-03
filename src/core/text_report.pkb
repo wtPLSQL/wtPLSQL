@@ -1,8 +1,6 @@
 create or replace package body text_report
 as
 
-   g_test_runs_rec  test_runs%ROWTYPE;
-
 
 ----------------------
 --  Private Procedures
@@ -26,7 +24,7 @@ begin
             ,sum(decode(status,'ERR',1,0))   ERR_CNT
             ,count(distinct testcase)        TCASE_CNT
             ,min(elapsed_msecs)              MIN_MSEC
-            ,avg(elapsed_msecs)              AVG_MSEC
+            ,round(avg(elapsed_msecs),3)     AVG_MSEC
             ,max(elapsed_msecs)              MAX_MSEC
        from  results
        where test_run_id = g_test_runs_rec.id )
@@ -59,7 +57,7 @@ begin
             ,sum(decode(status,'ANNO',1,0))  ANNO_LINES
             ,sum(decode(status,'EXCL',1,0))  NOEX_LINES
             ,sum(decode(status,'MISS',1,0))  MISS_LINES
-            ,sum(decode(status,'HIT',1,0))   HIT_LINES
+            ,sum(decode(status,'EXEC',1,0))  EXEC_LINES
             ,min(min_time)                   MIN_MSEC
             ,sum(total_time)/count(*)        AVG_MSEC
             ,max(max_time)                   MAX_MSEC
@@ -72,12 +70,12 @@ begin
       p('    Total Source Lines: ' || buff.tot_lines);
       p('    Non-Executed Lines: ' || buff.noex_lines);
       p('          Missed Lines: ' || buff.miss_lines);
-      if (buff.hit_lines + buff.miss_lines) = 0
+      if (buff.exec_lines + buff.miss_lines) = 0
       then
          p('         Code Coverage: (Divide by Zero)');
       else
-         p('         Code Coverage: ' || round( 100 * buff.hit_lines /
-                                               (buff.hit_lines + buff.miss_lines)
+         p('         Code Coverage: ' || round( 100 * buff.exec_lines /
+                                               (buff.exec_lines + buff.miss_lines)
                                               ,2) ||
                                   '%' );
       end if;

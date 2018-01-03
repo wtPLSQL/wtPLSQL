@@ -15,13 +15,13 @@ create global temporary table dbout_profiles
    ,constraint dbout_profiles_pk primary key (test_run_id, line#)
    --,constraint dbout_profiles_fk1 foreign key (test_run_id)
    --    references test_runs (id)
-   ,constraint dbout_profiles_ck1 check (status in ('HIT','MISS','EXCL','ANNO','UNKN'))
+   ,constraint dbout_profiles_ck1 check (status in ('EXEC','MISS','EXCL','ANNO','UNKN'))
    ) on commit preserve rows;
 
 comment on table dbout_profiles is 'PL/SQL Profiler data for Database Object Under Test (DBOUT).';
 comment on column dbout_profiles.test_run_id is 'Foreign Key for the Test Run, Primary Key part 1.';
 comment on column dbout_profiles.line# is 'Line number from the DBOUT, Primary Key part 2.';
-comment on column dbout_profiles.status is 'Hit/Missed/Excluded/Annotated/Unknown Status from the Profiler';
+comment on column dbout_profiles.status is 'Executed/Missed/Excluded/Annotated/Unknown Status from the Profiler';
 comment on column dbout_profiles.text is 'Source code text for this line.';
 comment on column dbout_profiles.total_occur is 'Number of times this line was executed.';
 comment on column dbout_profiles.total_time is 'Total time spent excuting this line.';

@@ -4,6 +4,10 @@ as
    C_PASS  CONSTANT varchar2(10) := 'PASS';
    C_FAIL  CONSTANT varchar2(10) := 'FAIL';
 
+   TYPE results_nt_type is table of results%ROWTYPE;
+   g_results_nt      results_nt_type := results_nt_type(null);
+   g_results_rec     results%ROWTYPE;
+
    procedure initialize
       (in_test_run_id   in test_runs.id%TYPE);
 
@@ -15,11 +19,5 @@ as
       ,in_details        in results.details%TYPE
       ,in_testcase       in results.testcase%TYPE
       ,in_message        in results.message%TYPE);
-
-   --  WtPLSQL Procedures
-$IF $$WTPLSQL_ENABLE
-$THEN
-   procedure WTPLSQL_RUN;
-$END
 
 end result;

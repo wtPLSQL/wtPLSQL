@@ -1,15 +1,6 @@
 create or replace package body profiler
 as
 
-   TYPE rec_type is record
-      (test_run_id     test_runs.id%TYPE
-      ,dbout_owner     test_runs.dbout_owner%TYPE
-      ,dbout_name      test_runs.dbout_name%TYPE
-      ,dbout_type      test_runs.dbout_type%TYPE
-      ,prof_runid      binary_integer
-      ,error_message   varchar2(4000));
-   g_rec  rec_type;
-
 
 ----------------------
 --  Private Procedures
@@ -113,7 +104,9 @@ begin
    -- Locate the Owner/Name separator
    pos := instr(target,'.');
    begin
-      select owner, object_name, object_type
+      select owner
+            ,object_name
+            ,object_type
         into g_rec.dbout_owner
             ,g_rec.dbout_name
             ,g_rec.dbout_type
@@ -130,7 +123,9 @@ end find_dbout;
 ------------------------------------------------------------
 procedure insert_dbout_profile
 is
-   cursor c_main_insert is
+begin
+
+   insert into dbout_profiles
       select g_rec.test_run_id              TEST_RUN_ID
             ,ppd.line#
             ,case
@@ -145,7 +140,7 @@ is
              then
                   'UNKN'
              else
-                  'HIT'
+                  'EXEC'
              end                            STATUS
             ,src.text
             ,sum(ppd.total_occur)           TOTAL_OCCUR
@@ -172,11 +167,7 @@ is
         and  ppu.unit_name  = g_rec.dbout_name
         and  ppu.unit_type  = g_rec.dbout_type
         and  ppu.runid      = g_rec.prof_runid;
-begin
-   for buff in c_main_insert
-   loop
-      insert into dbout_profiles values buff;
-   end loop;
+
 end insert_dbout_profile;
 
 ------------------------------------------------------------
@@ -292,12 +283,6 @@ begin
          raise_application_error(-20000,
             'dbms_profiler.START_PROFILER returned: ' || get_error_msg(retnum));
       end if;
-      update test_runs
-        set  dbout_owner    = g_rec.dbout_owner
-            ,dbout_name     = g_rec.dbout_name
-            ,dbout_type     = g_rec.dbout_type
-			,profiler_runid = g_rec.prof_runid
-       where id = g_rec.test_run_id;
 
    end if;
 
@@ -319,9 +304,9 @@ begin
       raise_application_error  (-20000, 'g_rec.test_run_id is null');
    end if;
 
-   delete from plsql_profiler_data;
-   delete from plsql_profiler_units;
-   delete from plsql_profiler_runs;
+   --delete from plsql_profiler_data;
+   --delete from plsql_profiler_units;
+   --delete from plsql_profiler_runs;
 
    -- DBMS_PROFILER.FLUSH_DATA is included with DBMS_PROFILER.STOP_PROFILER
    dbms_profiler.STOP_PROFILER;
@@ -396,7 +381,7 @@ function calc_pct_coverage
 IS
 BEGIN
    for buff in (
-      select sum(case status when 'HIT'  then 1 else 0 end)    HITS
+      select sum(case status when 'EXEC' then 1 else 0 end)    HITS
             ,sum(case status when 'MISS' then 1 else 0 end)    MISSES
        from  dbout_profiles  p
        where test_run_id = in_test_run_id  )

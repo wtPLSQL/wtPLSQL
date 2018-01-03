@@ -1,10 +1,6 @@
 create or replace package body result
 as
 
-   TYPE results_nt_type is table of results%ROWTYPE;
-   g_results_nt      results_nt_type := results_nt_type(null);
-   g_results_rec     results%ROWTYPE;
-
 
 ----------------------
 --  Private Procedures
@@ -34,7 +30,11 @@ end initialize;
 procedure finalize
 is
 begin
-   forall i in 1 .. g_results_nt.COUNT
+   if g_results_rec.test_run_id IS NULL
+   then
+      return;
+   end if;
+   forall i in 1 .. g_results_nt.COUNT - 1
       insert into results values g_results_nt(i);
    g_results_nt := results_nt_type(null);
    g_results_rec.test_run_id := NULL;
@@ -74,42 +74,8 @@ begin
    g_results_rec.message       := substr(in_message,1,50);
    -- Increment, Extend, and Load
    g_results_rec.result_seq    := g_results_rec.result_seq + 1;
-   g_results_nt.extend;
    g_results_nt(g_results_nt.COUNT) := g_results_rec;
+   g_results_nt.extend;
 end save;
-
-
---=======================================================--
---  WtPLSQL Procedures
-$IF $$WTPLSQL_ENABLE
-$THEN
-
-----------------------------------------
-procedure wtplsql_setup
-is
-begin
-   -- Nothing to do
-   null;
-end wtplsql_setup;
-
-----------------------------------------
-procedure wtplsql_teardown
-is
-begin
-   delete from results
-    where test_run_id = -1;
-end wtplsql_teardown;
-
-----------------------------------------
-procedure WTPLSQL_RUN
-is
-begin
-   wtplsql_setup;
-   wtplsql_teardown;
-end;
-
-$END
---=======================================================--
-
 
 end result;

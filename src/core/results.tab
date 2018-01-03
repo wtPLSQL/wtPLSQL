@@ -32,4 +32,3 @@ comment on column results.message is 'Optional test identifier that helps connec
 
 grant select on results to public;
 grant insert on results to public;
-grant update on results to public;

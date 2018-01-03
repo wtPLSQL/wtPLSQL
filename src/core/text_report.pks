@@ -1,6 +1,8 @@
 create or replace package text_report authid current_user
 as
 
+   g_test_runs_rec  test_runs%ROWTYPE;
+
    function format_test_result
       (in_assertion      in results.assertion%TYPE
       ,in_status         in results.status%TYPE

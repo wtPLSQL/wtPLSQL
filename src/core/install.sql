@@ -18,7 +18,6 @@
 @dbout_profiles.tab
 @not_executable.tab
 
-
 -- Package Specifications
 @wtplsql.pks
 grant execute on wtplsql to public;

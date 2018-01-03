@@ -1,39 +1,57 @@
 create or replace package body wtplsql
 as
 
-   TYPE runners_nt_type is table of varchar2(128);
-   g_runners_nt      runners_nt_type;
-   g_test_runs_rec   test_runs%ROWTYPE;
-
 
 ----------------------
 --  Private Procedures
 ----------------------
 
 ------------------------------------------------------------
-procedure new_test_run
+procedure init_test_run
       (in_package_name  in  varchar2)
 is
    test_runs_rec_NULL   test_runs%ROWTYPE;
+   package_check        number;
 begin
+   -- Reset the Test Runs Record before checking anything
    g_test_runs_rec              := test_runs_rec_NULL;
-   g_test_runs_rec.runner_name  := in_package_name;
    g_test_runs_rec.id           := test_runs_seq.nextval;
    g_test_runs_rec.start_dtm    := systimestamp;
    g_test_runs_rec.runner_owner := USER;
-   insert into test_runs values g_test_runs_rec;
-end new_test_run;
+   g_test_runs_rec.runner_name  := in_package_name;
+   -- These RAISEs can be captured because the Test Runs Record is set.
+   --  Check for NULL Runner Name
+   if g_test_runs_rec.runner_name is null
+   then
+      raise_application_error  (-20000, 'RUNNER_NAME is null');
+   end if;
+   --  Check for Valid Runner Name
+   select count(*) into package_check
+    from  user_arguments
+    where object_name   = 'WTPLSQL_RUN'
+     and  package_name  = g_test_runs_rec.runner_name
+     and  argument_name is null
+     and  position      = 1
+     and  sequence      = 0;
+   if package_check != 1
+   then
+      raise_application_error (-20000, 'RUNNER_NAME is not valid');
+   end if;
+   --
+end init_test_run;
 
 ------------------------------------------------------------
-procedure update_test_run
+procedure insert_test_run
 is
 begin
    g_test_runs_rec.end_dtm := systimestamp;
-   update test_runs
-     set  end_dtm       = g_test_runs_rec.end_dtm
-         ,error_message = g_test_runs_rec.error_message
-    where id = g_test_runs_rec.id;
-end update_test_run;
+   insert into test_runs values g_test_runs_rec;
+exception
+   when DUP_VAL_ON_INDEX
+   then
+      -- This record must have already been inserted
+      null;
+end insert_test_run;
 
 
 ---------------------
@@ -45,16 +63,18 @@ procedure test_run
       (in_package_name  in  varchar2)
 is
 begin
-   if in_package_name is null
-   then
-      raise_application_error  (-20000, 'i_package_name is null');
-   end if;
-   new_test_run(in_package_name);
+
+   init_test_run(in_package_name);
+
    result.initialize(g_test_runs_rec.id);
+
    profiler.initialize(g_test_runs_rec.id);
-   COMMIT;
+   g_test_runs_rec.dbout_owner := profiler.g_rec.dbout_owner;
+   g_test_runs_rec.dbout_name  := profiler.g_rec.dbout_name;
+   g_test_runs_rec.dbout_type  := profiler.g_rec.dbout_type;
+
    begin
-      execute immediate in_package_name || '.WTPLSQL_RUN';
+      execute immediate 'BEGIN ' || in_package_name || '.WTPLSQL_RUN; END;';
    exception
       when OTHERS
       then
@@ -62,23 +82,31 @@ begin
                                                  dbms_utility.format_error_backtrace
                                                 ,1,4000);
    end;
+
    profiler.pause;
+
    ROLLBACK;
+
+   insert_test_run;
+
    profiler.finalize;
+
    result.finalize;
-   update_test_run;
+
    COMMIT;
+
 exception
    when OTHERS
    then
-      g_test_runs_rec.error_message := substr(g_test_runs_rec.error_message || CHR(10) ||
-                                              dbms_utility.format_error_stack  ||
-                                              dbms_utility.format_error_backtrace
+      g_test_runs_rec.error_message := substr(dbms_utility.format_error_stack  ||
+                                              dbms_utility.format_error_backtrace ||
+                                              CHR(10) || g_test_runs_rec.error_message
                                              ,1,4000);
-      update_test_run;
+      insert_test_run;
       profiler.finalize;
       result.finalize;
       COMMIT;
+
 end test_run;
 
 ------------------------------------------------------------
@@ -113,44 +141,10 @@ $IF $$WTPLSQL_ENABLE
 $THEN
 
 ----------------------------------------
-procedure wtplsql_setup
-      (in_package_name  in  varchar2)
-is
-begin
-   new_test_run(in_package_name);
-end wtplsql_setup;
-
-----------------------------------------
-procedure wtplsql_teardown
-      (in_package_name  in  varchar2)
-is
-begin
-   delete from test_runs
-    where runner_name = in_package_name;
-end wtplsql_teardown;
-
-----------------------------------------
 procedure testcase1
 is
 begin
-   assert.g_testcase := 'Testcase 1: New Test Run';
-   g_test_runs_rec.runner_name := 'TESTCASE_1';
-   --
-   g_test_runs_rec.dbout_owner    := 'X';
-   g_test_runs_rec.dbout_name     := 'X';
-   g_test_runs_rec.dbout_type     := 'X';
-   g_test_runs_rec.profiler_runid := -1;
-   g_test_runs_rec.end_dtm        := systimestamp;
-   g_test_runs_rec.error_message  := 'X';
-   --
-   assert.eqqueryvalue
-      (msg_in             => 'TEST_RUNS Record Not Exists'
-      ,check_query_in     => 'select count(*) from TEST_RUNS' ||
-                            ' where runner_name = ''' || g_test_runs_rec.runner_name || ''''
-      ,against_value_in   => 0);
-   assert.isnotnull (msg_in        =>  'g_test_runs_rec.runner_name NOT NULL'
-                    ,check_this_in => g_test_runs_rec.runner_name);
-   new_test_run('TESTCASE_1');  -- Pass By Reference Clears the Runner Name
+   assert.g_testcase := 'TESTCASE_1';
    assert.isnotnull (msg_in        =>  'g_test_runs_rec.id NOT NULL'
                     ,check_this_in => g_test_runs_rec.id);
    assert.isnotnull (msg_in        =>  'g_test_runs_rec.start_dtm NOT NULL'
@@ -172,34 +166,32 @@ begin
    assert.isnull (msg_in        =>  'g_test_runs_rec.error_message IS NULL'
                  ,check_this_in => g_test_runs_rec.error_message);
    assert.eqqueryvalue
-      (msg_in             => 'TEST_RUNS Record Exists'
+      (msg_in             => 'TEST_RUNS Record Not Exists'
       ,check_query_in     => 'select count(*) from TEST_RUNS' ||
-                            ' where runner_name = ''' || g_test_runs_rec.runner_name || ''''
-      ,against_value_in   => 1);
-   wtplsql_teardown(g_test_runs_rec.runner_name);
+                            ' where id = ''' || g_test_runs_rec.id || ''''
+      ,against_value_in   => 0);
+--   insert_test_run;
+--   assert.eqqueryvalue
+--      (msg_in             => 'TEST_RUNS Record Exists'
+--      ,check_query_in     => 'select count(*) from TEST_RUNS' ||
+--                            ' where id = ''' || g_test_runs_rec.id || ''''
+--      ,against_value_in   => 1);
+--   delete from TEST_RUNS where id = g_test_runs_rec.id;
+--   assert.eq (msg_in          => 'Test Runs Delete'
+--             ,check_this_in   => SQL%ROWCOUNT
+--             ,against_this_in => 1);
+--   assert.eqqueryvalue
+--      (msg_in             => 'TEST_RUNS Record Not Exists'
+--      ,check_query_in     => 'select count(*) from TEST_RUNS' ||
+--                            ' where id = ''' || g_test_runs_rec.id || ''''
+--      ,against_value_in   => 0);
 end testcase1;
-
-----------------------------------------
-procedure testcase3
-is
-begin
-   assert.g_testcase := 'Testcase 3: Invalid Package';
-   p_test_runs_rec.runner_name := 'TESTCASE_3';
-   assert.objnotexists(msg_in        => p_test_runs_rec.runner_name || ' NOT EXISTS'
-                      ,check_this_in => p_test_runs_rec.runner_name);
-   assert.raises
-      (msg_in           => 'Should Raise Exception'
-      ,check_call_in    => 'WTPLSQL.test_run(''' || p_test_runs_rec.runner_name || ''')'
-      ,against_exc_in   => 'ORA-00900: invalid SQL statement');
-end testcase3;
 
 ----------------------------------------
 procedure WTPLSQL_RUN
 is
 begin
-   wtplsql_teardown('TESTCASE_1');
    testcase1;
-   testcase3;
 end;
 
 $END

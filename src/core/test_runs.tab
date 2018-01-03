@@ -34,4 +34,3 @@ comment on column test_runs.error_message is 'Optional Last error messages from 
 
 grant select on test_runs to public;
 grant insert on test_runs to public;
-grant update on test_runs to public;
