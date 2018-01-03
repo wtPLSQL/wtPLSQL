@@ -1,6 +1,15 @@
 create or replace package body profiler
 as
 
+   TYPE rec_type is record
+      (test_run_id     test_runs.id%TYPE
+      ,dbout_owner     test_runs.dbout_owner%TYPE
+      ,dbout_name      test_runs.dbout_name%TYPE
+      ,dbout_type      test_runs.dbout_type%TYPE
+      ,prof_runid      binary_integer
+      ,error_message   varchar2(4000));
+   g_rec  rec_type;
+
 
 ----------------------
 --  Private Procedures
@@ -134,7 +143,7 @@ begin
                   'EXCL'
              when ppd.total_occur = 0 and ppd.total_time = 0
              then
-                  'MISS'
+                  'NOTX'
              when    ppd.total_occur  = 0 and ppd.total_time != 0
                   or ppd.total_occur != 0 and ppd.total_time  = 0
              then
@@ -382,7 +391,7 @@ IS
 BEGIN
    for buff in (
       select sum(case status when 'EXEC' then 1 else 0 end)    HITS
-            ,sum(case status when 'MISS' then 1 else 0 end)    MISSES
+            ,sum(case status when 'NOTX' then 1 else 0 end)    MISSES
        from  dbout_profiles  p
        where test_run_id = in_test_run_id  )
    loop

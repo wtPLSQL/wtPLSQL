@@ -1,7 +1,10 @@
 create or replace package body assert is
 
--- See (public) RESET_GLOBALS procedure for default global values
-
+   -- See (public) RESET_GLOBALS procedure for default global values
+   g_last_pass        boolean;
+   g_last_assert      results.assertion%TYPE;
+   g_last_msg         results.message%TYPE;
+   g_last_details     results.details%TYPE;
 
 ----------------------
 --  Private Procedures

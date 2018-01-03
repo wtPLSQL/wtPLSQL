@@ -11,12 +11,17 @@ is
    --   Modify as required
    g_testcase         results.testcase%TYPE;
 
-   -- Data from the last assertion
-   --   Do Not Modify
-   g_last_pass        boolean;
-   g_last_assert      results.assertion%TYPE;
-   g_last_msg         results.message%TYPE;
-   g_last_details     results.details%TYPE;
+   function last_pass
+   return boolean;
+   
+   function last_assert
+   return results.assertion%TYPE;
+   
+   function last_msg
+   return results.message%TYPE;
+   
+   function last_details
+   return results.details%TYPE;
 
    procedure reset_globals;
 

@@ -1,6 +1,10 @@
 create or replace package body wtplsql
 as
 
+   TYPE runners_nt_type is table of varchar2(128);
+   g_runners_nt      runners_nt_type;
+   g_test_runs_rec   test_runs%ROWTYPE;
+
 
 ----------------------
 --  Private Procedures

@@ -1,14 +1,14 @@
 create or replace package profiler authid current_user
 as
 
-   TYPE rec_type is record
-      (test_run_id     test_runs.id%TYPE
-      ,dbout_owner     test_runs.dbout_owner%TYPE
-      ,dbout_name      test_runs.dbout_name%TYPE
-      ,dbout_type      test_runs.dbout_type%TYPE
-      ,prof_runid      binary_integer
-      ,error_message   varchar2(4000));
-   g_rec  rec_type;
+   function get_dbout_owner
+   return test_runs.dbout_owner%TYPE
+   
+   function get_dbout_name
+   return test_runs.dbout_name%TYPE
+   
+   function get_dbout_type
+   return test_runs.dbout_type%TYPE
 
    procedure initialize
       (in_test_run_id  in  number);

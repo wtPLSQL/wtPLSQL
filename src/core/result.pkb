@@ -1,6 +1,10 @@
 create or replace package body result
 as
 
+   TYPE results_nt_type is table of results%ROWTYPE;
+   g_results_nt      results_nt_type := results_nt_type(null);
+   g_results_rec     results%ROWTYPE;
+
 
 ----------------------
 --  Private Procedures
