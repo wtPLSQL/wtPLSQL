@@ -262,7 +262,10 @@ end update_anno_status;
 
 ------------------------------------------------------------
 procedure initialize
-      (in_test_run_id  in  number)
+      (in_test_run_id   in  number,
+       out_dbout_owner  out varchar2,
+       out_dbout_name   out varchar2
+       out_dbout_type   out varchar2)
 is
 
    retnum  binary_integer;
@@ -294,6 +297,10 @@ begin
       end if;
 
    end if;
+   
+   out_test_runs_rec.dbout_owner := g_rec.dbout_owner;
+   out_test_runs_rec.dbout_name  := g_rec.dbout_name;
+   out_test_runs_rec.dbout_type  := g_rec.dbout_type;
 
 end initialize;
 

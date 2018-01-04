@@ -72,10 +72,10 @@ begin
 
    result.initialize(g_test_runs_rec.id);
 
-   profiler.initialize(g_test_runs_rec.id);
-   g_test_runs_rec.dbout_owner := profiler.g_rec.dbout_owner;
-   g_test_runs_rec.dbout_name  := profiler.g_rec.dbout_name;
-   g_test_runs_rec.dbout_type  := profiler.g_rec.dbout_type;
+   profiler.initialize(in_test_run_id  => g_test_runs_rec.id,
+                       out_dbout_owner => g_test_runs_rec.dbout_owner,
+                       out_dbout_name  => g_test_runs_rec.dbout_name,
+                       out_dbout_type  => g_test_runs_rec.dbout_type);
 
    begin
       execute immediate 'BEGIN ' || in_package_name || '.WTPLSQL_RUN; END;';

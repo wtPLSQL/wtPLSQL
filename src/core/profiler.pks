@@ -11,7 +11,10 @@ as
    return test_runs.dbout_type%TYPE
 
    procedure initialize
-      (in_test_run_id  in  number);
+      (in_test_run_id   in  number,
+       out_dbout_owner  out varchar2,
+       out_dbout_name   out varchar2
+       out_dbout_type   out varchar2);
 
    procedure finalize;
 
