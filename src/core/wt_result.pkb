@@ -3,7 +3,7 @@ as
 
    TYPE results_nt_type is table of wt_results%ROWTYPE;
    g_results_nt      results_nt_type := results_nt_type(null);
-   g_results_rec     results%ROWTYPE;
+   g_results_rec     wt_results%ROWTYPE;
 
 
 ----------------------
@@ -56,7 +56,7 @@ is
 begin
    if g_results_rec.test_run_id IS NULL
    then
-      text_report.ad_hoc_result
+      wt_text_report.ad_hoc_result
          (in_assertion
          ,in_status
          ,in_details

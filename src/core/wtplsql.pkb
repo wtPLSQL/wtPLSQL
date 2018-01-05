@@ -6,23 +6,35 @@ as
    g_test_runs_rec   wt_test_runs%ROWTYPE;
 
 
+--=======================================================--
+--  WTPLSQL Test Point
+$IF $$WTPLSQL_ENABLE
+$THEN
+
+   g_raise_exception  boolean := FALSE;
+
+procedure raise_test_exception
+is
+begin
+   if g_raise_exception then
+      raise_application_error(-20000, 'WTPLSQL Test Exception Raised');
+   end if;
+end raise_test_exception;
+
+$END
+--=======================================================--
+
+
 ----------------------
 --  Private Procedures
 ----------------------
 
 ------------------------------------------------------------
-procedure init_test_run
-      (in_package_name  in  varchar2)
+-- This procedure is separated for internal WTPLSQL testing
+procedure check_runner
 is
-   test_runs_rec_NULL   wt_test_runs%ROWTYPE;
    package_check        number;
 begin
-   -- Reset the Test Runs Record before checking anything
-   g_test_runs_rec              := test_runs_rec_NULL;
-   g_test_runs_rec.id           := test_runs_seq.nextval;
-   g_test_runs_rec.start_dtm    := systimestamp;
-   g_test_runs_rec.runner_owner := USER;
-   g_test_runs_rec.runner_name  := in_package_name;
    -- These RAISEs can be captured because the Test Runs Record is set.
    --  Check for NULL Runner Name
    if g_test_runs_rec.runner_name is null
@@ -41,6 +53,22 @@ begin
    then
       raise_application_error (-20000, 'RUNNER_NAME is not valid');
    end if;
+end check_runner;
+
+------------------------------------------------------------
+procedure init_test_run
+      (in_package_name  in  varchar2)
+is
+   test_runs_rec_NULL   wt_test_runs%ROWTYPE;
+begin
+   -- Reset the Test Runs Record before checking anything
+   g_test_runs_rec              := test_runs_rec_NULL;
+   g_test_runs_rec.id           := wt_test_runs_seq.nextval;
+   g_test_runs_rec.start_dtm    := systimestamp;
+   g_test_runs_rec.runner_owner := USER;
+   g_test_runs_rec.runner_name  := in_package_name;
+   --
+   check_runner;
    --
 end init_test_run;
 
@@ -91,11 +119,19 @@ begin
 
    ROLLBACK;
 
-   wt_insert_test_run;
+   insert_test_run;
 
    wt_profiler.finalize;
 
    wt_result.finalize;
+
+--=======================================================--
+--  WTPLSQL Test Point
+$IF $$WTPLSQL_ENABLE
+$THEN
+   raise_test_exception;
+$END
+--=======================================================--
 
    COMMIT;
 

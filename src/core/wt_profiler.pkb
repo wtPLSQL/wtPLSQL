@@ -167,10 +167,10 @@ begin
                   and (   (    ppu.unit_type != 'TRIGGER'
                            and src.line       = ppd.line#)
                        OR (    ppu.unit_type = 'TRIGGER'
-                           and src.line      = ppd.line# + profiler.trigger_offset
+                           and src.line      = ppd.line# + trigger_offset
                                                               (ppu.unit_owner
                                                               ,ppu.unit_name) ) )
-        left join not_executable ne
+        left join wt_not_executable ne
                   on  ne.text = src.text
        where ppu.unit_owner = g_rec.dbout_owner
         and  ppu.unit_name  = g_rec.dbout_name
@@ -221,8 +221,8 @@ begin
 
    if g_rec.dbout_type = 'TRIGGER'
    then
-      trig_offset := profiler.trigger_offset(g_rec.dbout_owner
-                                            ,g_rec.dbout_name);
+      trig_offset := trigger_offset(g_rec.dbout_owner
+                                   ,g_rec.dbout_name);
    else
       trig_offset := 0;
    end if;
@@ -262,7 +262,7 @@ end update_anno_status;
 
 ------------------------------------------------------------
 function get_dbout_owner
-   return test_runs.dbout_owner%TYPE
+   return wt_test_runs.dbout_owner%TYPE
 is
 begin
    return g_rec.dbout_owner;
@@ -270,7 +270,7 @@ end get_dbout_owner;
 
 ------------------------------------------------------------
 function get_dbout_name
-   return test_runs.dbout_name%TYPE
+   return wt_test_runs.dbout_name%TYPE
 is
 begin
    return g_rec.dbout_name;
@@ -278,7 +278,7 @@ end get_dbout_name;
 
 ------------------------------------------------------------
 function get_dbout_type
-   return test_runs.dbout_type%TYPE
+   return wt_test_runs.dbout_type%TYPE
 is
 begin
    return g_rec.dbout_type;
@@ -427,7 +427,7 @@ BEGIN
    for buff in (
       select sum(case status when 'EXEC' then 1 else 0 end)    HITS
             ,sum(case status when 'NOTX' then 1 else 0 end)    MISSES
-       from  dbout_profiles  p
+       from  wt_dbout_profiles  p
        where test_run_id = in_test_run_id  )
    loop
       if buff.hits + buff.misses = 0

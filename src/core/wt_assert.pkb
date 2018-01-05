@@ -18,9 +18,9 @@ is
 begin
    if in_boolean
    then
-      return result.C_PASS;
+      return wt_result.C_PASS;
    end if;
-   return result.C_FAIL;
+   return wt_result.C_FAIL;
 end;
 
 ------------------------------------------------------------
@@ -29,18 +29,18 @@ is
 begin
    wt_result.save
       (in_assertion      => g_last_assert
-      ,in_status         => case g_last_pass when TRUE then result.C_PASS
-                                                       else result.C_FAIL
+      ,in_status         => case g_last_pass when TRUE then wt_result.C_PASS
+                                                       else wt_result.C_FAIL
                             end
       ,in_details        => g_last_details
       ,in_testcase       => g_testcase
       ,in_message        => g_last_msg);
    if g_raise_exception and not g_last_pass
    then
-      raise_application_error(-20000, text_report.format_test_result
+      raise_application_error(-20000, wt_text_report.format_test_result
                                          (in_assertion      => g_last_assert
-                                         ,in_status         => case g_last_pass when TRUE then result.C_PASS
-                                                                                          else result.C_FAIL
+                                         ,in_status         => case g_last_pass when TRUE then wt_result.C_PASS
+                                                                                          else wt_result.C_FAIL
                                                                end
                                          ,in_details        => g_last_details
                                          ,in_testcase       => g_testcase
@@ -116,7 +116,7 @@ end last_pass;
 
 ------------------------------------------------------------
 function last_assert
-   return results.assertion%TYPE
+   return wt_results.assertion%TYPE
 is
 begin
    return g_last_assert;
@@ -124,7 +124,7 @@ end last_assert;
 
 ------------------------------------------------------------
 function last_msg
-   return results.message%TYPE
+   return wt_results.message%TYPE
 is
 begin
    return g_last_msg;
@@ -132,7 +132,7 @@ end last_msg;
 
 ------------------------------------------------------------
 function last_details
-   return results.details%TYPE
+   return wt_results.details%TYPE
 is
 begin
    return g_last_details;
@@ -223,7 +223,7 @@ begin
    g_last_assert  := 'THIS';
    g_last_msg     := msg_in;
    g_last_pass    := check_this_in;
-   g_last_details := 'Expected "'  || result.C_PASS ||
+   g_last_details := 'Expected "'  || wt_result.C_PASS ||
                      '" and got "' || boolean_to_status(check_this_in) || '"';
    process_assertion;
 end this;

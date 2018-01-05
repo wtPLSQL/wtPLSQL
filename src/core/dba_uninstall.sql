@@ -3,24 +3,22 @@
 
 drop user &schema_owner. cascade;
 
+set serveroutput on size unlimited format truncated
+
 -- Public Synonyms
-drop public synonym ut_assert;
-drop public synonym wt_assert;
-drop public synonym wt_profiler;
-drop public synonym wt_result;
-drop public synonym wt_text_report;
-drop public synonym wt_wtplsql;
-drop public synonym wtplsql;
-
-drop public synonym wt_test_runs;
-drop public synonym wt_results;
-drop public synonym wt_dbout_profiles;
-drop public synonym wt_not_executable;
-
-drop public synonym wt_test_runs_seq;
-
-
-set serveroutput on
+declare
+   sql_txt   varchar2(4000);
+begin
+   for buff in (select synonym_name from dba_synonyms
+                 where owner = 'PUBLIC'
+				  and  regexp_like(table_owner, '&schema_owner.', 'i') )
+   loop
+      sql_txt := 'drop public synonym ' || buff.synonym_name;
+      dbms_output.put_line(sql_txt);
+	  execute immediate sql_txt;
+   end loop
+end;
+/
 
 declare
    C_FLAG  CONSTANT varchar2(100) := 'WTPLSQL_ENABLE:';

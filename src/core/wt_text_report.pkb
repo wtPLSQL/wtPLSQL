@@ -122,7 +122,7 @@ end summary_out;
 ------------------------------------------------------------
 procedure results_out
 is
-   last_testcase  results.testcase%TYPE;
+   last_testcase  wt_results.testcase%TYPE;
 begin
    p('');
    p('Detailed Results for Test Runner ' || g_test_runs_rec.runner_owner ||
@@ -145,14 +145,14 @@ begin
          OR (    buff.testcase is null
              AND last_testcase is null )
       then
-         p(text_report.format_test_result
+         p(format_test_result
                         (in_assertion      => buff.assertion
                         ,in_status         => buff.status
                         ,in_details        => buff.details
                         ,in_testcase       => NULL
                         ,in_message        => buff.message) );
       else
-         p(text_report.format_test_result
+         p(format_test_result
                         (in_assertion      => buff.assertion
                         ,in_status         => buff.status
                         ,in_details        => buff.details
@@ -241,7 +241,7 @@ begin
       out_str := ' --  ' || in_testcase || '  --' || CHR(10);
    end if;
 
-   if in_status = result.C_PASS
+   if in_status = wt_result.C_PASS
    then
       out_str := ' ' || rpad(in_status,4) || ' ';
    else
