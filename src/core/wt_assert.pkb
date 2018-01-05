@@ -1,10 +1,10 @@
-create or replace package body assert is
+create or replace package body wt_assert is
 
    -- See (public) RESET_GLOBALS procedure for default global values
    g_last_pass        boolean;
-   g_last_assert      results.assertion%TYPE;
-   g_last_msg         results.message%TYPE;
-   g_last_details     results.details%TYPE;
+   g_last_assert      wt_results.assertion%TYPE;
+   g_last_msg         wt_results.message%TYPE;
+   g_last_details     wt_results.details%TYPE;
 
 ----------------------
 --  Private Procedures
@@ -27,7 +27,7 @@ end;
 procedure process_assertion
 is
 begin
-   result.save
+   wt_result.save
       (in_assertion      => g_last_assert
       ,in_status         => case g_last_pass when TRUE then result.C_PASS
                                                        else result.C_FAIL
@@ -554,5 +554,5 @@ begin
 
    reset_globals;
 
-end assert;
+end wt_assert;
 /

@@ -1,4 +1,4 @@
-create or replace package assert authid current_user
+create or replace package wt_assert authid current_user
 is
 
    -- See RESET_GLOBALS procedure for default global values
@@ -9,19 +9,19 @@ is
 
    -- Testcase name for a series of assetions.
    --   Modify as required
-   g_testcase         results.testcase%TYPE;
+   g_testcase         wt_results.testcase%TYPE;
 
    function last_pass
    return boolean;
 
    function last_assert
-   return results.assertion%TYPE;
+   return wt_results.assertion%TYPE;
 
    function last_msg
-   return results.message%TYPE;
+   return wt_results.message%TYPE;
 
    function last_details
-   return results.details%TYPE;
+   return wt_results.details%TYPE;
 
    procedure reset_globals;
 
@@ -139,4 +139,4 @@ is
       msg_in          in   varchar2,
       check_this_in   in   varchar2);
 
-end assert;
+end wt_assert;

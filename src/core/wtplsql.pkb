@@ -3,7 +3,7 @@ as
 
    TYPE runners_nt_type is table of varchar2(128);
    g_runners_nt      runners_nt_type;
-   g_test_runs_rec   test_runs%ROWTYPE;
+   g_test_runs_rec   wt_test_runs%ROWTYPE;
 
 
 ----------------------
@@ -14,7 +14,7 @@ as
 procedure init_test_run
       (in_package_name  in  varchar2)
 is
-   test_runs_rec_NULL   test_runs%ROWTYPE;
+   test_runs_rec_NULL   wt_test_runs%ROWTYPE;
    package_check        number;
 begin
    -- Reset the Test Runs Record before checking anything
@@ -49,7 +49,7 @@ procedure insert_test_run
 is
 begin
    g_test_runs_rec.end_dtm := systimestamp;
-   insert into test_runs values g_test_runs_rec;
+   insert into wt_test_runs values g_test_runs_rec;
 exception
    when DUP_VAL_ON_INDEX
    then
@@ -70,12 +70,12 @@ begin
 
    init_test_run(in_package_name);
 
-   result.initialize(g_test_runs_rec.id);
+   wt_result.initialize(g_test_runs_rec.id);
 
-   profiler.initialize(in_test_run_id  => g_test_runs_rec.id,
-                       out_dbout_owner => g_test_runs_rec.dbout_owner,
-                       out_dbout_name  => g_test_runs_rec.dbout_name,
-                       out_dbout_type  => g_test_runs_rec.dbout_type);
+   wt_profiler.initialize(in_test_run_id  => g_test_runs_rec.id,
+                          out_dbout_owner => g_test_runs_rec.dbout_owner,
+                          out_dbout_name  => g_test_runs_rec.dbout_name,
+                          out_dbout_type  => g_test_runs_rec.dbout_type);
 
    begin
       execute immediate 'BEGIN ' || in_package_name || '.WTPLSQL_RUN; END;';
@@ -87,15 +87,15 @@ begin
                                                 ,1,4000);
    end;
 
-   profiler.pause;
+   wt_profiler.pause;
 
    ROLLBACK;
 
-   insert_test_run;
+   wt_insert_test_run;
 
-   profiler.finalize;
+   wt_profiler.finalize;
 
-   result.finalize;
+   wt_result.finalize;
 
    COMMIT;
 
@@ -107,8 +107,8 @@ exception
                                               CHR(10) || g_test_runs_rec.error_message
                                              ,1,4000);
       insert_test_run;
-      profiler.finalize;
-      result.finalize;
+      wt_profiler.finalize;
+      wt_result.finalize;
       COMMIT;
 
 end test_run;
@@ -148,47 +148,32 @@ $THEN
 procedure testcase1
 is
 begin
-   assert.g_testcase := 'TESTCASE_1';
-   assert.isnotnull (msg_in        =>  'g_test_runs_rec.id NOT NULL'
-                    ,check_this_in => g_test_runs_rec.id);
-   assert.isnotnull (msg_in        =>  'g_test_runs_rec.start_dtm NOT NULL'
-                    ,check_this_in => g_test_runs_rec.start_dtm);
-   assert.isnotnull (msg_in        =>  'g_test_runs_rec.runner_name NOT NULL'
-                    ,check_this_in => g_test_runs_rec.runner_name);
-   assert.isnotnull (msg_in        =>  'g_test_runs_rec.runner_owner NOT NULL'
-                    ,check_this_in => g_test_runs_rec.runner_owner);
-   assert.isnull (msg_in        =>  'g_test_runs_rec.dbout_owner IS NULL'
-                 ,check_this_in => g_test_runs_rec.dbout_owner);
-   assert.isnull (msg_in        =>  'g_test_runs_rec.dbout_name IS NULL'
-                 ,check_this_in => g_test_runs_rec.dbout_name);
-   assert.isnull (msg_in        =>  'g_test_runs_rec.dbout_type IS NULL'
-                 ,check_this_in => g_test_runs_rec.dbout_type);
-   assert.isnull (msg_in        =>  'g_test_runs_rec.profiler_runid IS NULL'
-                 ,check_this_in => g_test_runs_rec.profiler_runid);
-   assert.isnull (msg_in        =>  'g_test_runs_rec.end_dtm IS NULL'
-                 ,check_this_in => g_test_runs_rec.end_dtm);
-   assert.isnull (msg_in        =>  'g_test_runs_rec.error_message IS NULL'
-                 ,check_this_in => g_test_runs_rec.error_message);
-   assert.eqqueryvalue
-      (msg_in             => 'TEST_RUNS Record Not Exists'
-      ,check_query_in     => 'select count(*) from TEST_RUNS' ||
-                            ' where id = ''' || g_test_runs_rec.id || ''''
-      ,against_value_in   => 0);
---   insert_test_run;
---   assert.eqqueryvalue
---      (msg_in             => 'TEST_RUNS Record Exists'
---      ,check_query_in     => 'select count(*) from TEST_RUNS' ||
---                            ' where id = ''' || g_test_runs_rec.id || ''''
---      ,against_value_in   => 1);
---   delete from TEST_RUNS where id = g_test_runs_rec.id;
---   assert.eq (msg_in          => 'Test Runs Delete'
---             ,check_this_in   => SQL%ROWCOUNT
---             ,against_this_in => 1);
---   assert.eqqueryvalue
---      (msg_in             => 'TEST_RUNS Record Not Exists'
---      ,check_query_in     => 'select count(*) from TEST_RUNS' ||
---                            ' where id = ''' || g_test_runs_rec.id || ''''
---      ,against_value_in   => 0);
+   wt_assert.g_testcase := 'TESTCASE_1';
+   wt_assert.isnotnull (msg_in        =>  'g_test_runs_rec.id NOT NULL'
+                       ,check_this_in => g_test_runs_rec.id);
+   wt_assert.isnotnull (msg_in        =>  'g_test_runs_rec.start_dtm NOT NULL'
+                       ,check_this_in => g_test_runs_rec.start_dtm);
+   wt_assert.isnotnull (msg_in        =>  'g_test_runs_rec.runner_name NOT NULL'
+                       ,check_this_in => g_test_runs_rec.runner_name);
+   wt_assert.isnotnull (msg_in        =>  'g_test_runs_rec.runner_owner NOT NULL'
+                       ,check_this_in => g_test_runs_rec.runner_owner);
+   wt_assert.isnull (msg_in        =>  'g_test_runs_rec.dbout_owner IS NULL'
+                    ,check_this_in => g_test_runs_rec.dbout_owner);
+   wt_assert.isnull (msg_in        =>  'g_test_runs_rec.dbout_name IS NULL'
+                    ,check_this_in => g_test_runs_rec.dbout_name);
+   wt_assert.isnull (msg_in        =>  'g_test_runs_rec.dbout_type IS NULL'
+                    ,check_this_in => g_test_runs_rec.dbout_type);
+   wt_assert.isnull (msg_in        =>  'g_test_runs_rec.profiler_runid IS NULL'
+                    ,check_this_in => g_test_runs_rec.profiler_runid);
+   wt_assert.isnull (msg_in        =>  'g_test_runs_rec.end_dtm IS NULL'
+                    ,check_this_in => g_test_runs_rec.end_dtm);
+   wt_assert.isnull (msg_in        =>  'g_test_runs_rec.error_message IS NULL'
+                    ,check_this_in => g_test_runs_rec.error_message);
+   wt_assert.eqqueryvalue
+         (msg_in             => 'TEST_RUNS Record Not Exists'
+         ,check_query_in     => 'select count(*) from TEST_RUNS' ||
+                                ' where id = ''' || g_test_runs_rec.id || ''''
+         ,against_value_in   => 0);
 end testcase1;
 
 ----------------------------------------

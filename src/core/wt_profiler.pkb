@@ -1,11 +1,11 @@
-create or replace package body profiler
+create or replace package body wt_profiler
 as
 
    TYPE rec_type is record
-      (test_run_id     test_runs.id%TYPE
-      ,dbout_owner     test_runs.dbout_owner%TYPE
-      ,dbout_name      test_runs.dbout_name%TYPE
-      ,dbout_type      test_runs.dbout_type%TYPE
+      (test_run_id     wt_test_runs.id%TYPE
+      ,dbout_owner     wt_test_runs.dbout_owner%TYPE
+      ,dbout_name      wt_test_runs.dbout_name%TYPE
+      ,dbout_type      wt_test_runs.dbout_type%TYPE
       ,prof_runid      binary_integer
       ,error_message   varchar2(4000));
    g_rec  rec_type;
@@ -74,7 +74,7 @@ is
    cursor c_annotation is
       select src.text
        from  user_source  src
-             join test_runs  tr
+             join wt_test_runs  tr
                   on  tr.runner_name = src.name
                   and tr.id          = g_rec.test_run_id
        where src.type = 'PACKAGE BODY'
@@ -134,7 +134,7 @@ procedure insert_dbout_profile
 is
 begin
 
-   insert into dbout_profiles
+   insert into wt_dbout_profiles
       select g_rec.test_run_id              TEST_RUN_ID
             ,ppd.line#
             ,case
@@ -241,7 +241,7 @@ begin
       end if;
       close c_find_end;
 
-      update dbout_profiles
+      update wt_dbout_profiles
         set  status = 'ANNO'
        where test_run_id = g_rec.test_run_id
         and  line# >= buff_begin.line + trig_offset
@@ -440,4 +440,4 @@ BEGIN
    return null;
 END calc_pct_coverage;
 
-end profiler;
+end wt_profiler;

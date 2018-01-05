@@ -1,7 +1,7 @@
-create or replace package body result
+create or replace package body wt_result
 as
 
-   TYPE results_nt_type is table of results%ROWTYPE;
+   TYPE results_nt_type is table of wt_results%ROWTYPE;
    g_results_nt      results_nt_type := results_nt_type(null);
    g_results_rec     results%ROWTYPE;
 
@@ -17,9 +17,9 @@ as
 
 ------------------------------------------------------------
 procedure initialize
-      (in_test_run_id   in test_runs.id%TYPE)
+      (in_test_run_id   in wt_test_runs.id%TYPE)
 is
-   g_results_recNULL  results%ROWTYPE;
+   g_results_recNULL  wt_results%ROWTYPE;
 begin
    g_results_rec := g_results_recNULL;
    g_results_rec.test_run_id  := in_test_run_id;
@@ -39,18 +39,18 @@ begin
       return;
    end if;
    forall i in 1 .. g_results_nt.COUNT - 1
-      insert into results values g_results_nt(i);
+      insert into wt_results values g_results_nt(i);
    g_results_nt := results_nt_type(null);
    g_results_rec.test_run_id := NULL;
 end finalize;
 
 ------------------------------------------------------------
 procedure save
-      (in_assertion      in results.assertion%TYPE
-      ,in_status         in results.status%TYPE
-      ,in_details        in results.details%TYPE
-      ,in_testcase       in results.testcase%TYPE
-      ,in_message        in results.message%TYPE)
+      (in_assertion      in wt_results.assertion%TYPE
+      ,in_status         in wt_results.status%TYPE
+      ,in_details        in wt_results.details%TYPE
+      ,in_testcase       in wt_results.testcase%TYPE
+      ,in_message        in wt_results.message%TYPE)
 is
    l_current_tstamp  timestamp;
 begin
@@ -82,4 +82,4 @@ begin
    g_results_nt.extend;
 end save;
 
-end result;
+end wt_result;

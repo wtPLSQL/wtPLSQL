@@ -1,7 +1,7 @@
-create or replace package body text_report
+create or replace package body wt_text_report
 as
 
-   g_test_runs_rec  test_runs%ROWTYPE;
+   g_test_runs_rec  wt_test_runs%ROWTYPE;
 
 
 ----------------------
@@ -28,7 +28,7 @@ begin
             ,min(elapsed_msecs)              MIN_MSEC
             ,round(avg(elapsed_msecs),3)     AVG_MSEC
             ,max(elapsed_msecs)              MAX_MSEC
-       from  results
+       from  wt_results
        where test_run_id = g_test_runs_rec.id )
    loop
       p('       Total Testcases: ' || buff.tcase_cnt);
@@ -63,7 +63,7 @@ begin
             ,min(min_time)                   MIN_MSEC
             ,sum(total_time)/count(*)        AVG_MSEC
             ,max(max_time)                   MAX_MSEC
-       from  dbout_profiles
+       from  wt_dbout_profiles
        where test_run_id = g_test_runs_rec.id )
    loop
       p('  Minimum Elapsed msec: ' || buff.min_msec);
@@ -137,7 +137,7 @@ begin
             ,assertion
             ,details
             ,message
-       from  results
+       from  wt_results
        where test_run_id = g_test_runs_rec.id
        order by result_seq )
    loop
@@ -195,7 +195,7 @@ begin
             ,max_time
             ,text
             ,rownum
-       from  dbout_profiles
+       from  wt_dbout_profiles
        where test_run_id = g_test_runs_rec.id
        order by line#  )
    loop
@@ -224,11 +224,11 @@ end profile_out;
 
 ------------------------------------------------------------
 function format_test_result
-      (in_assertion      in results.assertion%TYPE
-      ,in_status         in results.status%TYPE
-      ,in_details        in results.details%TYPE
-      ,in_testcase       in results.testcase%TYPE
-      ,in_message        in results.message%TYPE)
+      (in_assertion      in wt_results.assertion%TYPE
+      ,in_status         in wt_results.status%TYPE
+      ,in_details        in wt_results.details%TYPE
+      ,in_testcase       in wt_results.testcase%TYPE
+      ,in_message        in wt_results.message%TYPE)
    return varchar2
 is
 
@@ -262,11 +262,11 @@ end format_test_result;
 
 ------------------------------------------------------------
 procedure ad_hoc_result
-      (in_assertion      in results.assertion%TYPE
-      ,in_status         in results.status%TYPE
-      ,in_details        in results.details%TYPE
-      ,in_testcase       in results.testcase%TYPE
-      ,in_message        in results.message%TYPE)
+      (in_assertion      in wt_results.assertion%TYPE
+      ,in_status         in wt_results.status%TYPE
+      ,in_details        in wt_results.details%TYPE
+      ,in_testcase       in wt_results.testcase%TYPE
+      ,in_message        in wt_results.message%TYPE)
 is
 begin
    p(format_test_result
@@ -287,7 +287,7 @@ begin
 
    --  Load Test Run Record
    select * into g_test_runs_rec
-    from  test_runs where id = in_test_run_id;
+    from  wt_test_runs where id = in_test_run_id;
 
    --  Setup Display Order
    if in_summary_first
@@ -317,4 +317,4 @@ exception
       p('ERROR: Unable to find Test Run ID ' || in_test_run_id);
 end dbms_out;
 
-end text_report;
+end wt_text_report;

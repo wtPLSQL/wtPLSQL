@@ -1,14 +1,14 @@
-create or replace package profiler authid current_user
+create or replace package wt_profiler authid current_user
 as
 
    function get_dbout_owner
-   return test_runs.dbout_owner%TYPE;
+   return wt_test_runs.dbout_owner%TYPE;
    
    function get_dbout_name
-   return test_runs.dbout_name%TYPE;
+   return wt_test_runs.dbout_name%TYPE;
    
    function get_dbout_type
-   return test_runs.dbout_type%TYPE;
+   return wt_test_runs.dbout_type%TYPE;
 
    procedure initialize
       (in_test_run_id   in  number,
@@ -31,4 +31,4 @@ as
       (in_test_run_id  in  number)
    return number;
 
-end profiler;
+end wt_profiler;
