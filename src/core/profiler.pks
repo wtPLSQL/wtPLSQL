@@ -2,18 +2,18 @@ create or replace package profiler authid current_user
 as
 
    function get_dbout_owner
-   return test_runs.dbout_owner%TYPE
+   return test_runs.dbout_owner%TYPE;
    
    function get_dbout_name
-   return test_runs.dbout_name%TYPE
+   return test_runs.dbout_name%TYPE;
    
    function get_dbout_type
-   return test_runs.dbout_type%TYPE
+   return test_runs.dbout_type%TYPE;
 
    procedure initialize
       (in_test_run_id   in  number,
        out_dbout_owner  out varchar2,
-       out_dbout_name   out varchar2
+       out_dbout_name   out varchar2,
        out_dbout_type   out varchar2);
 
    procedure finalize;

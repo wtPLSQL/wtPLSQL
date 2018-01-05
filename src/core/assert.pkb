@@ -107,6 +107,38 @@ end compare_queries;
 ---------------------
 
 ------------------------------------------------------------
+function last_pass
+   return boolean
+is
+begin
+   return g_last_pass;
+end last_pass;
+
+------------------------------------------------------------
+function last_assert
+   return results.assertion%TYPE
+is
+begin
+   return g_last_assert;
+end last_assert;
+
+------------------------------------------------------------
+function last_msg
+   return results.message%TYPE
+is
+begin
+   return g_last_msg;
+end last_msg;
+
+------------------------------------------------------------
+function last_details
+   return results.details%TYPE
+is
+begin
+   return g_last_details;
+end last_details;
+
+------------------------------------------------------------
 procedure reset_globals
 is
 begin

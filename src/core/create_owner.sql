@@ -1,11 +1,14 @@
 
--- Create the wtPLSQL schema owner.
+-- Create the schema owner.
 
-create user wtp identified by wtp
+set define &
+define owner = "wtp_test"
+
+create user &owner. identified by &owner.
    default tablespace users
    temporary tablespace temp;
 
-grant connect, resource to wtp;
+grant connect, resource to &owner.;
 --grant create view to wtp;
 
 select value from v_$parameter where name in 'plsql_ccflags';

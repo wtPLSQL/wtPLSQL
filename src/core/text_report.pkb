@@ -73,7 +73,7 @@ begin
       p('        Executed Lines: ' || buff.exec_lines);
       p('          Missed Lines: ' || buff.notx_lines);
       p('       Annotated Lines: ' || buff.anno_lines);
-      p('        Excluded Lines: ' || buff.noex_lines);
+      p('        Excluded Lines: ' || buff.excl_lines);
       if (buff.exec_lines + buff.notx_lines) = 0
       then
          p('         Code Coverage: (Divide by Zero)');

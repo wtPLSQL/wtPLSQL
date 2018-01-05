@@ -13,13 +13,13 @@ is
 
    function last_pass
    return boolean;
-   
+
    function last_assert
    return results.assertion%TYPE;
-   
+
    function last_msg
    return results.message%TYPE;
-   
+
    function last_details
    return results.details%TYPE;
 

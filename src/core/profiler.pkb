@@ -261,16 +261,44 @@ end update_anno_status;
 ---------------------
 
 ------------------------------------------------------------
+function get_dbout_owner
+   return test_runs.dbout_owner%TYPE
+is
+begin
+   return g_rec.dbout_owner;
+end get_dbout_owner;
+
+------------------------------------------------------------
+function get_dbout_name
+   return test_runs.dbout_name%TYPE
+is
+begin
+   return g_rec.dbout_name;
+end get_dbout_name;
+
+------------------------------------------------------------
+function get_dbout_type
+   return test_runs.dbout_type%TYPE
+is
+begin
+   return g_rec.dbout_type;
+end get_dbout_type;
+
+------------------------------------------------------------
 procedure initialize
       (in_test_run_id   in  number,
        out_dbout_owner  out varchar2,
-       out_dbout_name   out varchar2
+       out_dbout_name   out varchar2,
        out_dbout_type   out varchar2)
 is
 
    retnum  binary_integer;
 
 begin
+
+   out_dbout_owner := NULL;
+   out_dbout_name  := NULL;
+   out_dbout_type  := NULL;
 
    if in_test_run_id is null
    then
@@ -298,9 +326,9 @@ begin
 
    end if;
    
-   out_test_runs_rec.dbout_owner := g_rec.dbout_owner;
-   out_test_runs_rec.dbout_name  := g_rec.dbout_name;
-   out_test_runs_rec.dbout_type  := g_rec.dbout_type;
+   out_dbout_owner := g_rec.dbout_owner;
+   out_dbout_name  := g_rec.dbout_name;
+   out_dbout_type  := g_rec.dbout_type;
 
 end initialize;
 
