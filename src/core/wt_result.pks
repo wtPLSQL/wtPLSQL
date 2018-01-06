@@ -16,4 +16,6 @@ as
       ,in_testcase       in wt_results.testcase%TYPE
       ,in_message        in wt_results.message%TYPE);
 
+   procedure clear_tables;
+
 end wt_result;

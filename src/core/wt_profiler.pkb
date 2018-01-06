@@ -52,19 +52,17 @@ end reset_g_rec;
 procedure find_dbout
 is
 
-   C_HEAD_RE CONSTANT varchar2(30) := '--%WTPLSQL_set_dbout[(]';
+   C_HEAD_RE CONSTANT varchar2(30) := '--% WTPLSQL SET DBOUT "';
    C_MAIN_RE CONSTANT varchar2(30) := '[[:alnum:]._$#]+';
-   C_TAIL_RE CONSTANT varchar2(30) := '[)]%--';
+   C_TAIL_RE CONSTANT varchar2(30) := '" %--';
    --
    -- Head Regular Expression is
-   --   '--%WTPLSQL_set_dbout' - literal string
-   --   '[(]'                  - Open parenthesis character
+   --   '--% WTPLSQL SET DBOUT "' - literal string
    -- Main Regular Expression is
-   --   '[[:alnum:]._$#]'      - Any alpha, numeric, ".", "_", "$", or "#" character
-   --   +                      - One or more of the previous characters
+   --   '[[:alnum:]._$#]'         - Any alpha, numeric, ".", "_", "$", or "#" character
+   --   +                         - One or more of the previous characters
    -- Tail Regular Expression is
-   --   '[)]'                  - Close parenthesis character
-   --   '%--'                  - literal string
+   --   '" %--'                   - literal string
    --
    -- Note: Packages, Procedure, Functions, and Types are in the same namespace
    --       and cannot have the same names.  However, Triggers can have the same
@@ -72,23 +70,19 @@ is
    --       name is the same as a Package, Procedure, Function or Type name.
    --
    cursor c_annotation is
-      select src.text
+      select regexp_substr(src.text, C_HEAD_RE||C_MAIN_RE||C_TAIL_RE)  TEXT
        from  user_source  src
-             join wt_test_runs  tr
-                  on  tr.runner_name = src.name
-                  and tr.id          = g_rec.test_run_id
-       where src.type = 'PACKAGE BODY'
-        and  regexp_like(src.text, C_HEAD_RE || C_MAIN_RE || C_TAIL_RE)
+       where src.name = ??  -- Must pass in Runner Name
+        and  src.type = 'PACKAGE BODY'
+        and  regexp_like(src.text, C_HEAD_RE||C_MAIN_RE||C_TAIL_RE)
        order by src.line;
-   b_annotation  c_annotation%ROWTYPE;
-
-   target        varchar2(256);
+   target        varchar2(32000);
    pos           number;
 
 begin
 
    open c_annotation;
-   fetch c_annotation into b_annotation;
+   fetch c_annotation into target;
    if c_annotation%NOTFOUND
    then
       close c_annotation;
@@ -96,16 +90,15 @@ begin
    end if;
    close c_annotation;
 
-   target := b_annotation.text;
    -- Strip the Head Sub-String
    target := regexp_replace(SRCSTR      => target
-                           ,PATTERN     => '^.*' || C_HEAD_RE
+                           ,PATTERN     => '^' || C_HEAD_RE
                            ,REPLACESTR  => ''
                            ,POSITION    => 1
                            ,OCCURRENCE  => 1);
    -- Strip the Tail Sub-String
    target := regexp_replace(SRCSTR      => target
-                           ,PATTERN     => C_TAIL_RE || '.*$'
+                           ,PATTERN     => C_TAIL_RE || '$'
                            ,REPLACESTR  => ''
                            ,POSITION    => 1
                            ,OCCURRENCE  => 1);
@@ -120,11 +113,19 @@ begin
             ,g_rec.dbout_name
             ,g_rec.dbout_type
        from  all_objects
-       where owner        = nvl(substr(target,1,pos-1),USER)
-        and  object_name  = substr(target,pos+1,256);
+       where (    pos = 0
+              and owner       = USER
+              and object_name = target  )
+          OR (    pos = 1
+              and owner       = USER
+              and object_name = substr(target,2,512) )
+          OR (    pos > 1
+              and owner       = substr(target,1,pos-1)
+              and object_name = substr(target,pos+1,512) );
    exception when NO_DATA_FOUND
    then
-      g_rec.error_message := 'Unable to find Database Object "' || target || '". ';
+      g_rec.error_message := 'Unable to find Database Object "' ||
+                              target || '". ';
    end;
 
 end find_dbout;
@@ -287,6 +288,7 @@ end get_dbout_type;
 ------------------------------------------------------------
 procedure initialize
       (in_test_run_id   in  number,
+       in_runner_name   in  varchar2,
        out_dbout_owner  out varchar2,
        out_dbout_name   out varchar2,
        out_dbout_type   out varchar2)
@@ -309,7 +311,7 @@ begin
    g_rec.test_run_id := in_test_run_id;
 
    find_dbout;
-
+ 
    if g_rec.dbout_name is not null
    then
       retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
@@ -347,10 +349,6 @@ begin
    then
       raise_application_error  (-20000, 'g_rec.test_run_id is null');
    end if;
-
-   --delete from plsql_profiler_data;
-   --delete from plsql_profiler_units;
-   --delete from plsql_profiler_runs;
 
    -- DBMS_PROFILER.FLUSH_DATA is included with DBMS_PROFILER.STOP_PROFILER
    dbms_profiler.STOP_PROFILER;
@@ -439,5 +437,15 @@ BEGIN
    end loop;
    return null;
 END calc_pct_coverage;
+
+------------------------------------------------------------
+procedure clear_tables
+IS
+BEGIN
+   delete from wt_dbout_profiles;
+   delete from plsql_profiler_data;
+   delete from plsql_profiler_units;
+   delete from plsql_profiler_runs;
+END clear_tables;
 
 end wt_profiler;

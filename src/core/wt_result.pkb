@@ -82,4 +82,12 @@ begin
    g_results_nt.extend;
 end save;
 
+------------------------------------------------------------
+procedure clear_tables
+is
+begin
+   delete from wt_results;
+end clear_tables;
+
+
 end wt_result;

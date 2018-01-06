@@ -12,6 +12,7 @@ as
 
    procedure initialize
       (in_test_run_id   in  number,
+       in_runner_name   in  varchar2,
        out_dbout_owner  out varchar2,
        out_dbout_name   out varchar2,
        out_dbout_type   out varchar2);
@@ -30,5 +31,7 @@ as
    function calc_pct_coverage
       (in_test_run_id  in  number)
    return number;
+
+   procedure clear_tables;
 
 end wt_profiler;

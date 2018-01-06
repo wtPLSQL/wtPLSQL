@@ -17,7 +17,7 @@ as
       ,in_message        in wt_results.message%TYPE);
 
    procedure dbms_out
-      (in_test_run_id    in  number
+      (in_test_run_id    in  number  default NULL
       ,in_hide_details   in  boolean default FALSE
       ,in_summary_first  in  boolean default FALSE);
 

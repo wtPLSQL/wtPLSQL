@@ -17,14 +17,14 @@ select p.value PLSQL_CCFLAGS
 --   the same result.
 declare
    C_FLAG  CONSTANT varchar2(100) := 'WTPLSQL_ENABLE:';
-   parm_value   v_$parameter.value%TYPE;
+   parm_value   v$parameter.value%TYPE;
    procedure set_plsql_ccflags (in_value in varchar2) is begin
       execute immediate 'alter system set PLSQL_CCFLAGS = ''' ||
                          in_value || ''' scope=BOTH';
    end set_plsql_ccflags;
 begin
    select value into parm_value
-    from  v_$parameter
+    from  v$parameter
     where name in 'plsql_ccflags';
    if nvl(length(parm_value),0) = 0
    then
@@ -52,7 +52,7 @@ create or replace public synonym wt_results        for &schema_owner..wt_results
 create or replace public synonym wt_dbout_profiles for &schema_owner..wt_dbout_profiles;
 create or replace public synonym wt_not_executable for &schema_owner..wt_not_executable;
 
-create or replace public synonym ut_assert         for &schema_owner..wt_assert;
+--create or replace public synonym ut_assert         for &schema_owner..wt_assert;
 create or replace public synonym wt_assert         for &schema_owner..wt_assert;
 create or replace public synonym wt_profiler       for &schema_owner..wt_profiler;
 create or replace public synonym wt_result         for &schema_owner..wt_result;

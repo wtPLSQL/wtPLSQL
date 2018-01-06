@@ -6,23 +6,12 @@ as
    g_test_runs_rec   wt_test_runs%ROWTYPE;
 
 
---=======================================================--
---  WTPLSQL Test Point
-$IF $$WTPLSQL_ENABLE
-$THEN
-
-   g_raise_exception  boolean := FALSE;
-
-procedure raise_test_exception
-is
-begin
-   if g_raise_exception then
-      raise_application_error(-20000, 'WTPLSQL Test Exception Raised');
-   end if;
-end raise_test_exception;
-
-$END
---=======================================================--
+   --===============--%WTPLSQL_begin_ignore_lines%--===============--
+   $IF $$WTPLSQL_SELFTEST
+   $THEN
+      g_running_selftest  boolean := FALSE;
+   $END
+   --===============--%WTPLSQL_end_ignore_lines%--=================--
 
 
 ----------------------
@@ -39,7 +28,7 @@ begin
    --  Check for NULL Runner Name
    if g_test_runs_rec.runner_name is null
    then
-      raise_application_error  (-20000, 'RUNNER_NAME is null');
+      raise_application_error (-20001, 'RUNNER_NAME is null');
    end if;
    --  Check for Valid Runner Name
    select count(*) into package_check
@@ -51,13 +40,12 @@ begin
      and  sequence      = 0;
    if package_check != 1
    then
-      raise_application_error (-20000, 'RUNNER_NAME is not valid');
+      raise_application_error (-20002, 'RUNNER_NAME is not valid');
    end if;
 end check_runner;
 
 ------------------------------------------------------------
 procedure init_test_run
-      (in_package_name  in  varchar2)
 is
    test_runs_rec_NULL   wt_test_runs%ROWTYPE;
 begin
@@ -66,10 +54,6 @@ begin
    g_test_runs_rec.id           := wt_test_runs_seq.nextval;
    g_test_runs_rec.start_dtm    := systimestamp;
    g_test_runs_rec.runner_owner := USER;
-   g_test_runs_rec.runner_name  := in_package_name;
-   --
-   check_runner;
-   --
 end init_test_run;
 
 ------------------------------------------------------------
@@ -78,11 +62,6 @@ is
 begin
    g_test_runs_rec.end_dtm := systimestamp;
    insert into wt_test_runs values g_test_runs_rec;
-exception
-   when DUP_VAL_ON_INDEX
-   then
-      -- This record must have already been inserted
-      null;
 end insert_test_run;
 
 
@@ -96,11 +75,14 @@ procedure test_run
 is
 begin
 
-   init_test_run(in_package_name);
+   init_test_run;
+   g_test_runs_rec.runner_name := in_package_name;
+   check_runner;
 
    wt_result.initialize(g_test_runs_rec.id);
 
    wt_profiler.initialize(in_test_run_id  => g_test_runs_rec.id,
+                          in_runner_name  => g_test_runs_rec.runner_name,
                           out_dbout_owner => g_test_runs_rec.dbout_owner,
                           out_dbout_name  => g_test_runs_rec.dbout_name,
                           out_dbout_type  => g_test_runs_rec.dbout_type);
@@ -125,15 +107,11 @@ begin
 
    wt_result.finalize;
 
---=======================================================--
---  WTPLSQL Test Point
-$IF $$WTPLSQL_ENABLE
-$THEN
-   raise_test_exception;
-$END
---=======================================================--
-
    COMMIT;
+
+   --===============--%WTPLSQL_begin_ignore_lines%--===============--
+   $IF $$WTPLSQL_SELFTEST $THEN callback_1; $END
+   --===============--%WTPLSQL_end_ignore_lines%--=================--
 
 exception
    when OTHERS
@@ -142,10 +120,16 @@ exception
                                               dbms_utility.format_error_backtrace ||
                                               CHR(10) || g_test_runs_rec.error_message
                                              ,1,4000);
-      insert_test_run;
+      begin
+         insert_test_run;
+         exception when DUP_VAL_ON_INDEX then null;
+      end;
       wt_profiler.finalize;
       wt_result.finalize;
       COMMIT;
+      --===============--%WTPLSQL_begin_ignore_lines%--===============--
+      $IF $$WTPLSQL_SELFTEST $THEN callback_2; $END
+      --===============--%WTPLSQL_end_ignore_lines%--=================--
 
 end test_run;
 
@@ -174,17 +158,34 @@ begin
    end loop;
 end test_all;
 
-
---=======================================================--
---  WtPLSQL Procedures
-$IF $$WTPLSQL_ENABLE
-$THEN
-
-----------------------------------------
-procedure testcase1
+------------------------------------------------------------
+procedure clear_tables
 is
 begin
-   wt_assert.g_testcase := 'TESTCASE_1';
+   wt_result.clear_tables;
+   wt_profiler.clear_tables;
+   delete from wt_test_runs;
+   COMMIT;
+end clear_tables;
+
+
+
+--===============--%WTPLSQL_begin_ignore_lines%--===============--
+--  Embedded Test Procedures
+
+$IF $$WTPLSQL_SELFTEST
+$THEN
+
+  -- Profiler Annotation: --% WTPLSQL SET DBOUT "WTPLSQL" %-- Extra Stuff
+
+----------------------------------------
+procedure testcase_0
+is
+   save_test_runs_rec   wt_test_runs%ROWTYPE := g_test_runs_rec;
+begin
+   wt_assert.g_testcase := 'TESTCASE_0';
+   -- This Test Case runs in the EXECUTE IMMEDAITE in the TEST_RUN
+   --   procedure in this package.
    wt_assert.isnotnull (msg_in        =>  'g_test_runs_rec.id NOT NULL'
                        ,check_this_in => g_test_runs_rec.id);
    wt_assert.isnotnull (msg_in        =>  'g_test_runs_rec.start_dtm NOT NULL'
@@ -207,20 +208,100 @@ begin
                     ,check_this_in => g_test_runs_rec.error_message);
    wt_assert.eqqueryvalue
          (msg_in             => 'TEST_RUNS Record Not Exists'
-         ,check_query_in     => 'select count(*) from TEST_RUNS' ||
+         ,check_query_in     => 'select count(*) from WT_TEST_RUNS' ||
                                 ' where id = ''' || g_test_runs_rec.id || ''''
          ,against_value_in   => 0);
-end testcase1;
+end testcase_0;
+
+
+----------------------------------------
+procedure testcase_1
+is
+begin
+   -- Note: This procedure runs in an exception handler.  The
+   --   ERROR_STACK will have data in it.
+   wt_assert.g_testcase := 'TESTCASE_1';
+   -- This Test Case runs at the last step of the TEST_RUNS
+   --   procedure in this package.
+   --   This procedure must raise an exception to run Test Case 2
+end testcase_1;
+
+----------------------------------------
+procedure testcase_2
+is
+begin
+   -- Note: This procedure runs in an exception handler.  The
+   --   ERROR_STACK will have data in it.
+   -- Note2: "wt_result.finalize" has run, so "wt_assert"s
+   --   go to DBMS_OUTPUT.
+   wt_assert.g_testcase := 'TESTCASE_2';
+   -- This Test Case runs at the last step of the TEST_RUNS
+   --   procedure exception handler in this package.
+   --g_test_runs_rec.runner_name := 'BOGUS';
+   --wt_assert.raises (msg_in         => 'Check_Runner Procedure raises exception'
+   --                 ,check_call_in  => 'check_runner'
+   --                 ,against_exc_in => 'ORA-00000');
+   --g_test_runs_rec.runner_name := save_test_runs_rec.runner_name;
+end testcase_2;
+
+----------------------------------------
+--  Called from Internal Test Point
+procedure callback_1
+is
+begin
+   -- Note: This procedure runs in an exception handler.  The
+   --   ERROR_STACK will have data in it.
+   if NOT g_running_selftest
+   then
+      return;
+   end if;
+   testcase_2;
+   -- This will cause callback_2 to be called
+   raise_application_error(-20000,'WTPLSQL Callback_1 Exception Raised');
+end callback_1;
+
+----------------------------------------
+--  Called from Internal Test Point
+procedure callback_2
+is
+   err_txt  varchar2(32000);
+begin
+   err_txt := dbms_utility.format_error_stack     ||
+              dbms_utility.format_error_backtrace;
+   -- Note: This procedure runs in an exception handler.  The
+   --   ERROR_STACK will have data in it.
+   if NOT g_running_selftest
+   then
+      return;
+   end if;
+   testcase_2;
+   -- This procedure MUST set g_running_selftest to FALSE
+   g_running_selftest := FALSE;
+exception
+   when others then
+      -- This procedure MUST set g_running_selftest to FALSE
+      g_running_selftest := FALSE;
+      raise_application_error(-20000, substr(dbms_utility.format_error_stack     ||
+                                             dbms_utility.format_error_backtrace ||
+                                             CHR(10) || err_txt, 1, 4000) );
+end callback_2;
 
 ----------------------------------------
 procedure WTPLSQL_RUN
 is
 begin
-   testcase1;
+   -- This runs like a self-contained "in-circuit" test.
+   --   Internal test points are activated by the
+   --   g_running_selftest variable.  This grants access
+   --   to specific locations with this package.
+   g_running_selftest := TRUE;
+   testcase_0;
+   -- Callback_1 will be called at the end of TestCase_0.
+   -- Callback_2 will be called at the end of the RUN_TEST
+   --   procedure, after this procedure has completed.
+   -- Callback_2 must set g_running_selftest to FALSE;
 end;
 
 $END
---=======================================================--
-
 
 end wtplsql;

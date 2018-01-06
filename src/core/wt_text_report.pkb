@@ -19,6 +19,7 @@ end p;
 ------------------------------------------------------------
 procedure result_summary
 is
+   yield_txt  varchar2(50);
 begin
    for buff in (
       select count(*)                        TOT_CNT
@@ -31,22 +32,24 @@ begin
        from  wt_results
        where test_run_id = g_test_runs_rec.id )
    loop
-      p('       Total Testcases: ' || buff.tcase_cnt);
-      p('  Minimum Elapsed msec: ' || buff.min_msec);
-      p('  Average Elapsed msec: ' || buff.avg_msec);
-      p('  Maximum Elapsed msec: ' || buff.max_msec);
-      p('      Total Assertions: ' || buff.tot_cnt);
-      p('     Failed Assertions: ' || buff.fail_cnt);
-      p('      Error Assertions: ' || buff.err_cnt);
       if buff.tot_cnt = 0
       then
-         p('            Test Yield: (Divide by Zero)');
+         yield_txt := '(Divide by Zero)';
       else
-         p('            Test Yield: ' || round( ( 1 - (buff.fail_cnt+buff.err_cnt)
-                                                            / buff.tot_cnt ) * 100
-                                              ,2) ||
-                                  '%' );
+         yield_txt := to_char(round( ( 1 - (buff.fail_cnt+buff.err_cnt)
+                                               / buff.tot_cnt
+                                     ) * 100
+                                   ,2)
+                             ,'9999.99') || '%';
       end if;
+      p('       Total Testcases: ' || to_char(buff.tcase_cnt,'9999999') ||
+        '      Total Assertions: ' || to_char(buff.tot_cnt  ,'9999999') );
+      p('  Minimum Elapsed msec: ' || to_char(buff.min_msec ,'9999999') ||
+        '     Failed Assertions: ' || to_char(buff.fail_cnt ,'9999999') );
+      p('  Average Elapsed msec: ' || to_char(buff.avg_msec ,'9999999') ||
+        '      Error Assertions: ' || to_char(buff.err_cnt  ,'9999999') );
+      p('  Maximum Elapsed msec: ' || to_char(buff.max_msec ,'9999999') ||
+        '            Test Yield: ' || yield_txt                      );
    end loop;
 end result_summary;
 
@@ -54,6 +57,7 @@ end result_summary;
 procedure profile_summary
 is
 begin
+   p('');
    for buff in (
       select count(*)                        TOT_LINES
             ,sum(decode(status,'ANNO',1,0))  ANNO_LINES
@@ -95,28 +99,28 @@ begin
                                     '.' || g_test_runs_rec.runner_name  ||
                        ' (Test Run ID ' || g_test_runs_rec.id           ||
                                     ')' );
-   p('');
    result_summary;
+   p('  Total Run Time (sec): ' ||
+      to_char(extract(day from ( g_test_runs_rec.start_dtm -
+                                 g_test_runs_rec.end_dtm     ) * 86400 )
+             ,'9999999') );
    if g_test_runs_rec.error_message is not null
    then
-      p('ERROR: ' || g_test_runs_rec.error_message);
+      p('');
+      p('  *** Test Runner Error ***');
+      p(g_test_runs_rec.error_message);
    end if;
-   p('    Run Time (seconds): ' || extract(day from (
-                                   g_test_runs_rec.start_dtm - g_test_runs_rec.end_dtm
-                                   ) * 86400         )      );
-   p('');
    ----------------------------------------
    if g_test_runs_rec.dbout_name is null
    then
       return;
    end if;
+   p('');
    p('  Results for DBOUT: ' || g_test_runs_rec.dbout_owner ||
                          '.' || g_test_runs_rec.dbout_name  ||
                          '(' || g_test_runs_rec.dbout_type  ||
                          ')' );
-   p('');
    profile_summary;
-   p('');
 end summary_out;
 
 ------------------------------------------------------------
@@ -124,12 +128,10 @@ procedure results_out
 is
    last_testcase  wt_results.testcase%TYPE;
 begin
-   p('');
    p('Detailed Results for Test Runner ' || g_test_runs_rec.runner_owner ||
                                      '.' || g_test_runs_rec.runner_name  ||
                         ' (Test Run ID ' || g_test_runs_rec.id           ||
                                      ')' );
-   p('');
    for buff in (
       select status
             ,elapsed_msecs
@@ -161,7 +163,6 @@ begin
          last_testcase := buff.testcase;
       end if;
    end loop;
-   p('');
 end results_out;
 
 ------------------------------------------------------------
@@ -214,7 +215,6 @@ begin
          p('');
       end if;
    end loop;
-   p('');
 end profile_out;
 
 
@@ -279,42 +279,40 @@ end ad_hoc_result;
 
 ------------------------------------------------------------
 procedure dbms_out
-      (in_test_run_id    in  number
+      (in_test_run_id    in  number  default NULL
       ,in_hide_details   in  boolean default FALSE
       ,in_summary_first  in  boolean default FALSE)
 is
 begin
 
-   --  Load Test Run Record
-   select * into g_test_runs_rec
-    from  wt_test_runs where id = in_test_run_id;
+   for buff in (select * from wt_test_runs
+                 where in_test_run_id IS NULL
+                   or  in_test_run_id = id)
+   loop
 
-   --  Setup Display Order
-   if in_summary_first
-   then
-
-      summary_out;
-      if NOT in_hide_details
+      --  Load Test Run Record
+      g_test_runs_rec := buff;
+   
+      --  Setup Display Order
+      if in_summary_first
       then
-         results_out;
-         profile_out;
+         summary_out;
+         if NOT in_hide_details
+         then
+            results_out;
+            profile_out;
+         end if;
+      else
+         if NOT in_hide_details
+         then
+            profile_out;
+            results_out;
+         end if;
+         summary_out;
       end if;
 
-   else
+   end loop;
 
-      if NOT in_hide_details
-      then
-         profile_out;
-         results_out;
-      end if;
-      summary_out;
-
-   end if;
-
-exception
-   when NO_DATA_FOUND
-   then
-      p('ERROR: Unable to find Test Run ID ' || in_test_run_id);
 end dbms_out;
 
 end wt_text_report;

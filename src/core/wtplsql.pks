@@ -6,10 +6,19 @@ as
 
    procedure test_all;
 
---  WtPLSQL Procedures
-$IF $$WTPLSQL_ENABLE
-$THEN
-   procedure WTPLSQL_RUN;
-$END
+   procedure clear_tables;
+
+   --   WtPLSQL Self Test Procedures
+   --
+   -- alter system set PLSQL_CCFLAGS = 
+   --    'WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE'
+   --    scope=BOTH;
+   --
+   $IF $$WTPLSQL_SELFTEST
+   $THEN
+      procedure WTPLSQL_RUN;
+      procedure callback_1;
+      procedure callback_2;
+   $END
 
 end wtplsql;
