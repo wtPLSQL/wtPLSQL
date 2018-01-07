@@ -40,7 +40,7 @@ begin
                                                / buff.tot_cnt
                                      ) * 100
                                    ,2)
-                             ,'9999.99') || '%';
+                             ,'9990.99') || '%';
       end if;
       p('       Total Testcases: ' || to_char(buff.tcase_cnt,'9999999') ||
         '      Total Assertions: ' || to_char(buff.tot_cnt  ,'9999999') );
@@ -65,27 +65,27 @@ begin
             ,sum(decode(status,'EXCL',1,0))  EXCL_LINES
             ,sum(decode(status,'NOTX',1,0))  NOTX_LINES
             ,sum(decode(status,'UNKN',1,0))  UNKN_LINES
-            ,min(min_time)                   MIN_MSEC
-            ,sum(total_time)/count(*)        AVG_MSEC
-            ,max(max_time)                   MAX_MSEC
+            ,min(min_time)/1000              MIN_USEC
+            ,sum(total_time)/1000/count(*)   AVG_USEC
+            ,max(max_time)/1000              MAX_USEC
        from  wt_dbout_profiles
        where test_run_id = g_test_runs_rec.id )
    loop
       p('    Total Source Lines: ' || to_char(buff.tot_lines ,'9999999') ||
         '          Missed Lines: ' || to_char(buff.notx_lines,'9999999') );
-      p('  Minimum Elapsed msec: ' || to_char(buff.min_msec  ,'9999999') ||
+      p('  Minimum Elapsed usec: ' || to_char(buff.min_usec  ,'9999999') ||
         '       Annotated Lines: ' || to_char(buff.anno_lines,'9999999') );
-      p('  Average Elapsed msec: ' || to_char(buff.avg_msec  ,'9999999') ||
+      p('  Average Elapsed usec: ' || to_char(buff.avg_usec  ,'9999999') ||
         '        Excluded Lines: ' || to_char(buff.excl_lines,'9999999') );
-      p('  Maximum Elapsed msec: ' || to_char(buff.max_msec  ,'9999999') ||
+      p('  Maximum Elapsed usec: ' || to_char(buff.max_usec  ,'9999999') ||
         '         Unknown Lines: ' || to_char(buff.unkn_lines,'9999999') );
       if (buff.exec_lines + buff.notx_lines) = 0
       then
          code_coverage := '(Divide by Zero)';
       else
-         code_coverage := round(      100 * buff.exec_lines /
+         code_coverage := to_char(      100 * buff.exec_lines /
                                   (buff.exec_lines + buff.notx_lines)
-                               ,2) || '%';
+                                 ,'9990.99') || '%';
       end if;
       p(' Trigger Source Offset: ' || to_char(g_test_runs_rec.trigger_offset,'9999999') ||
         '         Code Coverage: ' || code_coverage);
@@ -103,9 +103,9 @@ begin
                                     ')' );
    result_summary;
    p('  Total Run Time (sec): ' ||
-      to_char(extract(day from ( g_test_runs_rec.start_dtm -
-                                 g_test_runs_rec.end_dtm     ) * 86400 )
-             ,'9999999') );
+      to_char(extract(day from (g_test_runs_rec.end_dtm -
+                                g_test_runs_rec.start_dtm) * 86400 * 100) / 100
+             ,'99990.9') );
    if g_test_runs_rec.error_message is not null
    then
       p('');
@@ -171,8 +171,9 @@ end results_out;
 procedure profile_out
 is
    header_txt  CONSTANT varchar2(2000) := chr(10) ||
-     'Line   Stat Occurs TotTime MinTime MaxTime Text' || chr(10) ||
-     '------ ---- ------ ------- ------- ------- ------------';
+     'Source               TotTime MinTime   MaxTime     ' || chr(10) ||
+     '  Line Stat Occurs    (usec)  (usec)    (usec) Text' || chr(10) ||
+     '------ ---- ------ --------- ------- --------- ------------';
 begin
    if g_test_runs_rec.dbout_name is null
    then
@@ -201,13 +202,13 @@ begin
        where test_run_id = g_test_runs_rec.id
        order by line  )
    loop
-      p(to_char(buff.line,'99999')         || ' ' ||
-           rpad(buff.status,4)             || ' ' ||
-        to_char(buff.total_occur,'99999')  || ' ' ||
-        to_char(buff.total_time,'999999')  || ' ' ||
-        to_char(buff.min_time,'999999')    || ' ' ||
-        to_char(buff.max_time,'999999')    || ' ' ||
-                buff.text                  );
+      p(to_char(buff.line,'99999')               || ' ' ||
+           rpad(buff.status,4)                   || ' ' ||
+        to_char(buff.total_occur,'99999')        || ' ' ||
+        to_char(buff.total_time/1000,'99999999') || ' ' ||
+        to_char(buff.min_time/1000,'999999')     || ' ' ||
+        to_char(buff.max_time/1000,'99999999')   || ' ' ||
+        replace(buff.text,CHR(10),'')            );
       if mod(buff.rownum,25) = 0
       then
          p(header_txt);

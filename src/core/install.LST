@@ -11,30 +11,15 @@ Grant succeeded.
 
 PLSQL_CCFLAGS                                                                   
 --------------------------------------------------------------------------------
-WTPLSQL_ENABLE:TRUE                                                             
+WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE                                      
 
-   parm_value   v_$parameter.value%TYPE;
-                *
-ERROR at line 3:
-ORA-06550: line 3, column 17: 
-PLS-00201: identifier 'V_$PARAMETER.VALUE' must be declared 
-ORA-06550: line 3, column 17: 
-PL/SQL: Item ignored 
-ORA-06550: line 10, column 11: 
-PL/SQL: ORA-00942: table or view does not exist 
-ORA-06550: line 9, column 4: 
-PL/SQL: SQL Statement ignored 
-ORA-06550: line 12, column 18: 
-PLS-00320: the declaration of the type of this expression is incomplete or 
-malformed 
-ORA-06550: line 12, column 4: 
-PL/SQL: Statement ignored 
 
+PL/SQL procedure successfully completed.
 
 
 PLSQL_CCFLAGS                                                                   
 --------------------------------------------------------------------------------
-WTPLSQL_ENABLE:TRUE                                                             
+WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE                                      
 
 old   1: create or replace public synonym wt_test_runs_seq  for &schema_owner..wt_test_runs_seq
 new   1: create or replace public synonym wt_test_runs_seq  for wtp.wt_test_runs_seq
@@ -58,11 +43,6 @@ Synonym created.
 
 old   1: create or replace public synonym wt_not_executable for &schema_owner..wt_not_executable
 new   1: create or replace public synonym wt_not_executable for wtp.wt_not_executable
-
-Synonym created.
-
-old   1: create or replace public synonym ut_assert         for &schema_owner..wt_assert
-new   1: create or replace public synonym ut_assert         for wtp.wt_assert
 
 Synonym created.
 
@@ -182,42 +162,6 @@ Comment created.
 Comment created.
 
 
-Grant succeeded.
-
-
-Grant succeeded.
-
-
-Table created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
 Comment created.
 
 
@@ -257,6 +201,45 @@ Comment created.
 Comment created.
 
 
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Table created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
 Grant succeeded.
 
 
@@ -289,54 +272,42 @@ Grant succeeded.
 
 Package created.
 
-grant execute on result to public
-                 *
-ERROR at line 1:
-ORA-04042: procedure, function, package, or package body does not exist 
 
+Grant succeeded.
 
 
 Package created.
 
-grant execute on assert to public
-                 *
-ERROR at line 1:
-ORA-04042: procedure, function, package, or package body does not exist 
 
+Grant succeeded.
 
 
 Package created.
 
-grant execute on profiler to public
-                 *
-ERROR at line 1:
-ORA-04042: procedure, function, package, or package body does not exist 
 
+Grant succeeded.
 
 
 Package created.
 
-grant execute on text_report to public
-                 *
-ERROR at line 1:
-ORA-04042: procedure, function, package, or package body does not exist 
+
+Grant succeeded.
 
 
-
-Warning: Package Body created with compilation errors.
-
-
-Warning: Package Body created with compilation errors.
+Package body created.
 
 
-Warning: Package Body created with compilation errors.
+Package body created.
 
 
-Warning: Package Body created with compilation errors.
+Package body created.
 
 
-Warning: Package Body created with compilation errors.
+Package body created.
 
 
-Warning: Package Body created with compilation errors.
+Package body created.
+
+
+Package body created.
 

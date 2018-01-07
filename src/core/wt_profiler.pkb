@@ -42,6 +42,15 @@ begin
 end get_error_msg;
 
 ------------------------------------------------------------
+procedure delete_plsql_profiler_recs
+is
+begin
+   delete from plsql_profiler_data;
+   delete from plsql_profiler_units;
+   delete from plsql_profiler_runs;
+end delete_plsql_profiler_recs;
+
+------------------------------------------------------------
 procedure reset_g_rec
 is
    l_rec_NULL  rec_type;
@@ -297,7 +306,7 @@ procedure initialize
        out_profiler_runid  out number)
 is
 
-   retnum  binary_integer;
+   retnum       binary_integer;
 
 begin
 
@@ -314,6 +323,10 @@ begin
    g_rec.test_run_id := in_test_run_id;
 
    find_dbout(in_pkg_name => in_runner_name);
+   if g_rec.dbout_name is null
+   then
+      return;
+   end if;
    out_dbout_owner    := g_rec.dbout_owner;
    out_dbout_name     := g_rec.dbout_name;
    out_dbout_type     := g_rec.dbout_type;
@@ -323,20 +336,20 @@ begin
                               ,dbout_name_in  => g_rec.dbout_name
                               ,dbout_type_in  => g_rec.dbout_type );
    out_trigger_offset := g_rec.trigger_offset;
+
+   delete_plsql_profiler_recs;
    
-   if g_rec.dbout_name is not null
-   then
-      retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
-      if retnum <> 0 then
-         raise_application_error(-20000,
-            'dbms_profiler.INTERNAL_VERSION_CHECK returned: ' || get_error_msg(retnum));
-      end if;
-      -- This starts the PROFILER Running!!!
-      retnum := dbms_profiler.START_PROFILER(run_number => g_rec.prof_runid);
-      if retnum <> 0 then
-         raise_application_error(-20000,
-            'dbms_profiler.START_PROFILER returned: ' || get_error_msg(retnum));
-      end if;
+   retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
+   if retnum <> 0 then
+      --dbms_profiler.get_version(major_version, minor_version);
+      raise_application_error(-20000,
+         'dbms_profiler.INTERNAL_VERSION_CHECK returned: ' || get_error_msg(retnum));
+   end if;
+   -- This starts the PROFILER Running!!!
+   retnum := dbms_profiler.START_PROFILER(run_number => g_rec.prof_runid);
+   if retnum <> 0 then
+      raise_application_error(-20000,
+         'dbms_profiler.START_PROFILER returned: ' || get_error_msg(retnum));
    end if;
    out_profiler_runid := g_rec.prof_runid;
 
@@ -456,9 +469,7 @@ procedure clear_tables
 IS
 BEGIN
    delete from wt_dbout_profiles;
-   delete from plsql_profiler_data;
-   delete from plsql_profiler_units;
-   delete from plsql_profiler_runs;
+   delete_plsql_profiler_recs;
 END clear_tables;
 
 end wt_profiler;

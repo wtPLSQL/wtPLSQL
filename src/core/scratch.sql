@@ -39,5 +39,3 @@ select * from wt_dbout_profiles;
 execute wtplsql.clear_tables;
 execute wtplsql.test_run('WTPLSQL');
 execute wt_text_report.dbms_out;
-
-execute dbms_profiler.STOP_PROFILER;

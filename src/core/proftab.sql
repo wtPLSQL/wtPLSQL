@@ -1,11 +1,3 @@
-
---  Create tables for the PL/SQL profiler
---    From Oracle XE Release 11.2.0.2.0 Production on Tue Feb 16 04:02:48 2016
---  Must be updated from ORACLE_HOME/rdbms/admin/proftab.sql
---
---  Changed HEAP tables to GLOBAL TEMPORARY tables
---  Removed Foreign Keys from GLOBAL TEMPORARY tables
-
 Rem
 Rem $Header: proftab.sql 07-oct-99.11:04:02 jmuller Exp $
 Rem
@@ -57,7 +49,7 @@ drop table plsql_profiler_runs cascade constraints;
 
 drop sequence plsql_profiler_runnumber;
 
-create global temporary table plsql_profiler_runs
+create table plsql_profiler_runs
 (
   runid           number primary key,  -- unique run identifier,
                                        -- from plsql_profiler_runnumber
@@ -75,9 +67,9 @@ create global temporary table plsql_profiler_runs
 comment on table plsql_profiler_runs is
         'Run-specific information for the PL/SQL profiler';
 
-create global temporary table plsql_profiler_units
+create table plsql_profiler_units
 (
-  runid              number, --references plsql_profiler_runs,
+  runid              number references plsql_profiler_runs,
   unit_number        number,           -- internally generated library unit #
   unit_type          varchar2(32),     -- library unit type
   unit_owner         varchar2(32),     -- library unit owner name
@@ -95,7 +87,7 @@ create global temporary table plsql_profiler_units
 comment on table plsql_profiler_units is 
         'Information about each library unit in a run';
 
-create global temporary table plsql_profiler_data
+create table plsql_profiler_data
 (
   runid           number,           -- unique (generated) run identifier
   unit_number     number,           -- internally generated library unit #
@@ -109,11 +101,12 @@ create global temporary table plsql_profiler_data
   spare3          number,           -- unused
   spare4          number,           -- unused
   --
-  primary key (runid, unit_number, line#)
-  --foreign key (runid, unit_number) references plsql_profiler_units
+  primary key (runid, unit_number, line#),
+  foreign key (runid, unit_number) references plsql_profiler_units
 );
 
 comment on table plsql_profiler_data is 
         'Accumulated data from all profiler runs';
 
 create sequence plsql_profiler_runnumber start with 1 nocache;
+

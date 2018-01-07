@@ -16,21 +16,20 @@ begin
       sql_txt := 'drop public synonym ' || buff.synonym_name;
       dbms_output.put_line(sql_txt);
 	  execute immediate sql_txt;
-   end loop
+   end loop;
 end;
 /
 
 declare
-   C_FLAG  CONSTANT varchar2(100) := 'WTPLSQL_ENABLE:';
-   parm_value   v_$parameter.value%TYPE;
+   parm_value   v$parameter.value%TYPE;
 begin
    select value into parm_value
-    from  v_$parameter
+    from  v$parameter
     where name in 'plsql_ccflags';
-   if instr(parm_value, C_FLAG) <> 0
+   if instr(parm_value, 'WTPLSQL_ENABLE:') <> 0
    then
-      DBMS_OUTPUT.PUT_LINE('Remove ' || C_FLAG ||
-            ' from PLSQL_CCFLAGS: "' || parm_value || '"');
+      DBMS_OUTPUT.PUT_LINE('Remove "WTPLSQL_ENABLE" from PLSQL_CCFLAGS');
+      DBMS_OUTPUT.PUT_LINE('  *) "' || parm_value || '"');
    end if;
 end;
 /
