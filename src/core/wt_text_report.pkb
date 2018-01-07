@@ -56,37 +56,39 @@ end result_summary;
 ------------------------------------------------------------
 procedure profile_summary
 is
+   code_coverage  varchar2(100);
 begin
-   p('');
    for buff in (
       select count(*)                        TOT_LINES
+            ,sum(decode(status,'EXEC',1,0))  EXEC_LINES
             ,sum(decode(status,'ANNO',1,0))  ANNO_LINES
             ,sum(decode(status,'EXCL',1,0))  EXCL_LINES
             ,sum(decode(status,'NOTX',1,0))  NOTX_LINES
-            ,sum(decode(status,'EXEC',1,0))  EXEC_LINES
+            ,sum(decode(status,'UNKN',1,0))  UNKN_LINES
             ,min(min_time)                   MIN_MSEC
             ,sum(total_time)/count(*)        AVG_MSEC
             ,max(max_time)                   MAX_MSEC
        from  wt_dbout_profiles
        where test_run_id = g_test_runs_rec.id )
    loop
-      p('  Minimum Elapsed msec: ' || buff.min_msec);
-      p('  Average Elapsed msec: ' || buff.avg_msec);
-      p('  Maximum Elapsed msec: ' || buff.max_msec);
-      p('    Total Source Lines: ' || buff.tot_lines);
-      p('        Executed Lines: ' || buff.exec_lines);
-      p('          Missed Lines: ' || buff.notx_lines);
-      p('       Annotated Lines: ' || buff.anno_lines);
-      p('        Excluded Lines: ' || buff.excl_lines);
+      p('    Total Source Lines: ' || to_char(buff.tot_lines ,'9999999') ||
+        '          Missed Lines: ' || to_char(buff.notx_lines,'9999999') );
+      p('  Minimum Elapsed msec: ' || to_char(buff.min_msec  ,'9999999') ||
+        '       Annotated Lines: ' || to_char(buff.anno_lines,'9999999') );
+      p('  Average Elapsed msec: ' || to_char(buff.avg_msec  ,'9999999') ||
+        '        Excluded Lines: ' || to_char(buff.excl_lines,'9999999') );
+      p('  Maximum Elapsed msec: ' || to_char(buff.max_msec  ,'9999999') ||
+        '         Unknown Lines: ' || to_char(buff.unkn_lines,'9999999') );
       if (buff.exec_lines + buff.notx_lines) = 0
       then
-         p('         Code Coverage: (Divide by Zero)');
+         code_coverage := '(Divide by Zero)';
       else
-         p('         Code Coverage: ' || round( 100 * buff.exec_lines /
-                                               (buff.exec_lines + buff.notx_lines)
-                                              ,2) ||
-                                  '%' );
+         code_coverage := round(      100 * buff.exec_lines /
+                                  (buff.exec_lines + buff.notx_lines)
+                               ,2) || '%';
       end if;
+      p(' Trigger Source Offset: ' || to_char(g_test_runs_rec.trigger_offset,'9999999') ||
+        '         Code Coverage: ' || code_coverage);
    end loop;
 end profile_summary;
 
@@ -116,10 +118,9 @@ begin
       return;
    end if;
    p('');
-   p('  Results for DBOUT: ' || g_test_runs_rec.dbout_owner ||
-                         '.' || g_test_runs_rec.dbout_name  ||
-                         '(' || g_test_runs_rec.dbout_type  ||
-                         ')' );
+   p('Summary Results for DBOUT: ' || g_test_runs_rec.dbout_owner ||
+                               '.' || g_test_runs_rec.dbout_name  ||
+                               '(' || g_test_runs_rec.dbout_type  || ')' );
    profile_summary;
 end summary_out;
 
@@ -128,6 +129,7 @@ procedure results_out
 is
    last_testcase  wt_results.testcase%TYPE;
 begin
+   p('');
    p('Detailed Results for Test Runner ' || g_test_runs_rec.runner_owner ||
                                      '.' || g_test_runs_rec.runner_name  ||
                         ' (Test Run ID ' || g_test_runs_rec.id           ||
@@ -171,7 +173,6 @@ is
    header_txt  CONSTANT varchar2(2000) := chr(10) ||
      'Line   Stat Occurs TotTime MinTime MaxTime Text' || chr(10) ||
      '------ ---- ------ ------- ------- ------- ------------';
-   last_line  pls_integer := 0;
 begin
    if g_test_runs_rec.dbout_name is null
    then
@@ -188,7 +189,7 @@ begin
                         ')' );
    p(header_txt);
    for buff in (
-      select line#
+      select line
             ,status
             ,total_occur
             ,total_time
@@ -198,9 +199,9 @@ begin
             ,rownum
        from  wt_dbout_profiles
        where test_run_id = g_test_runs_rec.id
-       order by line#  )
+       order by line  )
    loop
-      p(to_char(buff.line#,'99999')        || ' ' ||
+      p(to_char(buff.line,'99999')         || ' ' ||
            rpad(buff.status,4)             || ' ' ||
         to_char(buff.total_occur,'99999')  || ' ' ||
         to_char(buff.total_time,'999999')  || ' ' ||
@@ -210,9 +211,6 @@ begin
       if mod(buff.rownum,25) = 0
       then
          p(header_txt);
-      elsif buff.line# != last_line + 1
-      then
-         p('');
       end if;
    end loop;
 end profile_out;

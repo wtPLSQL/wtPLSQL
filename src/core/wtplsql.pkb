@@ -81,11 +81,13 @@ begin
 
    wt_result.initialize(g_test_runs_rec.id);
 
-   wt_profiler.initialize(in_test_run_id  => g_test_runs_rec.id,
-                          in_runner_name  => g_test_runs_rec.runner_name,
-                          out_dbout_owner => g_test_runs_rec.dbout_owner,
-                          out_dbout_name  => g_test_runs_rec.dbout_name,
-                          out_dbout_type  => g_test_runs_rec.dbout_type);
+   wt_profiler.initialize(in_test_run_id      => g_test_runs_rec.id,
+                          in_runner_name      => g_test_runs_rec.runner_name,
+                          out_dbout_owner     => g_test_runs_rec.dbout_owner,
+                          out_dbout_name      => g_test_runs_rec.dbout_name,
+                          out_dbout_type      => g_test_runs_rec.dbout_type,
+                          out_trigger_offset  => g_test_runs_rec.trigger_offset,
+                          out_profiler_runid  => g_test_runs_rec.profiler_runid);
 
    begin
       execute immediate 'BEGIN ' || in_package_name || '.WTPLSQL_RUN; END;';
@@ -194,14 +196,14 @@ begin
                        ,check_this_in => g_test_runs_rec.runner_name);
    wt_assert.isnotnull (msg_in        =>  'g_test_runs_rec.runner_owner NOT NULL'
                        ,check_this_in => g_test_runs_rec.runner_owner);
-   wt_assert.isnull (msg_in        =>  'g_test_runs_rec.dbout_owner IS NULL'
-                    ,check_this_in => g_test_runs_rec.dbout_owner);
-   wt_assert.isnull (msg_in        =>  'g_test_runs_rec.dbout_name IS NULL'
-                    ,check_this_in => g_test_runs_rec.dbout_name);
-   wt_assert.isnull (msg_in        =>  'g_test_runs_rec.dbout_type IS NULL'
-                    ,check_this_in => g_test_runs_rec.dbout_type);
-   wt_assert.isnull (msg_in        =>  'g_test_runs_rec.profiler_runid IS NULL'
-                    ,check_this_in => g_test_runs_rec.profiler_runid);
+   wt_assert.isnotnull (msg_in        =>  'g_test_runs_rec.dbout_owner IS NOTNULL'
+                       ,check_this_in => g_test_runs_rec.dbout_owner);
+   wt_assert.isnotnull (msg_in        =>  'g_test_runs_rec.dbout_name IS NOT NULL'
+                       ,check_this_in => g_test_runs_rec.dbout_name);
+   wt_assert.isnotnull (msg_in        =>  'g_test_runs_rec.dbout_type IS NOT NULL'
+                       ,check_this_in => g_test_runs_rec.dbout_type);
+   wt_assert.isnotnull (msg_in        =>  'g_test_runs_rec.profiler_runid IS NOT NULL'
+                       ,check_this_in => g_test_runs_rec.profiler_runid);
    wt_assert.isnull (msg_in        =>  'g_test_runs_rec.end_dtm IS NULL'
                     ,check_this_in => g_test_runs_rec.end_dtm);
    wt_assert.isnull (msg_in        =>  'g_test_runs_rec.error_message IS NULL'
@@ -223,7 +225,6 @@ begin
    wt_assert.g_testcase := 'TESTCASE_1';
    -- This Test Case runs at the last step of the TEST_RUNS
    --   procedure in this package.
-   --   This procedure must raise an exception to run Test Case 2
 end testcase_1;
 
 ----------------------------------------
@@ -293,7 +294,7 @@ begin
    -- This runs like a self-contained "in-circuit" test.
    --   Internal test points are activated by the
    --   g_running_selftest variable.  This grants access
-   --   to specific locations with this package.
+   --   to specific locations within this package.
    g_running_selftest := TRUE;
    testcase_0;
    -- Callback_1 will be called at the end of TestCase_0.

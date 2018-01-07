@@ -28,6 +28,10 @@ end;
 
 select assert.get_NLS_DATE_FORMAT from dual;
 
+select * from plsql_profiler_data;
+select * from plsql_profiler_units;
+select * from plsql_profiler_runs;
+
 select * from wt_test_runs;
 select * from wt_results;
 select * from wt_dbout_profiles;
@@ -35,3 +39,5 @@ select * from wt_dbout_profiles;
 execute wtplsql.clear_tables;
 execute wtplsql.test_run('WTPLSQL');
 execute wt_text_report.dbms_out;
+
+execute dbms_profiler.STOP_PROFILER;

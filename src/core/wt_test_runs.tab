@@ -13,6 +13,7 @@ create global temporary table wt_test_runs
    ,dbout_owner    varchar2(128)
    ,dbout_name     varchar2(128)
    ,dbout_type     varchar2(20)
+   ,trigger_offset number
    ,profiler_runid number
    ,end_dtm        timestamp
    ,error_message  varchar2(4000)
@@ -29,6 +30,7 @@ comment on column wt_test_runs.end_dtm is 'Date/time (and fractional seconds) th
 comment on column wt_test_runs.dbout_owner is 'Optional Owner of the Database Object Under Test (DBOUT).';
 comment on column wt_test_runs.dbout_name is 'Optional Name of the Database Object Under Test (DBOUT).';
 comment on column wt_test_runs.dbout_type is 'Optional Type of the Database Object Under Test (DBOUT).';
+comment on column wt_test_runs.trigger_offset is 'Optional calculated offset from start of Trigger Source to start of Trigger PL/SQL Block.';
 comment on column wt_test_runs.profiler_runid is 'Optional DBMS_PROFILER unique run identifier from plsql_profiler_runnumber sequence';
 comment on column wt_test_runs.error_message is 'Optional Last error messages from this Test Run.';
 

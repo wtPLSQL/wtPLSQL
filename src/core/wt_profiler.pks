@@ -11,11 +11,13 @@ as
    return wt_test_runs.dbout_type%TYPE;
 
    procedure initialize
-      (in_test_run_id   in  number,
-       in_runner_name   in  varchar2,
-       out_dbout_owner  out varchar2,
-       out_dbout_name   out varchar2,
-       out_dbout_type   out varchar2);
+      (in_test_run_id      in  number,
+       in_runner_name      in  varchar2,
+       out_dbout_owner     out varchar2,
+       out_dbout_name      out varchar2,
+       out_dbout_type      out varchar2,
+       out_trigger_offset  out number,
+       out_profiler_runid  out number);
 
    procedure finalize;
 
@@ -23,9 +25,10 @@ as
 
    procedure resume;
 
-   FUNCTION trigger_offset
+   function trigger_offset
       (dbout_owner_in  in  varchar2
-      ,dbout_name_in   in  varchar2)
+      ,dbout_name_in   in  varchar2
+      ,dbout_type_in   in  varchar2)
    return number;
 
    function calc_pct_coverage

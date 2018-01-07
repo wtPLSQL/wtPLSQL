@@ -7,6 +7,7 @@ as
       ,dbout_name      wt_test_runs.dbout_name%TYPE
       ,dbout_type      wt_test_runs.dbout_type%TYPE
       ,prof_runid      binary_integer
+      ,trigger_offset  binary_integer
       ,error_message   varchar2(4000));
    g_rec  rec_type;
 
@@ -50,6 +51,7 @@ end reset_g_rec;
 
 ------------------------------------------------------------
 procedure find_dbout
+      (in_pkg_name  in  varchar2)
 is
 
    C_HEAD_RE CONSTANT varchar2(30) := '--% WTPLSQL SET DBOUT "';
@@ -72,7 +74,7 @@ is
    cursor c_annotation is
       select regexp_substr(src.text, C_HEAD_RE||C_MAIN_RE||C_TAIL_RE)  TEXT
        from  user_source  src
-       where src.name = ??  -- Must pass in Runner Name
+       where src.name = in_pkg_name
         and  src.type = 'PACKAGE BODY'
         and  regexp_like(src.text, C_HEAD_RE||C_MAIN_RE||C_TAIL_RE)
        order by src.line;
@@ -106,22 +108,29 @@ begin
    -- Locate the Owner/Name separator
    pos := instr(target,'.');
    begin
-      select owner
-            ,object_name
-            ,object_type
+      select obj.owner
+            ,obj.object_name
+            ,obj.object_type
         into g_rec.dbout_owner
             ,g_rec.dbout_name
             ,g_rec.dbout_type
-       from  all_objects
-       where (    pos = 0
-              and owner       = USER
-              and object_name = target  )
-          OR (    pos = 1
-              and owner       = USER
-              and object_name = substr(target,2,512) )
-          OR (    pos > 1
-              and owner       = substr(target,1,pos-1)
-              and object_name = substr(target,pos+1,512) );
+       from  all_objects  obj
+       where obj.object_type in ('FUNCTION', 'PROCEDURE', 'PACKAGE BODY',
+                                 'TYPE BODY', 'TRIGGER')
+        and  (   (    pos = 0
+                  and obj.owner       = USER
+                  and obj.object_name = target  )
+              OR (    pos = 1
+                  and obj.owner       = USER
+                  and obj.object_name = substr(target,2,512) )
+              OR (    pos > 1
+                  and obj.owner       = substr(target,1,pos-1)
+                  and obj.object_name = substr(target,pos+1,512) ) )
+        and  exists (
+             select 'x' from all_source src
+              where src.owner  = obj.owner
+               and  src.name   = obj.object_name
+               and  src.type   = obj.object_type );
    exception when NO_DATA_FOUND
    then
       g_rec.error_message := 'Unable to find Database Object "' ||
@@ -134,56 +143,58 @@ end find_dbout;
 procedure insert_dbout_profile
 is
 begin
-
    insert into wt_dbout_profiles
-      select g_rec.test_run_id              TEST_RUN_ID
-            ,ppd.line#
+      with q1 as (
+      select src.line
             ,case
-             when ne.text is not null
-             then
-                  'EXCL'
-             when ppd.total_occur = 0 and ppd.total_time = 0
-             then
-                  'NOTX'
-             when    ppd.total_occur  = 0 and ppd.total_time != 0
-                  or ppd.total_occur != 0 and ppd.total_time  = 0
-             then
-                  'UNKN'
-             else
-                  'EXEC'
-             end                            STATUS
+             when ne.text is not null           then 'EXCL'
+             when     ppd.total_occur = 0
+                  and ppd.total_time  = 0       then 'NOTX'
+             when    (    ppd.total_occur  = 0
+                      and ppd.total_time != 0 )
+                  or (    ppd.total_occur != 0
+                      and ppd.total_time  = 0 ) then 'UNKN'
+                                                else 'EXEC'
+             end                STATUS
+            ,ppd.total_occur
+            ,ppd.total_time
+            ,ppd.min_time
+            ,ppd.max_time
             ,src.text
-            ,sum(ppd.total_occur)           TOTAL_OCCUR
-            ,sum(ppd.total_time)            TOTAL_TIME
-            ,min(ppd.min_time)              MIN_TIME
-            ,max(ppd.max_time)              MAX_TIME
        from  plsql_profiler_units ppu
              join plsql_profiler_data  ppd
                   on  ppd.unit_number = ppu.unit_number
-                  and ppd.runid       = ppu.runid
+                  and ppd.runid       = g_rec.prof_runid
              join all_source  src
-                  on  src.owner = ppu.unit_owner
-                  and src.name  = ppu.unit_name
-                  and src.type  = ppu.unit_type
-                  and (   (    ppu.unit_type != 'TRIGGER'
-                           and src.line       = ppd.line#)
-                       OR (    ppu.unit_type = 'TRIGGER'
-                           and src.line      = ppd.line# + trigger_offset
-                                                              (ppu.unit_owner
-                                                              ,ppu.unit_name) ) )
+                  on  src.line  = ppd.line# + g_rec.trigger_offset
+                  and src.owner = g_rec.dbout_owner
+                  and src.name  = g_rec.dbout_name
+                  and src.type  = g_rec.dbout_type
         left join wt_not_executable ne
                   on  ne.text = src.text
        where ppu.unit_owner = g_rec.dbout_owner
         and  ppu.unit_name  = g_rec.dbout_name
         and  ppu.unit_type  = g_rec.dbout_type
-        and  ppu.runid      = g_rec.prof_runid;
-
+        and  ppu.runid      = g_rec.prof_runid
+      )
+      select g_rec.test_run_id
+            ,line
+            ,status
+            ,sum(total_occur)   TOTAL_OCCUR
+            ,sum(total_time)    TOTAL_TIME
+            ,min(min_time)      MIN_TIME
+            ,max(max_time)      MAX_TIME
+            ,text
+       from q1
+       group by line
+            ,status
+            ,text;
 end insert_dbout_profile;
 
 ------------------------------------------------------------
 procedure update_anno_status
 is
-   --
+
    cursor c_find_begin is
       select line
             ,instr(text,'--%WTPLSQL_begin_ignore_lines%--') col
@@ -194,7 +205,7 @@ is
         and  text like '%--\%WTPLSQL_begin_ignore_lines\%--%' escape '\'
        order by line;
    buff_begin  c_find_begin%ROWTYPE;
-   --
+
    cursor c_find_end (in_line in number, in_col in number) is
       with q1 as (
       select line
@@ -215,18 +226,8 @@ is
        order by line
             ,col;
    buff_end  c_find_end%ROWTYPE;
-   --
-   trig_offset  number;
 
 begin
-
-   if g_rec.dbout_type = 'TRIGGER'
-   then
-      trig_offset := trigger_offset(g_rec.dbout_owner
-                                   ,g_rec.dbout_name);
-   else
-      trig_offset := 0;
-   end if;
 
    open c_find_begin;
    loop
@@ -245,9 +246,9 @@ begin
       update wt_dbout_profiles
         set  status = 'ANNO'
        where test_run_id = g_rec.test_run_id
-        and  line# >= buff_begin.line + trig_offset
+        and  line >= buff_begin.line + g_rec.trigger_offset
         and  (   buff_end.line is NULL
-              OR line# <= buff_end.line + trig_offset );
+              OR line <= buff_end.line + g_rec.trigger_offset );
 
       exit when buff_end.line is NULL;
 
@@ -287,11 +288,13 @@ end get_dbout_type;
 
 ------------------------------------------------------------
 procedure initialize
-      (in_test_run_id   in  number,
-       in_runner_name   in  varchar2,
-       out_dbout_owner  out varchar2,
-       out_dbout_name   out varchar2,
-       out_dbout_type   out varchar2)
+      (in_test_run_id      in  number,
+       in_runner_name      in  varchar2,
+       out_dbout_owner     out varchar2,
+       out_dbout_name      out varchar2,
+       out_dbout_type      out varchar2,
+       out_trigger_offset  out number,
+       out_profiler_runid  out number)
 is
 
    retnum  binary_integer;
@@ -310,8 +313,17 @@ begin
    reset_g_rec;
    g_rec.test_run_id := in_test_run_id;
 
-   find_dbout;
+   find_dbout(in_pkg_name => in_runner_name);
+   out_dbout_owner    := g_rec.dbout_owner;
+   out_dbout_name     := g_rec.dbout_name;
+   out_dbout_type     := g_rec.dbout_type;
  
+   g_rec.trigger_offset := wt_profiler.trigger_offset
+                              (dbout_owner_in => g_rec.dbout_owner
+                              ,dbout_name_in  => g_rec.dbout_name
+                              ,dbout_type_in  => g_rec.dbout_type );
+   out_trigger_offset := g_rec.trigger_offset;
+   
    if g_rec.dbout_name is not null
    then
       retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
@@ -325,12 +337,8 @@ begin
          raise_application_error(-20000,
             'dbms_profiler.START_PROFILER returned: ' || get_error_msg(retnum));
       end if;
-
    end if;
-   
-   out_dbout_owner := g_rec.dbout_owner;
-   out_dbout_name  := g_rec.dbout_name;
-   out_dbout_type  := g_rec.dbout_type;
+   out_profiler_runid := g_rec.prof_runid;
 
 end initialize;
 
@@ -385,12 +393,17 @@ END resume;
 
 ------------------------------------------------------------
 -- Find begining of PL/SQL Block in a Trigger
-FUNCTION trigger_offset
+function trigger_offset
       (dbout_owner_in  in  varchar2
-      ,dbout_name_in   in  varchar2)
+      ,dbout_name_in   in  varchar2
+      ,dbout_type_in   in  varchar2)
    return number
-IS
-BEGIN
+is
+begin
+   if dbout_type_in != 'TRIGGER'
+   then
+      return 0;
+   end if;
    for buff in (
       select line, text from all_source
        where owner = dbout_owner_in
@@ -414,7 +427,7 @@ BEGIN
       end if;
    end loop;
    return 0;
-END trigger_offset;
+end trigger_offset;
 
 ------------------------------------------------------------
 function calc_pct_coverage
