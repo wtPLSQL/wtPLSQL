@@ -19,10 +19,10 @@ create table wt_test_runs
    ,error_message  varchar2(4000)
    ,constraint wt_test_runs_pk primary key (id)
    ,constraint wt_test_runs_nk1 unique (start_dtm, runner_name, runner_owner)
-   ) on commit preserve rows;
+   ) pctfree 0;
 
 create index wt_test_runs_idx1
-  on wt_test_runs_idx1 (start_dtm);
+  on wt_test_runs (start_dtm);
 
 comment on table wt_test_runs is 'Test Run data for each execution of the WTPLSQL_RUN procedure.';
 comment on column wt_test_runs.id  is 'Primary (Surrogate) Key for each Test Run';

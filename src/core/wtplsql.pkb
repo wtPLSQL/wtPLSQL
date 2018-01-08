@@ -22,7 +22,7 @@ as
 -- This procedure is separated for internal WTPLSQL testing
 procedure check_runner
 is
-   package_check        number;
+   l_package_check        number;
 begin
    -- These RAISEs can be captured because the Test Runs Record is set.
    --  Check for NULL Runner Name
@@ -31,14 +31,14 @@ begin
       raise_application_error (-20001, 'RUNNER_NAME is null');
    end if;
    --  Check for Valid Runner Name
-   select count(*) into package_check
+   select count(*) into l_package_check
     from  user_arguments
     where object_name   = 'WTPLSQL_RUN'
      and  package_name  = g_test_runs_rec.runner_name
      and  argument_name is null
      and  position      = 1
      and  sequence      = 0;
-   if package_check != 1
+   if l_package_check != 1
    then
       raise_application_error (-20002, 'RUNNER_NAME is not valid');
    end if;
@@ -47,10 +47,10 @@ end check_runner;
 ------------------------------------------------------------
 procedure init_test_run
 is
-   test_runs_rec_NULL   wt_test_runs%ROWTYPE;
+   l_test_runs_rec_NULL   wt_test_runs%ROWTYPE;
 begin
    -- Reset the Test Runs Record before checking anything
-   g_test_runs_rec              := test_runs_rec_NULL;
+   g_test_runs_rec              := l_test_runs_rec_NULL;
    g_test_runs_rec.id           := wt_test_runs_seq.nextval;
    g_test_runs_rec.start_dtm    := systimestamp;
    g_test_runs_rec.runner_owner := USER;
@@ -60,7 +60,7 @@ end init_test_run;
 procedure insert_test_run
 is
    PRAGMA AUTONOMOUS_TRANSACTION;
-   test_runs_recNULL  test_runs$ROWTYPE;
+   l_wt_test_runs_recNULL  wt_test_runs%ROWTYPE;
 begin
    if g_test_runs_rec.id is null
    then
@@ -68,7 +68,7 @@ begin
    end if;
    g_test_runs_rec.end_dtm := systimestamp;
    insert into wt_test_runs values g_test_runs_rec;
-   g_test_runs_rec := test_runs_recNULL;
+   g_test_runs_rec := l_wt_test_runs_recNULL;
    COMMIT;
 end insert_test_run;
 
@@ -165,17 +165,22 @@ is
    PRAGMA AUTONOMOUS_TRANSACTION;
 begin
    -- Remove Test Run data older than 7 days if Test Run ID is NULL
-   for buff in (select id from test_runs
+   for buff in (select id from wt_test_runs
                  where (    in_test_run_id is null
                         and start_dtm < trunc(sysdate) - 30 )
                    or  (    in_test_run_id is not null
                         and in_test_run_id = id )
                  order by start_dtm, id)
-   wt_result.delete_records;
-   wt_profiler.delete_records;
-   delete from wt_test_runs;
-   COMMIT;
-end clear_tables;
+   loop
+      -- Profiler delete must be first because it also contains a
+      --    PRAGMA AUTONOMOUS_TRANSACTION
+      wt_profiler.delete_records(buff.id);
+      wt_result.delete_records(buff.id);
+      delete from wt_test_runs
+       where id = in_test_run_id;
+      COMMIT;
+   end loop;
+end delete_records;
 
 
 
@@ -190,7 +195,6 @@ $THEN
 ----------------------------------------
 procedure testcase_0
 is
-   save_test_runs_rec   wt_test_runs%ROWTYPE := g_test_runs_rec;
 begin
    wt_assert.g_testcase := 'TESTCASE_0';
    -- This Test Case runs in the EXECUTE IMMEDAITE in the TEST_RUN
@@ -237,6 +241,7 @@ end testcase_1;
 ----------------------------------------
 procedure testcase_2
 is
+   --l_save_test_runs_rec   wt_test_runs%ROWTYPE := g_test_runs_rec;
 begin
    -- Note: This procedure runs in an exception handler.  The
    --   ERROR_STACK will have data in it.
@@ -249,7 +254,7 @@ begin
    --wt_assert.raises (msg_in         => 'Check_Runner Procedure raises exception'
    --                 ,check_call_in  => 'check_runner'
    --                 ,against_exc_in => 'ORA-00000');
-   --g_test_runs_rec.runner_name := save_test_runs_rec.runner_name;
+   --g_test_runs_rec.runner_name := l_save_test_runs_rec.runner_name;
 end testcase_2;
 
 ----------------------------------------
@@ -272,10 +277,10 @@ end callback_1;
 --  Called from Internal Test Point
 procedure callback_2
 is
-   err_txt  varchar2(32000);
+   l_err_txt  varchar2(32000);
 begin
-   err_txt := dbms_utility.format_error_stack     ||
-              dbms_utility.format_error_backtrace;
+   l_err_txt := dbms_utility.format_error_stack     ||
+                dbms_utility.format_error_backtrace;
    -- Note: This procedure runs in an exception handler.  The
    --   ERROR_STACK will have data in it.
    if NOT g_running_selftest
@@ -291,7 +296,7 @@ exception
       g_running_selftest := FALSE;
       raise_application_error(-20000, substr(dbms_utility.format_error_stack     ||
                                              dbms_utility.format_error_backtrace ||
-                                             CHR(10) || err_txt, 1, 4000) );
+                                             CHR(10) || l_err_txt, 1, 4000) );
 end callback_2;
 
 ----------------------------------------

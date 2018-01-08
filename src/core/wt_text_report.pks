@@ -17,8 +17,10 @@ as
       ,in_message        in wt_results.message%TYPE);
 
    procedure dbms_out
-      (in_test_run_id    in  number  default NULL
+      (in_runner_name    in  wt_test_runs.runner_name%TYPE
       ,in_hide_details   in  boolean default FALSE
-      ,in_summary_first  in  boolean default FALSE);
+      ,in_summary_first  in  boolean default FALSE
+      ,in_show_pass      in  boolean default FALSE
+      ,in_show_anno      in  boolean default FALSE);
 
 end wt_text_report;

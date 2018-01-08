@@ -22,21 +22,21 @@ function get_error_msg
       (retnum_in  in  binary_integer)
    return varchar2
 is
-   msg_prefix  varchar2(50) := 'DBMS_PROFILER Error: ';
+   l_msg_prefix  varchar2(50) := 'DBMS_PROFILER Error: ';
 begin
    case retnum_in
-   when dbms_profiler.error_param then return msg_prefix ||
+   when dbms_profiler.error_param then return l_msg_prefix ||
        'A subprogram was called with an incorrect parameter.';
-   when dbms_profiler.error_io then return msg_prefix ||
+   when dbms_profiler.error_io then return l_msg_prefix ||
        'Data flush operation failed.' ||
        ' Check whether the profiler tables have been created,' ||
        ' are accessible, and that there is adequate space.';
-   when dbms_profiler.error_version then return msg_prefix ||
+   when dbms_profiler.error_version then return l_msg_prefix ||
        'There is a mismatch between package and database implementation.' ||
        ' Oracle returns this error if an incorrect version of the' ||
        ' DBMS_PROFILER package is installed, and if the version of the' ||
        ' profiler package cannot work with this database version.';
-   else return msg_prefix ||
+   else return l_msg_prefix ||
        'Unknown error number ' || retnum_in;
    end case;
 end get_error_msg;
@@ -45,6 +45,7 @@ end get_error_msg;
 procedure delete_plsql_profiler_recs
       (in_runid  in number default null)
 is
+   PRAGMA AUTONOMOUS_TRANSACTION;
 begin
    -- Remove Profiler data older than 7 days if RUNID is NULL
    for buff in (select runid from plsql_profiler_runs
@@ -61,6 +62,7 @@ begin
       delete from plsql_profiler_runs
        where runid = buff.runid;
    end loop;
+   COMMIT;
 end delete_plsql_profiler_recs;
 
 ------------------------------------------------------------
@@ -100,13 +102,13 @@ is
         and  src.type = 'PACKAGE BODY'
         and  regexp_like(src.text, C_HEAD_RE||C_MAIN_RE||C_TAIL_RE)
        order by src.line;
-   target        varchar2(32000);
-   pos           number;
+   l_target   varchar2(32000);
+   l_pos      number;
 
 begin
 
    open c_annotation;
-   fetch c_annotation into target;
+   fetch c_annotation into l_target;
    if c_annotation%NOTFOUND
    then
       close c_annotation;
@@ -115,20 +117,20 @@ begin
    close c_annotation;
 
    -- Strip the Head Sub-String
-   target := regexp_replace(SRCSTR      => target
-                           ,PATTERN     => '^' || C_HEAD_RE
-                           ,REPLACESTR  => ''
-                           ,POSITION    => 1
-                           ,OCCURRENCE  => 1);
+   l_target := regexp_replace(SRCSTR      => l_target
+                             ,PATTERN     => '^' || C_HEAD_RE
+                             ,REPLACESTR  => ''
+                             ,POSITION    => 1
+                             ,OCCURRENCE  => 1);
    -- Strip the Tail Sub-String
-   target := regexp_replace(SRCSTR      => target
-                           ,PATTERN     => C_TAIL_RE || '$'
-                           ,REPLACESTR  => ''
-                           ,POSITION    => 1
-                           ,OCCURRENCE  => 1);
+   l_target := regexp_replace(SRCSTR      => l_target
+                             ,PATTERN     => C_TAIL_RE || '$'
+                             ,REPLACESTR  => ''
+                             ,POSITION    => 1
+                             ,OCCURRENCE  => 1);
 
    -- Locate the Owner/Name separator
-   pos := instr(target,'.');
+   l_pos := instr(l_target,'.');
    begin
       select obj.owner
             ,obj.object_name
@@ -139,15 +141,15 @@ begin
        from  all_objects  obj
        where obj.object_type in ('FUNCTION', 'PROCEDURE', 'PACKAGE BODY',
                                  'TYPE BODY', 'TRIGGER')
-        and  (   (    pos = 0
+        and  (   (    l_pos = 0
                   and obj.owner       = USER
-                  and obj.object_name = target  )
-              OR (    pos = 1
+                  and obj.object_name = l_target  )
+              OR (    l_pos = 1
                   and obj.owner       = USER
-                  and obj.object_name = substr(target,2,512) )
-              OR (    pos > 1
-                  and obj.owner       = substr(target,1,pos-1)
-                  and obj.object_name = substr(target,pos+1,512) ) )
+                  and obj.object_name = substr(l_target,2,512) )
+              OR (    l_pos > 1
+                  and obj.owner       = substr(l_target,1,l_pos-1)
+                  and obj.object_name = substr(l_target,l_pos+1,512) ) )
         and  exists (
              select 'x' from all_source src
               where src.owner  = obj.owner
@@ -156,7 +158,7 @@ begin
    exception when NO_DATA_FOUND
    then
       g_rec.error_message := 'Unable to find Database Object "' ||
-                              target || '". ';
+                              l_target || '". ';
    end;
 
 end find_dbout;
@@ -164,6 +166,7 @@ end find_dbout;
 ------------------------------------------------------------
 procedure insert_dbout_profile
 is
+   PRAGMA AUTONOMOUS_TRANSACTION;
 begin
 
    insert into wt_dbout_profiles
@@ -212,7 +215,10 @@ begin
        group by line
             ,status
             ,text;
+   COMMIT;
 
+   -- Delete PLSQL Profiler also has it's own
+   --   PRAGMA AUTONOMOUS_TRANSACTION and COMMIT;
    delete_plsql_profiler_recs(g_rec.prof_runid);
 
 end insert_dbout_profile;
@@ -220,6 +226,8 @@ end insert_dbout_profile;
 ------------------------------------------------------------
 procedure update_anno_status
 is
+
+   PRAGMA AUTONOMOUS_TRANSACTION;
 
    cursor c_find_begin is
       select line
@@ -230,7 +238,7 @@ is
         and  type  = g_rec.dbout_type
         and  text like '%--\%WTPLSQL_begin_ignore_lines\%--%' escape '\'
        order by line;
-   buff_begin  c_find_begin%ROWTYPE;
+   buff_find_begin  c_find_begin%ROWTYPE;
 
    cursor c_find_end (in_line in number, in_col in number) is
       with q1 as (
@@ -251,66 +259,44 @@ is
               and col  > in_col)
        order by line
             ,col;
-   buff_end  c_find_end%ROWTYPE;
+   buff_find_end  c_find_end%ROWTYPE;
 
 begin
 
    open c_find_begin;
    loop
-      fetch c_find_begin into buff_begin;
+      fetch c_find_begin into buff_find_begin;
 
       exit when c_find_begin%NOTFOUND;
 
-      open c_find_end (buff_begin.line, buff_begin.col);
-      fetch c_find_end into buff_end;
+      open c_find_end (buff_find_begin.line, buff_find_begin.col);
+      fetch c_find_end into buff_find_end;
       if c_find_end%NOTFOUND
       then
-         buff_end.line := NULL;
+         buff_find_end.line := NULL;
       end if;
       close c_find_end;
 
       update wt_dbout_profiles
         set  status = 'ANNO'
        where test_run_id = g_rec.test_run_id
-        and  line >= buff_begin.line + g_rec.trigger_offset
-        and  (   buff_end.line is NULL
-              OR line <= buff_end.line + g_rec.trigger_offset );
+        and  line >= buff_find_begin.line + g_rec.trigger_offset
+        and  (   buff_find_end.line is NULL
+              OR line <= buff_find_end.line + g_rec.trigger_offset );
 
-      exit when buff_end.line is NULL;
+      exit when buff_find_end.line is NULL;
 
    end loop;
    close c_find_begin;
 
+   COMMIT;
+   
 end update_anno_status;
 
 
 ---------------------
 --  Public Procedures
 ---------------------
-
-------------------------------------------------------------
-function get_dbout_owner
-   return wt_test_runs.dbout_owner%TYPE
-is
-begin
-   return g_rec.dbout_owner;
-end get_dbout_owner;
-
-------------------------------------------------------------
-function get_dbout_name
-   return wt_test_runs.dbout_name%TYPE
-is
-begin
-   return g_rec.dbout_name;
-end get_dbout_name;
-
-------------------------------------------------------------
-function get_dbout_type
-   return wt_test_runs.dbout_type%TYPE
-is
-begin
-   return g_rec.dbout_type;
-end get_dbout_type;
 
 ------------------------------------------------------------
 procedure initialize
@@ -323,7 +309,7 @@ procedure initialize
        out_profiler_runid  out number)
 is
 
-   retnum       binary_integer;
+   l_retnum       binary_integer;
 
 begin
 
@@ -354,19 +340,20 @@ begin
                               ,dbout_type_in  => g_rec.dbout_type );
    out_trigger_offset := g_rec.trigger_offset;
 
+   -- Make room for more data
    delete_plsql_profiler_recs;
    
-   retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
-   if retnum <> 0 then
+   l_retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
+   if l_retnum <> 0 then
       --dbms_profiler.get_version(major_version, minor_version);
       raise_application_error(-20000,
-         'dbms_profiler.INTERNAL_VERSION_CHECK returned: ' || get_error_msg(retnum));
+         'dbms_profiler.INTERNAL_VERSION_CHECK returned: ' || get_error_msg(l_retnum));
    end if;
    -- This starts the PROFILER Running!!!
-   retnum := dbms_profiler.START_PROFILER(run_number => g_rec.prof_runid);
-   if retnum <> 0 then
+   l_retnum := dbms_profiler.START_PROFILER(run_number => g_rec.prof_runid);
+   if l_retnum <> 0 then
       raise_application_error(-20000,
-         'dbms_profiler.START_PROFILER returned: ' || get_error_msg(retnum));
+         'dbms_profiler.START_PROFILER returned: ' || get_error_msg(l_retnum));
    end if;
    out_profiler_runid := g_rec.prof_runid;
 
@@ -400,26 +387,26 @@ begin
 end finalize;
 
 ------------------------------------------------------------
-PROCEDURE pause
-IS
-BEGIN
+procedure pause
+is
+begin
    if g_rec.dbout_name is null
    then
       return;
    end if;
-   dbms_profiler.PAUSE_PROFILER;
-END pause;
+   dbms_profiler.pause_profiler;
+end pause;
 
 ------------------------------------------------------------
-PROCEDURE resume
-IS
-BEGIN
+procedure resume
+is
+begin
    if g_rec.dbout_name is null
    then
       return;
    end if;
-   dbms_profiler.RESUME_PROFILER;
-END resume;
+   dbms_profiler.resume_profiler;
+end resume;
 
 ------------------------------------------------------------
 -- Find begining of PL/SQL Block in a Trigger

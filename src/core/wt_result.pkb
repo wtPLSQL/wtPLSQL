@@ -19,9 +19,9 @@ as
 procedure initialize
       (in_test_run_id   in wt_test_runs.id%TYPE)
 is
-   g_results_recNULL  wt_results%ROWTYPE;
+   l_results_recNULL  wt_results%ROWTYPE;
 begin
-   g_results_rec := g_results_recNULL;
+   g_results_rec := l_results_recNULL;
    g_results_rec.test_run_id  := in_test_run_id;
    g_results_rec.result_seq   := 0;
    g_results_rec.executed_dtm := systimestamp;
@@ -33,6 +33,7 @@ end initialize;
 --  it must be able to run multiple times without causing damage.
 procedure finalize
 is
+   PRAGMA AUTONOMOUS_TRANSACTION;
 begin
    if g_results_rec.test_run_id IS NULL
    then
@@ -42,6 +43,7 @@ begin
       insert into wt_results values g_results_nt(i);
    g_results_nt := results_nt_type(null);
    g_results_rec.test_run_id := NULL;
+   COMMIT;
 end finalize;
 
 ------------------------------------------------------------

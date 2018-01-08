@@ -57,18 +57,18 @@ is
    l_ret_txt    varchar2(10);
 
    -- Define Query for the Comparison
-   query_txt  varchar2(32000) := 'with check_query as (' ||
-                                  check_query_in ||
-                                  '), against_query as (' ||
-                                  against_query_in ||
-                                  ') select check_query MINUS against_query ' ||
-                              'UNION select against_query MINUS check_query';
+   l_qry_txt  varchar2(32000) := 'with check_query as (' ||
+                                 check_query_in ||
+                                 '), against_query as (' ||
+                                 against_query_in ||
+                                 ') select check_query MINUS against_query ' ||
+                             'UNION select against_query MINUS check_query';
 
    ----------------------------------------
    -- Define EXECUTE IMMEDIATE text
-   exec_txt   varchar2(32767) :=
+   l_exec_txt   varchar2(32767) :=
 'declare
-   cursor cur is ' || query_txt || ';
+   cursor cur is ' || l_qry_txt || ';
    rec cur%rowtype;
 begin     
    open cur;
@@ -82,7 +82,7 @@ end;';
 begin
 
    -- Run the Comparison
-   execute immediate exec_txt using out l_ret_txt;
+   execute immediate l_exec_txt using out l_ret_txt;
    if l_ret_txt = 'FOUND'
    then
       g_last_pass := FALSE; -- Some Difference Found
@@ -90,13 +90,13 @@ begin
       g_last_pass := TRUE;  -- Nothing found, queries match
    end if;
    -- No Exceptions Raised
-   g_last_details := 'Comparison Query: ' || query_txt;
+   g_last_details := 'Comparison Query: ' || l_qry_txt;
 
 exception
    when OTHERS
    then
       g_last_details := SQLERRM || CHR(10) ||
-                        'FAILURE of Compare Query: ' || query_txt || ';';
+                        'FAILURE of Compare Query: ' || l_qry_txt || ';';
       g_last_pass    := FALSE;
 
 end compare_queries;
@@ -360,23 +360,23 @@ procedure eqqueryvalue (
       null_ok_in         in   boolean := false)
 is
    type rc_type is ref cursor;
-   rc   rc_type;
-   rc_buff         varchar2 (32000);
+   l_rc          rc_type;
+   l_rc_buff     varchar2 (32000);
 begin
    --
    g_last_assert  := 'EQQUERYVALUE';
    g_last_msg     := msg_in;
    --
-   open rc for check_query_in;
-   fetch rc into rc_buff;
-   close rc;
+   open l_rc for check_query_in;
+   fetch l_rc into l_rc_buff;
+   close l_rc;
    --
-   g_last_pass    := (   rc_buff = against_value_in
-                      or (    rc_buff is null
+   g_last_pass    := (   l_rc_buff = against_value_in
+                      or (    l_rc_buff is null
                           and against_value_in is null
                           and null_ok_in               )  );
    g_last_details := 'Expected "' || against_value_in ||
-                    '" and got "' || rc_buff          ||
+                    '" and got "' || l_rc_buff        ||
                   '" for Query: ' || check_query_in   ;
    --
    process_assertion;
@@ -404,20 +404,20 @@ procedure eqtable (
       check_where_in     in   varchar2 := null,
       against_where_in   in   varchar2 := null)
 is
-   check_query    varchar2(16000) := 'select * from ' || check_this_in;
-   against_query  varchar2(16000) := 'select * from ' || against_this_in;
+   l_check_query    varchar2(16000) := 'select * from ' || check_this_in;
+   l_against_query  varchar2(16000) := 'select * from ' || against_this_in;
 begin
    g_last_assert  := 'EQTABLE';
    g_last_msg     := msg_in;
    if check_where_in is not null
    then
-      check_query := check_query || ' where ' || check_where_in;
+      l_check_query := l_check_query || ' where ' || check_where_in;
    end if;
    if against_where_in is not null
    then
-      against_query := against_query || ' where ' || against_where_in;
+      l_against_query := l_against_query || ' where ' || against_where_in;
    end if;
-   compare_queries(check_query, against_query);
+   compare_queries(l_check_query, l_against_query);
    process_assertion;
 end eqtable;
 
@@ -429,17 +429,17 @@ procedure eqtabcount (
       check_where_in     in   varchar2 := null,
       against_where_in   in   varchar2 := null)
 is
-   type rc_type is ref cursor;
-   rc   rc_type;
-   rc_buff        varchar2 (2000);
-   l_query    varchar2(16000) := 'select count(*) from ' || check_this_in;
-   l_cnt      number;
-   l_success  boolean;
-   check_cnt  number;
-   procedure run_query is begin
-      open rc for l_query;
-      fetch rc into l_cnt;
-      close rc;
+   l_query      varchar2(16000) := 'select count(*) from ' || check_this_in;
+   l_cnt        number;
+   l_success    boolean;
+   l_check_cnt  number;
+   procedure run_query is
+      type rc_type is ref cursor;
+      l_rc rc_type;
+   begin
+      open l_rc for l_query;
+      fetch l_rc into l_cnt;
+      close l_rc;
       l_success := TRUE;
    exception
       when OTHERS
@@ -462,7 +462,7 @@ begin
    end if;
    run_query;
    if NOT l_success then return; end if;
-   check_cnt := l_cnt;
+   l_check_cnt := l_cnt;
    --
    l_query := 'select count(*) from ' || against_this_in;
    if against_where_in is not null
@@ -471,10 +471,10 @@ begin
    end if;
    run_query;
    if NOT l_success then return; end if;
-   g_last_pass    := (check_cnt = l_cnt);
+   g_last_pass    := (l_check_cnt = l_cnt);
    --
-   g_last_details := 'Expected '  || l_cnt     || ' rows from "' || against_this_in ||
-                     '" and got ' || check_cnt || ' rows from "' || check_this_in   ||
+   g_last_details := 'Expected '  || l_cnt       || ' rows from "' || against_this_in ||
+                     '" and got ' || l_check_cnt || ' rows from "' || check_this_in   ||
                      '"';
    process_assertion;
 end eqtabcount;
@@ -507,11 +507,11 @@ procedure objexists (
       msg_in          in   varchar2,
       check_this_in   in   varchar2)
 is
-   pos    number := instr(check_this_in, '.');
+   l_pos    number := instr(check_this_in, '.');
 begin
    objexists(msg_in       => msg_in
-            ,obj_owner_in => substr(check_this_in, 1, pos-1)
-            ,obj_name_in  => substr(check_this_in, pos+1, length(check_this_in)));
+            ,obj_owner_in => substr(check_this_in, 1, l_pos-1)
+            ,obj_name_in  => substr(check_this_in, l_pos+1, length(check_this_in)));
 end objexists;
 ------------------------------------------------------------
 procedure objnotexists (
@@ -541,11 +541,11 @@ procedure objnotexists (
       msg_in          in   varchar2,
       check_this_in   in   varchar2)
 is
-   pos    number := instr(check_this_in, '.');
+   l_pos    number := instr(check_this_in, '.');
 begin
    objnotexists(msg_in       => msg_in
-               ,obj_owner_in => substr(check_this_in, 1, pos-1)
-               ,obj_name_in  => substr(check_this_in, pos+1, length(check_this_in)));
+               ,obj_owner_in => substr(check_this_in, 1, l_pos-1)
+               ,obj_name_in  => substr(check_this_in, l_pos+1, length(check_this_in)));
 end objnotexists;
 
 

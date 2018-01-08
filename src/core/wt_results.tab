@@ -15,9 +15,9 @@ create table wt_results
    ,message        varchar2(50)
    ,constraint wt_results_pk primary key (test_run_id, result_seq)
    ,constraint wt_results_fk1 foreign key (test_run_id)
-       references test_runs (id)
+       references wt_test_runs (id)
    ,constraint wt_results_ck1 check (status in ('PASS','FAIL'))
-   ) on commit preserve rows;
+   ) pctfree 0;
 
 comment on table wt_results is 'Results data from Test Runs.';
 comment on column wt_results.test_run_id is 'Foreign Key for the Test Run, Primary Key part 1.';

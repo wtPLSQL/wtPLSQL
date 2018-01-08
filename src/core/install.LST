@@ -46,6 +46,21 @@ new   1: create or replace public synonym wt_not_executable for wtp.wt_not_execu
 
 Synonym created.
 
+old   1: create or replace public synonym plsql_profiler_runs  for &schema_owner..plsql_profiler_runs
+new   1: create or replace public synonym plsql_profiler_runs  for wtp.plsql_profiler_runs
+
+Synonym created.
+
+old   1: create or replace public synonym plsql_profiler_units for &schema_owner..plsql_profiler_units
+new   1: create or replace public synonym plsql_profiler_units for wtp.plsql_profiler_units
+
+Synonym created.
+
+old   1: create or replace public synonym plsql_profiler_data  for &schema_owner..plsql_profiler_data
+new   1: create or replace public synonym plsql_profiler_data  for wtp.plsql_profiler_data
+
+Synonym created.
+
 old   1: create or replace public synonym wt_assert         for &schema_owner..wt_assert
 new   1: create or replace public synonym wt_assert         for wtp.wt_assert
 
@@ -123,13 +138,25 @@ Comment created.
 Sequence created.
 
 
+Index created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
 Sequence created.
 
 
 Table created.
 
 
-Comment created.
+Index created.
 
 
 Comment created.
@@ -139,78 +166,6 @@ Comment created.
 
 
 Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Grant succeeded.
-
-
-Grant succeeded.
-
-
-Table created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Grant succeeded.
-
-
-Grant succeeded.
-
-
-Table created.
 
 
 Comment created.
@@ -261,6 +216,90 @@ Comment created.
 Comment created.
 
 
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Table created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Table created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
 Grant succeeded.
 
 
@@ -294,7 +333,7 @@ Package created.
 Grant succeeded.
 
 
-Package body created.
+Warning: Package Body created with compilation errors.
 
 
 Package body created.
@@ -309,5 +348,5 @@ Package body created.
 Package body created.
 
 
-Package body created.
+Warning: Package Body created with compilation errors.
 
