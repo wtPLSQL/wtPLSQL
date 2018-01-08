@@ -16,6 +16,7 @@ as
       ,in_testcase       in wt_results.testcase%TYPE
       ,in_message        in wt_results.message%TYPE);
 
-   procedure clear_tables;
+   procedure delete_records
+      (in_test_run_id  in number);
 
 end wt_result;

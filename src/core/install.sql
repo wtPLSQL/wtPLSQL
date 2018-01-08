@@ -21,7 +21,12 @@ connect &schema_owner./&schema_owner.
 --  Note2: Includes "Drop Table" and "Drop Sequence" statements
 --
 @proftab.sql
-
+--
+create index plsql_profiler_runs_idx1
+   on plsql_profiler_runs (run_date);
+grant select, insert, delete on plsql_profiler_runs to public;
+grant select, insert, delete on plsql_profiler_units to public;
+grant select, insert, delete on plsql_profiler_data to public;
 
 -- Core Tables
 @wt_test_runs.tab

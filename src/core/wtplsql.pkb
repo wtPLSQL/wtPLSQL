@@ -59,9 +59,17 @@ end init_test_run;
 ------------------------------------------------------------
 procedure insert_test_run
 is
+   PRAGMA AUTONOMOUS_TRANSACTION;
+   test_runs_recNULL  test_runs$ROWTYPE;
 begin
+   if g_test_runs_rec.id is null
+   then
+      return;
+   end if;
    g_test_runs_rec.end_dtm := systimestamp;
    insert into wt_test_runs values g_test_runs_rec;
+   g_test_runs_rec := test_runs_recNULL;
+   COMMIT;
 end insert_test_run;
 
 
@@ -75,12 +83,11 @@ procedure test_run
 is
 begin
 
+   -- Initialize
    init_test_run;
    g_test_runs_rec.runner_name := in_package_name;
    check_runner;
-
    wt_result.initialize(g_test_runs_rec.id);
-
    wt_profiler.initialize(in_test_run_id      => g_test_runs_rec.id,
                           in_runner_name      => g_test_runs_rec.runner_name,
                           out_dbout_owner     => g_test_runs_rec.dbout_owner,
@@ -89,6 +96,7 @@ begin
                           out_trigger_offset  => g_test_runs_rec.trigger_offset,
                           out_profiler_runid  => g_test_runs_rec.profiler_runid);
 
+   -- Call the Test Runner
    begin
       execute immediate 'BEGIN ' || in_package_name || '.WTPLSQL_RUN; END;';
    exception
@@ -99,18 +107,11 @@ begin
                                                 ,1,4000);
    end;
 
+   -- Finalize
    wt_profiler.pause;
-
-   ROLLBACK;
-
-   insert_test_run;
-
-   wt_profiler.finalize;
-
-   wt_result.finalize;
-
-   COMMIT;
-
+   insert_test_run;       -- Autonomous Transaction COMMIT
+   wt_profiler.finalize;  -- Autonomous Transaction COMMIT
+   wt_result.finalize;    -- Autonomous Transaction COMMIT
    --===============--%WTPLSQL_begin_ignore_lines%--===============--
    $IF $$WTPLSQL_SELFTEST $THEN callback_1; $END
    --===============--%WTPLSQL_end_ignore_lines%--=================--
@@ -122,13 +123,10 @@ exception
                                               dbms_utility.format_error_backtrace ||
                                               CHR(10) || g_test_runs_rec.error_message
                                              ,1,4000);
-      begin
-         insert_test_run;
-         exception when DUP_VAL_ON_INDEX then null;
-      end;
-      wt_profiler.finalize;
-      wt_result.finalize;
-      COMMIT;
+      wt_profiler.pause;
+      insert_test_run;       -- Autonomous Transaction COMMIT
+      wt_profiler.finalize;  -- Autonomous Transaction COMMIT
+      wt_result.finalize;    -- Autonomous Transaction COMMIT
       --===============--%WTPLSQL_begin_ignore_lines%--===============--
       $IF $$WTPLSQL_SELFTEST $THEN callback_2; $END
       --===============--%WTPLSQL_end_ignore_lines%--=================--
@@ -161,11 +159,20 @@ begin
 end test_all;
 
 ------------------------------------------------------------
-procedure clear_tables
+procedure delete_records
+      (in_test_run_id  in number default NULL)
 is
+   PRAGMA AUTONOMOUS_TRANSACTION;
 begin
-   wt_result.clear_tables;
-   wt_profiler.clear_tables;
+   -- Remove Test Run data older than 7 days if Test Run ID is NULL
+   for buff in (select id from test_runs
+                 where (    in_test_run_id is null
+                        and start_dtm < trunc(sysdate) - 30 )
+                   or  (    in_test_run_id is not null
+                        and in_test_run_id = id )
+                 order by start_dtm, id)
+   wt_result.delete_records;
+   wt_profiler.delete_records;
    delete from wt_test_runs;
    COMMIT;
 end clear_tables;

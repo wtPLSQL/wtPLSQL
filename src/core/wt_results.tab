@@ -3,7 +3,7 @@
 --  Results Table Installation
 --
 
-create global temporary table wt_results
+create table wt_results
    (test_run_id    number(38)     constraint wt_results_nn2 not null
    ,result_seq     number(8)      constraint wt_results_nn3 not null
    ,executed_dtm   timestamp(6)   constraint wt_results_nn4 not null
@@ -14,8 +14,8 @@ create global temporary table wt_results
    ,testcase       varchar2(30)
    ,message        varchar2(50)
    ,constraint wt_results_pk primary key (test_run_id, result_seq)
-   --,constraint wt_results_fk1 foreign key (test_run_id)
-   --    references test_runs (id)
+   ,constraint wt_results_fk1 foreign key (test_run_id)
+       references test_runs (id)
    ,constraint wt_results_ck1 check (status in ('PASS','FAIL'))
    ) on commit preserve rows;
 
@@ -32,3 +32,4 @@ comment on column wt_results.message is 'Optional test identifier that helps con
 
 grant select on wt_results to public;
 grant insert on wt_results to public;
+grant delete on wt_results to public;

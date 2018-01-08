@@ -35,6 +35,7 @@ as
       (in_test_run_id  in  number)
    return number;
 
-   procedure clear_tables;
+   procedure delete_records
+      (in_test_run_id  in number);
 
 end wt_profiler;

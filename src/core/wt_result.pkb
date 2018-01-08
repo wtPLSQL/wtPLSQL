@@ -83,11 +83,13 @@ begin
 end save;
 
 ------------------------------------------------------------
-procedure clear_tables
+procedure delete_records
+      (in_test_run_id  in number)
 is
 begin
-   delete from wt_results;
-end clear_tables;
+   delete from wt_results
+    where test_run_id = in_test_run_id;
+end delete_records;
 
 
 end wt_result;

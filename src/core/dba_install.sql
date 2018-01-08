@@ -52,6 +52,10 @@ create or replace public synonym wt_results        for &schema_owner..wt_results
 create or replace public synonym wt_dbout_profiles for &schema_owner..wt_dbout_profiles;
 create or replace public synonym wt_not_executable for &schema_owner..wt_not_executable;
 
+create or replace public synonym plsql_profiler_runs  for &schema_owner..plsql_profiler_runs;
+create or replace public synonym plsql_profiler_units for &schema_owner..plsql_profiler_units;
+create or replace public synonym plsql_profiler_data  for &schema_owner..plsql_profiler_data;
+
 --create or replace public synonym ut_assert         for &schema_owner..wt_assert;
 create or replace public synonym wt_assert         for &schema_owner..wt_assert;
 create or replace public synonym wt_profiler       for &schema_owner..wt_profiler;

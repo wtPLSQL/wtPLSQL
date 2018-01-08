@@ -43,11 +43,24 @@ end get_error_msg;
 
 ------------------------------------------------------------
 procedure delete_plsql_profiler_recs
+      (in_runid  in number default null)
 is
 begin
-   delete from plsql_profiler_data;
-   delete from plsql_profiler_units;
-   delete from plsql_profiler_runs;
+   -- Remove Profiler data older than 7 days if RUNID is NULL
+   for buff in (select runid from plsql_profiler_runs
+                 where (    in_runid is null
+                        and run_date < trunc(sysdate) - 7 )
+                   or  (    in_runid is not null
+                        and in_runid = runid)
+           order by run_date, runid)
+   loop
+      delete from plsql_profiler_data
+       where runid = buff.runid;
+      delete from plsql_profiler_units
+       where runid = buff.runid;
+      delete from plsql_profiler_runs
+       where runid = buff.runid;
+   end loop;
 end delete_plsql_profiler_recs;
 
 ------------------------------------------------------------
@@ -152,6 +165,7 @@ end find_dbout;
 procedure insert_dbout_profile
 is
 begin
+
    insert into wt_dbout_profiles
       with q1 as (
       select src.line
@@ -198,6 +212,9 @@ begin
        group by line
             ,status
             ,text;
+
+   delete_plsql_profiler_recs(g_rec.prof_runid);
+
 end insert_dbout_profile;
 
 ------------------------------------------------------------
@@ -465,11 +482,20 @@ BEGIN
 END calc_pct_coverage;
 
 ------------------------------------------------------------
-procedure clear_tables
-IS
-BEGIN
-   delete from wt_dbout_profiles;
-   delete_plsql_profiler_recs;
-END clear_tables;
+procedure delete_records
+      (in_test_run_id  in number)
+is
+   l_profiler_runid  number;
+begin
+   select profiler_runid into l_profiler_runid
+    from wt_test_runs where id = in_test_run_id;
+   delete_plsql_profiler_recs(l_profiler_runid);
+   delete from wt_dbout_profiles
+    where test_run_id = in_test_run_id;
+exception
+   when NO_DATA_FOUND
+   then
+      return;
+end delete_records;
 
 end wt_profiler;

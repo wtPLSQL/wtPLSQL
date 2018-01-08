@@ -6,7 +6,8 @@ as
 
    procedure test_all;
 
-   procedure clear_tables;
+   procedure delete_records
+      (in_test_run_id  in number default NULL);
 
    --   WtPLSQL Self Test Procedures
    --
