@@ -38,14 +38,13 @@ select * from wt_dbout_profiles;
 
 execute wtplsql.delete_records;
 
-declare
-   test_run_id  number;
 begin
    wtplsql.test_run('WTPLSQL');
    wt_text_report.dbms_out(in_runner_name    => 'WTPLSQL'
-                          ,in_hide_details   => TRUE
-                          ,in_summary_first  => FALSE
-                          ,in_show_pass      => FALSE
-                          ,in_show_anno      => FALSE);
+   --                       ,in_hide_details   => TRUE
+   --                       ,in_summary_first  => TRUE
+                          ,in_show_pass      => TRUE
+   --                       ,in_show_anno      => TRUE
+                            );
 end;
 /

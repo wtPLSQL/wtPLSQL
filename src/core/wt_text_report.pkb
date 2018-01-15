@@ -156,7 +156,7 @@ begin
        order by testcase, result_seq )
    loop
       if    buff.testcase = l_last_testcase
-         OR (    buff.testcase is null
+         OR (      buff.testcase is null
              AND l_last_testcase is null )
       then
          p(format_test_result
@@ -257,14 +257,14 @@ begin
 
    if in_testcase is not null
    then
-      l_out_str := ' --  ' || in_testcase || '  --' || CHR(10);
+      l_out_str := '   --  Test Case: ' || in_testcase || '  --' || CHR(10);
    end if;
 
    if in_status = wt_result.C_PASS
    then
-      l_out_str := ' ' || rpad(in_status,4) || ' ';
+      l_out_str := l_out_str || ' ' || rpad(in_status,4) || ' ';
    else
-      l_out_str := '#' || rpad(in_status,4) || '#';
+      l_out_str := l_out_str || '#' || rpad(in_status,4) || '#';
    end if;
 
    if in_message is not null

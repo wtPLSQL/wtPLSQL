@@ -18,8 +18,6 @@ as
    $IF $$WTPLSQL_SELFTEST
    $THEN
       procedure WTPLSQL_RUN;
-      procedure callback_1;
-      procedure callback_2;
    $END
 
 end wtplsql;

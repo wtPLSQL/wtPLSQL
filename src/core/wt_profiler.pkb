@@ -48,6 +48,7 @@ is
    PRAGMA AUTONOMOUS_TRANSACTION;
 begin
    -- Remove Profiler data older than 7 days if RUNID is NULL
+   --  Should not find any records because they are deleted with each run
    for buff in (select runid from plsql_profiler_runs
                  where (    in_runid is null
                         and run_date < trunc(sysdate) - 7 )
@@ -217,7 +218,7 @@ begin
             ,text;
    COMMIT;
 
-   -- Delete PLSQL Profiler also has it's own
+   -- Delete PLSQL Profiler has it's own
    --   PRAGMA AUTONOMOUS_TRANSACTION and COMMIT;
    delete_plsql_profiler_recs(g_rec.prof_runid);
 
@@ -340,7 +341,7 @@ begin
                               ,dbout_type_in  => g_rec.dbout_type );
    out_trigger_offset := g_rec.trigger_offset;
 
-   -- Make room for more data
+   -- Cleanup stray DBMS_PROFILER data
    delete_plsql_profiler_recs;
    
    l_retnum := dbms_profiler.INTERNAL_VERSION_CHECK;

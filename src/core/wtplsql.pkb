@@ -5,15 +5,6 @@ as
    g_runners_nt      runners_nt_type;
    g_test_runs_rec   wt_test_runs%ROWTYPE;
 
-
-   --===============--%WTPLSQL_begin_ignore_lines%--===============--
-   $IF $$WTPLSQL_SELFTEST
-   $THEN
-      g_running_selftest  boolean := FALSE;
-   $END
-   --===============--%WTPLSQL_end_ignore_lines%--=================--
-
-
 ----------------------
 --  Private Procedures
 ----------------------
@@ -87,6 +78,7 @@ begin
    init_test_run;
    g_test_runs_rec.runner_name := in_package_name;
    check_runner;
+   delete_records;       -- Autonomous Transaction COMMIT
    wt_result.initialize(g_test_runs_rec.id);
    wt_profiler.initialize(in_test_run_id      => g_test_runs_rec.id,
                           in_runner_name      => g_test_runs_rec.runner_name,
@@ -112,9 +104,6 @@ begin
    insert_test_run;       -- Autonomous Transaction COMMIT
    wt_profiler.finalize;  -- Autonomous Transaction COMMIT
    wt_result.finalize;    -- Autonomous Transaction COMMIT
-   --===============--%WTPLSQL_begin_ignore_lines%--===============--
-   $IF $$WTPLSQL_SELFTEST $THEN callback_1; $END
-   --===============--%WTPLSQL_end_ignore_lines%--=================--
 
 exception
    when OTHERS
@@ -127,9 +116,6 @@ exception
       insert_test_run;       -- Autonomous Transaction COMMIT
       wt_profiler.finalize;  -- Autonomous Transaction COMMIT
       wt_result.finalize;    -- Autonomous Transaction COMMIT
-      --===============--%WTPLSQL_begin_ignore_lines%--===============--
-      $IF $$WTPLSQL_SELFTEST $THEN callback_2; $END
-      --===============--%WTPLSQL_end_ignore_lines%--=================--
 
 end test_run;
 
@@ -163,23 +149,32 @@ procedure delete_records
       (in_test_run_id  in number default NULL)
 is
    PRAGMA AUTONOMOUS_TRANSACTION;
-begin
-   -- Remove Test Run data older than 7 days if Test Run ID is NULL
-   for buff in (select id from wt_test_runs
-                 where (    in_test_run_id is null
-                        and start_dtm < trunc(sysdate) - 30 )
-                   or  (    in_test_run_id is not null
-                        and in_test_run_id = id )
-                 order by start_dtm, id)
-   loop
-      -- Profiler delete must be first because it also contains a
+   procedure del_rec (in_id in number) is begin
+      -- Profiler delete must be first because it contains a
       --    PRAGMA AUTONOMOUS_TRANSACTION
-      wt_profiler.delete_records(buff.id);
-      wt_result.delete_records(buff.id);
+      wt_profiler.delete_records(in_id);
+      wt_result.delete_records(in_id);
       delete from wt_test_runs
-       where id = in_test_run_id;
+       where id = in_id;
       COMMIT;
-   end loop;
+   end del_rec;
+begin
+   if in_test_run_id is not null
+   then
+      del_rec(in_test_run_id);
+   else
+      for buff in (select rownum, id from wt_test_runs
+                    where runner_owner = USER
+                     and  runner_name  = g_test_runs_rec.runner_name
+                    order by start_dtm desc, id desc)
+      loop
+         -- Keep the last 20 rest runs for this USER
+         if buff.rownum > 20
+         then
+            del_rec(buff.id);
+         end if;
+      end loop;
+   end if;
 end delete_records;
 
 
@@ -193,126 +188,97 @@ $THEN
   -- Profiler Annotation: --% WTPLSQL SET DBOUT "WTPLSQL" %-- Extra Stuff
 
 ----------------------------------------
-procedure testcase_0
+procedure tc_test_runs_rec_and_table
 is
 begin
-   wt_assert.g_testcase := 'TESTCASE_0';
+   wt_assert.g_testcase := 'TEST_RUNS_REC_AND_TABLE';
    -- This Test Case runs in the EXECUTE IMMEDAITE in the TEST_RUN
    --   procedure in this package.
-   wt_assert.isnotnull (msg_in        =>  'g_test_runs_rec.id NOT NULL'
-                       ,check_this_in => g_test_runs_rec.id);
-   wt_assert.isnotnull (msg_in        =>  'g_test_runs_rec.start_dtm NOT NULL'
-                       ,check_this_in => g_test_runs_rec.start_dtm);
-   wt_assert.isnotnull (msg_in        =>  'g_test_runs_rec.runner_name NOT NULL'
-                       ,check_this_in => g_test_runs_rec.runner_name);
-   wt_assert.isnotnull (msg_in        =>  'g_test_runs_rec.runner_owner NOT NULL'
-                       ,check_this_in => g_test_runs_rec.runner_owner);
-   wt_assert.isnotnull (msg_in        =>  'g_test_runs_rec.dbout_owner IS NOTNULL'
-                       ,check_this_in => g_test_runs_rec.dbout_owner);
-   wt_assert.isnotnull (msg_in        =>  'g_test_runs_rec.dbout_name IS NOT NULL'
-                       ,check_this_in => g_test_runs_rec.dbout_name);
-   wt_assert.isnotnull (msg_in        =>  'g_test_runs_rec.dbout_type IS NOT NULL'
-                       ,check_this_in => g_test_runs_rec.dbout_type);
-   wt_assert.isnotnull (msg_in        =>  'g_test_runs_rec.profiler_runid IS NOT NULL'
-                       ,check_this_in => g_test_runs_rec.profiler_runid);
-   wt_assert.isnull (msg_in        =>  'g_test_runs_rec.end_dtm IS NULL'
-                    ,check_this_in => g_test_runs_rec.end_dtm);
-   wt_assert.isnull (msg_in        =>  'g_test_runs_rec.error_message IS NULL'
-                    ,check_this_in => g_test_runs_rec.error_message);
+   wt_assert.isnotnull
+            (msg_in        => 'g_test_runs_rec.id'
+            ,check_this_in => g_test_runs_rec.id);
+   wt_assert.isnotnull
+            (msg_in        => 'g_test_runs_rec.start_dtm'
+            ,check_this_in => g_test_runs_rec.start_dtm);
+   wt_assert.isnotnull
+            (msg_in        => 'g_test_runs_rec.runner_owner'
+            ,check_this_in => g_test_runs_rec.runner_owner);
+   wt_assert.eq
+            (msg_in          => 'g_test_runs_rec.runner_name'
+            ,check_this_in   => g_test_runs_rec.runner_name
+            ,against_this_in => 'WTPLSQL');
+   wt_assert.isnotnull
+            (msg_in        => 'g_test_runs_rec.dbout_owner'
+            ,check_this_in => g_test_runs_rec.dbout_owner);
+   wt_assert.eq
+            (msg_in          => 'g_test_runs_rec.dbout_name'
+            ,check_this_in   => g_test_runs_rec.dbout_name
+            ,against_this_in => 'WTPLSQL');
+   wt_assert.eq
+            (msg_in          => 'g_test_runs_rec.dbout_type'
+            ,check_this_in   => g_test_runs_rec.dbout_type
+            ,against_this_in => 'PACKAGE BODY');
+   wt_assert.isnotnull
+            (msg_in        => 'g_test_runs_rec.profiler_runid'
+            ,check_this_in => g_test_runs_rec.profiler_runid);
+   wt_assert.isnull
+            (msg_in        => 'g_test_runs_rec.end_dtm'
+            ,check_this_in => g_test_runs_rec.end_dtm);
+   wt_assert.isnull
+            (msg_in        => 'g_test_runs_rec.error_message'
+            ,check_this_in => g_test_runs_rec.error_message);
    wt_assert.eqqueryvalue
-         (msg_in             => 'TEST_RUNS Record Not Exists'
-         ,check_query_in     => 'select count(*) from WT_TEST_RUNS' ||
-                                ' where id = ''' || g_test_runs_rec.id || ''''
-         ,against_value_in   => 0);
-end testcase_0;
-
+            (msg_in             => 'TEST_RUNS Record for this TEST_RUN'
+            ,check_query_in     => 'select count(*) from WT_TEST_RUNS' ||
+                                   ' where id = ''' || g_test_runs_rec.id || ''''
+            ,against_value_in   => 0);
+end tc_test_runs_rec_and_table;
 
 ----------------------------------------
-procedure testcase_1
+procedure tc_check_runner
 is
+   l_save_test_runs_rec   wt_test_runs%ROWTYPE := g_test_runs_rec;
+   l_msg_in   varchar2(4000);
+   l_err_in   varchar2(4000);
+   procedure test_sqlerrm is begin
+      -- Restore the G_TEST_RUNS_REC
+      g_test_runs_rec := l_save_test_runs_rec;
+      wt_assert.eq
+               (msg_in          => l_msg_in
+               ,check_this_in   => SQLERRM
+               ,against_this_in => l_err_in);
+   end test_sqlerrm;
 begin
-   -- Note: This procedure runs in an exception handler.  The
-   --   ERROR_STACK will have data in it.
-   wt_assert.g_testcase := 'TESTCASE_1';
-   -- This Test Case runs at the last step of the TEST_RUNS
+   wt_assert.g_testcase := 'CHECK_RUNNER';
+   -- This Test Case runs in the EXECUTE IMMEDAITE in the TEST_RUN
    --   procedure in this package.
-end testcase_1;
-
-----------------------------------------
-procedure testcase_2
-is
-   --l_save_test_runs_rec   wt_test_runs%ROWTYPE := g_test_runs_rec;
-begin
-   -- Note: This procedure runs in an exception handler.  The
-   --   ERROR_STACK will have data in it.
-   -- Note2: "wt_result.finalize" has run, so "wt_assert"s
-   --   go to DBMS_OUTPUT.
-   wt_assert.g_testcase := 'TESTCASE_2';
-   -- This Test Case runs at the last step of the TEST_RUNS
-   --   procedure exception handler in this package.
-   --g_test_runs_rec.runner_name := 'BOGUS';
-   --wt_assert.raises (msg_in         => 'Check_Runner Procedure raises exception'
-   --                 ,check_call_in  => 'check_runner'
-   --                 ,against_exc_in => 'ORA-00000');
-   --g_test_runs_rec.runner_name := l_save_test_runs_rec.runner_name;
-end testcase_2;
-
-----------------------------------------
---  Called from Internal Test Point
-procedure callback_1
-is
-begin
-   -- Note: This procedure runs in an exception handler.  The
-   --   ERROR_STACK will have data in it.
-   if NOT g_running_selftest
-   then
-      return;
-   end if;
-   testcase_2;
-   -- This will cause callback_2 to be called
-   raise_application_error(-20000,'WTPLSQL Callback_1 Exception Raised');
-end callback_1;
-
-----------------------------------------
---  Called from Internal Test Point
-procedure callback_2
-is
-   l_err_txt  varchar2(32000);
-begin
-   l_err_txt := dbms_utility.format_error_stack     ||
-                dbms_utility.format_error_backtrace;
-   -- Note: This procedure runs in an exception handler.  The
-   --   ERROR_STACK will have data in it.
-   if NOT g_running_selftest
-   then
-      return;
-   end if;
-   testcase_2;
-   -- This procedure MUST set g_running_selftest to FALSE
-   g_running_selftest := FALSE;
-exception
-   when others then
-      -- This procedure MUST set g_running_selftest to FALSE
-      g_running_selftest := FALSE;
-      raise_application_error(-20000, substr(dbms_utility.format_error_stack     ||
-                                             dbms_utility.format_error_backtrace ||
-                                             CHR(10) || l_err_txt, 1, 4000) );
-end callback_2;
+   begin
+      g_test_runs_rec.runner_name := '';
+      l_msg_in := 'Null RUNNER_NAME';
+      l_err_in := 'ORA-20001: RUNNER_NAME is null';
+      check_runner;
+      test_sqlerrm;
+   exception when others then
+      test_sqlerrm;
+   end;
+   begin
+      g_test_runs_rec.runner_name := 'BOGUS';
+      l_msg_in := 'Invalid RUNNER_NAME';
+      l_err_in := 'ORA-20002: RUNNER_NAME is not valid';
+      check_runner;
+      test_sqlerrm;
+   exception when others then
+      test_sqlerrm;
+   end;
+end tc_check_runner;
 
 ----------------------------------------
 procedure WTPLSQL_RUN
 is
 begin
    -- This runs like a self-contained "in-circuit" test.
-   --   Internal test points are activated by the
-   --   g_running_selftest variable.  This grants access
-   --   to specific locations within this package.
-   g_running_selftest := TRUE;
-   testcase_0;
-   -- Callback_1 will be called at the end of TestCase_0.
-   -- Callback_2 will be called at the end of the RUN_TEST
-   --   procedure, after this procedure has completed.
-   -- Callback_2 must set g_running_selftest to FALSE;
+   tc_check_runner;
+   tc_test_runs_rec_and_table;
 end;
 
 $END
