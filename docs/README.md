@@ -14,15 +14,15 @@ The [Project Wiki](https://github.com/DDieterich/wtPLSQL/wiki) has the descripti
 
 ### Files and Directories
 
-File Name              | Description
----------------------  |------------
-DBDocs                 | Directory of SQL Developer DBDocs Files
-DataModeler            | Directory of SQL Developer Data Modeler Files
-Call_Tree_Diagrams.odg | LibreOffice Draw File for Process Call Trees
-Call_Tree_Diagrams.pdf | Process Call Tree (Graph) Diagrams
-DBDocs_Settings.txt    | Settings used to generate DBDocs Files
-ER_Diagrams.pdf        | Entity-Relationship Diagrams
-README.md              | README Markdown file for this directory
+File Name                | Description
+------------------------ |------------
+DBDocs                   | Directory of SQL Developer DBDocs Files
+[DataModeler]            | Directory of SQL Developer Data Modeler Files
+[Call_Tree_Diagrams.odg] | LibreOffice Draw File for Process Call Trees
+Call_Tree_Diagrams.pdf   | Process Call Tree (Graph) Diagrams
+DBDocs_Settings.txt      | Settings used to generate DBDocs Files
+ER_Diagrams.pdf          | Entity-Relationship Diagrams
+README.md                | README Markdown file for this directory
 
 ---
 
