@@ -1,0 +1,273 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=Cp1252" />
+<script src="WT_RESULT/report.js" type="text/javascript"></script>
+<link href="WT_RESULT/report.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div class="banner">
+<table width="98%"><tr>
+<td><h2 class="banner">WT_RESULT</h2></td>
+</tr></table></div>
+<div id="maintabs">
+<div class="currentmaintab" onclick="onSelectMainTab(this, 0)">
+<div>
+<p>Doc</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 1)">
+<div>
+<p>Details</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 2)">
+<div>
+<p>Grants</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 3)">
+<div>
+<p>References</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 4)">
+<div>
+<p>Dependencies</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 5)">
+<div>
+<p>Code</p>
+</div>
+</div>
+</div>
+<br/>
+<div id="masterreports">
+<div id="Master.0">
+<div class="currentmasterreport">
+<TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
+<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE><HR><P></P><HR><TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
+<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE></div>
+</div>
+<div id="Master.1">
+<div class="masterreport">
+<table id="Table.0" cellpadding="0" cellspacing="0" summary="">
+<th>NAME</th>
+<th>VALUE</th>
+</tr>
+<tr>
+<td>OWNER</td>
+<td>WTP</td>
+</tr>
+<tr>
+<td>OBJECT_NAME</td>
+<td>WT_RESULT</td>
+</tr>
+<tr>
+<td>SUBOBJECT_NAME</td>
+<td>null</td>
+</tr>
+<tr>
+<td>OBJECT_ID</td>
+<td>37191</td>
+</tr>
+<tr>
+<td>DATA_OBJECT_ID</td>
+<td>null</td>
+</tr>
+<tr>
+<td>OBJECT_TYPE</td>
+<td>PACKAGE&nbsp;BODY</td>
+</tr>
+<tr>
+<td>CREATED</td>
+<td>08-JAN-2018&nbsp;03:08:45</td>
+</tr>
+<tr>
+<td>LAST_DDL_TIME</td>
+<td>13-JAN-2018&nbsp;13:47:42</td>
+</tr>
+<tr>
+<td>TIMESTAMP</td>
+<td>2018-01-13:13:47:42</td>
+</tr>
+<tr>
+<td>STATUS</td>
+<td>VALID</td>
+</tr>
+<tr>
+<td>TEMPORARY</td>
+<td>N</td>
+</tr>
+<tr>
+<td>GENERATED</td>
+<td>N</td>
+</tr>
+<tr>
+<td>SECONDARY</td>
+<td>N</td>
+</tr>
+<tr>
+<td>NAMESPACE</td>
+<td>2</td>
+</tr>
+<tr>
+<td>EDITION_NAME</td>
+<td>null</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.2">
+<div class="masterreport">
+<table id="Table.1" cellpadding="0" cellspacing="0" summary="">
+<tr>
+<th>PRIVILEGE</th>
+<th>GRANTEE</th>
+<th>GRANTABLE</th>
+<th>GRANTOR</th>
+<th>OBJECT_NAME</th>
+</tr>
+<tr onclick="table_onSelectMasterRow(this, 1, 0)" class="currentrow">
+<td class="currentcell">EXECUTE</td>
+<td class="currentcell">PUBLIC</td>
+<td class="currentcell">NO</td>
+<td class="currentcell">WTP</td>
+<td class="currentcell">WT_RESULT</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.3">
+<div class="masterreport">
+<table id="Table.2" cellpadding="0" cellspacing="0" summary="">
+<tr>
+<th>NAME</th>
+<th>OWNER</th>
+<th>TYPE</th>
+<th>OBJECT_ID</th>
+<th>STATUS</th>
+<th>TYPE_LINK</th>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.4">
+<div class="masterreport">
+<table id="Table.3" cellpadding="0" cellspacing="0" summary="">
+<tr>
+<th>NAME</th>
+<th>OWNER</th>
+<th>TYPE</th>
+<th>OBJECT_ID</th>
+<th>STATUS</th>
+<th>TYPE_LINK</th>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.5">
+<div class="masterreport">
+<pre>
+package body wt_result
+as
+
+   TYPE results_nt_type is table of wt_results%ROWTYPE;
+   g_results_nt      results_nt_type := results_nt_type(null);
+   g_results_rec     wt_results%ROWTYPE;
+
+
+----------------------
+--  Private Procedures
+----------------------
+
+
+---------------------
+--  Public Procedures
+---------------------
+
+------------------------------------------------------------
+procedure initialize
+      (in_test_run_id   in wt_test_runs.id%TYPE)
+is
+   l_results_recNULL  wt_results%ROWTYPE;
+begin
+   g_results_rec := l_results_recNULL;
+   g_results_rec.test_run_id  := in_test_run_id;
+   g_results_rec.result_seq   := 0;
+   g_results_rec.executed_dtm := systimestamp;
+   g_results_nt := results_nt_type(null);
+end initialize;
+
+------------------------------------------------------------
+-- Because this procedure is called to cleanup after erorrs,
+--  it must be able to run multiple times without causing damage.
+procedure finalize
+is
+   PRAGMA AUTONOMOUS_TRANSACTION;
+begin
+   if g_results_rec.test_run_id IS NULL
+   then
+      return;
+   end if;
+   forall i in 1 .. g_results_nt.COUNT - 1
+      insert into wt_results values g_results_nt(i);
+   g_results_nt := results_nt_type(null);
+   g_results_rec.test_run_id := NULL;
+   COMMIT;
+end finalize;
+
+------------------------------------------------------------
+procedure save
+      (in_assertion      in wt_results.assertion%TYPE
+      ,in_status         in wt_results.status%TYPE
+      ,in_details        in wt_results.details%TYPE
+      ,in_testcase       in wt_results.testcase%TYPE
+      ,in_message        in wt_results.message%TYPE)
+is
+   l_current_tstamp  timestamp;
+begin
+   if g_results_rec.test_run_id IS NULL
+   then
+      wt_text_report.ad_hoc_result
+         (in_assertion
+         ,in_status
+         ,in_details
+         ,in_testcase
+         ,in_message);
+      return;
+   end if;
+   -- Set the time and elapsed
+   l_current_tstamp := systimestamp;
+   g_results_rec.elapsed_msecs := extract(day from (
+                                  l_current_tstamp - g_results_rec.executed_dtm
+                                  ) * 86400 * 1000);
+   g_results_rec.executed_dtm  := l_current_tstamp;
+   -- Set the IN variables
+   g_results_rec.assertion     := in_assertion;
+   g_results_rec.status        := in_status;
+   g_results_rec.details       := substr(in_details,1,4000);
+   g_results_rec.testcase      := substr(in_testcase,1,30);
+   g_results_rec.message       := substr(in_message,1,50);
+   -- Increment, Extend, and Load
+   g_results_rec.result_seq    := g_results_rec.result_seq + 1;
+   g_results_nt(g_results_nt.COUNT) := g_results_rec;
+   g_results_nt.extend;
+end save;
+
+------------------------------------------------------------
+procedure delete_records
+      (in_test_run_id  in number)
+is
+begin
+   delete from wt_results
+    where test_run_id = in_test_run_id;
+end delete_records;
+
+
+end wt_result;</pre>
+</div>
+</div>
+</div>
+</body>
+</html>

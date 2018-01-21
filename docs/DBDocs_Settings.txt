@@ -1,0 +1,21 @@
+
+Settings for Generate DB Docs
+
+
+Note: Delete all files and directories before generating.
+
+
+Output directory:
+-----------------
+GitHub\wtPLSQL\docs\DBDocs
+
+
+Selected Columns:
+-----------------
+SEQUENCE
+TABLE
+PACKAGE
+PACAKGE BODY
+
+
+Generate empty object types: Yes

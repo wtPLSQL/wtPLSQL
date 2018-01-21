@@ -1,0 +1,734 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=Cp1252" />
+<script src="WT_ASSERT/report.js" type="text/javascript"></script>
+<link href="WT_ASSERT/report.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div class="banner">
+<table width="98%"><tr>
+<td><h2 class="banner">WT_ASSERT</h2></td>
+</tr></table></div>
+<div id="maintabs">
+<div class="currentmaintab" onclick="onSelectMainTab(this, 0)">
+<div>
+<p>Doc</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 1)">
+<div>
+<p>Details</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 2)">
+<div>
+<p>Grants</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 3)">
+<div>
+<p>References</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 4)">
+<div>
+<p>Dependencies</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 5)">
+<div>
+<p>Code</p>
+</div>
+</div>
+</div>
+<br/>
+<div id="masterreports">
+<div id="Master.0">
+<div class="currentmasterreport">
+<TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
+<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE><HR><P> See (public) RESET_GLOBALS procedure for default global values</P><HR><TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
+<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE></div>
+</div>
+<div id="Master.1">
+<div class="masterreport">
+<table id="Table.0" cellpadding="0" cellspacing="0" summary="">
+<th>NAME</th>
+<th>VALUE</th>
+</tr>
+<tr>
+<td>OWNER</td>
+<td>WTP</td>
+</tr>
+<tr>
+<td>OBJECT_NAME</td>
+<td>WT_ASSERT</td>
+</tr>
+<tr>
+<td>SUBOBJECT_NAME</td>
+<td>null</td>
+</tr>
+<tr>
+<td>OBJECT_ID</td>
+<td>37192</td>
+</tr>
+<tr>
+<td>DATA_OBJECT_ID</td>
+<td>null</td>
+</tr>
+<tr>
+<td>OBJECT_TYPE</td>
+<td>PACKAGE&nbsp;BODY</td>
+</tr>
+<tr>
+<td>CREATED</td>
+<td>08-JAN-2018&nbsp;03:08:45</td>
+</tr>
+<tr>
+<td>LAST_DDL_TIME</td>
+<td>13-JAN-2018&nbsp;13:47:33</td>
+</tr>
+<tr>
+<td>TIMESTAMP</td>
+<td>2018-01-13:13:47:33</td>
+</tr>
+<tr>
+<td>STATUS</td>
+<td>VALID</td>
+</tr>
+<tr>
+<td>TEMPORARY</td>
+<td>N</td>
+</tr>
+<tr>
+<td>GENERATED</td>
+<td>N</td>
+</tr>
+<tr>
+<td>SECONDARY</td>
+<td>N</td>
+</tr>
+<tr>
+<td>NAMESPACE</td>
+<td>2</td>
+</tr>
+<tr>
+<td>EDITION_NAME</td>
+<td>null</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.2">
+<div class="masterreport">
+<table id="Table.1" cellpadding="0" cellspacing="0" summary="">
+<tr>
+<th>PRIVILEGE</th>
+<th>GRANTEE</th>
+<th>GRANTABLE</th>
+<th>GRANTOR</th>
+<th>OBJECT_NAME</th>
+</tr>
+<tr onclick="table_onSelectMasterRow(this, 1, 0)" class="currentrow">
+<td class="currentcell">EXECUTE</td>
+<td class="currentcell">PUBLIC</td>
+<td class="currentcell">NO</td>
+<td class="currentcell">WTP</td>
+<td class="currentcell">WT_ASSERT</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.3">
+<div class="masterreport">
+<table id="Table.2" cellpadding="0" cellspacing="0" summary="">
+<tr>
+<th>NAME</th>
+<th>OWNER</th>
+<th>TYPE</th>
+<th>OBJECT_ID</th>
+<th>STATUS</th>
+<th>TYPE_LINK</th>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.4">
+<div class="masterreport">
+<table id="Table.3" cellpadding="0" cellspacing="0" summary="">
+<tr>
+<th>NAME</th>
+<th>OWNER</th>
+<th>TYPE</th>
+<th>OBJECT_ID</th>
+<th>STATUS</th>
+<th>TYPE_LINK</th>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.5">
+<div class="masterreport">
+<pre>
+package body wt_assert is
+
+   -- See (public) RESET_GLOBALS procedure for default global values
+   g_last_pass        boolean;
+   g_last_assert      wt_results.assertion%TYPE;
+   g_last_msg         wt_results.message%TYPE;
+   g_last_details     wt_results.details%TYPE;
+
+----------------------
+--  Private Procedures
+----------------------
+
+------------------------------------------------------------
+function boolean_to_status
+      (in_boolean  in boolean)
+   return varchar2
+is
+begin
+   if in_boolean
+   then
+      return wt_result.C_PASS;
+   end if;
+   return wt_result.C_FAIL;
+end;
+
+------------------------------------------------------------
+procedure process_assertion
+is
+begin
+   wt_result.save
+      (in_assertion      => g_last_assert
+      ,in_status         => case g_last_pass when TRUE then wt_result.C_PASS
+                                                       else wt_result.C_FAIL
+                            end
+      ,in_details        => g_last_details
+      ,in_testcase       => g_testcase
+      ,in_message        => g_last_msg);
+   if g_raise_exception and not g_last_pass
+   then
+      raise_application_error(-20000, wt_text_report.format_test_result
+                                         (in_assertion      => g_last_assert
+                                         ,in_status         => case g_last_pass when TRUE then wt_result.C_PASS
+                                                                                          else wt_result.C_FAIL
+                                                               end
+                                         ,in_details        => g_last_details
+                                         ,in_testcase       => g_testcase
+                                         ,in_message        => g_last_msg) );
+   end if;
+end process_assertion;
+
+------------------------------------------------------------
+procedure compare_queries (
+      check_query_in     in   varchar2,
+      against_query_in   in   varchar2)
+is
+
+   l_ret_txt    varchar2(10);
+
+   -- Define Query for the Comparison
+   l_qry_txt  varchar2(32000) := 'with check_query as (' ||
+                                 check_query_in ||
+                                 '), against_query as (' ||
+                                 against_query_in ||
+                                 ') select check_query MINUS against_query ' ||
+                             'UNION select against_query MINUS check_query';
+
+   ----------------------------------------
+   -- Define EXECUTE IMMEDIATE text
+   l_exec_txt   varchar2(32767) :=
+'declare
+   cursor cur is ' || l_qry_txt || ';
+   rec cur%rowtype;
+begin     
+   open cur;
+   fetch cur into rec;
+	:ret_txt := case cur%FOUND when TRUE then ''FOUND''
+                              else ''NOTFOUND'' end;
+   close cur;
+end;';
+   ----------------------------------------
+
+begin
+
+   -- Run the Comparison
+   execute immediate l_exec_txt using out l_ret_txt;
+   if l_ret_txt = 'FOUND'
+   then
+      g_last_pass := FALSE; -- Some Difference Found
+   else
+      g_last_pass := TRUE;  -- Nothing found, queries match
+   end if;
+   -- No Exceptions Raised
+   g_last_details := 'Comparison Query: ' || l_qry_txt;
+
+exception
+   when OTHERS
+   then
+      g_last_details := SQLERRM || CHR(10) ||
+                        'FAILURE of Compare Query: ' || l_qry_txt || ';';
+      g_last_pass    := FALSE;
+
+end compare_queries;
+
+
+---------------------
+--  Public Procedures
+---------------------
+
+------------------------------------------------------------
+function last_pass
+   return boolean
+is
+begin
+   return g_last_pass;
+end last_pass;
+
+------------------------------------------------------------
+function last_assert
+   return wt_results.assertion%TYPE
+is
+begin
+   return g_last_assert;
+end last_assert;
+
+------------------------------------------------------------
+function last_msg
+   return wt_results.message%TYPE
+is
+begin
+   return g_last_msg;
+end last_msg;
+
+------------------------------------------------------------
+function last_details
+   return wt_results.details%TYPE
+is
+begin
+   return g_last_details;
+end last_details;
+
+------------------------------------------------------------
+procedure reset_globals
+is
+begin
+   g_raise_exception := FALSE;
+   g_testcase        := '';
+   g_last_pass       := NULL;
+   g_last_assert     := '';
+   g_last_msg        := '';
+   g_last_details    := '';
+end reset_globals;
+
+------------------------------------------------------------
+function get_NLS_DATE_FORMAT
+      return varchar2
+is
+   l_format   varchar2(50);
+begin
+   select value into l_format
+    from  nls_session_parameters
+    where parameter in 'NLS_DATE_FORMAT';
+   return l_format;
+end get_NLS_DATE_FORMAT;
+
+------------------------------------------------------------
+procedure set_NLS_DATE_FORMAT
+      (in_format in varchar2)
+is
+begin
+   execute immediate 'alter session set NLS_DATE_FORMAT = ''' ||
+                      in_format || '''';
+end set_NLS_DATE_FORMAT;
+
+------------------------------------------------------------
+function get_NLS_TIMESTAMP_FORMAT
+      return varchar2
+is
+   l_format   varchar2(50);
+begin
+   select value into l_format
+    from  nls_session_parameters
+    where parameter in 'NLS_TIMESTAMP_FORMAT';
+   return l_format;
+end get_NLS_TIMESTAMP_FORMAT;
+
+------------------------------------------------------------
+procedure set_NLS_TIMESTAMP_FORMAT
+      (in_format in varchar2)
+is
+begin
+   execute immediate 'alter session set NLS_TIMESTAMP_FORMAT = ''' ||
+                      in_format || '''';
+end set_NLS_TIMESTAMP_FORMAT;
+
+------------------------------------------------------------
+function get_NLS_TIMESTAMP_TZ_FORMAT
+      return varchar2
+is
+   l_format   varchar2(50);
+begin
+   select value into l_format
+    from  nls_session_parameters
+    where parameter in 'NLS_TIMESTAMP_TZ_FORMAT';
+   return l_format;
+end get_NLS_TIMESTAMP_TZ_FORMAT;
+
+------------------------------------------------------------
+procedure set_NLS_TIMESTAMP_TZ_FORMAT
+      (in_format in varchar2)
+is
+begin
+   execute immediate 'alter session set NLS_TIMESTAMP_TZ_FORMAT = ''' ||
+                      in_format || '''';
+end set_NLS_TIMESTAMP_TZ_FORMAT;
+
+------------------------------------------------------------
+procedure this (
+      msg_in          in   varchar2,
+      check_this_in   in   boolean,
+      null_ok_in      in   boolean := false)
+is
+begin
+   g_last_assert  := 'THIS';
+   g_last_msg     := msg_in;
+   g_last_pass    := check_this_in;
+   g_last_details := 'Expected "'  || wt_result.C_PASS ||
+                     '" and got "' || boolean_to_status(check_this_in) || '"';
+   process_assertion;
+end this;
+
+------------------------------------------------------------
+-- EQ: string overload
+procedure eq (
+   msg_in            in   varchar2,
+   check_this_in     in   varchar2,
+   against_this_in   in   varchar2,
+   null_ok_in        in   boolean := false)
+is
+begin
+   g_last_assert  := 'EQ';
+   g_last_msg     := msg_in;
+   g_last_pass    := (   nvl(check_this_in = against_this_in, false)
+                      or (    check_this_in is null
+                          and against_this_in is null
+                          and null_ok_in              )
+                     );
+   g_last_details := 'Expected "'  || against_this_in ||
+                     '" and got "' || check_this_in   ||
+                     '"';
+   process_assertion;
+end eq;
+
+------------------------------------------------------------
+-- EQ: boolean overload
+procedure eq (
+   msg_in            in   varchar2,
+   check_this_in     in   boolean,
+   against_this_in   in   boolean,
+   null_ok_in        in   boolean := false)
+is
+begin
+   eq (msg_in           => msg_in
+      ,check_this_in    => boolean_to_status(check_this_in)
+      ,against_this_in  => boolean_to_status(against_this_in)
+      ,null_ok_in       => null_ok_in);
+end eq;
+
+------------------------------------------------------------
+-- ISNOTNULL string overload
+procedure isnotnull (
+   msg_in          in   varchar2,
+   check_this_in   in   varchar2)
+is
+begin
+   g_last_assert  := 'ISNOTNULL';
+   g_last_msg     := msg_in;
+   g_last_pass    := (check_this_in is not null);
+   g_last_details := 'Expected NOT NULL and got "' ||
+                      check_this_in || '"';
+   process_assertion;
+end isnotnull;
+
+------------------------------------------------------------
+-- ISNOTNULL boolean overload
+procedure isnotnull (
+   msg_in          in   varchar2,
+   check_this_in   in   boolean)
+is
+begin
+   isnotnull (msg_in        => msg_in
+             ,check_this_in => boolean_to_status(check_this_in));
+end isnotnull;
+
+------------------------------------------------------------
+-- ISNULL string overload
+procedure isnull (
+   msg_in          in   varchar2,
+   check_this_in   in   varchar2)
+is
+begin
+   g_last_assert  := 'ISNULL';
+   g_last_msg     := msg_in;
+   g_last_pass    := (check_this_in is null);
+   g_last_details := 'Expected NULL and got "' ||
+                      check_this_in || '"';
+   process_assertion;
+end isnull;
+
+------------------------------------------------------------
+-- ISNULL boolean overload
+procedure isnull (
+   msg_in          in   varchar2,
+   check_this_in   in   boolean)
+is
+begin
+   isnull (msg_in        => msg_in
+          ,check_this_in => boolean_to_status(check_this_in));
+end isnull;
+
+------------------------------------------------------------
+--  Check a given call raises an exception
+procedure raises (
+      msg_in                varchar2,
+      check_call_in    in   varchar2,
+      against_exc_in   in   varchar2)
+is
+   l_sqlerrm    varchar2(4000);
+   l_errstack   varchar2(4000);
+begin
+   --
+   g_last_assert  := 'RAISES';
+   g_last_msg     := msg_in;
+   --
+   begin
+      execute immediate 'begin ' || check_call_in || '; end;';
+   exception when OTHERS then
+      l_sqlerrm := SQLERRM;
+      l_errstack := substr(dbms_utility.format_error_stack  ||
+                           dbms_utility.format_error_backtrace
+                           ,1,4000);
+   end;
+   if l_sqlerrm like '%' || against_exc_in || '%'
+   then
+      g_last_pass := TRUE;
+   else
+      g_last_pass := FALSE;
+   end if;
+   --
+   g_last_details := 'Expected exception "' || against_exc_in ||
+                     '".  Actual exception raised was "' || l_errstack ||
+                           '". Exeption raised by: ' || check_call_in  ;
+   process_assertion;
+end raises;
+
+------------------------------------------------------------
+procedure eqqueryvalue (
+      msg_in             in   varchar2,
+      check_query_in     in   varchar2,
+      against_value_in   in   varchar2,
+      null_ok_in         in   boolean := false)
+is
+   type rc_type is ref cursor;
+   l_rc          rc_type;
+   l_rc_buff     varchar2 (32000);
+begin
+   --
+   g_last_assert  := 'EQQUERYVALUE';
+   g_last_msg     := msg_in;
+   --
+   open l_rc for check_query_in;
+   fetch l_rc into l_rc_buff;
+   close l_rc;
+   --
+   g_last_pass    := (   l_rc_buff = against_value_in
+                      or (    l_rc_buff is null
+                          and against_value_in is null
+                          and null_ok_in               )  );
+   g_last_details := 'Expected "' || against_value_in ||
+                    '" and got "' || l_rc_buff        ||
+                  '" for Query: ' || check_query_in   ;
+   --
+   process_assertion;
+   --
+end eqqueryvalue;
+
+------------------------------------------------------------
+procedure eqquery (
+      msg_in             in   varchar2,
+      check_query_in     in   varchar2,
+      against_query_in   in   varchar2)
+is
+begin
+   g_last_assert  := 'EQQUERY';
+   g_last_msg     := msg_in;
+   compare_queries(check_query_in, against_query_in);
+   process_assertion;
+end eqquery;
+
+------------------------------------------------------------
+procedure eqtable (
+      msg_in             in   varchar2,
+      check_this_in      in   varchar2,
+      against_this_in    in   varchar2,
+      check_where_in     in   varchar2 := null,
+      against_where_in   in   varchar2 := null)
+is
+   l_check_query    varchar2(16000) := 'select * from ' || check_this_in;
+   l_against_query  varchar2(16000) := 'select * from ' || against_this_in;
+begin
+   g_last_assert  := 'EQTABLE';
+   g_last_msg     := msg_in;
+   if check_where_in is not null
+   then
+      l_check_query := l_check_query || ' where ' || check_where_in;
+   end if;
+   if against_where_in is not null
+   then
+      l_against_query := l_against_query || ' where ' || against_where_in;
+   end if;
+   compare_queries(l_check_query, l_against_query);
+   process_assertion;
+end eqtable;
+
+------------------------------------------------------------
+procedure eqtabcount (
+      msg_in             in   varchar2,
+      check_this_in      in   varchar2,
+      against_this_in    in   varchar2,
+      check_where_in     in   varchar2 := null,
+      against_where_in   in   varchar2 := null)
+is
+   l_query      varchar2(16000) := 'select count(*) from ' || check_this_in;
+   l_cnt        number;
+   l_success    boolean;
+   l_check_cnt  number;
+   procedure run_query is
+      type rc_type is ref cursor;
+      l_rc rc_type;
+   begin
+      open l_rc for l_query;
+      fetch l_rc into l_cnt;
+      close l_rc;
+      l_success := TRUE;
+   exception
+      when OTHERS
+      then
+         g_last_details := SQLERRM || CHR(10) ||
+                           'FAILURE of Compare Query: ' || l_query || ';';
+         g_last_pass    := FALSE;
+         process_assertion;
+         l_success      := FALSE;
+   end run_query;
+begin
+   --
+   g_last_assert  := 'EQTABLE';
+   g_last_msg     := msg_in;
+   --
+   l_query := 'select count(*) from ' || check_this_in;
+   if check_where_in is not null
+   then
+      l_query := l_query || ' where ' || check_where_in;
+   end if;
+   run_query;
+   if NOT l_success then return; end if;
+   l_check_cnt := l_cnt;
+   --
+   l_query := 'select count(*) from ' || against_this_in;
+   if against_where_in is not null
+   then
+      l_query := l_query || ' where ' || against_where_in;
+   end if;
+   run_query;
+   if NOT l_success then return; end if;
+   g_last_pass    := (l_check_cnt = l_cnt);
+   --
+   g_last_details := 'Expected '  || l_cnt       || ' rows from "' || against_this_in ||
+                     '" and got ' || l_check_cnt || ' rows from "' || check_this_in   ||
+                     '"';
+   process_assertion;
+end eqtabcount;
+
+------------------------------------------------------------
+procedure objexists (
+      msg_in        in   varchar2,
+      obj_owner_in  in   varchar2,
+      obj_name_in   in   varchar2)
+is
+   l_num_objects  number;
+begin
+   g_last_assert  := 'OBJEXISTS';
+   g_last_msg     := msg_in;
+   select count(*) into l_num_objects
+    from  all_objects
+    where object_name = obj_name_in
+     and  (   obj_owner_in is null
+           or obj_owner_in = owner);
+   g_last_pass    := case l_num_objects when 0 then FALSE else TRUE end;
+   g_last_details := 'Number of objects found for "' ||
+                      case when obj_owner_in is null then ''
+                           else obj_owner_in || '.' end ||
+                      obj_name_in || '" is ' || l_num_objects;
+   process_assertion;
+end objexists;
+
+------------------------------------------------------------
+procedure objexists (
+      msg_in          in   varchar2,
+      check_this_in   in   varchar2)
+is
+   l_pos    number := instr(check_this_in, '.');
+begin
+   objexists(msg_in       => msg_in
+            ,obj_owner_in => substr(check_this_in, 1, l_pos-1)
+            ,obj_name_in  => substr(check_this_in, l_pos+1, length(check_this_in)));
+end objexists;
+------------------------------------------------------------
+procedure objnotexists (
+      msg_in        in   varchar2,
+      obj_owner_in  in   varchar2,
+      obj_name_in   in   varchar2)
+is
+   l_num_objects  number;
+begin
+   g_last_assert  := 'OBJNOTEXISTS';
+   g_last_msg     := msg_in;
+   select count(*) into l_num_objects
+    from  all_objects
+    where object_name = obj_name_in
+     and  (   obj_owner_in is null
+           or obj_owner_in = owner);
+   g_last_pass    := case l_num_objects when 0 then TRUE else FALSE end;
+   g_last_details := 'Number of objects found for "' ||
+                      case when obj_owner_in is null then ''
+                           else obj_owner_in || '.' end ||
+                      obj_name_in || '" is ' || l_num_objects;
+   process_assertion;
+end objnotexists;
+
+------------------------------------------------------------
+procedure objnotexists (
+      msg_in          in   varchar2,
+      check_this_in   in   varchar2)
+is
+   l_pos    number := instr(check_this_in, '.');
+begin
+   objnotexists(msg_in       => msg_in
+               ,obj_owner_in => substr(check_this_in, 1, l_pos-1)
+               ,obj_name_in  => substr(check_this_in, l_pos+1, length(check_this_in)));
+end objnotexists;
+
+
+------------------------------------------------------------
+begin
+
+   reset_globals;
+
+end wt_assert;
+</pre>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,523 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=Cp1252" />
+<script src="WT_TEXT_REPORT/report.js" type="text/javascript"></script>
+<link href="WT_TEXT_REPORT/report.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div class="banner">
+<table width="98%"><tr>
+<td><h2 class="banner">WT_TEXT_REPORT</h2></td>
+</tr></table></div>
+<div id="maintabs">
+<div class="currentmaintab" onclick="onSelectMainTab(this, 0)">
+<div>
+<p>Doc</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 1)">
+<div>
+<p>Details</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 2)">
+<div>
+<p>Grants</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 3)">
+<div>
+<p>References</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 4)">
+<div>
+<p>Dependencies</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 5)">
+<div>
+<p>Code</p>
+</div>
+</div>
+</div>
+<br/>
+<div id="masterreports">
+<div id="Master.0">
+<div class="currentmasterreport">
+<TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
+<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE><HR><P></P><HR><TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
+<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE></div>
+</div>
+<div id="Master.1">
+<div class="masterreport">
+<table id="Table.0" cellpadding="0" cellspacing="0" summary="">
+<th>NAME</th>
+<th>VALUE</th>
+</tr>
+<tr>
+<td>OWNER</td>
+<td>WTP</td>
+</tr>
+<tr>
+<td>OBJECT_NAME</td>
+<td>WT_TEXT_REPORT</td>
+</tr>
+<tr>
+<td>SUBOBJECT_NAME</td>
+<td>null</td>
+</tr>
+<tr>
+<td>OBJECT_ID</td>
+<td>37194</td>
+</tr>
+<tr>
+<td>DATA_OBJECT_ID</td>
+<td>null</td>
+</tr>
+<tr>
+<td>OBJECT_TYPE</td>
+<td>PACKAGE&nbsp;BODY</td>
+</tr>
+<tr>
+<td>CREATED</td>
+<td>08-JAN-2018&nbsp;03:08:45</td>
+</tr>
+<tr>
+<td>LAST_DDL_TIME</td>
+<td>13-JAN-2018&nbsp;14:02:22</td>
+</tr>
+<tr>
+<td>TIMESTAMP</td>
+<td>2018-01-13:14:02:22</td>
+</tr>
+<tr>
+<td>STATUS</td>
+<td>VALID</td>
+</tr>
+<tr>
+<td>TEMPORARY</td>
+<td>N</td>
+</tr>
+<tr>
+<td>GENERATED</td>
+<td>N</td>
+</tr>
+<tr>
+<td>SECONDARY</td>
+<td>N</td>
+</tr>
+<tr>
+<td>NAMESPACE</td>
+<td>2</td>
+</tr>
+<tr>
+<td>EDITION_NAME</td>
+<td>null</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.2">
+<div class="masterreport">
+<table id="Table.1" cellpadding="0" cellspacing="0" summary="">
+<tr>
+<th>PRIVILEGE</th>
+<th>GRANTEE</th>
+<th>GRANTABLE</th>
+<th>GRANTOR</th>
+<th>OBJECT_NAME</th>
+</tr>
+<tr onclick="table_onSelectMasterRow(this, 1, 0)" class="currentrow">
+<td class="currentcell">EXECUTE</td>
+<td class="currentcell">PUBLIC</td>
+<td class="currentcell">NO</td>
+<td class="currentcell">WTP</td>
+<td class="currentcell">WT_TEXT_REPORT</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.3">
+<div class="masterreport">
+<table id="Table.2" cellpadding="0" cellspacing="0" summary="">
+<tr>
+<th>NAME</th>
+<th>OWNER</th>
+<th>TYPE</th>
+<th>OBJECT_ID</th>
+<th>STATUS</th>
+<th>TYPE_LINK</th>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.4">
+<div class="masterreport">
+<table id="Table.3" cellpadding="0" cellspacing="0" summary="">
+<tr>
+<th>NAME</th>
+<th>OWNER</th>
+<th>TYPE</th>
+<th>OBJECT_ID</th>
+<th>STATUS</th>
+<th>TYPE_LINK</th>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.5">
+<div class="masterreport">
+<pre>
+package body wt_text_report
+as
+
+   g_test_runs_rec  wt_test_runs%ROWTYPE;
+
+
+----------------------
+--  Private Procedures
+----------------------
+
+------------------------------------------------------------
+procedure p
+      (in_text  in  varchar2)
+is
+begin
+   dbms_output.put_line(in_text);
+end p;
+
+------------------------------------------------------------
+procedure result_summary
+is
+   l_yield_txt  varchar2(50);
+begin
+   for buff in (
+      select count(*)                        TOT_CNT
+            ,sum(decode(status,'FAIL',1,0))  FAIL_CNT
+            ,sum(decode(status,'ERR',1,0))   ERR_CNT
+            ,count(distinct testcase)        TCASE_CNT
+            ,min(elapsed_msecs)              MIN_MSEC
+            ,round(avg(elapsed_msecs),3)     AVG_MSEC
+            ,max(elapsed_msecs)              MAX_MSEC
+       from  wt_results
+       where test_run_id = g_test_runs_rec.id )
+   loop
+      if buff.tot_cnt = 0
+      then
+         l_yield_txt := '(Divide by Zero)';
+      else
+         l_yield_txt := to_char(round( ( 1 - (buff.fail_cnt+buff.err_cnt)
+                                                 / buff.tot_cnt
+                                       ) * 100
+                                     ,2)
+                               ,'9990.99') || '%';
+      end if;
+      p('       Total Testcases: ' || to_char(buff.tcase_cnt,'9999999') ||
+        '      Total Assertions: ' || to_char(buff.tot_cnt  ,'9999999') );
+      p('  Minimum Elapsed msec: ' || to_char(buff.min_msec ,'9999999') ||
+        '     Failed Assertions: ' || to_char(buff.fail_cnt ,'9999999') );
+      p('  Average Elapsed msec: ' || to_char(buff.avg_msec ,'9999999') ||
+        '      Error Assertions: ' || to_char(buff.err_cnt  ,'9999999') );
+      p('  Maximum Elapsed msec: ' || to_char(buff.max_msec ,'9999999') ||
+        '            Test Yield: ' || l_yield_txt                      );
+   end loop;
+end result_summary;
+
+------------------------------------------------------------
+procedure profile_summary
+is
+   l_code_coverage  varchar2(100);
+begin
+   for buff in (
+      select count(*)                        TOT_LINES
+            ,sum(decode(status,'EXEC',1,0))  EXEC_LINES
+            ,sum(decode(status,'ANNO',1,0))  ANNO_LINES
+            ,sum(decode(status,'EXCL',1,0))  EXCL_LINES
+            ,sum(decode(status,'NOTX',1,0))  NOTX_LINES
+            ,sum(decode(status,'UNKN',1,0))  UNKN_LINES
+            ,min(min_time)/1000              MIN_USEC
+            ,sum(total_time)/1000/count(*)   AVG_USEC
+            ,max(max_time)/1000              MAX_USEC
+       from  wt_dbout_profiles
+       where test_run_id = g_test_runs_rec.id )
+   loop
+      p('    Total Source Lines: ' || to_char(buff.tot_lines ,'9999999') ||
+        '          Missed Lines: ' || to_char(buff.notx_lines,'9999999') );
+      p('  Minimum Elapsed usec: ' || to_char(buff.min_usec  ,'9999999') ||
+        '       Annotated Lines: ' || to_char(buff.anno_lines,'9999999') );
+      p('  Average Elapsed usec: ' || to_char(buff.avg_usec  ,'9999999') ||
+        '        Excluded Lines: ' || to_char(buff.excl_lines,'9999999') );
+      p('  Maximum Elapsed usec: ' || to_char(buff.max_usec  ,'9999999') ||
+        '         Unknown Lines: ' || to_char(buff.unkn_lines,'9999999') );
+      if (buff.exec_lines + buff.notx_lines) = 0
+      then
+         l_code_coverage := '(Divide by Zero)';
+      else
+         l_code_coverage := to_char(      100 * buff.exec_lines /
+                                    (buff.exec_lines + buff.notx_lines)
+                                   ,'9990.99') || '%';
+      end if;
+      p(' Trigger Source Offset: ' || to_char(g_test_runs_rec.trigger_offset,'9999999') ||
+        '         Code Coverage: ' || l_code_coverage);
+   end loop;
+end profile_summary;
+
+------------------------------------------------------------
+procedure summary_out
+is
+begin
+   p('');
+   p('Summary Results for Test Runner ' || g_test_runs_rec.runner_owner ||
+                                    '.' || g_test_runs_rec.runner_name  ||
+                       ' (Test Run ID ' || g_test_runs_rec.id           ||
+                                    ')' );
+   result_summary;
+   p('  Total Run Time (sec): ' ||
+      to_char(extract(day from (g_test_runs_rec.end_dtm -
+                                g_test_runs_rec.start_dtm) * 86400 * 100) / 100
+             ,'99990.9') );
+   if g_test_runs_rec.error_message is not null
+   then
+      p('');
+      p('  *** Test Runner Error ***');
+      p(g_test_runs_rec.error_message);
+   end if;
+   ----------------------------------------
+   if g_test_runs_rec.dbout_name is null
+   then
+      return;
+   end if;
+   p('');
+   p('Summary Results for DBOUT: ' || g_test_runs_rec.dbout_owner ||
+                               '.' || g_test_runs_rec.dbout_name  ||
+                               '(' || g_test_runs_rec.dbout_type  || ')' );
+   profile_summary;
+end summary_out;
+
+------------------------------------------------------------
+procedure results_out
+      (in_show_pass  in boolean)
+is
+   l_last_testcase  wt_results.testcase%TYPE;
+   l_show_pass_txt  varchar2(1);
+begin
+   if in_show_pass
+   then
+      l_show_pass_txt := 'Y';
+   else
+      l_show_pass_txt := 'N';
+   end if;
+   p('');
+   p('Detailed Results for Test Runner ' || g_test_runs_rec.runner_owner ||
+                                     '.' || g_test_runs_rec.runner_name  ||
+                        ' (Test Run ID ' || g_test_runs_rec.id           ||
+                                     ')' );
+   for buff in (
+      select status
+            ,elapsed_msecs
+            ,testcase
+            ,assertion
+            ,details
+            ,message
+       from  wt_results
+       where test_run_id = g_test_runs_rec.id
+       and  (   l_show_pass_txt = 'Y'
+             or status         != 'PASS')
+       order by testcase, result_seq )
+   loop
+      if    buff.testcase = l_last_testcase
+         OR (      buff.testcase is null
+             AND l_last_testcase is null )
+      then
+         p(format_test_result
+                        (in_assertion      => buff.assertion
+                        ,in_status         => buff.status
+                        ,in_details        => buff.details
+                        ,in_testcase       => NULL
+                        ,in_message        => buff.message) );
+      else
+         p(format_test_result
+                        (in_assertion      => buff.assertion
+                        ,in_status         => buff.status
+                        ,in_details        => buff.details
+                        ,in_testcase       => buff.testcase
+                        ,in_message        => buff.message) );
+         l_last_testcase := buff.testcase;
+      end if;
+   end loop;
+end results_out;
+
+------------------------------------------------------------
+procedure profile_out
+      (in_show_anno  in boolean)
+is
+   l_header_txt  CONSTANT varchar2(2000) := chr(10) ||
+     'Source               TotTime MinTime   MaxTime     ' || chr(10) ||
+     '  Line Stat Occurs    (usec)  (usec)    (usec) Text' || chr(10) ||
+     '------ ---- ------ --------- ------- --------- ------------';
+   l_show_anno_txt  varchar2(1);
+begin
+   if g_test_runs_rec.dbout_name is null
+   then
+      return;
+   end if;
+   if in_show_anno
+   then
+      l_show_anno_txt := 'Y';
+   else
+      l_show_anno_txt := 'N';
+   end if;
+   p('');
+   p('Detailed Profile for DBOUT ' || g_test_runs_rec.dbout_owner ||
+                               '.' || g_test_runs_rec.dbout_name  ||
+                              ' (' || g_test_runs_rec.dbout_type  ||
+                               ')' );
+   p('   from Test Runner ' || g_test_runs_rec.runner_owner ||
+                        '.' || g_test_runs_rec.runner_name  ||
+           ' (Test Run ID ' || g_test_runs_rec.id           ||
+                        ')' );
+   p(l_header_txt);
+   for buff in (
+      select line
+            ,status
+            ,total_occur
+            ,total_time
+            ,min_time
+            ,max_time
+            ,text
+            ,rownum
+       from  wt_dbout_profiles
+       where test_run_id = g_test_runs_rec.id
+       and  (   l_show_anno_txt = 'Y'
+             or status         != 'ANNO')
+       order by line  )
+   loop
+      p(to_char(buff.line,'99999')               || ' ' ||
+           rpad(buff.status,4)                   || ' ' ||
+        to_char(buff.total_occur,'99999')        || ' ' ||
+        to_char(buff.total_time/1000,'99999999') || ' ' ||
+        to_char(buff.min_time/1000,'999999')     || ' ' ||
+        to_char(buff.max_time/1000,'99999999')   || ' ' ||
+        replace(buff.text,CHR(10),'')            );
+      if mod(buff.rownum,25) = 0
+      then
+         p(l_header_txt);
+      end if;
+   end loop;
+end profile_out;
+
+
+---------------------
+--  Public Procedures
+---------------------
+
+------------------------------------------------------------
+function format_test_result
+      (in_assertion      in wt_results.assertion%TYPE
+      ,in_status         in wt_results.status%TYPE
+      ,in_details        in wt_results.details%TYPE
+      ,in_testcase       in wt_results.testcase%TYPE
+      ,in_message        in wt_results.message%TYPE)
+   return varchar2
+is
+
+   l_out_str  varchar2(32000) := '';
+
+begin
+
+   if in_testcase is not null
+   then
+      l_out_str := '   --  Test Case: ' || in_testcase || '  --' || CHR(10);
+   end if;
+
+   if in_status = wt_result.C_PASS
+   then
+      l_out_str := l_out_str || ' ' || rpad(in_status,4) || ' ';
+   else
+      l_out_str := l_out_str || '#' || rpad(in_status,4) || '#';
+   end if;
+
+   if in_message is not null
+   then
+      l_out_str := l_out_str || in_message  || '. ';
+   end if;
+
+   l_out_str := l_out_str || in_assertion || ' - ';
+   l_out_str := l_out_str || in_details;
+
+   return l_out_str;
+   
+end format_test_result;
+
+------------------------------------------------------------
+procedure ad_hoc_result
+      (in_assertion      in wt_results.assertion%TYPE
+      ,in_status         in wt_results.status%TYPE
+      ,in_details        in wt_results.details%TYPE
+      ,in_testcase       in wt_results.testcase%TYPE
+      ,in_message        in wt_results.message%TYPE)
+is
+begin
+   p(format_test_result
+        (in_assertion  => in_assertion
+        ,in_status     => in_status
+        ,in_details    => in_details
+        ,in_testcase   => in_testcase
+        ,in_message    => in_message));
+end ad_hoc_result;
+
+------------------------------------------------------------
+procedure dbms_out
+      (in_runner_name    in  wt_test_runs.runner_name%TYPE
+      ,in_hide_details   in  boolean default FALSE
+      ,in_summary_first  in  boolean default FALSE
+      ,in_show_pass      in  boolean default FALSE
+      ,in_show_anno      in  boolean default FALSE)
+is
+begin
+
+   for buff in (
+      select * from wt_test_runs
+       where (runner_name, start_dtm) in (
+             select runner_name
+                    ,max(start_dtm)        MAX_START_DTM
+              from  wt_test_runs
+              where (   (    in_runner_name is not null
+                        and in_runner_name = runner_name)
+                     OR in_runner_name is null  )
+               and  runner_owner = USER
+              group by runner_name  )  )
+   loop
+
+      --  Load Test Run Record
+      g_test_runs_rec := buff;
+
+      --  Setup Display Order
+      if in_summary_first
+      then
+         summary_out;
+         if NOT in_hide_details
+         then
+            results_out(in_show_pass);
+            profile_out(in_show_anno);
+         end if;
+      else
+        if NOT in_hide_details
+         then
+            profile_out(in_show_anno);
+            results_out(in_show_pass);
+         end if;
+         summary_out;
+      end if;
+
+   end loop;
+
+end dbms_out;
+
+end wt_text_report;</pre>
+</div>
+</div>
+</div>
+</body>
+</html>
