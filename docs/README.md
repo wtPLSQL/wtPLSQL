@@ -16,13 +16,14 @@ The [Project Wiki](https://github.com/DDieterich/wtPLSQL/wiki) has the descripti
 
 File Name                | Description
 ------------------------ |------------
-DBDocs                   | Directory of SQL Developer DBDocs Files
+[DBDocs](https://github.com/DDieterich/wtPLSQL/tree/master/docs/DBDocs) | Directory of SQL Developer DBDocs Files
 [DataModeler](https://github.com/DDieterich/wtPLSQL/tree/master/docs/DataModeler) | Directory of SQL Developer Data Modeler Files
 [Call_Tree_Diagrams.odg](https://github.com/DDieterich/wtPLSQL/tree/master/docs/Call_Tree_Diagrams.odg) | LibreOffice Draw File for Process Call Trees
-Call_Tree_Diagrams.pdf   | Process Call Tree (Graph) Diagrams
-DBDocs_Settings.txt      | Settings used to generate DBDocs Files
-ER_Diagrams.pdf          | Entity-Relationship Diagrams
-README.md                | README Markdown file for this directory
+[Call_Tree_Diagrams.pdf](https://github.com/DDieterich/wtPLSQL/tree/master/docs/Call_Tree_Diagrams.pdf) | Process Call Tree (Graph) Diagrams
+[DBDocs_Settings.txt](https://github.com/DDieterich/wtPLSQL/tree/master/docs/DBDocs_Settings.txt) | Settings used to generate DBDocs Files
+[ER_Diagrams.pdf](https://github.com/DDieterich/wtPLSQL/tree/master/docs/ER_Diagrams.pdf) | Entity-Relationship Diagrams
+[README.md](https://github.com/DDieterich/wtPLSQL/tree/master/docs/README.md) | README Markdown file for this directory
+_config.tml | YAML Configuration File for this Website
 
 ---
 
