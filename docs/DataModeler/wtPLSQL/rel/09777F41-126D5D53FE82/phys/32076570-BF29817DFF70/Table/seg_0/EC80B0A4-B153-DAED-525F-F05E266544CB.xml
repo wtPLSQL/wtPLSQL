@@ -1,0 +1,97 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableProxyOraclev11g class="oracle.dbtools.crest.model.design.storage.oracle.v11g.TableProxyOraclev11g" name="PLSQL_PROFILER_UNITS" directorySegmentName="seg_0" id="EC80B0A4-B153-DAED-525F-F05E266544CB">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<schemaObject>D85EFAC9-A239-ECBC-BF0A-46E276B225CE</schemaObject>
+<logging>YES</logging>
+<partitionedRowMovement>DISABLE</partitionedRowMovement>
+<segment>500117D8-F140-269F-CBAE-48AA93BA65C2</segment>
+<tableSpace>1AF7109A-26D9-91BB-9F5B-FC0220686B07</tableSpace>
+<temporaryChanged>false</temporaryChanged>
+<accessDriverType>oracle_loader</accessDriverType>
+<rejectLimit></rejectLimit>
+<columnProxies itemClass="oracle.dbtools.crest.model.design.storage.oracle.v12c.ColumnProxyOraclev12c">
+<ColumnProxy name="TOTAL_TIME" id="0EDC9669-44A0-BE03-6764-7ADF4BDD0DFD">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<defaultValue>0</defaultValue>
+</ColumnProxy>
+<ColumnProxy name="SPARE1" id="2126A48A-7F60-B412-C702-2716E5AE39CE">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="UNIT_TYPE" id="25A06F9B-2547-D9CA-DE47-8CF5BF688A0B">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="UNIT_OWNER" id="2BE32408-3BC7-C15C-6F9E-B036982C5F99">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="RUNID" id="37678997-775B-2835-9E5D-291F26060499">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="UNIT_TIMESTAMP" id="5AF42525-738B-C94F-3BAA-C7AD9C66DA2C">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="SPARE2" id="5E1B2E26-4DEC-0B3E-1F50-48533197BEFB">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="UNIT_NAME" id="7ED6C716-ADB3-9E01-918A-123526B5E9D8">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="UNIT_NUMBER" id="CC4ED246-A0A8-25E8-73BA-1970A7B12A48">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+</ColumnProxy>
+</columnProxies>
+<synonyms>
+<Synonym class="oracle.dbtools.crest.model.design.storage.oracle.v10g.SynonymOraclev10g" name="PLSQL_PROFILER_UNITS" directorySegmentName="seg_0" id="41BDFEAA-3286-94A3-1428-3A351C3FCA02">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>PUBLIC</sourceObjSchema>
+<sourceObjName>PLSQL_PROFILER_UNITS</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:36 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<object>PLSQL_PROFILER_UNITS</object>
+<objectUser>8BAEC76D-10C0-D6CD-F400-EACE584ED648</objectUser>
+<public>YES</public>
+<user>PUBLIC</user>
+<referredObjectID>EC80B0A4-B153-DAED-525F-F05E266544CB</referredObjectID>
+</Synonym>
+</synonyms>
+<foreignKeys>
+<ForeignKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.FKProxyOraclev10g" name="SYS_C0019026" id="0734780E-F43E-67F4-1D07-50AFA31DF4B7">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:36 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+</ForeignKey>
+</foreignKeys>
+<primaryKeys>
+<PrimaryKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PKProxyOraclev10g" name="PLSQL_PROFILER_UNITS_PK" id="ABFA0270-1B8A-3DCA-820B-9527F26A67A1">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:36 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<schemaObject>D85EFAC9-A239-ECBC-BF0A-46E276B225CE</schemaObject>
+<segment>FB9F09FF-9169-C146-1334-DF36BB160B4C</segment>
+<tableSpace>1AF7109A-26D9-91BB-9F5B-FC0220686B07</tableSpace>
+<indexSegment>FB9F09FF-9169-C146-1334-DF36BB160B4C</indexSegment>
+<indexSort>SORTED</indexSort>
+<usingIndex>BY INDEX NAME</usingIndex>
+</PrimaryKey>
+</primaryKeys>
+</TableProxyOraclev11g>

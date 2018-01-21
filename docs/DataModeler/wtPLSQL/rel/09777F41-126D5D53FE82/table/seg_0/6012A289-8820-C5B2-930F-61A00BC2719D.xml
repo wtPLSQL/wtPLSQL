@@ -1,0 +1,211 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="6012A289-8820-C5B2-930F-61A00BC2719D" schemaObject="D85EFAC9-A239-ECBC-BF0A-46E276B225CE" name="WT_RESULTS">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_RESULTS</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<commentInRDBMS>Results data from Test Runs.</commentInRDBMS>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="TEST_RUN_ID" id="0165A2BC-0A94-C037-4022-694EA221C10A">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>WT_RESULTS</sourceObjSchema>
+<sourceObjName>TEST_RUN_ID</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<commentInRDBMS>Foreign Key for the Test Run, Primary Key part 1.</commentInRDBMS>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>38</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,38,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<notNullConstraintName>WT_RESULTS_NN2</notNullConstraintName>
+<associations>
+<colAssociation fkAssociation="1F173AF5-B575-1F49-120A-68064A2CE4EF" referredColumn="3125AC81-D8C4-E287-6A60-1F50BA2F119F"/>
+</associations>
+</Column>
+<Column name="RESULT_SEQ" id="4DFF67CC-2DF5-8906-3E5B-44E62DA4E958">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>WT_RESULTS</sourceObjSchema>
+<sourceObjName>RESULT_SEQ</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<commentInRDBMS>Sequence number for this Result, Primary Key part 2.</commentInRDBMS>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>8</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,8,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<notNullConstraintName>WT_RESULTS_NN3</notNullConstraintName>
+</Column>
+<Column name="EXECUTED_DTM" id="AC95D82C-B361-B500-2B6F-73A70334E727">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>WT_RESULTS</sourceObjSchema>
+<sourceObjName>EXECUTED_DTM</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<commentInRDBMS>Date/Time (with Fractional Seconds) this Result was captured</commentInRDBMS>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT015</logicalDatatype>
+<dataTypePrecision>6</dataTypePrecision>
+<ownDataTypeParameters>,6,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<notNullConstraintName>WT_RESULTS_NN4</notNullConstraintName>
+</Column>
+<Column name="ELAPSED_MSECS" id="503C0FC5-198E-6133-7EA1-DCF988E663F5">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>WT_RESULTS</sourceObjSchema>
+<sourceObjName>ELAPSED_MSECS</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<commentInRDBMS>Elapsed time in milliseonds since the previous Result or start ot the Test Run.</commentInRDBMS>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<dataTypeScale>3</dataTypeScale>
+<ownDataTypeParameters>,10,3</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<notNullConstraintName>WT_RESULTS_NN5</notNullConstraintName>
+</Column>
+<Column name="ASSERTION" id="7C47E0D9-869B-B071-C99D-8F36F2602B20">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>WT_RESULTS</sourceObjSchema>
+<sourceObjName>ASSERTION</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<commentInRDBMS>Name of the Assertion Test performed</commentInRDBMS>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>15 BYTE</dataTypeSize>
+<ownDataTypeParameters>15 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<notNullConstraintName>WT_RESULTS_NN6</notNullConstraintName>
+</Column>
+<Column name="STATUS" id="590C8AB7-E0F2-3CF7-A7FB-36769A3F6BD4">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>WT_RESULTS</sourceObjSchema>
+<sourceObjName>STATUS</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<commentInRDBMS>Passed/Failed Status from the Assertion</commentInRDBMS>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<constraintName>WT_RESULTS_CK1</constraintName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>4 BYTE</dataTypeSize>
+<listOfValues>
+<valueDef value="&apos;FAIL&apos;" description=""/>
+<valueDef value="&apos;PASS&apos;" description=""/>
+</listOfValues>
+<ownDataTypeParameters>4 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<notNullConstraintName>WT_RESULTS_NN7</notNullConstraintName>
+</Column>
+<Column name="DETAILS" id="4CAAB48F-E07F-F0D8-B4B4-BD21D31C4B60">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>WT_RESULTS</sourceObjSchema>
+<sourceObjName>DETAILS</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<commentInRDBMS>Assertion Details, i.e. Expected Value and Actual Value</commentInRDBMS>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>4000 BYTE</dataTypeSize>
+<ownDataTypeParameters>4000 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<notNullConstraintName>WT_RESULTS_NN8</notNullConstraintName>
+</Column>
+<Column name="TESTCASE" id="8192B645-DAEF-90B8-3F90-6C0358200CD9">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>WT_RESULTS</sourceObjSchema>
+<sourceObjName>TESTCASE</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<commentInRDBMS>Optional Test Case name.</commentInRDBMS>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>30 BYTE</dataTypeSize>
+<ownDataTypeParameters>30 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="MESSAGE" id="6A9B04DD-BA1A-F2C8-5009-D87E2D16D01F">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>WT_RESULTS</sourceObjSchema>
+<sourceObjName>MESSAGE</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<commentInRDBMS>Optional test identifier that helps connect an Assertion to the Test Runner.</commentInRDBMS>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>50 BYTE</dataTypeSize>
+<ownDataTypeParameters>50 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="46A4F8D1-A911-4D70-183E-1E5771E919C2" name="WT_RESULTS_PK">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_RESULTS_PK</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:36 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="0165A2BC-0A94-C037-4022-694EA221C10A"/>
+<colUsage columnID="4DFF67CC-2DF5-8906-3E5B-44E62DA4E958"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="E03404B7-F15E-E7DA-BDD4-6AF22E02D877" schemaObject="D85EFAC9-A239-ECBC-BF0A-46E276B225CE" name="WT_RESULTS_PK">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_RESULTS_PK</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="0165A2BC-0A94-C037-4022-694EA221C10A"/>
+<colUsage columnID="4DFF67CC-2DF5-8906-3E5B-44E62DA4E958"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="F0ADCC5C-78D7-8022-0D33-2927110E2C40" name="WT_RESULTS_FK1">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:36 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="0165A2BC-0A94-C037-4022-694EA221C10A"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

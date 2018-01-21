@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<BusinessInfoDesign class="oracle.dbtools.crest.model.businessinfo.BusinessInfoDesign" name="Business Information" id="41B4C061-E686-5D7F-2E0C-5B6EDE0471BF">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:28:25 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<shouldBeOpen>false</shouldBeOpen>
+</BusinessInfoDesign>

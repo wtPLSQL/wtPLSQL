@@ -1,0 +1,29 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<SequenceOraclev10g class="oracle.dbtools.crest.model.design.storage.oracle.v10g.SequenceOraclev10g" name="WT_TEST_RUNS_SEQ" directorySegmentName="seg_0" id="4D03B1EF-0064-2A44-B098-6BED4D42E257">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_TEST_RUNS_SEQ</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:34 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<cache>20</cache>
+<incrementBy>1</incrementBy>
+<maxValue>9999999999999999999999999999</maxValue>
+<minValue>1</minValue>
+<user>8BAEC76D-10C0-D6CD-F400-EACE584ED648</user>
+<synonyms>
+<Synonym class="oracle.dbtools.crest.model.design.storage.oracle.v10g.SynonymOraclev10g" name="WT_TEST_RUNS_SEQ" directorySegmentName="seg_0" id="5693D205-FF83-4813-9C88-6865B6C94159">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>PUBLIC</sourceObjSchema>
+<sourceObjName>WT_TEST_RUNS_SEQ</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:36 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<object>WT_TEST_RUNS_SEQ</object>
+<objectUser>8BAEC76D-10C0-D6CD-F400-EACE584ED648</objectUser>
+<public>YES</public>
+<user>PUBLIC</user>
+<referredObjectID>4D03B1EF-0064-2A44-B098-6BED4D42E257</referredObjectID>
+</Synonym>
+</synonyms>
+</SequenceOraclev10g>

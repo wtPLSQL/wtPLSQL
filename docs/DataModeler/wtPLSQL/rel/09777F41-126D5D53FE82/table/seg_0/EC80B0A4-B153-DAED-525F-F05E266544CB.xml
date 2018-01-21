@@ -1,0 +1,173 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="EC80B0A4-B153-DAED-525F-F05E266544CB" schemaObject="D85EFAC9-A239-ECBC-BF0A-46E276B225CE" name="PLSQL_PROFILER_UNITS">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>PLSQL_PROFILER_UNITS</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<commentInRDBMS>Information about each library unit in a run</commentInRDBMS>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="RUNID" id="37678997-775B-2835-9E5D-291F26060499">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>PLSQL_PROFILER_UNITS</sourceObjSchema>
+<sourceObjName>RUNID</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="707061E4-CDA8-8BEA-8894-769ED2237596" referredColumn="946BF3E8-98E6-F6EB-B696-57D907B8C647"/>
+</associations>
+</Column>
+<Column name="UNIT_NUMBER" id="CC4ED246-A0A8-25E8-73BA-1970A7B12A48">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>PLSQL_PROFILER_UNITS</sourceObjSchema>
+<sourceObjName>UNIT_NUMBER</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="UNIT_TYPE" id="25A06F9B-2547-D9CA-DE47-8CF5BF688A0B">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>PLSQL_PROFILER_UNITS</sourceObjSchema>
+<sourceObjName>UNIT_TYPE</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>32 BYTE</dataTypeSize>
+<ownDataTypeParameters>32 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="UNIT_OWNER" id="2BE32408-3BC7-C15C-6F9E-B036982C5F99">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>PLSQL_PROFILER_UNITS</sourceObjSchema>
+<sourceObjName>UNIT_OWNER</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>32 BYTE</dataTypeSize>
+<ownDataTypeParameters>32 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="UNIT_NAME" id="7ED6C716-ADB3-9E01-918A-123526B5E9D8">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>PLSQL_PROFILER_UNITS</sourceObjSchema>
+<sourceObjName>UNIT_NAME</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>32 BYTE</dataTypeSize>
+<ownDataTypeParameters>32 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="UNIT_TIMESTAMP" id="5AF42525-738B-C94F-3BAA-C7AD9C66DA2C">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>PLSQL_PROFILER_UNITS</sourceObjSchema>
+<sourceObjName>UNIT_TIMESTAMP</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="TOTAL_TIME" id="0EDC9669-44A0-BE03-6764-7ADF4BDD0DFD">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>PLSQL_PROFILER_UNITS</sourceObjSchema>
+<sourceObjName>TOTAL_TIME</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<defaultValue>0</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="SPARE1" id="2126A48A-7F60-B412-C702-2716E5AE39CE">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>PLSQL_PROFILER_UNITS</sourceObjSchema>
+<sourceObjName>SPARE1</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="SPARE2" id="5E1B2E26-4DEC-0B3E-1F50-48533197BEFB">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>PLSQL_PROFILER_UNITS</sourceObjSchema>
+<sourceObjName>SPARE2</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="ABFA0270-1B8A-3DCA-820B-9527F26A67A1" schemaObject="D85EFAC9-A239-ECBC-BF0A-46E276B225CE" name="PLSQL_PROFILER_UNITS_PK">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>SYS_C0019025</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="37678997-775B-2835-9E5D-291F26060499"/>
+<colUsage columnID="CC4ED246-A0A8-25E8-73BA-1970A7B12A48"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="0734780E-F43E-67F4-1D07-50AFA31DF4B7" name="SYS_C0019026">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:36 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="37678997-775B-2835-9E5D-291F26060499"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

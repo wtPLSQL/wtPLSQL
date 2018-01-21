@@ -1,0 +1,36 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<PackageOracle class="oracle.dbtools.crest.model.design.storage.oracle.PackageOracle" name="WT_RESULT" directorySegmentName="seg_0" id="9D22690E-A723-1DE0-6384-39AD9F0EC283">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_RESULT</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:36 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<owner>8BAEC76D-10C0-D6CD-F400-EACE584ED648</owner>
+<source>CREATE OR REPLACE package WTP.WT_RESULT authid current_user&lt;br/&gt;as&lt;br/&gt;&lt;br/&gt;   C_PASS  CONSTANT varchar2(10) := &apos;PASS&apos;;&lt;br/&gt;   C_FAIL  CONSTANT varchar2(10) := &apos;FAIL&apos;;&lt;br/&gt;&lt;br/&gt;   procedure initialize&lt;br/&gt;      (in_test_run_id   in wt_test_runs.id%TYPE);&lt;br/&gt;&lt;br/&gt;   procedure finalize;&lt;br/&gt;&lt;br/&gt;   procedure save&lt;br/&gt;      (in_assertion      in wt_results.assertion%TYPE&lt;br/&gt;      ,in_status         in wt_results.status%TYPE&lt;br/&gt;      ,in_details        in wt_results.details%TYPE&lt;br/&gt;      ,in_testcase       in wt_results.testcase%TYPE&lt;br/&gt;      ,in_message        in wt_results.message%TYPE);&lt;br/&gt;&lt;br/&gt;   procedure delete_records&lt;br/&gt;      (in_test_run_id  in number);&lt;br/&gt;&lt;br/&gt;end wt_result;</source>
+<body class="oracle.dbtools.crest.model.design.storage.oracle.PackageBodyOracle" name="WT_RESULT" id="9D22690E-A723-1DE0-6384-39AD9F0EC283">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_RESULT</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:36 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<owner>8BAEC76D-10C0-D6CD-F400-EACE584ED648</owner>
+<source>CREATE OR REPLACE package body WTP.WT_RESULT&lt;br/&gt;as&lt;br/&gt;&lt;br/&gt;   TYPE results_nt_type is table of wt_results%ROWTYPE;&lt;br/&gt;   g_results_nt      results_nt_type := results_nt_type(null);&lt;br/&gt;   g_results_rec     wt_results%ROWTYPE;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;----------------------&lt;br/&gt;--  Private Procedures&lt;br/&gt;----------------------&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;---------------------&lt;br/&gt;--  Public Procedures&lt;br/&gt;---------------------&lt;br/&gt;&lt;br/&gt;------------------------------------------------------------&lt;br/&gt;procedure initialize&lt;br/&gt;      (in_test_run_id   in wt_test_runs.id%TYPE)&lt;br/&gt;is&lt;br/&gt;   l_results_recNULL  wt_results%ROWTYPE;&lt;br/&gt;begin&lt;br/&gt;   g_results_rec := l_results_recNULL;&lt;br/&gt;   g_results_rec.test_run_id  := in_test_run_id;&lt;br/&gt;   g_results_rec.result_seq   := 0;&lt;br/&gt;   g_results_rec.executed_dtm := systimestamp;&lt;br/&gt;   g_results_nt := results_nt_type(null);&lt;br/&gt;end initialize;&lt;br/&gt;&lt;br/&gt;------------------------------------------------------------&lt;br/&gt;-- Because this procedure is called to cleanup after erorrs,&lt;br/&gt;--  it must be able to run multiple times without causing damage.&lt;br/&gt;procedure finalize&lt;br/&gt;is&lt;br/&gt;   PRAGMA AUTONOMOUS_TRANSACTION;&lt;br/&gt;begin&lt;br/&gt;   if g_results_rec.test_run_id IS NULL&lt;br/&gt;   then&lt;br/&gt;      return;&lt;br/&gt;   end if;&lt;br/&gt;   forall i in 1 .. g_results_nt.COUNT - 1&lt;br/&gt;      insert into wt_results values g_results_nt(i);&lt;br/&gt;   g_results_nt := results_nt_type(null);&lt;br/&gt;   g_results_rec.test_run_id := NULL;&lt;br/&gt;   COMMIT;&lt;br/&gt;end finalize;&lt;br/&gt;&lt;br/&gt;------------------------------------------------------------&lt;br/&gt;procedure save&lt;br/&gt;      (in_assertion      in wt_results.assertion%TYPE&lt;br/&gt;      ,in_status         in wt_results.status%TYPE&lt;br/&gt;      ,in_details        in wt_results.details%TYPE&lt;br/&gt;      ,in_testcase       in wt_results.testcase%TYPE&lt;br/&gt;      ,in_message        in wt_results.message%TYPE)&lt;br/&gt;is&lt;br/&gt;   l_current_tstamp  timestamp;&lt;br/&gt;begin&lt;br/&gt;   if g_results_rec.test_run_id IS NULL&lt;br/&gt;   then&lt;br/&gt;      wt_text_report.ad_hoc_result&lt;br/&gt;         (in_assertion&lt;br/&gt;         ,in_status&lt;br/&gt;         ,in_details&lt;br/&gt;         ,in_testcase&lt;br/&gt;         ,in_message);&lt;br/&gt;      return;&lt;br/&gt;   end if;&lt;br/&gt;   -- Set the time and elapsed&lt;br/&gt;   l_current_tstamp := systimestamp;&lt;br/&gt;   g_results_rec.elapsed_msecs := extract(day from (&lt;br/&gt;                                  l_current_tstamp - g_results_rec.executed_dtm&lt;br/&gt;                                  ) * 86400 * 1000);&lt;br/&gt;   g_results_rec.executed_dtm  := l_current_tstamp;&lt;br/&gt;   -- Set the IN variables&lt;br/&gt;   g_results_rec.assertion     := in_assertion;&lt;br/&gt;   g_results_rec.status        := in_status;&lt;br/&gt;   g_results_rec.details       := substr(in_details,1,4000);&lt;br/&gt;   g_results_rec.testcase      := substr(in_testcase,1,30);&lt;br/&gt;   g_results_rec.message       := substr(in_message,1,50);&lt;br/&gt;   -- Increment, Extend, and Load&lt;br/&gt;   g_results_rec.result_seq    := g_results_rec.result_seq + 1;&lt;br/&gt;   g_results_nt(g_results_nt.COUNT) := g_results_rec;&lt;br/&gt;   g_results_nt.extend;&lt;br/&gt;end save;&lt;br/&gt;&lt;br/&gt;------------------------------------------------------------&lt;br/&gt;procedure delete_records&lt;br/&gt;      (in_test_run_id  in number)&lt;br/&gt;is&lt;br/&gt;begin&lt;br/&gt;   delete from wt_results&lt;br/&gt;    where test_run_id = in_test_run_id;&lt;br/&gt;end delete_records;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;end wt_result;</source>
+</body>
+<synonyms>
+<Synonym class="oracle.dbtools.crest.model.design.storage.oracle.v10g.SynonymOraclev10g" name="WT_RESULT" directorySegmentName="seg_0" id="4EBC2244-4527-97D1-0643-BE8946711A4B">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>PUBLIC</sourceObjSchema>
+<sourceObjName>WT_RESULT</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:36 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<object>WT_RESULT</object>
+<objectUser>8BAEC76D-10C0-D6CD-F400-EACE584ED648</objectUser>
+<public>YES</public>
+<user>PUBLIC</user>
+<referredObjectID>9D22690E-A723-1DE0-6384-39AD9F0EC283</referredObjectID>
+</Synonym>
+</synonyms>
+</PackageOracle>

@@ -1,0 +1,64 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableProxyOraclev11g class="oracle.dbtools.crest.model.design.storage.oracle.v11g.TableProxyOraclev11g" name="WT_NOT_EXECUTABLE" directorySegmentName="seg_0" id="76BD8735-1044-348B-E01C-F1CF3118E6B2">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<schemaObject>D85EFAC9-A239-ECBC-BF0A-46E276B225CE</schemaObject>
+<logging>YES</logging>
+<partitionedRowMovement>DISABLE</partitionedRowMovement>
+<segment>500117D8-F140-269F-CBAE-48AA93BA65C2</segment>
+<tableSpace>1AF7109A-26D9-91BB-9F5B-FC0220686B07</tableSpace>
+<temporaryChanged>false</temporaryChanged>
+<accessDriverType>oracle_loader</accessDriverType>
+<rejectLimit></rejectLimit>
+<columnProxies itemClass="oracle.dbtools.crest.model.design.storage.oracle.v12c.ColumnProxyOraclev12c">
+<ColumnProxy name="NOTE" id="5DF98EA4-BFF2-4950-6E7C-EC748E88209C">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="TEXT" id="75D7CE75-8992-A1F7-0436-29E98D186E0E">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+</ColumnProxy>
+</columnProxies>
+<indexProxies>
+<IndexProxy class="oracle.dbtools.crest.model.design.storage.oracle.v10g.IndexProxyOraclev10g" name="WT_NOT_EXECUTABLE_PK" id="30DC59C1-8011-EABA-E638-43194B7D67D9">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:35 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<schemaObject>D85EFAC9-A239-ECBC-BF0A-46E276B225CE</schemaObject>
+<segment>605ACB6B-43E2-9ACE-ACE0-87FC36B4AB26</segment>
+<tableSpace>1AF7109A-26D9-91BB-9F5B-FC0220686B07</tableSpace>
+</IndexProxy>
+</indexProxies>
+<synonyms>
+<Synonym class="oracle.dbtools.crest.model.design.storage.oracle.v10g.SynonymOraclev10g" name="WT_NOT_EXECUTABLE" directorySegmentName="seg_0" id="FAD835C1-BE51-B1FE-6A68-9BA512725436">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>PUBLIC</sourceObjSchema>
+<sourceObjName>WT_NOT_EXECUTABLE</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:36 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<object>WT_NOT_EXECUTABLE</object>
+<objectUser>8BAEC76D-10C0-D6CD-F400-EACE584ED648</objectUser>
+<public>YES</public>
+<user>PUBLIC</user>
+<referredObjectID>76BD8735-1044-348B-E01C-F1CF3118E6B2</referredObjectID>
+</Synonym>
+</synonyms>
+<primaryKeys>
+<PrimaryKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PKProxyOraclev10g" name="WT_NOT_EXECUTABLE_PK" id="AFF97D65-E4F9-CF15-D048-6A30FC26DA6F">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:36 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<segment>605ACB6B-43E2-9ACE-ACE0-87FC36B4AB26</segment>
+<tableSpace>1AF7109A-26D9-91BB-9F5B-FC0220686B07</tableSpace>
+<existingIndex>30DC59C1-8011-EABA-E638-43194B7D67D9</existingIndex>
+<indexSegment>605ACB6B-43E2-9ACE-ACE0-87FC36B4AB26</indexSegment>
+<indexSort>SORTED</indexSort>
+<usingIndex>BY INDEX NAME</usingIndex>
+</PrimaryKey>
+</primaryKeys>
+</TableProxyOraclev11g>

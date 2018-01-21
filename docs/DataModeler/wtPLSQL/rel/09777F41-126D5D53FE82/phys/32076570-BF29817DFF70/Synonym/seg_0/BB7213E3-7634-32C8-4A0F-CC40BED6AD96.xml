@@ -1,0 +1,14 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<SynonymOraclev10g class="oracle.dbtools.crest.model.design.storage.oracle.v10g.SynonymOraclev10g" name="PLSQL_PROFILER_RUNS" directorySegmentName="seg_0" id="BB7213E3-7634-32C8-4A0F-CC40BED6AD96">
+<sourceConnName>wtp@XE</sourceConnName>
+<sourceObjSchema>PUBLIC</sourceObjSchema>
+<sourceObjName>PLSQL_PROFILER_RUNS</sourceObjName>
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:30:36 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<object>PLSQL_PROFILER_RUNS</object>
+<objectUser>8BAEC76D-10C0-D6CD-F400-EACE584ED648</objectUser>
+<public>YES</public>
+<user>PUBLIC</user>
+<referredObjectID>F0CEF4B7-4EE0-7240-D5D7-03BBA3EA0F2E</referredObjectID>
+</SynonymOraclev10g>

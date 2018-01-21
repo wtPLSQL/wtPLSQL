@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<LogicalDesign class="oracle.dbtools.crest.model.design.logical.LogicalDesign" name="Logical" id="2C151FBF-73F0-B863-BEFC-1C330A9CA5E4" mainViewID="DADC664F-0C84-1CAF-7D22-7129A9EDDEF3">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:28:25 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<shouldBeOpen>false</shouldBeOpen>
+</LogicalDesign>

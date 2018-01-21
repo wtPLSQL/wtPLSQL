@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<ProcessModel class="oracle.dbtools.crest.model.design.process.ProcessModel" name="Process Model" id="1708220D-24B8-63A0-5C89-5DA23AFF09A2">
+<createdBy>Duane</createdBy>
+<createdTime>2018-01-21 14:28:25 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<shouldBeOpen>false</shouldBeOpen>
+</ProcessModel>
