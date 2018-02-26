@@ -341,9 +341,6 @@ begin
                               ,dbout_type_in  => g_rec.dbout_type );
    out_trigger_offset := g_rec.trigger_offset;
 
-   -- Cleanup stray DBMS_PROFILER data
-   delete_plsql_profiler_recs;
-   
    l_retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
    if l_retnum <> 0 then
       --dbms_profiler.get_version(major_version, minor_version);

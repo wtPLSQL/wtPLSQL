@@ -36,18 +36,6 @@ begin
 end check_runner;
 
 ------------------------------------------------------------
-procedure init_test_run
-is
-   l_test_runs_rec_NULL   wt_test_runs%ROWTYPE;
-begin
-   -- Reset the Test Runs Record before checking anything
-   g_test_runs_rec              := l_test_runs_rec_NULL;
-   g_test_runs_rec.id           := wt_test_runs_seq.nextval;
-   g_test_runs_rec.start_dtm    := systimestamp;
-   g_test_runs_rec.runner_owner := USER;
-end init_test_run;
-
-------------------------------------------------------------
 procedure insert_test_run
 is
    PRAGMA AUTONOMOUS_TRANSACTION;
@@ -68,16 +56,21 @@ end insert_test_run;
 --  Public Procedures
 ---------------------
 
+
 ------------------------------------------------------------
 procedure test_run
       (in_package_name  in  varchar2)
 is
+   l_test_runs_rec_NULL   wt_test_runs%ROWTYPE;
 begin
-
-   -- Initialize
-   init_test_run;
-   g_test_runs_rec.runner_name := in_package_name;
+   -- Reset the Test Runs Record before checking anything
+   g_test_runs_rec              := l_test_runs_rec_NULL;
+   g_test_runs_rec.id           := wt_test_runs_seq.nextval;
+   g_test_runs_rec.start_dtm    := systimestamp;
+   g_test_runs_rec.runner_owner := USER;
+   g_test_runs_rec.runner_name  := in_package_name;
    check_runner;
+   -- Initialize
    delete_records;       -- Autonomous Transaction COMMIT
    wt_result.initialize(g_test_runs_rec.id);
    wt_profiler.initialize(in_test_run_id      => g_test_runs_rec.id,
@@ -178,7 +171,7 @@ begin
 end delete_records;
 
 
-
+--==============================================================--
 --===============--%WTPLSQL_begin_ignore_lines%--===============--
 --  Embedded Test Procedures
 

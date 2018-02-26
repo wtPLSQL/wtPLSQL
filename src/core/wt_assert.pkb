@@ -29,8 +29,9 @@ is
 begin
    wt_result.save
       (in_assertion      => g_last_assert
-      ,in_status         => case g_last_pass when TRUE then wt_result.C_PASS
-                                                       else wt_result.C_FAIL
+      ,in_status         => case g_last_pass
+                            when TRUE then wt_result.C_PASS
+                                      else wt_result.C_FAIL
                             end
       ,in_details        => g_last_details
       ,in_testcase       => g_testcase
@@ -39,9 +40,7 @@ begin
    then
       raise_application_error(-20000, wt_text_report.format_test_result
                                          (in_assertion      => g_last_assert
-                                         ,in_status         => case g_last_pass when TRUE then wt_result.C_PASS
-                                                                                          else wt_result.C_FAIL
-                                                               end
+                                         ,in_status         => wt_result.C_FAIL
                                          ,in_details        => g_last_details
                                          ,in_testcase       => g_testcase
                                          ,in_message        => g_last_msg) );
@@ -213,6 +212,11 @@ begin
                       in_format || '''';
 end set_NLS_TIMESTAMP_TZ_FORMAT;
 
+
+------------------------
+--  Assertion Procedures
+------------------------
+
 ------------------------------------------------------------
 procedure this (
       msg_in          in   varchar2,
@@ -220,12 +224,14 @@ procedure this (
       null_ok_in      in   boolean := false)
 is
 begin
+   wt_profiler.pause;
    g_last_assert  := 'THIS';
    g_last_msg     := msg_in;
    g_last_pass    := check_this_in;
    g_last_details := 'Expected "'  || wt_result.C_PASS ||
                      '" and got "' || boolean_to_status(check_this_in) || '"';
    process_assertion;
+   wt_profiler.resume;
 end this;
 
 ------------------------------------------------------------
@@ -237,6 +243,7 @@ procedure eq (
    null_ok_in        in   boolean := false)
 is
 begin
+   wt_profiler.pause;
    g_last_assert  := 'EQ';
    g_last_msg     := msg_in;
    g_last_pass    := (   nvl(check_this_in = against_this_in, false)
@@ -248,6 +255,7 @@ begin
                      '" and got "' || check_this_in   ||
                      '"';
    process_assertion;
+   wt_profiler.resume;
 end eq;
 
 ------------------------------------------------------------
@@ -272,12 +280,14 @@ procedure isnotnull (
    check_this_in   in   varchar2)
 is
 begin
+   wt_profiler.pause;
    g_last_assert  := 'ISNOTNULL';
    g_last_msg     := msg_in;
    g_last_pass    := (check_this_in is not null);
    g_last_details := 'Expected NOT NULL and got "' ||
                       check_this_in || '"';
    process_assertion;
+   wt_profiler.resume;
 end isnotnull;
 
 ------------------------------------------------------------
@@ -298,12 +308,14 @@ procedure isnull (
    check_this_in   in   varchar2)
 is
 begin
+   wt_profiler.pause;
    g_last_assert  := 'ISNULL';
    g_last_msg     := msg_in;
    g_last_pass    := (check_this_in is null);
    g_last_details := 'Expected NULL and got "' ||
                       check_this_in || '"';
    process_assertion;
+   wt_profiler.resume;
 end isnull;
 
 ------------------------------------------------------------
@@ -327,6 +339,7 @@ is
    l_sqlerrm    varchar2(4000);
    l_errstack   varchar2(4000);
 begin
+   wt_profiler.pause;
    --
    g_last_assert  := 'RAISES';
    g_last_msg     := msg_in;
@@ -350,6 +363,7 @@ begin
                      '".  Actual exception raised was "' || l_errstack ||
                            '". Exeption raised by: ' || check_call_in  ;
    process_assertion;
+   wt_profiler.resume;
 end raises;
 
 ------------------------------------------------------------
@@ -363,6 +377,7 @@ is
    l_rc          rc_type;
    l_rc_buff     varchar2 (32000);
 begin
+   wt_profiler.pause;
    --
    g_last_assert  := 'EQQUERYVALUE';
    g_last_msg     := msg_in;
@@ -380,6 +395,7 @@ begin
                   '" for Query: ' || check_query_in   ;
    --
    process_assertion;
+   wt_profiler.resume;
    --
 end eqqueryvalue;
 
@@ -390,10 +406,12 @@ procedure eqquery (
       against_query_in   in   varchar2)
 is
 begin
+   wt_profiler.pause;
    g_last_assert  := 'EQQUERY';
    g_last_msg     := msg_in;
    compare_queries(check_query_in, against_query_in);
    process_assertion;
+   wt_profiler.resume;
 end eqquery;
 
 ------------------------------------------------------------
@@ -407,6 +425,7 @@ is
    l_check_query    varchar2(16000) := 'select * from ' || check_this_in;
    l_against_query  varchar2(16000) := 'select * from ' || against_this_in;
 begin
+   wt_profiler.pause;
    g_last_assert  := 'EQTABLE';
    g_last_msg     := msg_in;
    if check_where_in is not null
@@ -419,6 +438,7 @@ begin
    end if;
    compare_queries(l_check_query, l_against_query);
    process_assertion;
+   wt_profiler.resume;
 end eqtable;
 
 ------------------------------------------------------------
@@ -447,10 +467,12 @@ is
          g_last_details := SQLERRM || CHR(10) ||
                            'FAILURE of Compare Query: ' || l_query || ';';
          g_last_pass    := FALSE;
-         process_assertion;
          l_success      := FALSE;
+         process_assertion;
+         wt_profiler.resume;
    end run_query;
 begin
+   wt_profiler.pause;
    --
    g_last_assert  := 'EQTABLE';
    g_last_msg     := msg_in;
@@ -477,6 +499,7 @@ begin
                      '" and got ' || l_check_cnt || ' rows from "' || check_this_in   ||
                      '"';
    process_assertion;
+   wt_profiler.resume;
 end eqtabcount;
 
 ------------------------------------------------------------
@@ -487,6 +510,7 @@ procedure objexists (
 is
    l_num_objects  number;
 begin
+   wt_profiler.pause;
    g_last_assert  := 'OBJEXISTS';
    g_last_msg     := msg_in;
    select count(*) into l_num_objects
@@ -500,6 +524,7 @@ begin
                            else obj_owner_in || '.' end ||
                       obj_name_in || '" is ' || l_num_objects;
    process_assertion;
+   wt_profiler.resume;
 end objexists;
 
 ------------------------------------------------------------
@@ -521,6 +546,7 @@ procedure objnotexists (
 is
    l_num_objects  number;
 begin
+   wt_profiler.pause;
    g_last_assert  := 'OBJNOTEXISTS';
    g_last_msg     := msg_in;
    select count(*) into l_num_objects
@@ -534,6 +560,7 @@ begin
                            else obj_owner_in || '.' end ||
                       obj_name_in || '" is ' || l_num_objects;
    process_assertion;
+   wt_profiler.resume;
 end objnotexists;
 
 ------------------------------------------------------------
