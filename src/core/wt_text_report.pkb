@@ -260,7 +260,7 @@ begin
       l_out_str := '   --  Test Case: ' || in_testcase || '  --' || CHR(10);
    end if;
 
-   if in_status = wt_result.C_PASS
+   if in_status = wt_assert.C_PASS
    then
       l_out_str := l_out_str || ' ' || rpad(in_status,4) || ' ';
    else

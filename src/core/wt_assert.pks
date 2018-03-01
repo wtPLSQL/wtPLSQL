@@ -1,6 +1,9 @@
 create or replace package wt_assert authid current_user
 is
 
+   C_PASS  CONSTANT varchar2(10) := 'PASS';
+   C_FAIL  CONSTANT varchar2(10) := 'FAIL';
+
    -- See RESET_GLOBALS procedure for default global values
 
    -- Raise exception whenever an assertion fails.

@@ -1,9 +1,6 @@
 create or replace package wt_result authid current_user
 as
 
-   C_PASS  CONSTANT varchar2(10) := 'PASS';
-   C_FAIL  CONSTANT varchar2(10) := 'FAIL';
-
    procedure initialize
       (in_test_run_id   in wt_test_runs.id%TYPE);
 

@@ -1,10 +1,12 @@
 create or replace package body wt_assert is
 
    -- See (public) RESET_GLOBALS procedure for default global values
-   g_last_pass        boolean;
-   g_last_assert      wt_results.assertion%TYPE;
-   g_last_msg         wt_results.message%TYPE;
-   g_last_details     wt_results.details%TYPE;
+   TYPE g_rec_type is record
+      (last_pass        boolean
+      ,last_assert      wt_results.assertion%TYPE
+      ,last_msg         wt_results.message%TYPE
+      ,last_details     wt_results.details%TYPE);
+   g_rec  g_rec_type;
 
 ----------------------
 --  Private Procedures
@@ -18,9 +20,9 @@ is
 begin
    if in_boolean
    then
-      return wt_result.C_PASS;
+      return C_PASS;
    end if;
-   return wt_result.C_FAIL;
+   return C_FAIL;
 end;
 
 ------------------------------------------------------------
@@ -28,22 +30,22 @@ procedure process_assertion
 is
 begin
    wt_result.save
-      (in_assertion      => g_last_assert
-      ,in_status         => case g_last_pass
-                            when TRUE then wt_result.C_PASS
-                                      else wt_result.C_FAIL
+      (in_assertion      => g_rec.last_assert
+      ,in_status         => case g_rec.last_pass
+                            when TRUE then C_PASS
+                                      else C_FAIL
                             end
-      ,in_details        => g_last_details
+      ,in_details        => g_rec.last_details
       ,in_testcase       => g_testcase
-      ,in_message        => g_last_msg);
-   if g_raise_exception and not g_last_pass
+      ,in_message        => g_rec.last_msg);
+   if g_raise_exception and not g_rec.last_pass
    then
       raise_application_error(-20000, wt_text_report.format_test_result
-                                         (in_assertion      => g_last_assert
+                                         (in_assertion      => g_rec.last_assert
                                          ,in_status         => wt_result.C_FAIL
-                                         ,in_details        => g_last_details
+                                         ,in_details        => g_rec.last_details
                                          ,in_testcase       => g_testcase
-                                         ,in_message        => g_last_msg) );
+                                         ,in_message        => g_rec.last_msg) );
    end if;
 end process_assertion;
 
@@ -84,19 +86,19 @@ begin
    execute immediate l_exec_txt using out l_ret_txt;
    if l_ret_txt = 'FOUND'
    then
-      g_last_pass := FALSE; -- Some Difference Found
+      g_rec.last_pass := FALSE; -- Some Difference Found
    else
-      g_last_pass := TRUE;  -- Nothing found, queries match
+      g_rec.last_pass := TRUE;  -- Nothing found, queries match
    end if;
    -- No Exceptions Raised
-   g_last_details := 'Comparison Query: ' || l_qry_txt;
+   g_rec.last_details := 'Comparison Query: ' || l_qry_txt;
 
 exception
    when OTHERS
    then
-      g_last_details := SQLERRM || CHR(10) ||
-                        'FAILURE of Compare Query: ' || l_qry_txt || ';';
-      g_last_pass    := FALSE;
+      g_rec.last_details := SQLERRM || CHR(10) ||
+                            'FAILURE of Compare Query: ' || l_qry_txt || ';';
+      g_rec.last_pass    := FALSE;
 
 end compare_queries;
 
@@ -110,7 +112,7 @@ function last_pass
    return boolean
 is
 begin
-   return g_last_pass;
+   return g_rec.last_pass;
 end last_pass;
 
 ------------------------------------------------------------
@@ -118,7 +120,7 @@ function last_assert
    return wt_results.assertion%TYPE
 is
 begin
-   return g_last_assert;
+   return g_rec.last_assert;
 end last_assert;
 
 ------------------------------------------------------------
@@ -126,7 +128,7 @@ function last_msg
    return wt_results.message%TYPE
 is
 begin
-   return g_last_msg;
+   return g_rec.last_msg;
 end last_msg;
 
 ------------------------------------------------------------
@@ -134,19 +136,19 @@ function last_details
    return wt_results.details%TYPE
 is
 begin
-   return g_last_details;
+   return g_rec.last_details;
 end last_details;
 
 ------------------------------------------------------------
 procedure reset_globals
 is
 begin
-   g_raise_exception := FALSE;
-   g_testcase        := '';
-   g_last_pass       := NULL;
-   g_last_assert     := '';
-   g_last_msg        := '';
-   g_last_details    := '';
+   g_raise_exception   := FALSE;
+   g_testcase          := '';
+   g_rec.last_pass     := NULL;
+   g_rec.last_assert   := '';
+   g_rec.last_msg      := '';
+   g_rec.last_details  := '';
 end reset_globals;
 
 ------------------------------------------------------------
@@ -225,11 +227,11 @@ procedure this (
 is
 begin
    wt_profiler.pause;
-   g_last_assert  := 'THIS';
-   g_last_msg     := msg_in;
-   g_last_pass    := check_this_in;
-   g_last_details := 'Expected "'  || wt_result.C_PASS ||
-                     '" and got "' || boolean_to_status(check_this_in) || '"';
+   g_rec.last_assert  := 'THIS';
+   g_rec.last_msg     := msg_in;
+   g_rec.last_pass    := check_this_in;
+   g_rec.last_details := 'Expected "'  || C_PASS ||
+                         '" and got "' || boolean_to_status(check_this_in) || '"';
    process_assertion;
    wt_profiler.resume;
 end this;
@@ -244,16 +246,16 @@ procedure eq (
 is
 begin
    wt_profiler.pause;
-   g_last_assert  := 'EQ';
-   g_last_msg     := msg_in;
-   g_last_pass    := (   nvl(check_this_in = against_this_in, false)
-                      or (    check_this_in is null
-                          and against_this_in is null
-                          and null_ok_in              )
-                     );
-   g_last_details := 'Expected "'  || against_this_in ||
-                     '" and got "' || check_this_in   ||
-                     '"';
+   g_rec.last_assert  := 'EQ';
+   g_rec.last_msg     := msg_in;
+   g_rec.last_pass    := (   nvl(check_this_in = against_this_in, false)
+                          or (    check_this_in is null
+                              and against_this_in is null
+                              and null_ok_in              )
+                         );
+   g_rec.last_details := 'Expected "'  || against_this_in ||
+                         '" and got "' || check_this_in   ||
+                         '"';
    process_assertion;
    wt_profiler.resume;
 end eq;
@@ -281,11 +283,11 @@ procedure isnotnull (
 is
 begin
    wt_profiler.pause;
-   g_last_assert  := 'ISNOTNULL';
-   g_last_msg     := msg_in;
-   g_last_pass    := (check_this_in is not null);
-   g_last_details := 'Expected NOT NULL and got "' ||
-                      check_this_in || '"';
+   g_rec.last_assert  := 'ISNOTNULL';
+   g_rec.last_msg     := msg_in;
+   g_rec.last_pass    := (check_this_in is not null);
+   g_rec.last_details := 'Expected NOT NULL and got "' ||
+                          check_this_in || '"';
    process_assertion;
    wt_profiler.resume;
 end isnotnull;
@@ -309,11 +311,11 @@ procedure isnull (
 is
 begin
    wt_profiler.pause;
-   g_last_assert  := 'ISNULL';
-   g_last_msg     := msg_in;
-   g_last_pass    := (check_this_in is null);
-   g_last_details := 'Expected NULL and got "' ||
-                      check_this_in || '"';
+   g_rec.last_assert  := 'ISNULL';
+   g_rec.last_msg     := msg_in;
+   g_rec.last_pass    := (check_this_in is null);
+   g_rec.last_details := 'Expected NULL and got "' ||
+                          check_this_in || '"';
    process_assertion;
    wt_profiler.resume;
 end isnull;
@@ -341,8 +343,8 @@ is
 begin
    wt_profiler.pause;
    --
-   g_last_assert  := 'RAISES';
-   g_last_msg     := msg_in;
+   g_rec.last_assert  := 'RAISES';
+   g_rec.last_msg     := msg_in;
    --
    begin
       execute immediate 'begin ' || check_call_in || '; end;';
@@ -354,12 +356,12 @@ begin
    end;
    if l_sqlerrm like '%' || against_exc_in || '%'
    then
-      g_last_pass := TRUE;
+      g_rec.last_pass := TRUE;
    else
-      g_last_pass := FALSE;
+      g_rec.last_pass := FALSE;
    end if;
    --
-   g_last_details := 'Expected exception "' || against_exc_in ||
+   g_rec.last_details := 'Expected exception "' || against_exc_in ||
                      '".  Actual exception raised was "' || l_errstack ||
                            '". Exeption raised by: ' || check_call_in  ;
    process_assertion;
@@ -379,18 +381,18 @@ is
 begin
    wt_profiler.pause;
    --
-   g_last_assert  := 'EQQUERYVALUE';
-   g_last_msg     := msg_in;
+   g_rec.last_assert  := 'EQQUERYVALUE';
+   g_rec.last_msg     := msg_in;
    --
    open l_rc for check_query_in;
    fetch l_rc into l_rc_buff;
    close l_rc;
    --
-   g_last_pass    := (   l_rc_buff = against_value_in
+   g_rec.last_pass    := (   l_rc_buff = against_value_in
                       or (    l_rc_buff is null
                           and against_value_in is null
                           and null_ok_in               )  );
-   g_last_details := 'Expected "' || against_value_in ||
+   g_rec.last_details := 'Expected "' || against_value_in ||
                     '" and got "' || l_rc_buff        ||
                   '" for Query: ' || check_query_in   ;
    --
@@ -407,8 +409,8 @@ procedure eqquery (
 is
 begin
    wt_profiler.pause;
-   g_last_assert  := 'EQQUERY';
-   g_last_msg     := msg_in;
+   g_rec.last_assert  := 'EQQUERY';
+   g_rec.last_msg     := msg_in;
    compare_queries(check_query_in, against_query_in);
    process_assertion;
    wt_profiler.resume;
@@ -426,8 +428,8 @@ is
    l_against_query  varchar2(16000) := 'select * from ' || against_this_in;
 begin
    wt_profiler.pause;
-   g_last_assert  := 'EQTABLE';
-   g_last_msg     := msg_in;
+   g_rec.last_assert  := 'EQTABLE';
+   g_rec.last_msg     := msg_in;
    if check_where_in is not null
    then
       l_check_query := l_check_query || ' where ' || check_where_in;
@@ -464,9 +466,9 @@ is
    exception
       when OTHERS
       then
-         g_last_details := SQLERRM || CHR(10) ||
+         g_rec.last_details := SQLERRM || CHR(10) ||
                            'FAILURE of Compare Query: ' || l_query || ';';
-         g_last_pass    := FALSE;
+         g_rec.last_pass    := FALSE;
          l_success      := FALSE;
          process_assertion;
          wt_profiler.resume;
@@ -474,8 +476,8 @@ is
 begin
    wt_profiler.pause;
    --
-   g_last_assert  := 'EQTABLE';
-   g_last_msg     := msg_in;
+   g_rec.last_assert  := 'EQTABLE';
+   g_rec.last_msg     := msg_in;
    --
    l_query := 'select count(*) from ' || check_this_in;
    if check_where_in is not null
@@ -493,9 +495,9 @@ begin
    end if;
    run_query;
    if NOT l_success then return; end if;
-   g_last_pass    := (l_check_cnt = l_cnt);
+   g_rec.last_pass    := (l_check_cnt = l_cnt);
    --
-   g_last_details := 'Expected '  || l_cnt       || ' rows from "' || against_this_in ||
+   g_rec.last_details := 'Expected '  || l_cnt       || ' rows from "' || against_this_in ||
                      '" and got ' || l_check_cnt || ' rows from "' || check_this_in   ||
                      '"';
    process_assertion;
@@ -511,18 +513,18 @@ is
    l_num_objects  number;
 begin
    wt_profiler.pause;
-   g_last_assert  := 'OBJEXISTS';
-   g_last_msg     := msg_in;
+   g_rec.last_assert  := 'OBJEXISTS';
+   g_rec.last_msg     := msg_in;
    select count(*) into l_num_objects
     from  all_objects
     where object_name = obj_name_in
      and  (   obj_owner_in is null
            or obj_owner_in = owner);
-   g_last_pass    := case l_num_objects when 0 then FALSE else TRUE end;
-   g_last_details := 'Number of objects found for "' ||
-                      case when obj_owner_in is null then ''
-                           else obj_owner_in || '.' end ||
-                      obj_name_in || '" is ' || l_num_objects;
+   g_rec.last_pass    := case l_num_objects when 0 then FALSE else TRUE end;
+   g_rec.last_details := 'Number of objects found for "' ||
+                         case when obj_owner_in is null then ''
+                              else obj_owner_in || '.' end ||
+                         obj_name_in || '" is ' || l_num_objects;
    process_assertion;
    wt_profiler.resume;
 end objexists;
@@ -547,15 +549,15 @@ is
    l_num_objects  number;
 begin
    wt_profiler.pause;
-   g_last_assert  := 'OBJNOTEXISTS';
-   g_last_msg     := msg_in;
+   g_rec.last_assert  := 'OBJNOTEXISTS';
+   g_rec.last_msg     := msg_in;
    select count(*) into l_num_objects
     from  all_objects
     where object_name = obj_name_in
      and  (   obj_owner_in is null
            or obj_owner_in = owner);
-   g_last_pass    := case l_num_objects when 0 then TRUE else FALSE end;
-   g_last_details := 'Number of objects found for "' ||
+   g_rec.last_pass    := case l_num_objects when 0 then TRUE else FALSE end;
+   g_rec.last_details := 'Number of objects found for "' ||
                       case when obj_owner_in is null then ''
                            else obj_owner_in || '.' end ||
                       obj_name_in || '" is ' || l_num_objects;
