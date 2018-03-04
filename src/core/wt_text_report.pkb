@@ -42,13 +42,13 @@ begin
                                      ,2)
                                ,'9990.99') || '%';
       end if;
-      p('       Total Testcases: ' || to_char(buff.tcase_cnt,'9999999') ||
-        '      Total Assertions: ' || to_char(buff.tot_cnt  ,'9999999') );
-      p('  Minimum Elapsed msec: ' || to_char(buff.min_msec ,'9999999') ||
-        '     Failed Assertions: ' || to_char(buff.fail_cnt ,'9999999') );
-      p('  Average Elapsed msec: ' || to_char(buff.avg_msec ,'9999999') ||
-        '      Error Assertions: ' || to_char(buff.err_cnt  ,'9999999') );
-      p('  Maximum Elapsed msec: ' || to_char(buff.max_msec ,'9999999') ||
+      p('       Total Testcases: ' || to_char(nvl(buff.tcase_cnt,0),'9999999') ||
+        '      Total Assertions: ' || to_char(nvl(buff.tot_cnt  ,0),'9999999') );
+      p('  Minimum Elapsed msec: ' || to_char(nvl(buff.min_msec ,0),'9999999') ||
+        '     Failed Assertions: ' || to_char(nvl(buff.fail_cnt ,0),'9999999') );
+      p('  Average Elapsed msec: ' || to_char(nvl(buff.avg_msec ,0),'9999999') ||
+        '      Error Assertions: ' || to_char(nvl(buff.err_cnt  ,0),'9999999') );
+      p('  Maximum Elapsed msec: ' || to_char(nvl(buff.max_msec ,0),'9999999') ||
         '            Test Yield: ' || l_yield_txt                      );
    end loop;
 end result_summary;
@@ -71,14 +71,14 @@ begin
        from  wt_dbout_profiles
        where test_run_id = g_test_runs_rec.id )
    loop
-      p('    Total Source Lines: ' || to_char(buff.tot_lines ,'9999999') ||
-        '          Missed Lines: ' || to_char(buff.notx_lines,'9999999') );
-      p('  Minimum Elapsed usec: ' || to_char(buff.min_usec  ,'9999999') ||
-        '       Annotated Lines: ' || to_char(buff.anno_lines,'9999999') );
-      p('  Average Elapsed usec: ' || to_char(buff.avg_usec  ,'9999999') ||
-        '        Excluded Lines: ' || to_char(buff.excl_lines,'9999999') );
-      p('  Maximum Elapsed usec: ' || to_char(buff.max_usec  ,'9999999') ||
-        '         Unknown Lines: ' || to_char(buff.unkn_lines,'9999999') );
+      p('    Total Source Lines: ' || to_char(nvl(buff.tot_lines ,0),'9999999') ||
+        '          Missed Lines: ' || to_char(nvl(buff.notx_lines,0),'9999999') );
+      p('  Minimum Elapsed usec: ' || to_char(nvl(buff.min_usec  ,0),'9999999') ||
+        '       Annotated Lines: ' || to_char(nvl(buff.anno_lines,0),'9999999') );
+      p('  Average Elapsed usec: ' || to_char(nvl(buff.avg_usec  ,0),'9999999') ||
+        '        Excluded Lines: ' || to_char(nvl(buff.excl_lines,0),'9999999') );
+      p('  Maximum Elapsed usec: ' || to_char(nvl(buff.max_usec  ,0),'9999999') ||
+        '         Unknown Lines: ' || to_char(nvl(buff.unkn_lines,0),'9999999') );
       if (buff.exec_lines + buff.notx_lines) = 0
       then
          l_code_coverage := '(Divide by Zero)';
@@ -179,23 +179,23 @@ end results_out;
 
 ------------------------------------------------------------
 procedure profile_out
-      (in_show_anno  in boolean)
+      (in_show_aux  in boolean)
 is
-   l_header_txt  CONSTANT varchar2(2000) := chr(10) ||
+   l_header_txt  CONSTANT varchar2(2000) := 
      'Source               TotTime MinTime   MaxTime     ' || chr(10) ||
      '  Line Stat Occurs    (usec)  (usec)    (usec) Text' || chr(10) ||
      '------ ---- ------ --------- ------- --------- ------------';
-   l_show_anno_txt  varchar2(1);
+   l_show_aux_txt  varchar2(1);
 begin
    if g_test_runs_rec.dbout_name is null
    then
       return;
    end if;
-   if in_show_anno
+   if in_show_aux
    then
-      l_show_anno_txt := 'Y';
+      l_show_aux_txt := 'Y';
    else
-      l_show_anno_txt := 'N';
+      l_show_aux_txt := 'N';
    end if;
    p('');
    p('Detailed Profile for DBOUT ' || g_test_runs_rec.dbout_owner ||
@@ -218,8 +218,8 @@ begin
             ,rownum
        from  wt_dbout_profiles
        where test_run_id = g_test_runs_rec.id
-       and  (   l_show_anno_txt = 'Y'
-             or status         != 'ANNO')
+       and  (   l_show_aux_txt = 'Y'
+             or status not in ('ANNO','UNKN','EXCL'))
        order by line  )
    loop
       p(to_char(buff.line,'99999')               || ' ' ||
@@ -302,7 +302,7 @@ procedure dbms_out
       ,in_hide_details   in  boolean default FALSE
       ,in_summary_first  in  boolean default FALSE
       ,in_show_pass      in  boolean default FALSE
-      ,in_show_anno      in  boolean default FALSE)
+      ,in_show_aux       in  boolean default FALSE)
 is
 begin
 
@@ -329,12 +329,12 @@ begin
          if NOT in_hide_details
          then
             results_out(in_show_pass);
-            profile_out(in_show_anno);
+            profile_out(in_show_aux);
          end if;
       else
         if NOT in_hide_details
          then
-            profile_out(in_show_anno);
+            profile_out(in_show_aux);
             results_out(in_show_pass);
          end if;
          summary_out;

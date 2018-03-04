@@ -1,144 +1,82 @@
-old   1: create user &schema_owner. identified by &schema_owner.
-new   1: create user wtp identified by wtp
+old:begin
+   if USER != upper('&schema_owner')
+   then
+      raise_application_error (-20000,
+        'Not logged in as &schema_owner');
+   end if;
+end;
 
-User created.
-
-old   1: grant connect, resource to &schema_owner.
-new   1: grant connect, resource to wtp
-
-Grant succeeded.
-
-
-PLSQL_CCFLAGS                                                                   
---------------------------------------------------------------------------------
-WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE                                      
-
+new:begin
+   if USER != upper('wtp')
+   then
+      raise_application_error (-20000,
+        'Not logged in as wtp');
+   end if;
+end;
 
 PL/SQL procedure successfully completed.
 
 
-PLSQL_CCFLAGS                                                                   
---------------------------------------------------------------------------------
-WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE                                      
-
-old   1: create or replace public synonym wt_test_runs_seq  for &schema_owner..wt_test_runs_seq
-new   1: create or replace public synonym wt_test_runs_seq  for wtp.wt_test_runs_seq
-
-Synonym created.
-
-old   1: create or replace public synonym wt_test_runs      for &schema_owner..wt_test_runs
-new   1: create or replace public synonym wt_test_runs      for wtp.wt_test_runs
-
-Synonym created.
-
-old   1: create or replace public synonym wt_results        for &schema_owner..wt_results
-new   1: create or replace public synonym wt_results        for wtp.wt_results
-
-Synonym created.
-
-old   1: create or replace public synonym wt_dbout_profiles for &schema_owner..wt_dbout_profiles
-new   1: create or replace public synonym wt_dbout_profiles for wtp.wt_dbout_profiles
-
-Synonym created.
-
-old   1: create or replace public synonym wt_not_executable for &schema_owner..wt_not_executable
-new   1: create or replace public synonym wt_not_executable for wtp.wt_not_executable
-
-Synonym created.
-
-old   1: create or replace public synonym plsql_profiler_runs  for &schema_owner..plsql_profiler_runs
-new   1: create or replace public synonym plsql_profiler_runs  for wtp.plsql_profiler_runs
-
-Synonym created.
-
-old   1: create or replace public synonym plsql_profiler_units for &schema_owner..plsql_profiler_units
-new   1: create or replace public synonym plsql_profiler_units for wtp.plsql_profiler_units
-
-Synonym created.
-
-old   1: create or replace public synonym plsql_profiler_data  for &schema_owner..plsql_profiler_data
-new   1: create or replace public synonym plsql_profiler_data  for wtp.plsql_profiler_data
-
-Synonym created.
-
-old   1: create or replace public synonym wt_assert         for &schema_owner..wt_assert
-new   1: create or replace public synonym wt_assert         for wtp.wt_assert
-
-Synonym created.
-
-old   1: create or replace public synonym wt_profiler       for &schema_owner..wt_profiler
-new   1: create or replace public synonym wt_profiler       for wtp.wt_profiler
-
-Synonym created.
-
-old   1: create or replace public synonym wt_result         for &schema_owner..wt_result
-new   1: create or replace public synonym wt_result         for wtp.wt_result
-
-Synonym created.
-
-old   1: create or replace public synonym wt_text_report    for &schema_owner..wt_text_report
-new   1: create or replace public synonym wt_text_report    for wtp.wt_text_report
-
-Synonym created.
-
-old   1: create or replace public synonym wt_wtplsql        for &schema_owner..wtplsql
-new   1: create or replace public synonym wt_wtplsql        for wtp.wtplsql
-
-Synonym created.
-
-old   1: create or replace public synonym wtplsql           for &schema_owner..wtplsql
-new   1: create or replace public synonym wtplsql           for wtp.wtplsql
-
-Synonym created.
-
-Connected.
+Error starting at line : 46 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\proftab.sql
+In command -
 drop table plsql_profiler_data cascade constraints
-           *
-ERROR at line 1:
-ORA-00942: table or view does not exist 
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
 
-
+Error starting at line : 47 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\proftab.sql
+In command -
 drop table plsql_profiler_units cascade constraints
-           *
-ERROR at line 1:
-ORA-00942: table or view does not exist 
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
 
-
+Error starting at line : 48 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\proftab.sql
+In command -
 drop table plsql_profiler_runs cascade constraints
-           *
-ERROR at line 1:
-ORA-00942: table or view does not exist 
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
 
-
+Error starting at line : 50 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\proftab.sql
+In command -
 drop sequence plsql_profiler_runnumber
-              *
-ERROR at line 1:
-ORA-02289: sequence does not exist 
+Error report -
+ORA-02289: sequence does not exist
+02289. 00000 -  "sequence does not exist"
+*Cause:    The specified sequence does not exist, or the user does
+           not have the required privilege to perform this operation.
+*Action:   Make sure the sequence name is correct, and that you have
+           the right to perform the desired operation on this sequence.
 
-
-
-Table created.
-
-
-Comment created.
-
-
-Table created.
+Table PLSQL_PROFILER_RUNS created.
 
 
 Comment created.
 
 
-Table created.
+Table PLSQL_PROFILER_UNITS created.
 
 
 Comment created.
 
 
-Sequence created.
+Table PLSQL_PROFILER_DATA created.
 
 
-Index created.
+Comment created.
+
+
+Sequence PLSQL_PROFILER_RUNNUMBER created.
+
+
+Index PLSQL_PROFILER_RUNS_IDX1 created.
 
 
 Grant succeeded.
@@ -150,61 +88,19 @@ Grant succeeded.
 Grant succeeded.
 
 
-Sequence created.
+Sequence WT_TEST_RUNS_SEQ created.
 
 
-Table created.
+Table WT_TEST_RUNS created.
 
 
-Index created.
-
-
-Comment created.
+Index WT_TEST_RUNS_IDX1 created.
 
 
 Comment created.
 
 
 Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Grant succeeded.
-
-
-Grant succeeded.
-
-
-Grant succeeded.
-
-
-Table created.
 
 
 Comment created.
@@ -246,7 +142,52 @@ Grant succeeded.
 Grant succeeded.
 
 
-Table created.
+Table WT_RESULTS created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Table WT_DBOUT_PROFILES created.
+
+
+Comment created.
 
 
 Comment created.
@@ -288,7 +229,7 @@ Grant succeeded.
 Grant succeeded.
 
 
-Table created.
+Table WT_NOT_EXECUTABLE created.
 
 
 Comment created.
@@ -303,50 +244,48 @@ Comment created.
 Grant succeeded.
 
 
-Package created.
+Package WTPLSQL compiled
 
 
 Grant succeeded.
 
 
-Package created.
+Package WT_RESULT compiled
 
 
 Grant succeeded.
 
 
-Package created.
+Package WT_ASSERT compiled
 
 
 Grant succeeded.
 
 
-Package created.
+Package WT_PROFILER compiled
 
 
 Grant succeeded.
 
 
-Package created.
+Package WT_TEXT_REPORT compiled
 
 
 Grant succeeded.
 
 
-Warning: Package Body created with compilation errors.
+Package Body WTPLSQL compiled
 
 
-Package body created.
+Package Body WT_RESULT compiled
 
 
-Package body created.
+Package Body WT_ASSERT compiled
+
+Errors: check compiler log
+
+Package Body WT_PROFILER compiled
 
 
-Package body created.
-
-
-Package body created.
-
-
-Warning: Package Body created with compilation errors.
+Package Body WT_TEXT_REPORT compiled
 

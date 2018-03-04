@@ -9,11 +9,18 @@ spool install
 -- Shared Setup Script
 @common_setup.sql
 
--- Create Schema Owner
-@dba_install.sql
+WHENEVER SQLERROR exit SQL.SQLCODE
 
--- Connect as Schema Owner
-connect &schema_owner./&schema_owner.
+begin
+   if USER != upper('&schema_owner')
+   then
+      raise_application_error (-20000,
+        'Not logged in as &schema_owner');
+   end if;
+end;
+/
+
+WHENEVER SQLERROR continue
 
 --
 -- Run Oracle's Profiler Table Installation

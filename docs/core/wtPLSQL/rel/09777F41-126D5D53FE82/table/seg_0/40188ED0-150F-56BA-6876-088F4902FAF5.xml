@@ -23,8 +23,7 @@
 <use>1</use>
 <logicalDatatype>LOGDT019</logicalDatatype>
 <dataTypePrecision>38</dataTypePrecision>
-<dataTypeScale>0</dataTypeScale>
-<ownDataTypeParameters>,38,0</ownDataTypeParameters>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
 <autoIncrementCycle>false</autoIncrementCycle>
 <notNullConstraintName>WT_DBOUT_PROFILES_NN1</notNullConstraintName>
 <associations>
@@ -156,6 +155,21 @@
 <autoIncrementCycle>false</autoIncrementCycle>
 <notNullConstraintName>WT_DBOUT_PROFILES_NN8</notNullConstraintName>
 </Column>
+<Column name="NOT_EXEC_TEXT" id="2AC8AF9A-FFC1-9F64-5AD8-14B083370CB2">
+<createdBy>Duane</createdBy>
+<createdTime>2018-03-04 13:46:11 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>4000 BYTE</dataTypeSize>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="066B60F9-5D9F-2A5F-3149-FB6404218916" referredColumn="75D7CE75-8992-A1F7-0436-29E98D186E0E"/>
+</associations>
+</Column>
 </columns>
 <indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
 <ind_PK_UK id="E2DBC300-E111-17D4-FAD4-44142A36862D" name="WT_DBOUT_PROFILES_PK">
@@ -195,6 +209,16 @@
 <isSurrogateKey>false</isSurrogateKey>
 <indexColumnUsage>
 <colUsage columnID="CF7C96A3-27F5-852C-2CB9-84B69D398618"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="BDB584E8-F701-5AAF-2A87-B14F57B779DE" name="WT_DBOUT_PROFILES_WT_NOT_EXECUTABLE_FK">
+<createdBy>Duane</createdBy>
+<createdTime>2018-03-04 13:47:27 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="2AC8AF9A-FFC1-9F64-5AD8-14B083370CB2"/>
 </indexColumnUsage>
 </ind_PK_UK>
 </indexes>

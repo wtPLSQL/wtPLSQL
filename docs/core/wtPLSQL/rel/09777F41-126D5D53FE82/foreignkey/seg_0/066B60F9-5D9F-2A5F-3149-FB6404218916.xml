@@ -1,0 +1,16 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="066B60F9-5D9F-2A5F-3149-FB6404218916" containerWithKeyObject="40188ED0-150F-56BA-6876-088F4902FAF5" localFKIndex="BDB584E8-F701-5AAF-2A87-B14F57B779DE" name="WT_DBOUT_PROFILES_WT_NOT_EXECUTABLE_FK">
+<createdBy>Duane</createdBy>
+<createdTime>2018-03-04 13:47:27 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<referredTableLongName>WTP.WT_NOT_EXECUTABLE</referredTableLongName>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>76BD8735-1044-348B-E01C-F1CF3118E6B2</referredTableID>
+<keyObject>AFF97D65-E4F9-CF15-D048-6A30FC26DA6F</keyObject>
+<referredKeyID>AFF97D65-E4F9-CF15-D048-6A30FC26DA6F</referredKeyID>
+<mandatory>false</mandatory>
+<refColNames>TEXT</refColNames>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

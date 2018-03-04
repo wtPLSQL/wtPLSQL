@@ -31,7 +31,8 @@ begin
      and  sequence      = 0;
    if l_package_check != 1
    then
-      raise_application_error (-20002, 'RUNNER_NAME is not valid');
+      raise_application_error (-20002, 'RUNNER_NAME "' ||
+                        g_test_runs_rec.runner_name || '" is not valid');
    end if;
 end check_runner;
 
@@ -173,12 +174,11 @@ end delete_records;
 
 --==============================================================--
 --===============--%WTPLSQL_begin_ignore_lines%--===============--
+--==============================================================--
 --  Embedded Test Procedures
 
 $IF $$WTPLSQL_SELFTEST
 $THEN
-
-  -- Profiler Annotation: --% WTPLSQL SET DBOUT "WTPLSQL" %-- Extra Stuff
 
 ----------------------------------------
 procedure tc_test_runs_rec_and_table
@@ -200,18 +200,16 @@ begin
             (msg_in          => 'g_test_runs_rec.runner_name'
             ,check_this_in   => g_test_runs_rec.runner_name
             ,against_this_in => 'WTPLSQL');
-   wt_assert.isnotnull
+   wt_assert.isnull
             (msg_in        => 'g_test_runs_rec.dbout_owner'
             ,check_this_in => g_test_runs_rec.dbout_owner);
-   wt_assert.eq
+   wt_assert.isnull
             (msg_in          => 'g_test_runs_rec.dbout_name'
-            ,check_this_in   => g_test_runs_rec.dbout_name
-            ,against_this_in => 'WTPLSQL');
-   wt_assert.eq
+            ,check_this_in   => g_test_runs_rec.dbout_name);
+   wt_assert.isnull
             (msg_in          => 'g_test_runs_rec.dbout_type'
-            ,check_this_in   => g_test_runs_rec.dbout_type
-            ,against_this_in => 'PACKAGE BODY');
-   wt_assert.isnotnull
+            ,check_this_in   => g_test_runs_rec.dbout_type);
+   wt_assert.isnull
             (msg_in        => 'g_test_runs_rec.profiler_runid'
             ,check_this_in => g_test_runs_rec.profiler_runid);
    wt_assert.isnull
@@ -275,5 +273,6 @@ begin
 end;
 
 $END
+--==============================================================--
 
 end wtplsql;

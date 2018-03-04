@@ -1,4 +1,10 @@
 
+-- Capture output
+spool dba_install
+
+-- Shared Setup Script
+@common_setup.sql
+
 -- Create the schema owner.
 
 create user &schema_owner. identified by &schema_owner.

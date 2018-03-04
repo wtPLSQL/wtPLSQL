@@ -23,8 +23,7 @@
 <use>1</use>
 <logicalDatatype>LOGDT019</logicalDatatype>
 <dataTypePrecision>38</dataTypePrecision>
-<dataTypeScale>0</dataTypeScale>
-<ownDataTypeParameters>,38,0</ownDataTypeParameters>
+<ownDataTypeParameters>,38,</ownDataTypeParameters>
 <autoIncrementCycle>false</autoIncrementCycle>
 <notNullConstraintName>WT_TEST_RUNS_NN1</notNullConstraintName>
 </Column>
@@ -153,6 +152,9 @@
 <logicalDatatype>LOGDT019</logicalDatatype>
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 <autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="4EE58F3E-B719-6CD7-A74E-ADCCE976BCDD" referredColumn="946BF3E8-98E6-F6EB-B696-57D907B8C647"/>
+</associations>
 </Column>
 <Column name="END_DTM" id="994BB759-AD0D-09D1-4B99-64AC157CE286">
 <sourceConnName>wtp@XE</sourceConnName>
@@ -255,6 +257,16 @@
 <isSurrogateKey>false</isSurrogateKey>
 <indexColumnUsage>
 <colUsage columnID="3125AC81-D8C4-E287-6A60-1F50BA2F119F"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="AD827710-F7F5-7454-8CC5-3CB95940B626" name="WT_TEST_RUNS_PLSQL_PROFILER_RUNS_FK">
+<createdBy>Duane</createdBy>
+<createdTime>2018-03-03 14:50:36 UTC</createdTime>
+<ownerDesignName>wtPLSQL</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="1D4F1341-3101-EB29-D1E4-3A10D2B66BC7"/>
 </indexColumnUsage>
 </ind_PK_UK>
 </indexes>

@@ -19,6 +19,8 @@ create table wt_test_runs
    ,error_message  varchar2(4000)
    ,constraint wt_test_runs_pk primary key (id)
    ,constraint wt_test_runs_nk1 unique (start_dtm, runner_name, runner_owner)
+   ,constraint wt_test_runs_fk1 foreign key (profiler_runid)
+       references plsql_profiler_runs (runid) disable
    ) pctfree 0;
 
 create index wt_test_runs_idx1

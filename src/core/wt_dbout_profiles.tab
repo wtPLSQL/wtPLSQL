@@ -12,9 +12,12 @@ create table wt_dbout_profiles
    ,min_time       number(9)      constraint wt_dbout_profiles_nn6 not null
    ,max_time       number(9)      constraint wt_dbout_profiles_nn7 not null
    ,text           varchar2(4000) constraint wt_dbout_profiles_nn8 not null
+   ,not_exec_text  varchar2(4000)
    ,constraint wt_dbout_profiles_pk primary key (test_run_id, line)
    ,constraint wt_dbout_profiles_fk1 foreign key (test_run_id)
        references wt_test_runs (id)
+   ,constraint wt_dbout_profiles_fk2 foreign key (not_exec_text)
+       references wt_not_executable (text) disable
    ,constraint wt_dbout_profiles_ck1 check (status in ('EXEC','NOTX','EXCL','ANNO','UNKN'))
    ) pctfree 0;
 
@@ -27,6 +30,7 @@ comment on column wt_dbout_profiles.total_time is 'Total time spent executing th
 comment on column wt_dbout_profiles.min_time is 'Minimum execution time for this line.';
 comment on column wt_dbout_profiles.max_time is 'Maximum execution time for this line.';
 comment on column wt_dbout_profiles.text is 'Source code text for this line number.';
+comment on column wt_dbout_profiles.not_exec_text is 'One of the matching values from TEXT.WT_NOT_EXECUTABLE';
 
 grant select on wt_dbout_profiles to public;
 grant insert on wt_dbout_profiles to public;

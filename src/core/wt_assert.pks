@@ -142,4 +142,15 @@ is
       msg_in          in   varchar2,
       check_this_in   in   varchar2);
 
+   --   WtPLSQL Self Test Procedures
+   --
+   -- alter system set PLSQL_CCFLAGS = 
+   --    'WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE'
+   --    scope=BOTH;
+   --
+   $IF $$WTPLSQL_SELFTEST
+   $THEN
+      procedure WTPLSQL_RUN;
+   $END
+
 end wt_assert;

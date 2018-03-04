@@ -21,6 +21,6 @@ as
       ,in_hide_details   in  boolean default FALSE
       ,in_summary_first  in  boolean default FALSE
       ,in_show_pass      in  boolean default FALSE
-      ,in_show_anno      in  boolean default FALSE);
+      ,in_show_aux       in  boolean default FALSE);
 
 end wt_text_report;

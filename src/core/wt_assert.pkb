@@ -42,7 +42,7 @@ begin
    then
       raise_application_error(-20000, wt_text_report.format_test_result
                                          (in_assertion      => g_rec.last_assert
-                                         ,in_status         => wt_result.C_FAIL
+                                         ,in_status         => C_FAIL
                                          ,in_details        => g_rec.last_details
                                          ,in_testcase       => g_testcase
                                          ,in_message        => g_rec.last_msg) );
@@ -576,6 +576,43 @@ begin
                ,obj_owner_in => substr(check_this_in, 1, l_pos-1)
                ,obj_name_in  => substr(check_this_in, l_pos+1, length(check_this_in)));
 end objnotexists;
+
+
+--==============================================================--
+--===============--%WTPLSQL_begin_ignore_lines%--===============--
+--==============================================================--
+--  Embedded Test Procedures
+
+$IF $$WTPLSQL_SELFTEST
+$THEN
+
+  --% WTPLSQL SET DBOUT "WT_ASSERT" %--
+
+----------------------------------------
+procedure tc_boolean_to_status
+is
+begin
+   wt_assert.g_testcase := 'BOOLEAN_TO_STATUS';
+   wt_assert.eq
+            (msg_in            => 'Test for "TRUE" conversion'
+            ,check_this_in     => boolean_to_status(TRUE)
+            ,against_this_in   => C_PASS);
+   wt_assert.eq
+            (msg_in            => 'Test for "FALSE" conversion'
+            ,check_this_in     => boolean_to_status(FALSE)
+            ,against_this_in   => C_FAIL);
+end tc_boolean_to_status;
+
+----------------------------------------
+procedure WTPLSQL_RUN
+is
+begin
+   -- This runs like a self-contained "in-circuit" test.
+   tc_boolean_to_status;
+end;
+
+$END
+--==============================================================--
 
 
 ------------------------------------------------------------

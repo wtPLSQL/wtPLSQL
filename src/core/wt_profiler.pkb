@@ -168,21 +168,13 @@ end find_dbout;
 procedure insert_dbout_profile
 is
    PRAGMA AUTONOMOUS_TRANSACTION;
+   prof_rec  wt_dbout_profiles%ROWTYPE;
 begin
 
-   insert into wt_dbout_profiles
-      with q1 as (
+   prof_rec.test_run_id := g_rec.test_run_id;
+
+   for buff in (
       select src.line
-            ,case
-             when ne.text is not null           then 'EXCL'
-             when     ppd.total_occur = 0
-                  and ppd.total_time  = 0       then 'NOTX'
-             when    (    ppd.total_occur  = 0
-                      and ppd.total_time != 0 )
-                  or (    ppd.total_occur != 0
-                      and ppd.total_time  = 0 ) then 'UNKN'
-                                                else 'EXEC'
-             end                STATUS
             ,ppd.total_occur
             ,ppd.total_time
             ,ppd.min_time
@@ -197,25 +189,47 @@ begin
                   and src.owner = g_rec.dbout_owner
                   and src.name  = g_rec.dbout_name
                   and src.type  = g_rec.dbout_type
-        left join wt_not_executable ne
-                  on  ne.text = src.text
        where ppu.unit_owner = g_rec.dbout_owner
         and  ppu.unit_name  = g_rec.dbout_name
         and  ppu.unit_type  = g_rec.dbout_type
-        and  ppu.runid      = g_rec.prof_runid
-      )
-      select g_rec.test_run_id
-            ,line
-            ,status
-            ,sum(total_occur)   TOTAL_OCCUR
-            ,sum(total_time)    TOTAL_TIME
-            ,min(min_time)      MIN_TIME
-            ,max(max_time)      MAX_TIME
-            ,text
-       from q1
-       group by line
-            ,status
-            ,text;
+        and  ppu.runid      = g_rec.prof_runid )
+   loop
+
+      prof_rec.line          := buff.line;
+      prof_rec.total_occur   := buff.total_occur;
+      prof_rec.total_time    := buff.total_time;
+      prof_rec.min_time      := buff.min_time;
+      prof_rec.max_time      := buff.max_time;
+      prof_rec.text          := buff.text;
+
+      -- Reset and set STATUS and NOT_EXEC_TEXT
+      prof_rec.status        := '';
+      prof_rec.not_exec_text := '';
+      case
+      when buff.total_occur > 0
+      then
+         prof_rec.status := 'EXEC';
+      when     buff.total_occur = 0
+           and buff.total_time  = 0
+      then
+         prof_rec.status := 'NOTX';
+      else
+         -- MIN is a GROUP function and will always return a record
+         select min(text)
+          into  prof_rec.not_exec_text
+          from  wt_not_executable ne
+          where regexp_like (buff.text, ne.text, 'i');
+         if prof_rec.not_exec_text is not null
+         then
+            prof_rec.status := 'EXCL';
+         else
+            prof_rec.status := 'UNKN';
+         end if;
+      end case;
+
+      insert into wt_dbout_profiles values prof_rec;
+
+   end loop;
    COMMIT;
 
    -- Delete PLSQL Profiler has it's own
@@ -280,7 +294,8 @@ begin
 
       update wt_dbout_profiles
         set  status = 'ANNO'
-       where test_run_id = g_rec.test_run_id
+       where status not in ('UNKN','EXCL')
+        and  test_run_id = g_rec.test_run_id
         and  line >= buff_find_begin.line + g_rec.trigger_offset
         and  (   buff_find_end.line is NULL
               OR line <= buff_find_end.line + g_rec.trigger_offset );
