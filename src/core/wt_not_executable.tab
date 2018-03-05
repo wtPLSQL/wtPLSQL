@@ -14,3 +14,11 @@ comment on column wt_not_executable.text is 'Primary key, source text to exclude
 comment on column wt_not_executable.note is 'Notes regarding this non-exectuable line of code';
 
 grant select on wt_not_executable to public;
+
+insert into WT_NOT_EXECUTABLE
+     (TEXT
+     ,NOTE)
+  values
+     ('^[[:space:]]*(end|end[[:space:]]+[_$#[:alnum:]]+)[[:space:]]*[;]'
+     ,'Exclude END Statments'
+     );

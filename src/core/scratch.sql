@@ -39,8 +39,9 @@ select * from wt_dbout_profiles;
 execute wtplsql.delete_records;
 
    select *
-    from  user_arguments
-    where object_name   = 'WTPLSQL_RUN'
+    from  all_arguments
+    where owner         = USER
+     and  object_name   = 'WTPLSQL_RUN'
      and  package_name  = 'WT_ASSERT'
      and  argument_name is null
      and  position      = 1
@@ -50,12 +51,12 @@ declare
    procedure run_test (in_package_name in varchar2)
    is
    begin
-      --wtplsql.test_run(in_package_name);
+      wtplsql.test_run(in_package_name);
       wt_text_report.dbms_out(in_runner_name    => in_package_name
                            --  ,in_hide_details   => TRUE
                              ,in_summary_first  => TRUE
                              ,in_show_pass      => TRUE
-                           --  ,in_show_aux       => TRUE
+                             ,in_show_aux       => TRUE
                              );
    end run_test;
 begin
@@ -63,3 +64,5 @@ begin
    run_test('WT_ASSERT');
 end;
 /
+
+select * from wt_dbout_profiles where test_run_id = 26 order by line;

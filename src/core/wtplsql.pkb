@@ -23,8 +23,9 @@ begin
    end if;
    --  Check for Valid Runner Name
    select count(*) into l_package_check
-    from  user_arguments
-    where object_name   = 'WTPLSQL_RUN'
+    from  all_arguments
+    where owner         = USER
+     and  object_name   = 'WTPLSQL_RUN'
      and  package_name  = g_test_runs_rec.runner_name
      and  argument_name is null
      and  position      = 1
@@ -119,18 +120,20 @@ is
 begin
    select package_name
      bulk collect into g_runners_nt
-    from  user_arguments  t1
-    where object_name   = 'WTPLSQL_RUN'
-     and  position      = 1
-     and  sequence      = 0
-     and  data_type     is null
+    from  all_arguments  t1
+    where owner       = USER
+     and  object_name = 'WTPLSQL_RUN'
+     and  position    = 1
+     and  sequence    = 0
+     and  data_type   is null
      and  not exists (
-          select 'x' from user_arguments  t2
-           where t2.object_name = t1.object_name
-            and  (   t2.overload is null
-                  OR t2.overload = t1.overload)
+          select 'x' from all_arguments  t2
+           where t2.owner       = USER
+            and  t2.object_name = t1.object_name
             and  t2.position    > t1.position
             and  t2.sequence    > t1.sequence
+            and  (   t2.overload is null
+                  OR t2.overload = t1.overload)
           );
    for i in 1 .. g_runners_nt.COUNT
    loop
@@ -143,6 +146,7 @@ procedure delete_records
       (in_test_run_id  in number default NULL)
 is
    PRAGMA AUTONOMOUS_TRANSACTION;
+   num_recs    number;
    procedure del_rec (in_id in number) is begin
       -- Profiler delete must be first because it contains a
       --    PRAGMA AUTONOMOUS_TRANSACTION
@@ -157,16 +161,18 @@ begin
    then
       del_rec(in_test_run_id);
    else
-      for buff in (select rownum, id from wt_test_runs
+      num_recs := 1;
+      for buff in (select id from wt_test_runs
                     where runner_owner = USER
                      and  runner_name  = g_test_runs_rec.runner_name
                     order by start_dtm desc, id desc)
       loop
          -- Keep the last 20 rest runs for this USER
-         if buff.rownum > 20
+         if num_recs > 20
          then
             del_rec(buff.id);
          end if;
+         num_recs := num_recs + 1;
       end loop;
    end if;
 end delete_records;

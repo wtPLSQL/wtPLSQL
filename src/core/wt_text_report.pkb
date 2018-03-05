@@ -138,6 +138,7 @@ begin
       l_show_pass_txt := 'N';
    end if;
    p('');
+   p('----------------------------------------');
    p('Detailed Results for Test Runner ' || g_test_runs_rec.runner_owner ||
                                      '.' || g_test_runs_rec.runner_name  ||
                         ' (Test Run ID ' || g_test_runs_rec.id           ||
@@ -198,6 +199,7 @@ begin
       l_show_aux_txt := 'N';
    end if;
    p('');
+   p('----------------------------------------');
    p('Detailed Profile for DBOUT ' || g_test_runs_rec.dbout_owner ||
                                '.' || g_test_runs_rec.dbout_name  ||
                               ' (' || g_test_runs_rec.dbout_type  ||

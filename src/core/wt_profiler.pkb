@@ -42,6 +42,23 @@ begin
 end get_error_msg;
 
 ------------------------------------------------------------
+procedure check_not_exec_regexp
+is
+   junk  boolean;
+begin
+   for buf2 in (select * from wt_not_executable)
+   loop
+      begin
+         junk := regexp_like ('Blah Blah', buf2.text, 'i');
+      exception
+         when others then
+            raise_application_error(-20008, 'NOT_EXECUTABLE.TEXT value: ' ||
+                                             buf2.text || CHR(10) || SQLERRM);
+      end;
+   end loop;
+end check_not_exec_regexp;
+
+------------------------------------------------------------
 procedure delete_plsql_profiler_recs
       (in_runid  in number default null)
 is
@@ -98,9 +115,10 @@ is
    --
    cursor c_annotation is
       select regexp_substr(src.text, C_HEAD_RE||C_MAIN_RE||C_TAIL_RE)  TEXT
-       from  user_source  src
-       where src.name = in_pkg_name
-        and  src.type = 'PACKAGE BODY'
+       from  all_source  src
+       where src.owner = USER
+        and  src.name  = in_pkg_name
+        and  src.type  = 'PACKAGE BODY'
         and  regexp_like(src.text, C_HEAD_RE||C_MAIN_RE||C_TAIL_RE)
        order by src.line;
    l_target   varchar2(32000);
@@ -165,6 +183,46 @@ begin
 end find_dbout;
 
 ------------------------------------------------------------
+function find_excluded
+       (in_text           in  varchar2
+       ,out_not_exec_text out varchar2)
+   return boolean
+is
+begin
+   out_not_exec_text := '';
+   -- Find statements that can never be executed per DBMS_PROFILE
+--   for buf2 in (
+--      select name
+--       from  all_identifiers
+--       where owner       = g_rec.dbout_owner
+--        and  object_name = g_rec.dbout_name
+--        and  object_type = g_rec.dbout_type
+--        and  usage       = 'DEFINITION'
+--       group by name )
+--   loop
+--      if regexp_like (in_text
+--                     ,'^[[:space:]]*end[[:space:]]+' || buf2.name || '[[:space:]]*[;]'
+--                     ,'i')
+--      then
+--         out_not_exec_text := 'Exclude "END ' || buf2.name ||
+--                              '; "Statement';
+--         return TRUE;
+--      end if;
+--   end loop;
+   -- Find NOT_EXECUTABLE excluded statements
+   -- MIN is a GROUP function and will always return a record
+   select min(ne.text)
+    into  out_not_exec_text
+    from  wt_not_executable  ne
+    where regexp_like (in_text, ne.text, 'i');
+   if out_not_exec_text is not null
+   then
+      return TRUE;
+   end if;
+   return FALSE;
+end find_excluded;
+
+------------------------------------------------------------
 procedure insert_dbout_profile
 is
    PRAGMA AUTONOMOUS_TRANSACTION;
@@ -173,7 +231,7 @@ begin
 
    prof_rec.test_run_id := g_rec.test_run_id;
 
-   for buff in (
+   for buf1 in (
       select src.line
             ,ppd.total_occur
             ,ppd.total_time
@@ -195,36 +253,33 @@ begin
         and  ppu.runid      = g_rec.prof_runid )
    loop
 
-      prof_rec.line          := buff.line;
-      prof_rec.total_occur   := buff.total_occur;
-      prof_rec.total_time    := buff.total_time;
-      prof_rec.min_time      := buff.min_time;
-      prof_rec.max_time      := buff.max_time;
-      prof_rec.text          := buff.text;
+      prof_rec.line          := buf1.line;
+      prof_rec.total_occur   := buf1.total_occur;
+      prof_rec.total_time    := buf1.total_time;
+      prof_rec.min_time      := buf1.min_time;
+      prof_rec.max_time      := buf1.max_time;
+      prof_rec.text          := buf1.text;
 
       -- Reset and set STATUS and NOT_EXEC_TEXT
       prof_rec.status        := '';
       prof_rec.not_exec_text := '';
       case
-      when buff.total_occur > 0
+      when buf1.total_occur > 0
       then
+         -- Found Executed Statements
          prof_rec.status := 'EXEC';
-      when     buff.total_occur = 0
-           and buff.total_time  = 0
+      when find_excluded(buf1.text, prof_rec.not_exec_text)
       then
+         -- Found Excluded Statements
+         prof_rec.status := 'EXCL';
+      when     buf1.total_occur = 0
+           and buf1.total_time  = 0
+      then
+         -- Found Not Executed Statements
          prof_rec.status := 'NOTX';
       else
-         -- MIN is a GROUP function and will always return a record
-         select min(text)
-          into  prof_rec.not_exec_text
-          from  wt_not_executable ne
-          where regexp_like (buff.text, ne.text, 'i');
-         if prof_rec.not_exec_text is not null
-         then
-            prof_rec.status := 'EXCL';
-         else
-            prof_rec.status := 'UNKN';
-         end if;
+         -- Everything else is unknown
+         prof_rec.status := 'UNKN';
       end case;
 
       insert into wt_dbout_profiles values prof_rec;
@@ -335,7 +390,7 @@ begin
 
    if in_test_run_id is null
    then
-      raise_application_error  (-20000, 'i_test_run_id is null');
+      raise_application_error  (-20004, 'i_test_run_id is null');
    end if;
 
    reset_g_rec;
@@ -346,6 +401,9 @@ begin
    then
       return;
    end if;
+
+   check_not_exec_regexp;
+
    out_dbout_owner    := g_rec.dbout_owner;
    out_dbout_name     := g_rec.dbout_name;
    out_dbout_type     := g_rec.dbout_type;
@@ -359,13 +417,13 @@ begin
    l_retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
    if l_retnum <> 0 then
       --dbms_profiler.get_version(major_version, minor_version);
-      raise_application_error(-20000,
+      raise_application_error(-20005,
          'dbms_profiler.INTERNAL_VERSION_CHECK returned: ' || get_error_msg(l_retnum));
    end if;
    -- This starts the PROFILER Running!!!
    l_retnum := dbms_profiler.START_PROFILER(run_number => g_rec.prof_runid);
    if l_retnum <> 0 then
-      raise_application_error(-20000,
+      raise_application_error(-20006,
          'dbms_profiler.START_PROFILER returned: ' || get_error_msg(l_retnum));
    end if;
    out_profiler_runid := g_rec.prof_runid;

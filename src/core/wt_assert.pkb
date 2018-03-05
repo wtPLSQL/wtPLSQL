@@ -23,7 +23,7 @@ begin
       return C_PASS;
    end if;
    return C_FAIL;
-end;
+end boolean_to_status;
 
 ------------------------------------------------------------
 procedure process_assertion
@@ -40,7 +40,7 @@ begin
       ,in_message        => g_rec.last_msg);
    if g_raise_exception and not g_rec.last_pass
    then
-      raise_application_error(-20000, wt_text_report.format_test_result
+      raise_application_error(-20003, wt_text_report.format_test_result
                                          (in_assertion      => g_rec.last_assert
                                          ,in_status         => C_FAIL
                                          ,in_details        => g_rec.last_details
@@ -604,12 +604,112 @@ begin
 end tc_boolean_to_status;
 
 ----------------------------------------
+procedure tc_process_assertion
+is
+   ASSERT_TEST_EXCEPTION  exception;
+   PRAGMA EXCEPTION_INIT(ASSERT_TEST_EXCEPTION, -20003);
+begin
+   wt_assert.g_testcase := 'PROCESS_ASSERTION';
+   wt_assert.g_raise_exception := TRUE;
+   g_rec.last_assert  := 'THIS';
+   g_rec.last_pass    := FALSE;
+   g_rec.last_details := 'Expected "PASS" and got "FAIL"';
+   g_rec.last_msg     := 'Process Assertion Forced Failure';
+   process_assertion;
+   wt_assert.g_raise_exception := FALSE;
+exception
+   when ASSERT_TEST_EXCEPTION then
+      wt_assert.eq
+               (msg_in          => 'Process Assertion Actual Test'
+               ,check_this_in   => replace(SQLERRM,CHR(10),' ')
+               ,against_this_in => replace('ORA-20003:    --  Test Case: PROCESS_ASSERTION  --
+#FAIL#Process Assertion Forced Failure. THIS - Expected "PASS" and got "FAIL"',CHR(10),' '));
+      wt_assert.g_raise_exception := FALSE;
+end tc_process_assertion;
+
+procedure tc_setters_and_getters
+is
+begin
+
+   wt_assert.g_testcase := 'Setter and Getters';
+   g_rec.last_pass := TRUE;
+   wt_assert.eq
+            (msg_in          => 'Check last_pass 1'
+            ,check_this_in   => wt_assert.last_pass
+            ,against_this_in => g_rec.last_pass);
+   wt_assert.reset_globals;  -- Resets g_testcase
+   wt_assert.g_testcase := 'Setter and Getters';
+   --wt_assert.isnull
+   --         (msg_in        => 'Check last_pass 2'
+   --         ,check_this_in => wt_assert.last_pass);
+   g_rec.last_assert := 'EQ';
+   wt_assert.eq
+            (msg_in          => 'Check last_assert 1'
+            ,check_this_in   => wt_assert.last_assert
+            ,against_this_in => g_rec.last_assert);
+   wt_assert.reset_globals;  -- Resets g_testcase
+   wt_assert.g_testcase := 'Setter and Getters';
+   wt_assert.isnull
+            (msg_in        => 'Check last_assert 2'
+            ,check_this_in => wt_assert.last_assert);
+   g_rec.last_msg := 'Check last_msg 1';
+   wt_assert.eq
+            (msg_in          => 'Check last_msg 1'
+            ,check_this_in   => wt_assert.last_msg
+            ,against_this_in => g_rec.last_msg);
+   wt_assert.reset_globals;  -- Resets g_testcase
+   wt_assert.g_testcase := 'Setter and Getters';
+   wt_assert.isnull
+            (msg_in        => 'Check last_msg 2'
+            ,check_this_in => wt_assert.last_msg);
+   g_rec.last_details := 'last_details data';
+   wt_assert.eq
+            (msg_in          => 'Check last_details 1'
+            ,check_this_in   => wt_assert.last_details
+            ,against_this_in => g_rec.last_details);
+   wt_assert.reset_globals;  -- Resets g_testcase
+   wt_assert.g_testcase := 'Setter and Getters';
+   wt_assert.isnull
+            (msg_in        => 'Check last_details 2'
+            ,check_this_in => wt_assert.last_details);
+
+   wt_assert.isnotnull
+            (msg_in        => 'Check get_NLS_DATE_FORMAT 1'
+            ,check_this_in => get_NLS_DATE_FORMAT);
+   set_NLS_DATE_FORMAT(in_format => 'DD-Mon-YYYY HH24:MI:SS');
+   wt_assert.eq
+            (msg_in          => 'Check get_NLS_DATE_FORMAT 2'
+            ,check_this_in   => get_NLS_DATE_FORMAT
+            ,against_this_in => 'DD-Mon-YYYY HH24:MI:SS');
+   wt_assert.isnotnull
+            (msg_in        => 'Check get_NLS_TIMESTAMP_FORMAT 1'
+            ,check_this_in => get_NLS_TIMESTAMP_FORMAT);
+   set_NLS_TIMESTAMP_FORMAT(in_format => 'DD-Mon-YYYY HH24:MI:SS.FF');
+   wt_assert.eq
+            (msg_in          => 'Check get_NLS_TIMESTAMP_FORMAT 2'
+            ,check_this_in   => get_NLS_TIMESTAMP_FORMAT
+            ,against_this_in => 'DD-Mon-YYYY HH24:MI:SS.FF');
+   wt_assert.isnotnull
+            (msg_in        => 'Check get_NLS_TIMESTAMP_TZ_FORMAT 1'
+            ,check_this_in => get_NLS_TIMESTAMP_TZ_FORMAT);
+   set_NLS_TIMESTAMP_TZ_FORMAT(in_format => 'DD-Mon-YYYY HH24:MI:SS.FF +TZH:TZM');
+   wt_assert.eq
+            (msg_in          => 'Check get_NLS_TIMESTAMP_TZ_FORMAT 2'
+            ,check_this_in   => get_NLS_TIMESTAMP_TZ_FORMAT
+            ,against_this_in => 'DD-Mon-YYYY HH24:MI:SS.FF +TZH:TZM');
+
+end tc_setters_and_getters;
+
+----------------------------------------
 procedure WTPLSQL_RUN
 is
 begin
+   wt_assert.g_raise_exception := FALSE;
    -- This runs like a self-contained "in-circuit" test.
    tc_boolean_to_status;
-end;
+   tc_process_assertion;
+   tc_setters_and_getters;
+end WTPLSQL_RUN;
 
 $END
 --==============================================================--
