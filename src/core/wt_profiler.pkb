@@ -10,6 +10,11 @@ as
       ,trigger_offset  binary_integer
       ,error_message   varchar2(4000));
    g_rec  rec_type;
+   
+   TYPE anno_aa_type is table
+      of varchar2(1)
+      index by PLS_INTEGER;
+   anno_aa   anno_aa_type;
 
 
 ----------------------
@@ -183,121 +188,8 @@ begin
 end find_dbout;
 
 ------------------------------------------------------------
-function find_excluded
-       (in_text           in  varchar2
-       ,out_not_exec_text out varchar2)
-   return boolean
+procedure load_anno_aa
 is
-begin
-   out_not_exec_text := '';
-   -- Find statements that can never be executed per DBMS_PROFILE
---   for buf2 in (
---      select name
---       from  all_identifiers
---       where owner       = g_rec.dbout_owner
---        and  object_name = g_rec.dbout_name
---        and  object_type = g_rec.dbout_type
---        and  usage       = 'DEFINITION'
---       group by name )
---   loop
---      if regexp_like (in_text
---                     ,'^[[:space:]]*end[[:space:]]+' || buf2.name || '[[:space:]]*[;]'
---                     ,'i')
---      then
---         out_not_exec_text := 'Exclude "END ' || buf2.name ||
---                              '; "Statement';
---         return TRUE;
---      end if;
---   end loop;
-   -- Find NOT_EXECUTABLE excluded statements
-   -- MIN is a GROUP function and will always return a record
-   select min(ne.text)
-    into  out_not_exec_text
-    from  wt_not_executable  ne
-    where regexp_like (in_text, ne.text, 'i');
-   if out_not_exec_text is not null
-   then
-      return TRUE;
-   end if;
-   return FALSE;
-end find_excluded;
-
-------------------------------------------------------------
-procedure insert_dbout_profile
-is
-   PRAGMA AUTONOMOUS_TRANSACTION;
-   prof_rec  wt_dbout_profiles%ROWTYPE;
-begin
-
-   prof_rec.test_run_id := g_rec.test_run_id;
-
-   for buf1 in (
-      select src.line
-            ,ppd.total_occur
-            ,ppd.total_time
-            ,ppd.min_time
-            ,ppd.max_time
-            ,src.text
-       from  plsql_profiler_units ppu
-             join plsql_profiler_data  ppd
-                  on  ppd.unit_number = ppu.unit_number
-                  and ppd.runid       = g_rec.prof_runid
-             join all_source  src
-                  on  src.line  = ppd.line# + g_rec.trigger_offset
-                  and src.owner = g_rec.dbout_owner
-                  and src.name  = g_rec.dbout_name
-                  and src.type  = g_rec.dbout_type
-       where ppu.unit_owner = g_rec.dbout_owner
-        and  ppu.unit_name  = g_rec.dbout_name
-        and  ppu.unit_type  = g_rec.dbout_type
-        and  ppu.runid      = g_rec.prof_runid )
-   loop
-
-      prof_rec.line          := buf1.line;
-      prof_rec.total_occur   := buf1.total_occur;
-      prof_rec.total_time    := buf1.total_time;
-      prof_rec.min_time      := buf1.min_time;
-      prof_rec.max_time      := buf1.max_time;
-      prof_rec.text          := buf1.text;
-
-      -- Reset and set STATUS and NOT_EXEC_TEXT
-      prof_rec.status        := '';
-      prof_rec.not_exec_text := '';
-      case
-      when buf1.total_occur > 0
-      then
-         -- Found Executed Statements
-         prof_rec.status := 'EXEC';
-      when find_excluded(buf1.text, prof_rec.not_exec_text)
-      then
-         -- Found Excluded Statements
-         prof_rec.status := 'EXCL';
-      when     buf1.total_occur = 0
-           and buf1.total_time  = 0
-      then
-         -- Found Not Executed Statements
-         prof_rec.status := 'NOTX';
-      else
-         -- Everything else is unknown
-         prof_rec.status := 'UNKN';
-      end case;
-
-      insert into wt_dbout_profiles values prof_rec;
-
-   end loop;
-   COMMIT;
-
-   -- Delete PLSQL Profiler has it's own
-   --   PRAGMA AUTONOMOUS_TRANSACTION and COMMIT;
-   delete_plsql_profiler_recs(g_rec.prof_runid);
-
-end insert_dbout_profile;
-
-------------------------------------------------------------
-procedure update_anno_status
-is
-
-   PRAGMA AUTONOMOUS_TRANSACTION;
 
    cursor c_find_begin is
       select line
@@ -333,36 +225,132 @@ is
 
 begin
 
+   anno_aa.delete;
+
    open c_find_begin;
    loop
-      fetch c_find_begin into buff_find_begin;
 
+      fetch c_find_begin into buff_find_begin;
       exit when c_find_begin%NOTFOUND;
 
       open c_find_end (buff_find_begin.line, buff_find_begin.col);
       fetch c_find_end into buff_find_end;
       if c_find_end%NOTFOUND
       then
-         buff_find_end.line := NULL;
+         select max(line)
+          into  buff_find_end.line
+          from  all_source
+          where owner = g_rec.dbout_owner
+           and  name  = g_rec.dbout_name
+           and  type  = g_rec.dbout_type;
       end if;
       close c_find_end;
 
-      update wt_dbout_profiles
-        set  status = 'ANNO'
-       where status not in ('UNKN','EXCL')
-        and  test_run_id = g_rec.test_run_id
-        and  line >= buff_find_begin.line + g_rec.trigger_offset
-        and  (   buff_find_end.line is NULL
-              OR line <= buff_find_end.line + g_rec.trigger_offset );
-
-      exit when buff_find_end.line is NULL;
+      for i in buff_find_begin.line + g_rec.trigger_offset ..
+               buff_find_end.line   + g_rec.trigger_offset
+      loop
+         anno_aa(i) := 'X';
+      end loop;
 
    end loop;
    close c_find_begin;
 
+end load_anno_aa;
+
+------------------------------------------------------------
+function find_excluded
+       (in_text           in  varchar2
+       ,out_not_exec_text out varchar2)
+   return boolean
+is
+begin
+   out_not_exec_text := '';
+   -- Find NOT_EXECUTABLE excluded statements
+   -- MIN is a GROUP function and will always return a record
+   select min(ne.text)
+    into  out_not_exec_text
+    from  wt_not_executable  ne
+    where regexp_like (in_text, ne.text, 'i');
+   if out_not_exec_text is not null
+   then
+      return TRUE;
+   end if;
+   return FALSE;
+end find_excluded;
+
+------------------------------------------------------------
+procedure insert_dbout_profile
+is
+   PRAGMA AUTONOMOUS_TRANSACTION;
+   prof_rec  wt_dbout_profiles%ROWTYPE;
+begin
+
+   prof_rec.test_run_id := g_rec.test_run_id;
+   load_anno_aa;
+
+   for buf1 in (
+      select src.line
+            ,ppd.total_occur
+            ,ppd.total_time
+            ,ppd.min_time
+            ,ppd.max_time
+            ,src.text
+       from  plsql_profiler_units ppu
+             join plsql_profiler_data  ppd
+                  on  ppd.unit_number = ppu.unit_number
+                  and ppd.runid       = g_rec.prof_runid
+             join all_source  src
+                  on  src.line  = ppd.line# + g_rec.trigger_offset
+                  and src.owner = g_rec.dbout_owner
+                  and src.name  = g_rec.dbout_name
+                  and src.type  = g_rec.dbout_type
+       where ppu.unit_owner = g_rec.dbout_owner
+        and  ppu.unit_name  = g_rec.dbout_name
+        and  ppu.unit_type  = g_rec.dbout_type
+        and  ppu.runid      = g_rec.prof_runid )
+   loop
+
+      prof_rec.line          := buf1.line;
+      prof_rec.total_occur   := buf1.total_occur;
+      prof_rec.total_time    := buf1.total_time;
+      prof_rec.min_time      := buf1.min_time;
+      prof_rec.max_time      := buf1.max_time;
+      prof_rec.text          := buf1.text;
+      prof_rec.not_exec_text := '';
+
+      case
+      when anno_aa.EXISTS(buf1.line)
+      then
+         -- Found Annotated Statement
+         prof_rec.status := 'ANNO';
+      when find_excluded(buf1.text, prof_rec.not_exec_text)
+      then
+         -- Found Excluded Statement
+         prof_rec.status := 'EXCL';
+      when buf1.total_occur > 0
+      then
+         -- Found Executed Statement
+         prof_rec.status := 'EXEC';
+      when     buf1.total_occur = 0
+           and buf1.total_time  = 0
+      then
+         -- Found Not Executed Statement
+         prof_rec.status := 'NOTX';
+      else
+         -- Everything else is unknown
+         prof_rec.status := 'UNKN';
+      end case;
+
+      insert into wt_dbout_profiles values prof_rec;
+
+   end loop;
    COMMIT;
-   
-end update_anno_status;
+
+   -- Delete PLSQL Profiler has it's own
+   --   PRAGMA AUTONOMOUS_TRANSACTION and COMMIT;
+   delete_plsql_profiler_recs(g_rec.prof_runid);
+
+end insert_dbout_profile;
 
 
 ---------------------
@@ -450,8 +438,6 @@ begin
    dbms_profiler.STOP_PROFILER;
 
    insert_dbout_profile;
-
-   update_anno_status;
 
    reset_g_rec;
 

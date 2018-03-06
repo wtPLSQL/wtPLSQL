@@ -261,7 +261,7 @@ begin
    begin
       g_test_runs_rec.runner_name := 'BOGUS';
       l_msg_in := 'Invalid RUNNER_NAME';
-      l_err_in := 'ORA-20002: RUNNER_NAME is not valid';
+      l_err_in := 'ORA-20002: RUNNER_NAME "BOGUS" is not valid';
       check_runner;
       test_sqlerrm;
    exception when others then
