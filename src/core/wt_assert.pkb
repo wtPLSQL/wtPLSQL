@@ -8,6 +8,11 @@ create or replace package body wt_assert is
       ,last_details     wt_results.details%TYPE);
    g_rec  g_rec_type;
 
+   $IF $$WTPLSQL_SELFTEST
+   $THEN
+      wtplsql_skip_save boolean := FALSE;
+   $END
+
 ----------------------
 --  Private Procedures
 ----------------------
@@ -32,6 +37,9 @@ end boolean_to_status;
 procedure process_assertion
 is
 begin
+   $IF $$WTPLSQL_SELFTEST $THEN
+      if not wtplsql_skip_save then
+   $END
    wt_result.save
       (in_assertion      => g_rec.last_assert
       ,in_status         => case g_rec.last_pass
@@ -41,6 +49,9 @@ begin
       ,in_details        => g_rec.last_details
       ,in_testcase       => g_testcase
       ,in_message        => g_rec.last_msg);
+   $IF $$WTPLSQL_SELFTEST $THEN
+      end if;
+   $END
    if g_raise_exception and not g_rec.last_pass
    then
       raise_application_error(-20003, wt_text_report.format_test_result
@@ -228,11 +239,8 @@ begin
    wt_profiler.pause;
    g_rec.last_assert  := 'THIS';
    g_rec.last_msg     := msg_in;
-   g_rec.last_pass    :=    (    null_ok_in = FALSE
-                             AND nvl(check_this_in,'FALSE') )
-                         OR (    null_ok_in = TRUE
-                             AND check_this_in is null
-                             AND );
+   -- NULL_OK_IN is not used, but included for legacy calls
+   g_rec.last_pass    := nvl(check_this_in, FALSE);
    g_rec.last_details := 'Expected "'  || C_PASS ||
                          '" and got "' || boolean_to_status(check_this_in) || '"';
    process_assertion;
@@ -704,28 +712,51 @@ procedure tc_this
 is
    temp_rec   g_rec_type;
 begin
-   g_testcase := 'This Test';
+   g_testcase := 'This Tests';
+   --
    this (
-      msg_in         => '',
-      check_this_in  => '',
-      null_ok_in     => FALSE);
+      msg_in         => 'This Tests Happy Path',
+      check_this_in  => TRUE);
    temp_rec := g_rec;
    eq (
-      msg_in          => 'Raises Tests Happy Path g_rec.last_pass',
+      msg_in          => 'This Tests Happy Path g_rec.last_pass',
       check_this_in   => temp_rec.last_pass,
       against_this_in => TRUE);
    eq (
-      msg_in          => 'Raises Tests Happy Path g_rec.last_assert',
+      msg_in          => 'This Tests Happy Path g_rec.last_assert',
       check_this_in   => temp_rec.last_assert,
-      against_this_in => 'RAISES');
+      against_this_in => 'THIS');
    eq (
-      msg_in          => 'Raises Tests Happy Path g_rec.last_msg',
+      msg_in          => 'This Tests Happy Path g_rec.last_msg',
       check_this_in   => temp_rec.last_msg,
-      against_this_in => 'Raises Tests Happy Path');
+      against_this_in => 'This Tests Happy Path');
    eq (
-      msg_in          => 'Raises Tests Happy Path g_rec.last_details',
-      check_this_in   => substr(temp_rec.last_details,1,110),
-      against_this_in => 'Expected exception "%PLS-00302: component ''BOGUS'' must be declared%". Actual exception raised was "ORA-06550: ');
+      msg_in          => 'This Tests Happy Path g_rec.last_details',
+      check_this_in   => temp_rec.last_details,
+      against_this_in => 'Expected "PASS" and got "PASS"');
+   --
+   wtplsql_skip_save := TRUE;
+   this (
+      msg_in         => 'Not Used',
+      check_this_in  => FALSE);
+   temp_rec := g_rec;
+   wtplsql_skip_save := FALSE;
+   eq (
+      msg_in          => 'This Tests Sad Path 1',
+      check_this_in   => temp_rec.last_pass,
+      against_this_in => FALSE);
+   --
+   wtplsql_skip_save := TRUE;
+   this (
+      msg_in         => 'Not Used',
+      check_this_in  => NULL);
+   temp_rec := g_rec;
+   wtplsql_skip_save := FALSE;
+   eq (
+      msg_in          => 'This Tests Sad Path 2',
+      check_this_in   => temp_rec.last_pass,
+      against_this_in => FALSE);
+   --
 end tc_this;
 
 --====================================--
