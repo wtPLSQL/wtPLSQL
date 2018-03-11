@@ -56,7 +56,7 @@ declare
                            --  ,in_hide_details   => TRUE
                              ,in_summary_first  => TRUE
                              ,in_show_pass      => TRUE
-                             ,in_show_aux       => TRUE
+                           --  ,in_show_aux       => TRUE
                              );
    end run_test;
 begin

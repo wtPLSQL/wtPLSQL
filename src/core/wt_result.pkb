@@ -29,7 +29,7 @@ begin
 end initialize;
 
 ------------------------------------------------------------
--- Because this procedure is called to cleanup after erorrs,
+-- Because this procedure is called to cleanup after errors,
 --  it must be able to run multiple times without causing damage.
 procedure finalize
 is

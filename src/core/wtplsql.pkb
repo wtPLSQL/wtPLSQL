@@ -186,7 +186,7 @@ end delete_records;
 $IF $$WTPLSQL_SELFTEST
 $THEN
 
-----------------------------------------
+--====================================--
 procedure tc_test_runs_rec_and_table
 is
 begin
@@ -231,7 +231,7 @@ begin
             ,against_value_in   => 0);
 end tc_test_runs_rec_and_table;
 
-----------------------------------------
+--====================================--
 procedure tc_check_runner
 is
    l_save_test_runs_rec   wt_test_runs%ROWTYPE := g_test_runs_rec;
@@ -269,7 +269,7 @@ begin
    end;
 end tc_check_runner;
 
-----------------------------------------
+--====================================--
 procedure WTPLSQL_RUN
 is
 begin

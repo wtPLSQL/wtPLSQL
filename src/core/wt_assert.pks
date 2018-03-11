@@ -32,15 +32,15 @@ is
    function get_NLS_DATE_FORMAT
       return varchar2;
    procedure set_NLS_DATE_FORMAT
-      (in_format in varchar2);
+      (in_format in varchar2 default 'DD-MON-YYYY HH24:MI:SS');
    function get_NLS_TIMESTAMP_FORMAT
       return varchar2;
    procedure set_NLS_TIMESTAMP_FORMAT
-      (in_format in varchar2);
+      (in_format in varchar2 default 'DD-MON-YYYY HH24:MI:SS.FF6');
    function get_NLS_TIMESTAMP_TZ_FORMAT
        return varchar2;
    procedure set_NLS_TIMESTAMP_TZ_FORMAT
-       (in_format in varchar2);
+      (in_format in varchar2 default 'DD-MON-YYYY HH24:MI:SS.FF6 +TZH:TZM');
 
    ------------------------
    --   Datatypes Supported
