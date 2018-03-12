@@ -517,55 +517,89 @@ $THEN
    procedure tc_eq
    is
       temp_rec   g_rec_type;
-      tb  boolean;
    begin
       g_testcase := 'EQ';
       --
       eq (
-         msg_in        => 'EQ Happy Path 1',
-         check_this_in => 'X');
+         msg_in          => 'EQ Happy Path 1',
+         check_this_in   => 'X',
+         against_this_in => 'X');
       temp_rec := g_rec;
-      wt_assert.eq (
-         msg_in          => 'ISNOTNULL Happy Path 1 g_rec.last_pass',
-         check_this_in   => temp_rec.last_pass,
-         against_this_in => TRUE);
-      wt_assert.eq (
-         msg_in          => 'ISNOTNULL Happy Path 1 g_rec.last_assert',
-         check_this_in   => temp_rec.last_assert,
-         against_this_in => 'ISNOTNULL');
-      wt_assert.eq (
-         msg_in          => 'ISNOTNULL Happy Path 1 g_rec.last_msg',
-         check_this_in   => temp_rec.last_msg,
-         against_this_in => 'ISNOTNULL Happy Path 1');
-      wt_assert.eq (
-         msg_in          => 'ISNOTNULL Happy Path 1 g_rec.last_details',
-         check_this_in   => substr(temp_rec.last_details,1,110),
-         against_this_in => 'Expected NOT NULL and got "X"');
+      wt_assert.this (
+         msg_in          => 'EQ Happy Path 1 g_rec.last_pass',
+         check_this_in   => (temp_rec.last_pass = TRUE));
+      wt_assert.this (
+         msg_in          => 'EQ Happy Path 1 g_rec.last_assert',
+         check_this_in   => (temp_rec.last_assert = 'EQ'));
+      wt_assert.this (
+         msg_in          => 'EQ Happy Path 1 g_rec.last_msg',
+         check_this_in   => (temp_rec.last_msg = 'EQ Happy Path 1'));
+      wt_assert.this (
+         msg_in          => 'EQ Happy Path 1 g_rec.last_details',
+         check_this_in   => (temp_rec.last_details = 'Expected "X" and got "X"'));
       --
-      isnotnull (
-         msg_in        => 'ISNOTNULL Happy Path 2',
-         check_this_in => TRUE);
+      eq (
+         msg_in          => 'EQ Happy Path 2',
+         check_this_in   => 'X',
+         against_this_in => 'X',
+         null_ok_in      => TRUE);
+      eq (
+         msg_in          => 'EQ Happy Path 3',
+         check_this_in   => '',
+         against_this_in => '',
+         null_ok_in      => TRUE);
       --
       wtplsql_skip_save := TRUE;
-      isnotnull (
-         msg_in        => 'Not Used',
-         check_this_in => '');
+      eq (
+         msg_in          => 'No Used',
+         check_this_in   => 'X',
+         against_this_in => 'Y');
       wtplsql_skip_save := FALSE;
-      wt_assert.eq (
-         msg_in          => 'ISNOTNULL Sad Path 1',
-         check_this_in   => g_rec.last_pass,
-         against_this_in => FALSE);
+      wt_assert.this (
+         msg_in          => 'EQ Sad Path 1',
+         check_this_in   => (g_rec.last_pass = FALSE));
       --
-      tb := NULL;
       wtplsql_skip_save := TRUE;
-      isnotnull (
-         msg_in        => 'Not Used',
-         check_this_in => tb);
+      eq (
+         msg_in          => 'Not Used',
+         check_this_in   => '',
+         against_this_in => 'Y');
       wtplsql_skip_save := FALSE;
-      wt_assert.eq (
-         msg_in          => 'ISNOTNULL Sad Path 2',
-         check_this_in   => g_rec.last_pass,
-         against_this_in => FALSE);
+      wt_assert.this (
+         msg_in          => 'EQ Sad Path 2',
+         check_this_in   => (g_rec.last_pass = FALSE));
+      --
+      wtplsql_skip_save := TRUE;
+      eq (
+         msg_in          => 'Not Used',
+         check_this_in   => '',
+         against_this_in => '');
+      wtplsql_skip_save := FALSE;
+      wt_assert.this (
+         msg_in          => 'EQ Sad Path 3',
+         check_this_in   => (g_rec.last_pass = FALSE));
+      --
+      wtplsql_skip_save := TRUE;
+      eq (
+         msg_in          => 'Not Used',
+         check_this_in   => '',
+         against_this_in => 'Y',
+         null_ok_in      => TRUE);
+      wtplsql_skip_save := FALSE;
+      wt_assert.this (
+         msg_in          => 'EQ Sad Path 4',
+         check_this_in   => (g_rec.last_pass = FALSE));
+      --
+      wtplsql_skip_save := TRUE;
+      eq (
+         msg_in          => 'Not Used',
+         check_this_in   => 'X',
+         against_this_in => '',
+         null_ok_in      => TRUE);
+      wtplsql_skip_save := FALSE;
+      wt_assert.this (
+         msg_in          => 'EQ Sad Path 5',
+         check_this_in   => (g_rec.last_pass = FALSE));
       --
    end tc_eq;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
@@ -625,7 +659,7 @@ $THEN
          against_this_in => 'ISNOTNULL Happy Path 1');
       wt_assert.eq (
          msg_in          => 'ISNOTNULL Happy Path 1 g_rec.last_details',
-         check_this_in   => substr(temp_rec.last_details,1,110),
+         check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected NOT NULL and got "X"');
       --
       isnotnull (
@@ -1302,6 +1336,7 @@ $THEN
       tc_nls_settings;
       tc_reset_globals;
       tc_this;
+      tc_eq;
       tc_isnotnull;
       tc_isnull;
       tc_raises;
