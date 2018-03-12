@@ -33,11 +33,35 @@ begin
    return C_FAIL;
 end boolean_to_status;
 
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_boolean_to_status
+   is
+      temp_boolean  boolean;
+   begin
+      g_testcase := 'BOOLEAN_TO_STATUS';
+      wt_assert.eq
+         (msg_in            => 'Test for "TRUE" conversion'
+         ,check_this_in     => boolean_to_status(TRUE)
+         ,against_this_in   => C_PASS);
+      wt_assert.eq
+         (msg_in            => 'Test for "FALSE" conversion'
+         ,check_this_in     => boolean_to_status(FALSE)
+         ,against_this_in   => C_FAIL);
+      temp_boolean := NULL;
+      wt_assert.isnull
+         (msg_in            => 'Test for NULL'
+         ,check_this_in     => boolean_to_status(temp_boolean));
+   end tc_boolean_to_status;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
 ------------------------------------------------------------
 procedure process_assertion
 is
 begin
    $IF $$WTPLSQL_SELFTEST $THEN
+      -- This will skip over the wt_result.save call below during some self-tests
       if not wtplsql_skip_save then
    $END
    wt_result.save
@@ -50,6 +74,7 @@ begin
       ,in_testcase       => g_testcase
       ,in_message        => g_rec.last_msg);
    $IF $$WTPLSQL_SELFTEST $THEN
+      -- This will skip over the wt_result.save call above during some self-tests
       end if;
    $END
    if g_raise_exception and not g_rec.last_pass
@@ -62,6 +87,42 @@ begin
                                          ,in_message        => g_rec.last_msg) );
    end if;
 end process_assertion;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_process_assertion
+   is
+      ASSERT_TEST_EXCEPTION  exception;
+      PRAGMA EXCEPTION_INIT(ASSERT_TEST_EXCEPTION, -20003);
+      procedure test_exception
+      is
+      begin
+         wt_assert.eq
+            (msg_in          => 'Process Assertion Actual Test'
+            ,check_this_in   => SQLERRM
+            ,against_this_in => 'ORA-20003:    --  Test Case:' ||
+                                ' PROCESS_ASSERTION  --' || CHR(10) ||
+                                '#FAIL#Process Assertion Forced Failure.' ||
+                                ' THIS - Expected "PASS" and got "FAIL"');
+      end test_exception;
+   begin
+      g_testcase         := 'PROCESS_ASSERTION';
+      g_rec.last_assert  := 'THIS';
+      g_rec.last_pass    := FALSE;
+      g_rec.last_details := 'Expected "PASS" and got "FAIL"';
+      g_rec.last_msg     := 'Process Assertion Forced Failure';
+      g_raise_exception  := TRUE;
+      wtplsql_skip_save  := TRUE;
+      process_assertion;  -- Should throw exception
+      wtplsql_skip_save  := FALSE;
+      g_raise_exception  := FALSE;
+   exception
+      when ASSERT_TEST_EXCEPTION then
+         wtplsql_skip_save := FALSE;
+         g_raise_exception := FALSE;
+   end tc_process_assertion;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 
 ------------------------------------------------------------
 procedure compare_queries (
@@ -112,6 +173,44 @@ exception
       g_rec.last_pass    := FALSE;
 end compare_queries;
 
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_compare_queries
+   is
+      temp_rec          g_rec_type;
+   begin
+      g_testcase := 'COMPARE_QUERIES';
+      compare_queries (
+         check_query_in     => 'select bogus123 from bogus456',
+         against_query_in   => 'select bogus987 from bogus654');
+      temp_rec := g_rec;
+      wt_assert.eq (
+         msg_in           => 'Bad Query Test 1 g_rec.last_pass',
+         check_this_in    => temp_rec.last_pass,
+         against_this_in  => FALSE);
+      wt_assert.eq(
+         msg_in          => 'Bad Query Test 1 g_rec.last_details',
+         check_this_in   => instr(temp_rec.last_details
+                                 ,'ORA-06550: line 2, column 60:' || CHR(10) ||
+                                  'PL/SQL: ORA-00942: table or view does not exist'),
+         against_this_in => 1);
+      compare_queries (
+         check_query_in     => 'select table_name from user_tables',
+         against_query_in   => 'select tablespace_name from user_tables');
+      temp_rec := g_rec;
+      wt_assert.eq (
+         msg_in           => 'Bad Query Test 2 g_rec.last_pass',
+         check_this_in    => temp_rec.last_pass,
+         against_this_in  => FALSE);
+      wt_assert.eq(
+         msg_in          => 'Bad Query Test 2 g_rec.last_details',
+         check_this_in   => instr(temp_rec.last_details
+                                 ,'Comparison Query: with check_query as' ||
+                                  ' (select table_name from user_tables'),
+         against_this_in => 1);
+   end tc_compare_queries;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 
 ---------------------
 --  Public Procedures
@@ -125,7 +224,6 @@ begin
    return g_rec.last_pass;
 end last_pass;
 
-------------------------------------------------------------
 function last_assert
    return wt_results.assertion%TYPE
 is
@@ -133,7 +231,6 @@ begin
    return g_rec.last_assert;
 end last_assert;
 
-------------------------------------------------------------
 function last_msg
    return wt_results.message%TYPE
 is
@@ -141,13 +238,18 @@ begin
    return g_rec.last_msg;
 end last_msg;
 
-------------------------------------------------------------
 function last_details
    return wt_results.details%TYPE
 is
 begin
    return g_rec.last_details;
 end last_details;
+
+$IF $$WTPLSQL_SELFTEST  ----------------------------------------
+$THEN
+   -- Place Holder
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 
 ------------------------------------------------------------
 procedure reset_globals
@@ -161,6 +263,42 @@ begin
    g_rec.last_details  := '';
 end reset_globals;
 
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_reset_globals
+   is
+      temp_rec          g_rec_type;
+      temp_testcase     VARCHAR2(4000);
+      temp_raise_excpt  BOOLEAN;
+   begin
+      reset_globals;  -- Resets g_testcase
+      temp_rec         := g_rec;
+      temp_raise_excpt := g_raise_exception;
+      temp_testcase    := g_testcase;
+      g_testcase       := 'RESET_GLOBALS';
+      wt_assert.isnull(
+         msg_in        => 'g_testcase is null',
+         check_this_in => temp_testcase);
+      wt_assert.eq(
+         msg_in          => 'g_raise_exception is FALSE',
+         check_this_in   => temp_raise_excpt,
+         against_this_in => FALSE);
+      wt_assert.isnull
+         (msg_in        => 'g_rec.last_pass is null'
+         ,check_this_in => temp_rec.last_pass);
+      wt_assert.isnull
+         (msg_in        => 'g_rec.last_assert is null'
+         ,check_this_in => temp_rec.last_assert);
+      wt_assert.isnull
+         (msg_in        => 'g_rec.last_msg is null'
+         ,check_this_in => temp_rec.last_msg);
+      wt_assert.isnull
+         (msg_in        => 'g_rec.last_details is null'
+         ,check_this_in => temp_rec.last_details);
+   end tc_reset_globals;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
 ------------------------------------------------------------
 function get_NLS_DATE_FORMAT
       return varchar2
@@ -173,7 +311,6 @@ begin
    return l_format;
 end get_NLS_DATE_FORMAT;
 
-------------------------------------------------------------
 procedure set_NLS_DATE_FORMAT
       (in_format in varchar2 default 'DD-MON-YYYY HH24:MI:SS')
 is
@@ -182,7 +319,6 @@ begin
                       in_format || '''';
 end set_NLS_DATE_FORMAT;
 
-------------------------------------------------------------
 function get_NLS_TIMESTAMP_FORMAT
       return varchar2
 is
@@ -194,7 +330,6 @@ begin
    return l_format;
 end get_NLS_TIMESTAMP_FORMAT;
 
-------------------------------------------------------------
 procedure set_NLS_TIMESTAMP_FORMAT
       (in_format in varchar2 default 'DD-MON-YYYY HH24:MI:SS.FF6')
 is
@@ -203,7 +338,6 @@ begin
                       in_format || '''';
 end set_NLS_TIMESTAMP_FORMAT;
 
-------------------------------------------------------------
 function get_NLS_TIMESTAMP_TZ_FORMAT
       return varchar2
 is
@@ -215,7 +349,6 @@ begin
    return l_format;
 end get_NLS_TIMESTAMP_TZ_FORMAT;
 
-------------------------------------------------------------
 procedure set_NLS_TIMESTAMP_TZ_FORMAT
       (in_format in varchar2 default 'DD-MON-YYYY HH24:MI:SS.FF6 +TZH:TZM')
 is
@@ -223,6 +356,45 @@ begin
    execute immediate 'alter session set NLS_TIMESTAMP_TZ_FORMAT = ''' ||
                       in_format || '''';
 end set_NLS_TIMESTAMP_TZ_FORMAT;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_nls_settings
+   is
+   begin
+      g_testcase := 'NLS Values';
+      set_NLS_DATE_FORMAT('DD-MON-YYYY');
+      wt_assert.eq
+         (msg_in          => 'Check get_NLS_DATE_FORMAT 1'
+         ,check_this_in   => get_NLS_DATE_FORMAT
+         ,against_this_in => 'DD-MON-YYYY');
+      set_NLS_DATE_FORMAT;
+      wt_assert.eq
+         (msg_in          => 'Check get_NLS_DATE_FORMAT 2'
+         ,check_this_in   => get_NLS_DATE_FORMAT
+         ,against_this_in => 'DD-MON-YYYY HH24:MI:SS');
+      set_NLS_TIMESTAMP_FORMAT('DD-MON-YYYY');
+      wt_assert.eq
+         (msg_in          => 'Check get_NLS_TIMESTAMP_FORMAT 2'
+         ,check_this_in   => get_NLS_TIMESTAMP_FORMAT
+         ,against_this_in => 'DD-MON-YYYY');
+      set_NLS_TIMESTAMP_FORMAT;
+      wt_assert.eq
+         (msg_in          => 'Check get_NLS_TIMESTAMP_FORMAT 2'
+         ,check_this_in   => get_NLS_TIMESTAMP_FORMAT
+         ,against_this_in => 'DD-MON-YYYY HH24:MI:SS.FF6');
+      set_NLS_TIMESTAMP_TZ_FORMAT('DD-MON-YYYY');
+      wt_assert.eq
+         (msg_in          => 'Check get_NLS_TIMESTAMP_TZ_FORMAT 2'
+         ,check_this_in   => get_NLS_TIMESTAMP_TZ_FORMAT
+         ,against_this_in => 'DD-MON-YYYY');
+      set_NLS_TIMESTAMP_TZ_FORMAT;
+      wt_assert.eq
+         (msg_in          => 'Check get_NLS_TIMESTAMP_TZ_FORMAT 2'
+         ,check_this_in   => get_NLS_TIMESTAMP_TZ_FORMAT
+         ,against_this_in => 'DD-MON-YYYY HH24:MI:SS.FF6 +TZH:TZM');
+   end tc_nls_settings;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------
@@ -241,11 +413,66 @@ begin
    g_rec.last_msg     := msg_in;
    -- NULL_OK_IN is not used, but included for legacy calls
    g_rec.last_pass    := nvl(check_this_in, FALSE);
-   g_rec.last_details := 'Expected "'  || C_PASS ||
-                         '" and got "' || boolean_to_status(check_this_in) || '"';
+   g_rec.last_details := 'Expected "' || C_PASS ||
+                        '" and got "' || boolean_to_status(check_this_in) || '"';
    process_assertion;
    wt_profiler.resume;
 end this;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_this
+   is
+      temp_rec   g_rec_type;
+   begin
+      g_testcase := 'This Tests';
+      --
+      wt_assert.this (
+         msg_in         => 'This Tests Happy Path',
+         check_this_in  => TRUE);
+      temp_rec := g_rec;
+      wt_assert.eq (
+         msg_in          => 'This Tests Happy Path g_rec.last_pass',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => TRUE);
+      wt_assert.eq (
+         msg_in          => 'This Tests Happy Path g_rec.last_assert',
+         check_this_in   => temp_rec.last_assert,
+         against_this_in => 'THIS');
+      wt_assert.eq (
+         msg_in          => 'This Tests Happy Path g_rec.last_msg',
+         check_this_in   => temp_rec.last_msg,
+         against_this_in => 'This Tests Happy Path');
+      wt_assert.eq (
+         msg_in          => 'This Tests Happy Path g_rec.last_details',
+         check_this_in   => temp_rec.last_details,
+         against_this_in => 'Expected "PASS" and got "PASS"');
+      --
+      wtplsql_skip_save := TRUE;
+      this (
+         msg_in         => 'Not Used',
+         check_this_in  => FALSE);
+      temp_rec := g_rec;
+      wtplsql_skip_save := FALSE;
+      wt_assert.eq (
+         msg_in          => 'This Tests Sad Path 1',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => FALSE);
+      --
+      wtplsql_skip_save := TRUE;
+      this (
+         msg_in         => 'Not Used',
+         check_this_in  => NULL);
+      temp_rec := g_rec;
+      wtplsql_skip_save := FALSE;
+      wt_assert.eq (
+         msg_in          => 'This Tests Sad Path 2',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => FALSE);
+      --
+   end tc_this;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 
 ------------------------------------------------------------
 -- EQ: string overload
@@ -264,14 +491,13 @@ begin
                               and against_this_in is null
                               and null_ok_in              )
                          );
-   g_rec.last_details := 'Expected "'  || against_this_in ||
-                         '" and got "' || check_this_in   ||
-                         '"';
+   g_rec.last_details := 'Expected "' || against_this_in ||
+                        '" and got "' || check_this_in   ||
+                        '"';
    process_assertion;
    wt_profiler.resume;
 end eq;
 
-------------------------------------------------------------
 -- EQ: boolean overload
 procedure eq (
    msg_in            in   varchar2,
@@ -285,6 +511,65 @@ begin
       ,against_this_in  => boolean_to_status(against_this_in)
       ,null_ok_in       => null_ok_in);
 end eq;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_eq
+   is
+      temp_rec   g_rec_type;
+      tb  boolean;
+   begin
+      g_testcase := 'EQ';
+      --
+      eq (
+         msg_in        => 'EQ Happy Path 1',
+         check_this_in => 'X');
+      temp_rec := g_rec;
+      wt_assert.eq (
+         msg_in          => 'ISNOTNULL Happy Path 1 g_rec.last_pass',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => TRUE);
+      wt_assert.eq (
+         msg_in          => 'ISNOTNULL Happy Path 1 g_rec.last_assert',
+         check_this_in   => temp_rec.last_assert,
+         against_this_in => 'ISNOTNULL');
+      wt_assert.eq (
+         msg_in          => 'ISNOTNULL Happy Path 1 g_rec.last_msg',
+         check_this_in   => temp_rec.last_msg,
+         against_this_in => 'ISNOTNULL Happy Path 1');
+      wt_assert.eq (
+         msg_in          => 'ISNOTNULL Happy Path 1 g_rec.last_details',
+         check_this_in   => substr(temp_rec.last_details,1,110),
+         against_this_in => 'Expected NOT NULL and got "X"');
+      --
+      isnotnull (
+         msg_in        => 'ISNOTNULL Happy Path 2',
+         check_this_in => TRUE);
+      --
+      wtplsql_skip_save := TRUE;
+      isnotnull (
+         msg_in        => 'Not Used',
+         check_this_in => '');
+      wtplsql_skip_save := FALSE;
+      wt_assert.eq (
+         msg_in          => 'ISNOTNULL Sad Path 1',
+         check_this_in   => g_rec.last_pass,
+         against_this_in => FALSE);
+      --
+      tb := NULL;
+      wtplsql_skip_save := TRUE;
+      isnotnull (
+         msg_in        => 'Not Used',
+         check_this_in => tb);
+      wtplsql_skip_save := FALSE;
+      wt_assert.eq (
+         msg_in          => 'ISNOTNULL Sad Path 2',
+         check_this_in   => g_rec.last_pass,
+         against_this_in => FALSE);
+      --
+   end tc_eq;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 
 ------------------------------------------------------------
 -- ISNOTNULL string overload
@@ -303,7 +588,6 @@ begin
    wt_profiler.resume;
 end isnotnull;
 
-------------------------------------------------------------
 -- ISNOTNULL boolean overload
 procedure isnotnull (
    msg_in          in   varchar2,
@@ -313,6 +597,65 @@ begin
    isnotnull (msg_in        => msg_in
              ,check_this_in => boolean_to_status(check_this_in));
 end isnotnull;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_isnotnull
+   is
+      temp_rec   g_rec_type;
+      tb  boolean;
+   begin
+      g_testcase := 'ISNOTNULL';
+      --
+      isnotnull (
+         msg_in        => 'ISNOTNULL Happy Path 1',
+         check_this_in => 'X');
+      temp_rec := g_rec;
+      wt_assert.eq (
+         msg_in          => 'ISNOTNULL Happy Path 1 g_rec.last_pass',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => TRUE);
+      wt_assert.eq (
+         msg_in          => 'ISNOTNULL Happy Path 1 g_rec.last_assert',
+         check_this_in   => temp_rec.last_assert,
+         against_this_in => 'ISNOTNULL');
+      wt_assert.eq (
+         msg_in          => 'ISNOTNULL Happy Path 1 g_rec.last_msg',
+         check_this_in   => temp_rec.last_msg,
+         against_this_in => 'ISNOTNULL Happy Path 1');
+      wt_assert.eq (
+         msg_in          => 'ISNOTNULL Happy Path 1 g_rec.last_details',
+         check_this_in   => substr(temp_rec.last_details,1,110),
+         against_this_in => 'Expected NOT NULL and got "X"');
+      --
+      isnotnull (
+         msg_in        => 'ISNOTNULL Happy Path 2',
+         check_this_in => TRUE);
+      --
+      wtplsql_skip_save := TRUE;
+      isnotnull (
+         msg_in        => 'Not Used',
+         check_this_in => '');
+      wtplsql_skip_save := FALSE;
+      wt_assert.eq (
+         msg_in          => 'ISNOTNULL Sad Path 1',
+         check_this_in   => g_rec.last_pass,
+         against_this_in => FALSE);
+      --
+      tb := NULL;
+      wtplsql_skip_save := TRUE;
+      isnotnull (
+         msg_in        => 'Not Used',
+         check_this_in => tb);
+      wtplsql_skip_save := FALSE;
+      wt_assert.eq (
+         msg_in          => 'ISNOTNULL Sad Path 2',
+         check_this_in   => g_rec.last_pass,
+         against_this_in => FALSE);
+      --
+   end tc_isnotnull;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 
 ------------------------------------------------------------
 -- ISNULL string overload
@@ -331,7 +674,6 @@ begin
    wt_profiler.resume;
 end isnull;
 
-------------------------------------------------------------
 -- ISNULL boolean overload
 procedure isnull (
    msg_in          in   varchar2,
@@ -341,6 +683,65 @@ begin
    isnull (msg_in        => msg_in
           ,check_this_in => boolean_to_status(check_this_in));
 end isnull;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_isnull
+   is
+      temp_rec   g_rec_type;
+      tb  boolean;
+   begin
+      g_testcase := 'ISNULL';
+      --
+      isnull (
+         msg_in        => 'ISNULL Happy Path 1',
+         check_this_in => '');
+      temp_rec := g_rec;
+      wt_assert.eq (
+         msg_in          => 'ISNULL Happy Path 1 g_rec.last_pass',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => TRUE);
+      wt_assert.eq (
+         msg_in          => 'ISNULL Happy Path 1 g_rec.last_assert',
+         check_this_in   => temp_rec.last_assert,
+         against_this_in => 'ISNULL');
+      wt_assert.eq (
+         msg_in          => 'ISNULL Happy Path 1 g_rec.last_msg',
+         check_this_in   => temp_rec.last_msg,
+         against_this_in => 'ISNULL Happy Path 1');
+      wt_assert.eq (
+         msg_in          => 'ISNULL Happy Path 1 g_rec.last_details',
+         check_this_in   => temp_rec.last_details,
+         against_this_in => 'Expected NULL and got ""');
+      --
+      tb := NULL;
+      isnull (
+         msg_in        => 'ISNULL Happy Path 2',
+         check_this_in => tb);
+      --
+      wtplsql_skip_save := TRUE;
+      isnull (
+         msg_in        => 'Not Used',
+         check_this_in => 'X');
+      wtplsql_skip_save := FALSE;
+      wt_assert.eq (
+         msg_in          => 'ISNULL Sad Path 1',
+         check_this_in   => g_rec.last_pass,
+         against_this_in => FALSE);
+      --
+      wtplsql_skip_save := TRUE;
+      isnull (
+         msg_in        => 'Not Used',
+         check_this_in => FALSE);
+      wtplsql_skip_save := FALSE;
+      wt_assert.eq (
+         msg_in          => 'ISNULL Sad Path 2',
+         check_this_in   => g_rec.last_pass,
+         against_this_in => FALSE);
+      --
+   end tc_isnull;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 
 ------------------------------------------------------------
 --  Check a given call raises an exception
@@ -379,6 +780,72 @@ begin
    wt_profiler.resume;
 end raises;
 
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_raises
+   is
+      temp_rec   g_rec_type;
+   begin
+      g_testcase := 'Raises Test';
+      --
+      raises (
+         msg_in         => 'Raises Tests Happy Path',
+         check_call_in  => 'wt_assert.bogus',
+         against_exc_in => 'PLS-00302: component ''BOGUS'' must be declared');
+      temp_rec := g_rec;
+      wt_assert.eq (
+         msg_in          => 'Raises Tests Happy Path g_rec.last_pass',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => TRUE);
+      wt_assert.eq (
+         msg_in          => 'Raises Tests Happy Path g_rec.last_assert',
+         check_this_in   => temp_rec.last_assert,
+         against_this_in => 'RAISES');
+      wt_assert.eq (
+         msg_in          => 'Raises Tests Happy Path g_rec.last_msg',
+         check_this_in   => temp_rec.last_msg,
+         against_this_in => 'Raises Tests Happy Path');
+      wt_assert.eq (
+         msg_in          => 'Raises Tests Happy Path g_rec.last_details',
+         check_this_in   => substr(temp_rec.last_details,1,110),
+         against_this_in => 'Expected exception "%PLS-00302: component ''BOGUS'' must be declared%". Actual exception raised was "ORA-06550: ');
+      --
+      wtplsql_skip_save := TRUE;
+      raises (
+         msg_in         => 'Not Used',
+         check_call_in  => 'wt_assert.bogus',
+         against_exc_in => 'Incorrect Exception');
+      temp_rec := g_rec;
+      wtplsql_skip_save := FALSE;
+      wt_assert.eq (
+         msg_in          => 'Raises Tests Sad Path 1 g_rec.last_pass',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => FALSE);
+      wt_assert.eq (
+         msg_in          => 'Raises Tests Sad Path 1 g_rec.last_details',
+         check_this_in   => substr(temp_rec.last_details,1,44),
+         against_this_in => 'Expected exception "%Incorrect Exception%". ');
+      --
+      wtplsql_skip_save := TRUE;
+      raises (
+         msg_in         => 'Not Used',
+         check_call_in  => 'wt_assert.set_NLS_DATE_FORMAT',
+         against_exc_in => 'Incorrect Exception');
+      temp_rec := g_rec;
+      wtplsql_skip_save := FALSE;
+      wt_assert.eq (
+         msg_in          => 'Raises Tests Sad Path 2 g_rec.last_pass',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => FALSE);
+      wt_assert.eq (
+         msg_in          => 'Raises Tests Sad Path 2 g_rec.last_details',
+         check_this_in   => substr(temp_rec.last_details,1,44),
+         against_this_in => 'Expected exception "%Incorrect Exception%". ');
+      --
+   end tc_raises;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
 ------------------------------------------------------------
 procedure eqqueryvalue (
       msg_in             in   varchar2,
@@ -404,13 +871,62 @@ begin
                           and against_value_in is null
                           and null_ok_in               )  );
    g_rec.last_details := 'Expected "' || against_value_in ||
-                    '" and got "' || l_rc_buff        ||
-                  '" for Query: ' || check_query_in   ;
+                        '" and got "' || l_rc_buff        ||
+                      '" for Query: ' || check_query_in   ;
    --
    process_assertion;
    wt_profiler.resume;
    --
 end eqqueryvalue;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_eqqueryvalue
+   is
+      temp_rec   g_rec_type;
+   begin
+      g_testcase := 'EQQUERYVALUE';
+      eqqueryvalue (
+         msg_in             =>   'EQQUERYVALUE Tests Happy Path 1',
+         check_query_in     =>   'select dummy from DUAL',
+         against_value_in   =>   'X',
+         null_ok_in         =>   false);
+      temp_rec := g_rec;
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE Tests Happy Path 1 g_rec.last_pass',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => TRUE);
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE Tests Happy Path 1 g_rec.last_assert',
+         check_this_in   => temp_rec.last_assert,
+         against_this_in => 'EQQUERYVALUE');
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE Tests Happy Path 1 g_rec.last_msg',
+         check_this_in   => temp_rec.last_msg,
+         against_this_in => 'EQQUERYVALUE Tests Happy Path 1');
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE Tests Happy Path 1 g_rec.last_details',
+         check_this_in   => temp_rec.last_details,
+         against_this_in => 'Expected "X" and got "X" for Query: select dummy from DUAL');
+      wtplsql_skip_save := TRUE;
+      eqqueryvalue (
+         msg_in             =>   'Not Used',
+         check_query_in     =>   'select max(dummy) from DUAL where 0 = 1',
+         against_value_in   =>   '',
+         null_ok_in         =>   true);
+      temp_rec := g_rec;
+      wtplsql_skip_save := FALSE;
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE Tests Happy Path 2 g_rec.last_pass',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => TRUE);
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE Tests Happy Path 2 g_rec.last_details',
+         check_this_in   => temp_rec.last_details,
+         against_this_in => 'Expected "" and got "" for Query: select max(dummy) from DUAL where 0 = 1');
+   end tc_eqqueryvalue;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 
 ------------------------------------------------------------
 procedure eqquery (
@@ -426,6 +942,39 @@ begin
    process_assertion;
    wt_profiler.resume;
 end eqquery;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_eqquery
+   is
+      temp_rec   g_rec_type;
+   begin
+      g_testcase := 'EQQUERY';
+      -- EQQUERY
+      wt_assert.eqquery (
+         msg_in             =>   'EQQUERY Tests Happy Path 1',
+         check_query_in     =>   'select * from USER_TABLES',
+         against_query_in   =>   'select * from USER_TABLES');
+      temp_rec := g_rec;
+      wt_assert.eq (
+         msg_in          => 'EQQUERY Tests Happy Path 1 g_rec.last_pass',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => TRUE);
+      wt_assert.eq (
+         msg_in          => 'EQQUERY Tests Happy Path 1 g_rec.last_assert',
+         check_this_in   => temp_rec.last_assert,
+         against_this_in => 'EQQUERY');
+      wt_assert.eq (
+         msg_in          => 'EQQUERY Tests Happy Path 1 g_rec.last_msg',
+         check_this_in   => temp_rec.last_msg,
+         against_this_in => 'EQQUERY Tests Happy Path 1');
+      wt_assert.eq (
+         msg_in          => 'EQQUERY Tests Happy Path 1 g_rec.last_details',
+         check_this_in   => substr(temp_rec.last_details,1,18),
+         against_this_in => 'Comparison Query: ');
+   end tc_eqquery;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 
 ------------------------------------------------------------
 procedure eqtable (
@@ -453,6 +1002,46 @@ begin
    process_assertion;
    wt_profiler.resume;
 end eqtable;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_eqtable
+   is
+      temp_rec   g_rec_type;
+   begin
+      g_testcase := 'EQTABLE';
+      wt_assert.eqtable (
+         msg_in             =>   'EQTABLE Tests Happy Path 1',
+         check_this_in      =>   'USER_TABLES',
+         against_this_in    =>   'USER_TABLES',
+         check_where_in     =>   '',
+         against_where_in   =>   '');
+      temp_rec := g_rec;
+      wt_assert.eq (
+         msg_in          => 'EQTABLE Tests Happy Path 1 g_rec.last_pass',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => TRUE);
+      wt_assert.eq (
+         msg_in          => 'EQTABLE Tests Happy Path 1 g_rec.last_assert',
+         check_this_in   => temp_rec.last_assert,
+         against_this_in => 'EQTABLE');
+      wt_assert.eq (
+         msg_in          => 'EQTABLE Tests Happy Path 1 g_rec.last_msg',
+         check_this_in   => temp_rec.last_msg,
+         against_this_in => 'EQTABLE Tests Happy Path 1');
+      wt_assert.eq (
+         msg_in          => 'EQTABLE Tests Happy Path 1 g_rec.last_details',
+         check_this_in   => substr(temp_rec.last_details,1,18),
+         against_this_in => 'Comparison Query: ');
+      eqtable (
+         msg_in             =>   'EQTABLE Tests Happy Path 2',
+         check_this_in      =>   'ALL_TABLES',
+         against_this_in    =>   'ALL_TABLES',
+         check_where_in     =>   'owner = ''' || USER || '''',
+         against_where_in   =>   'owner = ''' || USER || '''');
+   end tc_eqtable;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 
 ------------------------------------------------------------
 procedure eqtabcount (
@@ -508,12 +1097,53 @@ begin
    if NOT l_success then return; end if;
    g_rec.last_pass    := (l_check_cnt = l_cnt);
    --
-   g_rec.last_details := 'Expected '  || l_cnt       || ' rows from "' || against_this_in ||
-                     '" and got ' || l_check_cnt || ' rows from "' || check_this_in   ||
-                     '"';
+   g_rec.last_details := 'Expected ' || l_cnt       || ' rows from "' || against_this_in ||
+                        '" and got ' || l_check_cnt || ' rows from "' || check_this_in   ||
+                        '"';
    process_assertion;
    wt_profiler.resume;
 end eqtabcount;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_eqtabcount
+   is
+      temp_rec   g_rec_type;
+   begin
+      g_testcase := 'EQTABCOUNT';
+      eqtabcount (
+         msg_in             =>   'EQTABCOUNT Tests Happy Path 1',
+         check_this_in      =>   'USER_TABLES',
+         against_this_in    =>   'ALL_TABLES',
+         check_where_in     =>   '',
+         against_where_in   =>   'owner = ''' || USER || '''');
+      temp_rec := g_rec;
+      wt_assert.eq (
+         msg_in          => 'EQTABCOUNT Tests Happy Path 1 g_rec.last_pass',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => TRUE);
+      wt_assert.eq (
+         msg_in          => 'EQTABCOUNT Tests Happy Path 1 g_rec.last_assert',
+         check_this_in   => temp_rec.last_assert,
+         against_this_in => 'EQTABCOUNT');
+      wt_assert.eq (
+         msg_in          => 'EQTABCOUNT Tests Happy Path 1 g_rec.last_msg',
+         check_this_in   => temp_rec.last_msg,
+         against_this_in => 'EQTABCOUNT Tests Happy Path 1');
+      wt_assert.eq (
+         msg_in          => 'EQTABCOUNT Tests Happy Path 1 g_rec.last_details',
+         check_this_in   => temp_rec.last_details,
+         against_this_in => 'Expected 7 rows from "ALL_TABLES"' ||
+                            ' and got 7 rows from "USER_TABLES"');
+      eqtabcount (
+         msg_in             =>   'EQTABCOUNT Tests Happy Path 2',
+         check_this_in      =>   'ALL_TABLES',
+         against_this_in    =>   'USER_TABLES',
+         check_where_in     =>   'owner = ''' || USER || '''',
+         against_where_in   =>   '');
+   end tc_eqtabcount;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 
 ------------------------------------------------------------
 procedure objexists (
@@ -540,7 +1170,7 @@ begin
    wt_profiler.resume;
 end objexists;
 
-------------------------------------------------------------
+-- Concatenated SCHEMA_NAME.OBJECT_NAME
 procedure objexists (
       msg_in          in   varchar2,
       check_this_in   in   varchar2)
@@ -551,6 +1181,41 @@ begin
             ,obj_owner_in => substr(check_this_in, 1, l_pos-1)
             ,obj_name_in  => substr(check_this_in, l_pos+1, length(check_this_in)));
 end objexists;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_object_exists
+   is
+      temp_rec   g_rec_type;
+   begin
+      g_testcase := 'OBJEXISTS';
+      objexists (
+         msg_in        =>   'OBJEXISTS Happy Path 1',
+         obj_owner_in  =>   'SYS',
+         obj_name_in   =>   'DUAL');
+      temp_rec := g_rec;
+      wt_assert.eq (
+         msg_in          => 'OBJEXISTS Happy Path 1 g_rec.last_pass',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => TRUE);
+      wt_assert.eq (
+         msg_in          => 'OBJEXISTS Happy Path 1 g_rec.last_assert',
+         check_this_in   => temp_rec.last_assert,
+         against_this_in => 'OBJEXISTS');
+      wt_assert.eq (
+         msg_in          => 'OBJEXISTS Happy Path 1 g_rec.last_msg',
+         check_this_in   => temp_rec.last_msg,
+         against_this_in => 'OBJEXISTS Happy Path 1');
+      wt_assert.eq (
+         msg_in          => 'OBJEXISTS Happy Path 1 g_rec.last_details',
+         check_this_in   => temp_rec.last_details,
+         against_this_in => 'Number of objects found for "SYS.DUAL" is 1');
+      objexists (
+         msg_in          =>  'OBJEXISTS Happy Path 2',
+         check_this_in   =>  'SYS.DUAL');
+   end tc_object_exists;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 
 ------------------------------------------------------------
 procedure objnotexists (
@@ -570,14 +1235,14 @@ begin
            or obj_owner_in = owner);
    g_rec.last_pass    := case l_num_objects when 0 then TRUE else FALSE end;
    g_rec.last_details := 'Number of objects found for "' ||
-                      case when obj_owner_in is null then ''
-                           else obj_owner_in || '.' end ||
-                      obj_name_in || '" is ' || l_num_objects;
+                         case when obj_owner_in is null then ''
+                              else obj_owner_in || '.' end ||
+                         obj_name_in || '" is ' || l_num_objects;
    process_assertion;
    wt_profiler.resume;
 end objnotexists;
 
-------------------------------------------------------------
+-- Concatenated SCHEMA_NAME.OBJECT_NAME
 procedure objnotexists (
       msg_in          in   varchar2,
       check_this_in   in   varchar2)
@@ -589,443 +1254,65 @@ begin
                ,obj_name_in  => substr(check_this_in, l_pos+1, length(check_this_in)));
 end objnotexists;
 
-
---==============================================================--
---===============--%WTPLSQL_begin_ignore_lines%--===============--
---==============================================================--
---  Embedded Test Procedures
-
-$IF $$WTPLSQL_SELFTEST
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
+   procedure tc_object_not_exists
+   is
+      temp_rec   g_rec_type;
+   begin
+      g_testcase := 'OBJNOTEXISTS';
+      objnotexists (
+         msg_in        =>   'OBJNOTEXISTS Happy Path 3',
+         obj_owner_in  =>   'BOGUS123',
+         obj_name_in   =>   'BOGUS123');
+      temp_rec := g_rec;
+      wt_assert.eq (
+         msg_in          => 'OBJNOTEXISTS Happy Path 3 g_rec.last_pass',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => TRUE);
+      wt_assert.eq (
+         msg_in          => 'OBJNOTEXISTS Happy Path 3 g_rec.last_assert',
+         check_this_in   => temp_rec.last_assert,
+         against_this_in => 'OBJNOTEXISTS');
+      wt_assert.eq (
+         msg_in          => 'OBJNOTEXISTS Happy Path 3 g_rec.last_msg',
+         check_this_in   => temp_rec.last_msg,
+         against_this_in => 'OBJNOTEXISTS Happy Path 3');
+      wt_assert.eq (
+         msg_in          => 'OBJNOTEXISTS Happy Path 3 g_rec.last_details',
+         check_this_in   => temp_rec.last_details,
+         against_this_in => 'Number of objects found for "BOGUS123.BOGUS123" is 0');
+      objnotexists (
+         msg_in          =>   'OBJNOTEXISTS Happy Path 4',
+         check_this_in   =>   'BOGUS123.BOGUS123');
+   end tc_object_not_exists;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
---====================================--
-procedure tc_boolean_to_status
-is
-   temp_boolean  boolean;
-begin
-   g_testcase := 'BOOLEAN_TO_STATUS';
-   eq
-      (msg_in            => 'Test for "TRUE" conversion'
-      ,check_this_in     => boolean_to_status(TRUE)
-      ,against_this_in   => C_PASS);
-   eq
-      (msg_in            => 'Test for "FALSE" conversion'
-      ,check_this_in     => boolean_to_status(FALSE)
-      ,against_this_in   => C_FAIL);
-   temp_boolean := NULL;
-   isnull
-      (msg_in            => 'Test for NULL'
-      ,check_this_in     => boolean_to_status(temp_boolean));
-end tc_boolean_to_status;
 
---====================================--
-procedure tc_process_assertion
-is
-   ASSERT_TEST_EXCEPTION  exception;
-   PRAGMA EXCEPTION_INIT(ASSERT_TEST_EXCEPTION, -20003);
-begin
-   g_testcase := 'PROCESS_ASSERTION';
-   g_raise_exception := TRUE;
-   g_rec.last_assert  := 'THIS';
-   g_rec.last_pass    := FALSE;
-   g_rec.last_details := 'Expected "PASS" and got "FAIL"';
-   g_rec.last_msg     := 'Process Assertion Forced Failure';
-   process_assertion;
-   g_raise_exception := FALSE;
-exception
-   when ASSERT_TEST_EXCEPTION then
-      eq
-         (msg_in          => 'Process Assertion Actual Test'
-         ,check_this_in   => replace(SQLERRM,CHR(10),' ')
-         ,against_this_in => replace('ORA-20003:    --  Test Case: PROCESS_ASSERTION  --
-#FAIL#Process Assertion Forced Failure. THIS - Expected "PASS" and got "FAIL"',CHR(10),' '));
+--==============================================================--
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure WTPLSQL_RUN
+   is
+   begin
       g_raise_exception := FALSE;
-end tc_process_assertion;
-
---====================================--
-procedure tc_setters_and_getters
-is
-   temp_rec          g_rec_type;
-   temp_testcase     VARCHAR2(4000);
-   temp_raise_excpt  BOOLEAN;
-begin
-   reset_globals;  -- Resets g_testcase
-   temp_rec         := g_rec;
-   temp_raise_excpt := g_raise_exception;
-   temp_testcase    := g_testcase;
-   g_testcase       := 'Setter and Getters';
-   -- Check G_REC values
-   isnull(
-      msg_in        => 'g_testcase is null',
-      check_this_in => temp_testcase);
-   eq(
-      msg_in          => 'g_raise_exception is FALSE',
-      check_this_in   => temp_raise_excpt,
-      against_this_in => FALSE);
-   isnull
-      (msg_in        => 'g_rec.last_pass is null'
-      ,check_this_in => temp_rec.last_pass);
-   isnull
-      (msg_in        => 'g_rec.last_assert is null'
-      ,check_this_in => temp_rec.last_assert);
-   isnull
-      (msg_in        => 'g_rec.last_msg is null'
-      ,check_this_in => temp_rec.last_msg);
-   isnull
-      (msg_in        => 'g_rec.last_details is null'
-      ,check_this_in => temp_rec.last_details);
-   -- Check NLS Values
-   set_NLS_DATE_FORMAT('DD-MON-YYYY');
-   eq
-      (msg_in          => 'Check get_NLS_DATE_FORMAT 1'
-      ,check_this_in   => get_NLS_DATE_FORMAT
-      ,against_this_in => 'DD-MON-YYYY');
-   set_NLS_DATE_FORMAT;
-   eq
-      (msg_in          => 'Check get_NLS_DATE_FORMAT 2'
-      ,check_this_in   => get_NLS_DATE_FORMAT
-      ,against_this_in => 'DD-MON-YYYY HH24:MI:SS');
-   set_NLS_TIMESTAMP_FORMAT('DD-MON-YYYY');
-   eq
-      (msg_in          => 'Check get_NLS_TIMESTAMP_FORMAT 2'
-      ,check_this_in   => get_NLS_TIMESTAMP_FORMAT
-      ,against_this_in => 'DD-MON-YYYY');
-   set_NLS_TIMESTAMP_FORMAT;
-   eq
-      (msg_in          => 'Check get_NLS_TIMESTAMP_FORMAT 2'
-      ,check_this_in   => get_NLS_TIMESTAMP_FORMAT
-      ,against_this_in => 'DD-MON-YYYY HH24:MI:SS.FF6');
-   set_NLS_TIMESTAMP_TZ_FORMAT('DD-MON-YYYY');
-   eq
-      (msg_in          => 'Check get_NLS_TIMESTAMP_TZ_FORMAT 2'
-      ,check_this_in   => get_NLS_TIMESTAMP_TZ_FORMAT
-      ,against_this_in => 'DD-MON-YYYY');
-   set_NLS_TIMESTAMP_TZ_FORMAT;
-   eq
-      (msg_in          => 'Check get_NLS_TIMESTAMP_TZ_FORMAT 2'
-      ,check_this_in   => get_NLS_TIMESTAMP_TZ_FORMAT
-      ,against_this_in => 'DD-MON-YYYY HH24:MI:SS.FF6 +TZH:TZM');
-end tc_setters_and_getters;
-
---====================================--
-procedure tc_this
-is
-   temp_rec   g_rec_type;
-begin
-   g_testcase := 'This Tests';
-   --
-   this (
-      msg_in         => 'This Tests Happy Path',
-      check_this_in  => TRUE);
-   temp_rec := g_rec;
-   eq (
-      msg_in          => 'This Tests Happy Path g_rec.last_pass',
-      check_this_in   => temp_rec.last_pass,
-      against_this_in => TRUE);
-   eq (
-      msg_in          => 'This Tests Happy Path g_rec.last_assert',
-      check_this_in   => temp_rec.last_assert,
-      against_this_in => 'THIS');
-   eq (
-      msg_in          => 'This Tests Happy Path g_rec.last_msg',
-      check_this_in   => temp_rec.last_msg,
-      against_this_in => 'This Tests Happy Path');
-   eq (
-      msg_in          => 'This Tests Happy Path g_rec.last_details',
-      check_this_in   => temp_rec.last_details,
-      against_this_in => 'Expected "PASS" and got "PASS"');
-   --
-   wtplsql_skip_save := TRUE;
-   this (
-      msg_in         => 'Not Used',
-      check_this_in  => FALSE);
-   temp_rec := g_rec;
-   wtplsql_skip_save := FALSE;
-   eq (
-      msg_in          => 'This Tests Sad Path 1',
-      check_this_in   => temp_rec.last_pass,
-      against_this_in => FALSE);
-   --
-   wtplsql_skip_save := TRUE;
-   this (
-      msg_in         => 'Not Used',
-      check_this_in  => NULL);
-   temp_rec := g_rec;
-   wtplsql_skip_save := FALSE;
-   eq (
-      msg_in          => 'This Tests Sad Path 2',
-      check_this_in   => temp_rec.last_pass,
-      against_this_in => FALSE);
-   --
-end tc_this;
-
---====================================--
-procedure tc_eqs
-is
-begin
-   null;
-end tc_eqs;
-
---====================================--
-procedure tc_nulls
-is
-begin
-   null;
-end tc_nulls;
-
---====================================--
-
-procedure tc_raises
-is
-   temp_rec   g_rec_type;
-begin
-   g_testcase := 'Raises Test';
-   raises (
-      msg_in         => 'Raises Tests Happy Path',
-      check_call_in  => 'wt_assert.bogus',
-      against_exc_in => 'PLS-00302: component ''BOGUS'' must be declared');
-   temp_rec := g_rec;
-   eq (
-      msg_in          => 'Raises Tests Happy Path g_rec.last_pass',
-      check_this_in   => temp_rec.last_pass,
-      against_this_in => TRUE);
-   eq (
-      msg_in          => 'Raises Tests Happy Path g_rec.last_assert',
-      check_this_in   => temp_rec.last_assert,
-      against_this_in => 'RAISES');
-   eq (
-      msg_in          => 'Raises Tests Happy Path g_rec.last_msg',
-      check_this_in   => temp_rec.last_msg,
-      against_this_in => 'Raises Tests Happy Path');
-   eq (
-      msg_in          => 'Raises Tests Happy Path g_rec.last_details',
-      check_this_in   => substr(temp_rec.last_details,1,110),
-      against_this_in => 'Expected exception "%PLS-00302: component ''BOGUS'' must be declared%". Actual exception raised was "ORA-06550: ');
-end tc_raises;
-
---====================================--
-procedure tc_query_test
-is
-   temp_rec   g_rec_type;
-begin
-   g_testcase := 'Query Tests';
-   -- Testing HAPPY PATH only
-   eqqueryvalue (
-      msg_in             =>   'Query Tests Happy Path 1',
-      check_query_in     =>   'select dummy from DUAL',
-      against_value_in   =>   'X',
-      null_ok_in         =>   false);
-   temp_rec := g_rec;
-   eq (
-      msg_in          => 'Query Tests Happy Path 1 g_rec.last_pass',
-      check_this_in   => temp_rec.last_pass,
-      against_this_in => TRUE);
-   eq (
-      msg_in          => 'Query Tests Happy Path 1 g_rec.last_assert',
-      check_this_in   => temp_rec.last_assert,
-      against_this_in => 'EQQUERYVALUE');
-   eq (
-      msg_in          => 'Query Tests Happy Path 1 g_rec.last_msg',
-      check_this_in   => temp_rec.last_msg,
-      against_this_in => 'Query Tests Happy Path 1');
-   eq (
-      msg_in          => 'Query Tests Happy Path 1 g_rec.last_details',
-      check_this_in   => temp_rec.last_details,
-      against_this_in => 'Expected "X" and got "X" for Query: select dummy from DUAL');
-   --
-   eqquery (
-      msg_in             =>   'Query Tests Happy Path 2',
-      check_query_in     =>   'select * from USER_TABLES',
-      against_query_in   =>   'select * from USER_TABLES');
-   temp_rec := g_rec;
-   eq (
-      msg_in          => 'Query Tests Happy Path 2 g_rec.last_pass',
-      check_this_in   => temp_rec.last_pass,
-      against_this_in => TRUE);
-   eq (
-      msg_in          => 'Query Tests Happy Path 2 g_rec.last_assert',
-      check_this_in   => temp_rec.last_assert,
-      against_this_in => 'EQQUERY');
-   eq (
-      msg_in          => 'Query Tests Happy Path 2 g_rec.last_msg',
-      check_this_in   => temp_rec.last_msg,
-      against_this_in => 'Query Tests Happy Path 2');
-   eq (
-      msg_in          => 'Query Tests Happy Path 2 g_rec.last_details',
-      check_this_in   => substr(temp_rec.last_details,1,18),
-      against_this_in => 'Comparison Query: ');
-   --
-   eqtable (
-      msg_in             =>   'Query Tests Happy Path 3',
-      check_this_in      =>   'USER_TABLES',
-      against_this_in    =>   'USER_TABLES',
-      check_where_in     =>   '',
-      against_where_in   =>   '');
-   temp_rec := g_rec;
-   eq (
-      msg_in          => 'Query Tests Happy Path 3 g_rec.last_pass',
-      check_this_in   => temp_rec.last_pass,
-      against_this_in => TRUE);
-   eq (
-      msg_in          => 'Query Tests Happy Path 3 g_rec.last_assert',
-      check_this_in   => temp_rec.last_assert,
-      against_this_in => 'EQTABLE');
-   eq (
-      msg_in          => 'Query Tests Happy Path 3 g_rec.last_msg',
-      check_this_in   => temp_rec.last_msg,
-      against_this_in => 'Query Tests Happy Path 3');
-   eq (
-      msg_in          => 'Query Tests Happy Path 3 g_rec.last_details',
-      check_this_in   => substr(temp_rec.last_details,1,18),
-      against_this_in => 'Comparison Query: ');
-   --
-   eqtable (
-      msg_in             =>   'Query Tests Happy Path 4',
-      check_this_in      =>   'ALL_TABLES',
-      against_this_in    =>   'ALL_TABLES',
-      check_where_in     =>   'owner = ''' || USER || '''',
-      against_where_in   =>   'owner = ''' || USER || '''');
-   --
-   eqtabcount (
-      msg_in             =>   'Query Tests Happy Path 5',
-      check_this_in      =>   'USER_TABLES',
-      against_this_in    =>   'ALL_TABLES',
-      check_where_in     =>   '',
-      against_where_in   =>   'owner = ''' || USER || '''');
-   temp_rec := g_rec;
-   eq (
-      msg_in          => 'Query Tests Happy Path 5 g_rec.last_pass',
-      check_this_in   => temp_rec.last_pass,
-      against_this_in => TRUE);
-   eq (
-      msg_in          => 'Query Tests Happy Path 5 g_rec.last_assert',
-      check_this_in   => temp_rec.last_assert,
-      against_this_in => 'EQTABCOUNT');
-   eq (
-      msg_in          => 'Query Tests Happy Path 5 g_rec.last_msg',
-      check_this_in   => temp_rec.last_msg,
-      against_this_in => 'Query Tests Happy Path 5');
-   eq (
-      msg_in          => 'Query Tests Happy Path 5 g_rec.last_details',
-      check_this_in   => temp_rec.last_details,
-      against_this_in => 'Expected 7 rows from "ALL_TABLES"' ||
-                         ' and got 7 rows from "USER_TABLES"');
-   --
-   eqtabcount (
-      msg_in             =>   'Query Tests Happy Path 5',
-      check_this_in      =>   'ALL_TABLES',
-      against_this_in    =>   'USER_TABLES',
-      check_where_in     =>   'owner = ''' || USER || '''',
-      against_where_in   =>   '');
-   --
-   compare_queries (
-      check_query_in     => 'select bogus123 from bogus456',
-      against_query_in   => 'select bogus987 from bogus654');
-   temp_rec := g_rec;
-   eq (
-      msg_in           => 'Bad Query Test 1',
-      check_this_in    => temp_rec.last_pass,
-      against_this_in  => FALSE);
-   eq(
-      msg_in          => 'Bad Query Test 2',
-      check_this_in   => instr(temp_rec.last_details
-                              ,'ORA-06550: line 2, column 60:' || CHR(10) ||
-                               'PL/SQL: ORA-00942: table or view does not exist'),
-      against_this_in => 1);
-   compare_queries (
-      check_query_in     => 'select table_name from user_tables',
-      against_query_in   => 'select tablespace_name from user_tables');
-   temp_rec := g_rec;
-   eq (
-      msg_in           => 'Bad Query Test 3',
-      check_this_in    => temp_rec.last_pass,
-      against_this_in  => FALSE);
-   eq(
-      msg_in          => 'Bad Query Test 2',
-      check_this_in   => instr(temp_rec.last_details
-                              ,'Comparison Query: with check_query as' ||
-                               ' (select table_name from user_tables'),
-      against_this_in => 1);
-end tc_query_test;
-
---====================================--
-procedure tc_object_exists
-is
-   temp_rec   g_rec_type;
-begin
-   g_testcase := 'Object Exists';
-   -- Testing HAPPY PATH only
-   objexists (
-      msg_in        =>   'Object Exists Happy Path 1',
-      obj_owner_in  =>   'SYS',
-      obj_name_in   =>   'DUAL');
-   temp_rec := g_rec;
-   eq (
-      msg_in          => 'Object Exists Happy Path 1 g_rec.last_pass',
-      check_this_in   => temp_rec.last_pass,
-      against_this_in => TRUE);
-   eq (
-      msg_in          => 'Object Exists Happy Path 1 g_rec.last_assert',
-      check_this_in   => temp_rec.last_assert,
-      against_this_in => 'OBJEXISTS');
-   eq (
-      msg_in          => 'Object Exists Happy Path 1 g_rec.last_msg',
-      check_this_in   => temp_rec.last_msg,
-      against_this_in => 'Object Exists Happy Path 1');
-   eq (
-      msg_in          => 'Object Exists Happy Path 1 g_rec.last_details',
-      check_this_in   => temp_rec.last_details,
-      against_this_in => 'Number of objects found for "SYS.DUAL" is 1');
-   -- This is an overload of the above OBJEXISTS
-   objexists (
-      msg_in          =>  'Object Exists Happy Path 2',
-      check_this_in   =>  'SYS.DUAL');
-   --
-   objnotexists (
-      msg_in        =>   'Object Not Exists Happy Path 3',
-      obj_owner_in  =>   'BOGUS123',
-      obj_name_in   =>   'BOGUS123');
-   temp_rec := g_rec;
-   eq (
-      msg_in          => 'Object Not Exists Happy Path 3 g_rec.last_pass',
-      check_this_in   => temp_rec.last_pass,
-      against_this_in => TRUE);
-   eq (
-      msg_in          => 'Object Not Exists Happy Path 3 g_rec.last_assert',
-      check_this_in   => temp_rec.last_assert,
-      against_this_in => 'OBJNOTEXISTS');
-   eq (
-      msg_in          => 'Object Not Exists Happy Path 3 g_rec.last_msg',
-      check_this_in   => temp_rec.last_msg,
-      against_this_in => 'Object Not Exists Happy Path 3');
-   eq (
-      msg_in          => 'Object Not Exists Happy Path 3 g_rec.last_details',
-      check_this_in   => temp_rec.last_details,
-      against_this_in => 'Number of objects found for "BOGUS123.BOGUS123" is 0');
-   -- This is an overload of the above OBJEXISTS
-   objnotexists (
-      msg_in          =>   'Object Not Exists Happy Path 4',
-      check_this_in   =>   'BOGUS123.BOGUS123');
-end tc_object_exists;
-
---====================================--
-procedure WTPLSQL_RUN
-is
-begin
-   g_raise_exception := FALSE;
-   -- This runs like a self-contained "in-circuit" test.
-   tc_boolean_to_status;
-   tc_process_assertion;
-   tc_setters_and_getters;
-   tc_this;
-   tc_eqs;
-   tc_nulls;
-   tc_raises;
-   tc_query_test;
-   tc_object_exists;
-end WTPLSQL_RUN;
-
-$END
+      tc_boolean_to_status;
+      tc_process_assertion;
+      tc_compare_queries;
+      tc_nls_settings;
+      tc_reset_globals;
+      tc_this;
+      tc_isnotnull;
+      tc_isnull;
+      tc_raises;
+      tc_eqqueryvalue;
+      tc_eqquery;
+      tc_eqtable;
+      tc_eqtabcount;
+      tc_object_exists;
+      tc_object_not_exists;
+   end WTPLSQL_RUN;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--
 
 
