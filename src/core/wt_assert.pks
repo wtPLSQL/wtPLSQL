@@ -40,21 +40,21 @@ is
    function get_NLS_TIMESTAMP_TZ_FORMAT
        return varchar2;
    procedure set_NLS_TIMESTAMP_TZ_FORMAT
-      (in_format in varchar2 default 'DD-MON-YYYY HH24:MI:SS.FF6 +TZH:TZM');
+      (in_format in varchar2 default 'DD-MON-YYYY HH24:MI:SS.FF6 TZH:TZM');
 
    ------------------------
    --   Datatypes Supported
    --     Oracle Data Type Families
    --   https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/predefined.htm#LNPLS2047
    --
-   -- BFILE*
-   -- BLOB*
+   -- BFILE (Not Implemented)
+   -- BLOB (Not Implemented)
    -- BOOLEAN
    -- VARCHAR2 - Includes ROWID, LONG, RAW, and NVARCHAR2
-   -- CLOB* - Includes NCLOB
+   -- CLOB - Includes NCLOB
    -- DATE - Includes TIMESTAMP and INTERVAL
    -- NUMBER - Includes PLS_INTEGER
-   -- XMLTYPE*
+   -- XMLTYPE
    --
    --     Implicit Data Conversion
    --   Note: VARCHAR2, DATE, and NUMBER are combined into VARCHAR2
@@ -66,6 +66,7 @@ is
       check_this_in   in   boolean,
       null_ok_in      in   boolean := false);
 
+   --
    procedure eq (
       msg_in            in   varchar2,
       check_this_in     in   varchar2,
@@ -78,6 +79,18 @@ is
       against_this_in   in   boolean,
       null_ok_in        in   boolean := false);
 
+   procedure eq (
+      msg_in            in   varchar2,
+      check_this_in     in   CLOB,
+      against_this_in   in   CLOB,
+      null_ok_in        in   boolean := false);
+
+   procedure eq (
+      msg_in            in   varchar2,
+      check_this_in     in   XMLTYPE,
+      against_this_in   in   XMLTYPE);
+
+   --
    procedure isnotnull (
       msg_in          in   varchar2,
       check_this_in   in   varchar2);
@@ -86,6 +99,11 @@ is
       msg_in          in   varchar2,
       check_this_in   in   boolean);
 
+   procedure isnotnull (
+      msg_in          in   varchar2,
+      check_this_in   in   CLOB);
+
+   --
    procedure isnull (
       msg_in          in   varchar2,
       check_this_in   in   varchar2);
@@ -94,22 +112,41 @@ is
       msg_in          in   varchar2,
       check_this_in   in   boolean);
 
+   procedure isnull (
+      msg_in          in   varchar2,
+      check_this_in   in   CLOB);
+
+   --
    procedure raises (
       msg_in                varchar2,
       check_call_in    in   varchar2,
       against_exc_in   in   varchar2);
 
+   --
    procedure eqqueryvalue (
       msg_in             in   varchar2,
       check_query_in     in   varchar2,
       against_value_in   in   varchar2,
       null_ok_in         in   boolean := false);
 
+   procedure eqqueryvalue (
+      msg_in             in   varchar2,
+      check_query_in     in   varchar2,
+      against_value_in   in   CLOB,
+      null_ok_in         in   boolean := false);
+
+   procedure eqqueryvalue (
+      msg_in             in   varchar2,
+      check_query_in     in   varchar2,
+      against_value_in   in   XMLTYPE);
+
+   --
    procedure eqquery (
       msg_in             in   varchar2,
       check_query_in     in   varchar2,
       against_query_in   in   varchar2);
 
+   --
    procedure eqtable (
       msg_in             in   varchar2,
       check_this_in      in   varchar2,
@@ -117,6 +154,7 @@ is
       check_where_in     in   varchar2 := null,
       against_where_in   in   varchar2 := null);
 
+   --
    procedure eqtabcount (
       msg_in             in   varchar2,
       check_this_in      in   varchar2,
@@ -124,6 +162,7 @@ is
       check_where_in     in   varchar2 := null,
       against_where_in   in   varchar2 := null);
 
+   --
    procedure objexists (
       msg_in        in   varchar2,
       obj_owner_in  in   varchar2,
@@ -133,6 +172,7 @@ is
       msg_in          in   varchar2,
       check_this_in   in   varchar2);
 
+   --
    procedure objnotexists (
       msg_in        in   varchar2,
       obj_owner_in  in   varchar2,
