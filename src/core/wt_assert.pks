@@ -47,17 +47,15 @@ is
    --     Oracle Data Type Families
    --   https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/predefined.htm#LNPLS2047
    --
-   -- BFILE (Not Implemented)
-   -- BLOB (Not Implemented)
-   -- BOOLEAN
    -- VARCHAR2 - Includes ROWID, LONG, RAW, and NVARCHAR2
-   -- CLOB - Includes NCLOB
-   -- DATE - Includes TIMESTAMP and INTERVAL
-   -- NUMBER - Includes PLS_INTEGER
+   -- DATE* - Includes TIMESTAMP and INTERVAL
+   -- NUMBER* - Includes PLS_INTEGER
+   -- BOOLEAN
    -- XMLTYPE
+   -- CLOB - Includes NCLOB
+   -- BLOB
    --
-   --     Implicit Data Conversion
-   --   Note: VARCHAR2, DATE, and NUMBER are combined into VARCHAR2
+   -- *VARCHAR2 includes DATE and NUMBER using Implicit Data Conversions:
    --   https://docs.oracle.com/cd/E11882_01/server.112/e41084/sql_elements002.htm#i163326
    --
 
@@ -81,14 +79,20 @@ is
 
    procedure eq (
       msg_in            in   varchar2,
+      check_this_in     in   XMLTYPE,
+      against_this_in   in   XMLTYPE);
+
+   procedure eq (
+      msg_in            in   varchar2,
       check_this_in     in   CLOB,
       against_this_in   in   CLOB,
       null_ok_in        in   boolean := false);
 
    procedure eq (
       msg_in            in   varchar2,
-      check_this_in     in   XMLTYPE,
-      against_this_in   in   XMLTYPE);
+      check_this_in     in   BLOB,
+      against_this_in   in   BLOB,
+      null_ok_in        in   boolean := false);
 
    --
    procedure isnotnull (
@@ -103,6 +107,10 @@ is
       msg_in          in   varchar2,
       check_this_in   in   CLOB);
 
+   procedure isnotnull (
+      msg_in          in   varchar2,
+      check_this_in   in   BLOB);
+
    --
    procedure isnull (
       msg_in          in   varchar2,
@@ -115,6 +123,10 @@ is
    procedure isnull (
       msg_in          in   varchar2,
       check_this_in   in   CLOB);
+
+   procedure isnull (
+      msg_in          in   varchar2,
+      check_this_in   in   BLOB);
 
    --
    procedure raises (
@@ -132,13 +144,19 @@ is
    procedure eqqueryvalue (
       msg_in             in   varchar2,
       check_query_in     in   varchar2,
+      against_value_in   in   XMLTYPE);
+
+   procedure eqqueryvalue (
+      msg_in             in   varchar2,
+      check_query_in     in   varchar2,
       against_value_in   in   CLOB,
       null_ok_in         in   boolean := false);
 
    procedure eqqueryvalue (
       msg_in             in   varchar2,
       check_query_in     in   varchar2,
-      against_value_in   in   XMLTYPE);
+      against_value_in   in   BLOB,
+      null_ok_in         in   boolean := false);
 
    --
    procedure eqquery (

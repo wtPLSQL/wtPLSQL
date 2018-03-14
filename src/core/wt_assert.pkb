@@ -8,35 +8,40 @@ create or replace package body wt_assert is
       ,last_details     wt_results.details%TYPE);
    g_rec  g_rec_type;
 
-   $IF $$WTPLSQL_SELFTEST
+   $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
    $THEN
-      temp_rowid1 CONSTANT rowid                    := chartorowid('AAAFd1AAFAAAABSAA/');
-      temp_rowid2 CONSTANT rowid                    := chartorowid('AAAFd1AAFAAAABSAB/');
-      temp_long1  CONSTANT long                     := hextoraw('ABCD');
-      temp_long2  CONSTANT long                     := hextoraw('EF01');
-      temp_raw1   CONSTANT raw(2)                   := hextoraw('2345');
-      temp_raw2   CONSTANT raw(2)                   := hextoraw('6789');
-      temp_nc1    CONSTANT NVARCHAR2(12)            := 'NCHAR1';
-      temp_nc2    CONSTANT NVARCHAR2(12)            := 'NCHAR2';
-      temp_bool   CONSTANT boolean                  := NULL;
-      temp_clob1  CONSTANT CLOB                     := 'This is a clob.';
-      temp_clob2  CONSTANT CLOB                     := 'This is another clob.';
-      temp_xml1   CONSTANT XMLTYPE                  := xmltype('<?xml version="1.0" encoding="UTF-8"?><note>1</note>');
-      temp_xml2   CONSTANT XMLTYPE                  := xmltype('<?xml version="1.0" encoding="UTF-8"?><note>2</note>');
-      temp_pint1  CONSTANT pls_integer              := 2;
-      temp_pint2  CONSTANT pls_integer              := 3;
-      temp_date   CONSTANT date                     := sysdate;
-      temp_tstmp  CONSTANT timestamp                := systimestamp;
+      temp_rowid1 CONSTANT rowid          := chartorowid('AAAFd1AAFAAAABSAA/');
+      temp_rowid2 CONSTANT rowid          := chartorowid('AAAFd1AAFAAAABSAB/');
+      temp_long1  CONSTANT long           := hextoraw('0123456789ABCDEF0123456789ABCDEF');
+      temp_long2  CONSTANT long           := hextoraw('FEDCBA9876543210FEDCBA9876543210');
+      temp_raw1   CONSTANT raw(2)         := hextoraw('2345');
+      temp_raw2   CONSTANT raw(2)         := hextoraw('6789');
+      temp_blob1           BLOB;
+      temp_blob2  CONSTANT BLOB           := hextoraw('FEDCBA9876543210FEDCBA9876543210');
+      temp_nc1    CONSTANT NVARCHAR2(12)  := 'NCHAR1';
+      temp_nc2    CONSTANT NVARCHAR2(12)  := 'NCHAR2';
+      temp_bool   CONSTANT boolean        := NULL;
+      temp_clob1           CLOB;
+      temp_clob2  CONSTANT CLOB           := 'This is another clob.';
+      temp_nclob1          NCLOB;
+      temp_nclob2 CONSTANT NCLOB          := 'This is another clob.';
+      temp_xml1            XMLTYPE;
+      temp_xml2   CONSTANT XMLTYPE        := xmltype('<?xml version="1.0" encoding="UTF-8"?><note>2</note>');
+      temp_pint1  CONSTANT pls_integer    := 2;
+      temp_pint2  CONSTANT pls_integer    := 3;
+      temp_date   CONSTANT date           := sysdate;
+      temp_tstmp  CONSTANT timestamp      := systimestamp;
+      temp_tstlzn CONSTANT timestamp with local time zone := systimestamp;
       temp_tstzn  CONSTANT timestamp with time zone := systimestamp;
-      temp_intds1 CONSTANT interval day to second   := (systimestamp - (sysdate - 1/24)) DAY TO SECOND;
-      temp_intds2 CONSTANT interval day to second   := (systimestamp - (sysdate - 2/24)) DAY TO SECOND;
-      temp_intym1 CONSTANT interval year to month   := (systimestamp - (sysdate - 720)) YEAR TO MONTH;
-      temp_intym2 CONSTANT interval year to month   := (systimestamp - (sysdate - 760)) YEAR TO MONTH;
+      temp_intds1 CONSTANT interval day to second   := interval '+01 01:01:01.001' day to second;
+      temp_intds2 CONSTANT interval day to second   := interval '+02 02:02:02.002' day to second;
+      temp_intym1 CONSTANT interval year to month   := interval '+01-01' year to month;
+      temp_intym2 CONSTANT interval year to month   := interval '+02-02' year to month;
       temp_rec          g_rec_type;
       temp_raise_excpt  BOOLEAN;
       temp_testcase     VARCHAR2(4000);
       wtplsql_skip_save boolean := FALSE;
-   $END
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 ----------------------
 --  Private Procedures
@@ -83,10 +88,10 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 procedure process_assertion
 is
 begin
-   $IF $$WTPLSQL_SELFTEST $THEN
+   $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
       -- This will skip over the wt_result.save call below during some self-tests
       if not wtplsql_skip_save then
-   $END
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    wt_result.save
       (in_assertion      => g_rec.last_assert
       ,in_status         => case g_rec.last_pass
@@ -96,10 +101,10 @@ begin
       ,in_details        => g_rec.last_details
       ,in_testcase       => g_testcase
       ,in_message        => g_rec.last_msg);
-   $IF $$WTPLSQL_SELFTEST $THEN
+   $IF $$WTPLSQL_SELFTEST $THEN   ------%WTPLSQL_begin_ignore_lines%------
       -- This will skip over the wt_result.save call above during some self-tests
       end if;
-   $END
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    if g_raise_exception and not g_rec.last_pass
    then
       raise_application_error(-20003, wt_text_report.format_test_result
@@ -267,7 +272,7 @@ begin
    return g_rec.last_details;
 end last_details;
 
-$IF $$WTPLSQL_SELFTEST  ----------------------------------------
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure tc_last_values
    is
@@ -534,8 +539,8 @@ begin
                               and against_this_in is null
                               and null_ok_in              )
                          );
-   g_rec.last_details := 'Expected "' || substr(against_this_in,1,4000) ||
-                        '" and got "' || substr(check_this_in  ,1,4000) ||
+   g_rec.last_details := 'Expected "' || substr(against_this_in,1,1000) ||
+                        '" and got "' || substr(check_this_in  ,1,1000) ||
                         '"';
    process_assertion;
    wt_profiler.resume;
@@ -555,6 +560,25 @@ begin
       ,null_ok_in       => null_ok_in);
 end eq;
 
+-- EQ: XMLTYPE
+procedure eq (
+   msg_in            in   varchar2,
+   check_this_in     in   XMLTYPE,
+   against_this_in   in   XMLTYPE)
+is
+begin
+   wt_profiler.pause;
+   g_rec.last_assert  := 'EQ';
+   g_rec.last_msg     := msg_in;
+   g_rec.last_pass    := (xmltype.getclobval(check_this_in)  =
+                          xmltype.getclobval(against_this_in)  );
+   g_rec.last_details := 'Expected "' || substr(xmltype.getclobval(against_this_in),1,1000) ||
+                        '" and got "' || substr(xmltype.getclobval(check_this_in)  ,1,1000) ||
+                        '"';
+   process_assertion;
+   wt_profiler.resume;
+end eq;
+
 -- EQ: CLOB
 procedure eq (
    msg_in            in   varchar2,
@@ -571,28 +595,32 @@ begin
                               and against_this_in is null
                               and null_ok_in              )
                          );
-   g_rec.last_details := 'Expected "' || substr(against_this_in,1,4000) ||
-                        '" and got "' || substr(check_this_in  ,1,4000) ||
+   g_rec.last_details := 'Expected "' || substr(against_this_in,1,1000) ||
+                        '" and got "' || substr(check_this_in  ,1,1000) ||
                         '"';
    process_assertion;
    wt_profiler.resume;
 end eq;
 
--- EQ: XMLTYPE
+-- EQ: BLOB
 procedure eq (
    msg_in            in   varchar2,
-   check_this_in     in   XMLTYPE,
-   against_this_in   in   XMLTYPE)
+   check_this_in     in   BLOB,
+   against_this_in   in   BLOB,
+   null_ok_in        in   boolean := false)
 is
+   compare_results  number;
 begin
    wt_profiler.pause;
    g_rec.last_assert  := 'EQ';
    g_rec.last_msg     := msg_in;
-   g_rec.last_pass    := (xmltype.getclobval(check_this_in)  =
-                          xmltype.getclobval(against_this_in)  );
-   g_rec.last_details := 'Expected "' || substr(xmltype.getclobval(against_this_in),1,4000) ||
-                        '" and got "' || substr(xmltype.getclobval(check_this_in)  ,1,4000) ||
-                        '"';
+   compare_results    := DBMS_LOB.COMPARE(check_this_in, against_this_in);
+   g_rec.last_pass    := (    (compare_results = 0)
+                           or (    check_this_in is null
+                              and against_this_in is null
+                              and null_ok_in              )
+                         );
+   g_rec.last_details := 'BLOBs did not match, compare_results: ' || compare_results;
    process_assertion;
    wt_profiler.resume;
 end eq;
@@ -956,23 +984,6 @@ $THEN
          msg_in          => 'EQ DATE Happy Path 1',
          check_this_in   => temp_date,
          against_this_in => temp_date);
-      eq (
-         msg_in          => 'EQ TIMSETAMP Happy Path 1',
-         check_this_in   => temp_tstmp,
-         against_this_in => temp_tstmp);
-      eq (
-         msg_in          => 'EQ TIMSETAMP WITH TIME ZONE Happy Path 1',
-         check_this_in   => temp_tstzn,
-         against_this_in => temp_tstzn);
-      eq (
-         msg_in          => 'EQ INTERVAL DAY TO SECOND Happy Path 1',
-         check_this_in   => temp_intds1,
-         against_this_in => temp_intds1);
-      eq (
-         msg_in          => 'EQ INTERVAL YEAR TO MONTH Happy Path 1',
-         check_this_in   => temp_intym1,
-         against_this_in => temp_intym1);
-      --
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -990,6 +1001,10 @@ $THEN
          msg_in          => 'EQ DATE Sad Path 1',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --
+      eq (
+         msg_in          => 'EQ TIMSETAMP Happy Path 1',
+         check_this_in   => temp_tstmp,
+         against_this_in => temp_tstmp);
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -1007,6 +1022,31 @@ $THEN
          msg_in          => 'EQ TIMESTAMP Sad Path 1',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --
+      eq (
+         msg_in          => 'EQ TIMSETAMP WITH LOCAL TIME ZONE Happy Path 1',
+         check_this_in   => temp_tstzn,
+         against_this_in => temp_tstzn);
+      wtplsql_skip_save := TRUE;
+      eq (
+         msg_in          => 'Not Used',
+         check_this_in   => temp_tstlzn,
+         against_this_in => temp_tstlzn + 1/24);
+      wtplsql_skip_save := FALSE;
+      temp_rec := g_rec;
+      wt_assert.isnotnull (
+         msg_in          => 'EQ TIMESTAMP WITH LOCAL TIME ZONE Sad Path 1 check_this_in value',
+         check_this_in   => temp_tstlzn);
+      wt_assert.isnotnull (
+         msg_in          => 'EQ TIMESTAMP WITH LOCAL TIME ZONE Sad Path 1 against_this_in value',
+         check_this_in   => temp_tstlzn + 1/24);
+      wt_assert.this (
+         msg_in          => 'EQ TIMESTAMP WITH LOCAL TIME ZONE Sad Path 1',
+         check_this_in   => (temp_rec.last_pass = FALSE));
+      --
+      eq (
+         msg_in          => 'EQ TIMSETAMP WITH TIME ZONE Happy Path 1',
+         check_this_in   => temp_tstzn,
+         against_this_in => temp_tstzn);
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -1024,6 +1064,10 @@ $THEN
          msg_in          => 'EQ TIMESTAMP WITH TIME ZONE Sad Path 1',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --
+      eq (
+         msg_in          => 'EQ INTERVAL DAY TO SECOND Happy Path 1',
+         check_this_in   => temp_intds1,
+         against_this_in => temp_intds1);
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -1041,6 +1085,10 @@ $THEN
          msg_in          => 'EQ INTERVAL DAY TO SECOND Sad Path 1',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --
+      eq (
+         msg_in          => 'EQ INTERVAL YEAR TO MONTH Happy Path 1',
+         check_this_in   => temp_intym1,
+         against_this_in => temp_intym1);
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -1056,6 +1104,56 @@ $THEN
          check_this_in   => temp_intym2);
       wt_assert.this (
          msg_in          => 'EQ INTERVAL YEAR TO MONTH Sad Path 1',
+         check_this_in   => (temp_rec.last_pass = FALSE));
+      --
+      -- EQ: XMLTYPE overload
+      --
+      eq (
+         msg_in          => 'EQ XMLTYPE Happy Path 1',
+         check_this_in   => temp_xml1,
+         against_this_in => temp_xml1);
+      temp_rec := g_rec;
+      wt_assert.isnotnull (
+         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_pass value',
+         check_this_in   => temp_rec.last_pass);
+      wt_assert.this (
+         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_pass',
+         check_this_in   => (temp_rec.last_pass = TRUE));
+      wt_assert.isnotnull (
+         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_assert value',
+         check_this_in   => temp_rec.last_assert);
+      wt_assert.this (
+         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_assert',
+         check_this_in   => (temp_rec.last_assert = 'EQ'));
+      wt_assert.isnotnull (
+         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_msg value',
+         check_this_in   => temp_rec.last_msg);
+      wt_assert.this (
+         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_msg',
+         check_this_in   => (temp_rec.last_msg = 'EQ XMLTYPE Happy Path 1'));
+      wt_assert.isnotnull (
+         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_details value',
+         check_this_in   => temp_rec.last_details);
+      wt_assert.this (
+         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_details',
+         check_this_in   => (temp_rec.last_details = 'Expected "<?xml version="1.0" encoding="UTF-8"?><note>1</note>"' ||
+                                                     ' and got "<?xml version="1.0" encoding="UTF-8"?><note>1</note>"'));
+      --
+      wtplsql_skip_save := TRUE;
+      eq (
+         msg_in          => 'Not Used',
+         check_this_in   => temp_xml1,
+         against_this_in => temp_xml2);
+      wtplsql_skip_save := FALSE;
+      temp_rec := g_rec;
+      wt_assert.isnotnull (
+         msg_in          => 'EQ XMLTYPE Sad Path 1 check_this_in value',
+         check_this_in   => xmltype.getclobval(temp_xml1));
+      wt_assert.isnotnull (
+         msg_in          => 'EQ XMLTYPE Sad Path 1 against_this_in value',
+         check_this_in   => xmltype.getclobval(temp_xml2));
+      wt_assert.this (
+         msg_in          => 'EQ XMLTYPE Sad Path 1',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --
       -- EQ: CLOB overload
@@ -1151,55 +1249,166 @@ $THEN
       wt_assert.this (
          msg_in          => 'EQ CLOB Sad Path 3',
          check_this_in   => (temp_rec.last_pass = FALSE));
-      --
-      -- EQ: XMLTYPE overload
-      --
+      -- NCLOB
       eq (
-         msg_in          => 'EQ XMLTYPE Happy Path 1',
-         check_this_in   => temp_xml1,
-         against_this_in => temp_xml1);
-      temp_rec := g_rec;
-      wt_assert.isnotnull (
-         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_pass value',
-         check_this_in   => temp_rec.last_pass);
-      wt_assert.this (
-         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_pass',
-         check_this_in   => (temp_rec.last_pass = TRUE));
-      wt_assert.isnotnull (
-         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_assert value',
-         check_this_in   => temp_rec.last_assert);
-      wt_assert.this (
-         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_assert',
-         check_this_in   => (temp_rec.last_assert = 'EQ'));
-      wt_assert.isnotnull (
-         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_msg value',
-         check_this_in   => temp_rec.last_msg);
-      wt_assert.this (
-         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_msg',
-         check_this_in   => (temp_rec.last_msg = 'EQ XMLTYPE Happy Path 1'));
-      wt_assert.isnotnull (
-         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_details value',
-         check_this_in   => temp_rec.last_details);
-      wt_assert.this (
-         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_details',
-         check_this_in   => (temp_rec.last_details = 'Expected "<?xml version="1.0" encoding="UTF-8"?><note>1</note>"' ||
-                                                     ' and got "<?xml version="1.0" encoding="UTF-8"?><note>1</note>"'));
+         msg_in          => 'EQ NCLOB Happy Path 2',
+         check_this_in   => temp_nclob1,
+         against_this_in => temp_nclob1);
+      eq (
+         msg_in          => 'EQ NCLOB Happy Path 2',
+         check_this_in   => temp_nclob1,
+         against_this_in => temp_nclob1,
+         null_ok_in      => TRUE);
+      eq (
+         msg_in          => 'EQ NCLOB Happy Path 3',
+         check_this_in   => cast (NULL as NCLOB),
+         against_this_in => cast (NULL as NCLOB),
+         null_ok_in      => TRUE);
       --
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
-         check_this_in   => temp_xml1,
-         against_this_in => temp_xml2);
+         check_this_in   => temp_nclob1,
+         against_this_in => temp_nclob2);
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ XMLTYPE Sad Path 1 check_this_in value',
-         check_this_in   => xmltype.getclobval(temp_xml1));
+         msg_in          => 'EQ NCLOB Sad Path 1 check_this_in value',
+         check_this_in   => temp_nclob1);
       wt_assert.isnotnull (
-         msg_in          => 'EQ XMLTYPE Sad Path 1 against_this_in value',
-         check_this_in   => xmltype.getclobval(temp_xml2));
+         msg_in          => 'EQ NCLOB Sad Path 1 against_this_in value',
+         check_this_in   => temp_nclob2);
       wt_assert.this (
-         msg_in          => 'EQ XMLTYPE Sad Path 1',
+         msg_in          => 'EQ NCLOB Sad Path 1',
+         check_this_in   => (temp_rec.last_pass = FALSE));
+      --
+      wtplsql_skip_save := TRUE;
+      eq (
+         msg_in          => 'Not Used',
+         check_this_in   => temp_nclob1,
+         against_this_in => cast (NULL as NCLOB));
+      wtplsql_skip_save := FALSE;
+      temp_rec := g_rec;
+      wt_assert.isnotnull (
+         msg_in          => 'EQ NCLOB Sad Path 2 check_this_in value',
+         check_this_in   => temp_nclob1);
+      wt_assert.isnull (
+         msg_in          => 'EQ NCLOB Sad Path 2 against_this_in value',
+         check_this_in   => cast (NULL as NCLOB));
+      wt_assert.this (
+         msg_in          => 'EQ NCLOB Sad Path 2',
+         check_this_in   => (temp_rec.last_pass = FALSE));
+      --
+      wtplsql_skip_save := TRUE;
+      eq (
+         msg_in          => 'Not Used',
+         check_this_in   => temp_nclob1,
+         against_this_in => cast (NULL as NCLOB),
+         null_ok_in      => TRUE);
+      wtplsql_skip_save := FALSE;
+      temp_rec := g_rec;
+      wt_assert.isnotnull (
+         msg_in          => 'EQ NCLOB Sad Path 3 check_this_in value',
+         check_this_in   => temp_nclob1);
+      wt_assert.isnull (
+         msg_in          => 'EQ NCLOB Sad Path 3 against_this_in value',
+         check_this_in   => cast (NULL as NCLOB));
+      wt_assert.this (
+         msg_in          => 'EQ NCLOB Sad Path 3',
+         check_this_in   => (temp_rec.last_pass = FALSE));
+      --
+      -- EQ: BLOB overload
+      --
+      eq (
+         msg_in          => 'EQ BLOB Happy Path 1',
+         check_this_in   => temp_blob1,
+         against_this_in => temp_blob1);
+      temp_rec := g_rec;
+      wt_assert.isnotnull (
+         msg_in          => 'EQ BLOB Happy Path 1 g_rec.last_pass value',
+         check_this_in   => temp_rec.last_pass);
+      wt_assert.this (
+         msg_in          => 'EQ BLOB Happy Path 1 g_rec.last_pass',
+         check_this_in   => (temp_rec.last_pass = TRUE));
+      wt_assert.isnotnull (
+         msg_in          => 'EQ BLOB Happy Path 1 g_rec.last_assert value',
+         check_this_in   => temp_rec.last_assert);
+      wt_assert.this (
+         msg_in          => 'EQ BLOB Happy Path 1 g_rec.last_assert',
+         check_this_in   => (temp_rec.last_assert = 'EQ'));
+      wt_assert.isnotnull (
+         msg_in          => 'EQ BLOB Happy Path 1 g_rec.last_msg value',
+         check_this_in   => temp_rec.last_msg);
+      wt_assert.this (
+         msg_in          => 'EQ BLOB Happy Path 1 g_rec.last_msg',
+         check_this_in   => (temp_rec.last_msg = 'EQ BLOB Happy Path 1'));
+      wt_assert.isnotnull (
+         msg_in          => 'EQ BLOB Happy Path 1 g_rec.last_details value',
+         check_this_in   => temp_rec.last_details);
+      wt_assert.this (
+         msg_in          => 'EQ BLOB Happy Path 1 g_rec.last_details',
+         check_this_in   => (temp_rec.last_details = 'Not sure what goes here'));
+      eq (
+         msg_in          => 'EQ BLOB Happy Path 2',
+         check_this_in   => temp_blob1,
+         against_this_in => temp_blob1,
+         null_ok_in      => TRUE);
+      eq (
+         msg_in          => 'EQ BLOB Happy Path 3',
+         check_this_in   => cast (NULL as BLOB),
+         against_this_in => cast (NULL as BLOB),
+         null_ok_in      => TRUE);
+      --
+      wtplsql_skip_save := TRUE;
+      eq (
+         msg_in          => 'Not Used',
+         check_this_in   => temp_blob1,
+         against_this_in => temp_blob2);
+      wtplsql_skip_save := FALSE;
+      temp_rec := g_rec;
+      wt_assert.isnotnull (
+         msg_in          => 'EQ BLOB Sad Path 1 check_this_in value',
+         check_this_in   => temp_blob1);
+      wt_assert.isnotnull (
+         msg_in          => 'EQ BLOB Sad Path 1 against_this_in value',
+         check_this_in   => temp_blob2);
+      wt_assert.this (
+         msg_in          => 'EQ BLOB Sad Path 1',
+         check_this_in   => (temp_rec.last_pass = FALSE));
+      --
+      wtplsql_skip_save := TRUE;
+      eq (
+         msg_in          => 'Not Used',
+         check_this_in   => temp_blob1,
+         against_this_in => cast (NULL as BLOB));
+      wtplsql_skip_save := FALSE;
+      temp_rec := g_rec;
+      wt_assert.isnotnull (
+         msg_in          => 'EQ BLOB Sad Path 2 check_this_in value',
+         check_this_in   => temp_blob1);
+      wt_assert.isnull (
+         msg_in          => 'EQ BLOB Sad Path 2 against_this_in value',
+         check_this_in   => cast (NULL as BLOB));
+      wt_assert.this (
+         msg_in          => 'EQ BLOB Sad Path 2',
+         check_this_in   => (temp_rec.last_pass = FALSE));
+      --
+      wtplsql_skip_save := TRUE;
+      eq (
+         msg_in          => 'Not Used',
+         check_this_in   => temp_blob1,
+         against_this_in => cast (NULL as BLOB),
+         null_ok_in      => TRUE);
+      wtplsql_skip_save := FALSE;
+      temp_rec := g_rec;
+      wt_assert.isnotnull (
+         msg_in          => 'EQ BLOB Sad Path 3 check_this_in value',
+         check_this_in   => temp_blob1);
+      wt_assert.isnull (
+         msg_in          => 'EQ BLOB Sad Path 3 against_this_in value',
+         check_this_in   => cast (NULL as BLOB));
+      wt_assert.this (
+         msg_in          => 'EQ BLOB Sad Path 3',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --
    end tc_eq;
@@ -1218,7 +1427,7 @@ begin
    g_rec.last_msg     := msg_in;
    g_rec.last_pass    := (check_this_in is not null);
    g_rec.last_details := 'Expected NOT NULL and got "' ||
-                          substr(check_this_in,1,4000) || '"';
+                          substr(check_this_in,1,2000) || '"';
    process_assertion;
    wt_profiler.resume;
 end isnotnull;
@@ -1244,7 +1453,22 @@ begin
    g_rec.last_msg     := msg_in;
    g_rec.last_pass    := (check_this_in is not null);
    g_rec.last_details := 'Expected NOT NULL and got "' ||
-                          substr(check_this_in,1,4000) || '"';
+                          substr(check_this_in,1,2000) || '"';
+   process_assertion;
+   wt_profiler.resume;
+end isnotnull;
+
+-- ISNOTNULL BLOB overload
+procedure isnotnull (
+   msg_in          in   varchar2,
+   check_this_in   in   BLOB)
+is
+begin
+   wt_profiler.pause;
+   g_rec.last_assert  := 'ISNOTNULL';
+   g_rec.last_msg     := msg_in;
+   g_rec.last_pass    := (check_this_in is not null);
+   g_rec.last_details := 'BLOB is NULL';
    process_assertion;
    wt_profiler.resume;
 end isnotnull;
@@ -1348,7 +1572,7 @@ begin
    g_rec.last_msg     := msg_in;
    g_rec.last_pass    := (check_this_in is null);
    g_rec.last_details := 'Expected NULL and got "' ||
-                      substr(check_this_in,1,4000) || '"';
+                      substr(check_this_in,1,2000) || '"';
    process_assertion;
    wt_profiler.resume;
 end isnull;
@@ -1374,7 +1598,22 @@ begin
    g_rec.last_msg     := msg_in;
    g_rec.last_pass    := (check_this_in is null);
    g_rec.last_details := 'Expected NULL and got "' ||
-                      substr(check_this_in,1,4000) || '"';
+                      substr(check_this_in,1,2000) || '"';
+   process_assertion;
+   wt_profiler.resume;
+end isnull;
+
+-- ISNULL BLOB overload
+procedure isnull (
+   msg_in          in   varchar2,
+   check_this_in   in   BLOB)
+is
+begin
+   wt_profiler.pause;
+   g_rec.last_assert  := 'ISNULL';
+   g_rec.last_msg     := msg_in;
+   g_rec.last_pass    := (check_this_in is null);
+   g_rec.last_details := 'BLOB is not NULL';
    process_assertion;
    wt_profiler.resume;
 end isnull;
@@ -1593,9 +1832,39 @@ begin
                           or (    l_rc_buff is null
                               and against_value_in is null
                               and null_ok_in               )  );
-   g_rec.last_details := 'Expected "' || substr(against_value_in,1,4000) ||
-                        '" and got "' || substr(l_rc_buff       ,1,4000) ||
-                      '" for Query: ' || substr(check_query_in  ,1,4000) ;
+   g_rec.last_details := 'Expected "' || substr(against_value_in,1,1000) ||
+                        '" and got "' || substr(l_rc_buff       ,1,1000) ||
+                      '" for Query: ' || substr(check_query_in  ,1,1000) ;
+   --
+   process_assertion;
+   wt_profiler.resume;
+   --
+end eqqueryvalue;
+
+-- EQQUERYVALUE XMLTYPE Overload
+procedure eqqueryvalue (
+      msg_in             in   varchar2,
+      check_query_in     in   varchar2,
+      against_value_in   in   XMLTYPE)
+is
+   type rc_type is ref cursor;
+   l_rc          rc_type;
+   l_rc_buff     XMLTYPE;
+begin
+   wt_profiler.pause;
+   --
+   g_rec.last_assert  := 'EQQUERYVALUE';
+   g_rec.last_msg     := msg_in;
+   --
+   open l_rc for check_query_in;
+   fetch l_rc into l_rc_buff;
+   close l_rc;
+   --
+   g_rec.last_pass    := (xmltype.getclobval(l_rc_buff)       =
+                          xmltype.getclobval(against_value_in)  );
+   g_rec.last_details := 'Expected "' || substr(xmltype.getclobval(against_value_in),1,1000) ||
+                        '" and got "' || substr(xmltype.getclobval(l_rc_buff       ),1,1000) ||
+                      '" for Query: ' || substr(                   check_query_in   ,1,1000) ;
    --
    process_assertion;
    wt_profiler.resume;
@@ -1626,24 +1895,26 @@ begin
                           or (    l_rc_buff is null
                               and against_value_in is null
                               and null_ok_in               )  );
-   g_rec.last_details := 'Expected "' || substr(against_value_in,1,4000) ||
-                        '" and got "' || substr(l_rc_buff       ,1,4000) ||
-                      '" for Query: ' || substr(check_query_in  ,1,4000) ;
+   g_rec.last_details := 'Expected "' || substr(against_value_in,1,1000) ||
+                        '" and got "' || substr(l_rc_buff       ,1,1000) ||
+                      '" for Query: ' || substr(check_query_in  ,1,1000) ;
    --
    process_assertion;
    wt_profiler.resume;
    --
 end eqqueryvalue;
 
--- EQQUERYVALUE XMLTYPE Overload
+-- EQQUERYVALUE BLOB Overload
 procedure eqqueryvalue (
       msg_in             in   varchar2,
       check_query_in     in   varchar2,
-      against_value_in   in   XMLTYPE)
+      against_value_in   in   BLOB,
+      null_ok_in         in   boolean := false)
 is
    type rc_type is ref cursor;
-   l_rc          rc_type;
-   l_rc_buff     XMLTYPE;
+   l_rc            rc_type;
+   l_rc_buff       BLOB;
+   compare_results number;
 begin
    wt_profiler.pause;
    --
@@ -1654,11 +1925,14 @@ begin
    fetch l_rc into l_rc_buff;
    close l_rc;
    --
-   g_rec.last_pass    := (xmltype.getclobval(l_rc_buff)       =
-                          xmltype.getclobval(against_value_in)  );
-   g_rec.last_details := 'Expected "' || substr(xmltype.getclobval(against_value_in),1,4000) ||
-                        '" and got "' || substr(xmltype.getclobval(l_rc_buff       ),1,4000) ||
-                      '" for Query: ' || substr(                   check_query_in   ,1,4000) ;
+   compare_results    := DBMS_LOB.COMPARE(l_rc_buff, against_value_in);
+   g_rec.last_pass    := (   (compare_results = 0)
+                          or (    l_rc_buff is null
+                              and against_value_in is null
+                              and null_ok_in               )  );
+   g_rec.last_details := 'BLOBs did not match for Query: ' ||
+                           substr(check_query_in  ,1,2000) ||
+                        ', compare_results: ' || compare_results;
    --
    process_assertion;
    wt_profiler.resume;
@@ -1671,26 +1945,27 @@ $THEN
    is
    begin
       g_testcase := 'EQQUERYVALUE Tests';
+      -- VARCHAR2
       eqqueryvalue (
-         msg_in             =>   'EQQUERYVALUE Tests Happy Path 1',
+         msg_in             =>   'EQQUERYVALUE VARCHAR2 Tests Happy Path 1',
          check_query_in     =>   'select dummy from DUAL',
          against_value_in   =>   'X',
          null_ok_in         =>   false);
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE Tests Happy Path 1 g_rec.last_pass',
+         msg_in          => 'EQQUERYVALUE VARCHAR2 Tests Happy Path 1 g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE Tests Happy Path 1 g_rec.last_assert',
+         msg_in          => 'EQQUERYVALUE VARCHAR2 Tests Happy Path 1 g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'EQQUERYVALUE');
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE Tests Happy Path 1 g_rec.last_msg',
+         msg_in          => 'EQQUERYVALUE VARCHAR2 Tests Happy Path 1 g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'EQQUERYVALUE Tests Happy Path 1');
+         against_this_in => 'EQQUERYVALUE VARCHAR2 Tests Happy Path 1');
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE Tests Happy Path 1 g_rec.last_details',
+         msg_in          => 'EQQUERYVALUE VARCHAR2 Tests Happy Path 1 g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected "X" and got "X" for Query: select dummy from DUAL');
       wtplsql_skip_save := TRUE;
@@ -1702,13 +1977,113 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE Tests Happy Path 2 g_rec.last_pass',
+         msg_in          => 'EQQUERYVALUE VARCHAR2 Tests Happy Path 2 g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE Tests Happy Path 2 g_rec.last_details',
+         msg_in          => 'EQQUERYVALUE VARCHAR2 Tests Happy Path 2 g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected "" and got "" for Query: select max(dummy) from DUAL where 0 = 1');
+      -- XMLTYPE Overload
+      eqqueryvalue (
+         msg_in             =>   'EQQUERYVALUE XMLTYPE Tests Happy Path 1',
+         check_query_in     =>   'select temp_xml from wt_test_data',
+         against_value_in   =>   temp_xml1);
+      temp_rec := g_rec;
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE XMLTYPE Tests Happy Path 1 g_rec.last_pass',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => TRUE);
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE XMLTYPE Tests Happy Path 1 g_rec.last_assert',
+         check_this_in   => temp_rec.last_assert,
+         against_this_in => 'EQQUERYVALUE');
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE XMLTYPE Tests Happy Path 1 g_rec.last_msg',
+         check_this_in   => temp_rec.last_msg,
+         against_this_in => 'EQQUERYVALUE Tests Happy Path 1');
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE XMLTYPE Tests Happy Path 1 g_rec.last_details',
+         check_this_in   => temp_rec.last_details,
+         against_this_in => 'Not sure what goes here');
+      -- CLOB Overload
+      eqqueryvalue (
+         msg_in             =>   'EQQUERYVALUE CLOB Tests Happy Path 1',
+         check_query_in     =>   'select temp_clob from wt_test_data',
+         against_value_in   =>   temp_clob1,
+         null_ok_in         =>   false);
+      temp_rec := g_rec;
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE CLOB Tests Happy Path 1 g_rec.last_pass',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => TRUE);
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE CLOB Tests Happy Path 1 g_rec.last_assert',
+         check_this_in   => temp_rec.last_assert,
+         against_this_in => 'EQQUERYVALUE');
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE CLOB Tests Happy Path 1 g_rec.last_msg',
+         check_this_in   => temp_rec.last_msg,
+         against_this_in => 'EQQUERYVALUE CLOB Tests Happy Path 1');
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE CLOB Tests Happy Path 1 g_rec.last_details',
+         check_this_in   => temp_rec.last_details,
+         against_this_in => 'Not sure');
+      wtplsql_skip_save := TRUE;
+      eqqueryvalue (
+         msg_in             =>   'Not Used',
+         check_query_in     =>   'select temp_clob from wt_test_data where 0 = 1',
+         against_value_in   =>   '',
+         null_ok_in         =>   true);
+      temp_rec := g_rec;
+      wtplsql_skip_save := FALSE;
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE CLOB Tests Happy Path 2 g_rec.last_pass',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => TRUE);
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE CLOB Tests Happy Path 2 g_rec.last_details',
+         check_this_in   => temp_rec.last_details,
+         against_this_in => 'Not sure');
+      -- BLOB Overload
+      eqqueryvalue (
+         msg_in             =>   'EQQUERYVALUE BLOB Tests Happy Path 1',
+         check_query_in     =>   'select temp_blob from wt_test_data',
+         against_value_in   =>   temp_blob1,
+         null_ok_in         =>   false);
+      temp_rec := g_rec;
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE BLOB Tests Happy Path 1 g_rec.last_pass',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => TRUE);
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE BLOB Tests Happy Path 1 g_rec.last_assert',
+         check_this_in   => temp_rec.last_assert,
+         against_this_in => 'EQQUERYVALUE');
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE BLOB Tests Happy Path 1 g_rec.last_msg',
+         check_this_in   => temp_rec.last_msg,
+         against_this_in => 'EQQUERYVALUE BLOB Tests Happy Path 1');
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE BLOB Tests Happy Path 1 g_rec.last_details',
+         check_this_in   => temp_rec.last_details,
+         against_this_in => 'Not sure');
+      wtplsql_skip_save := TRUE;
+      eqqueryvalue (
+         msg_in             =>   'Not Used',
+         check_query_in     =>   'select temp_blob from wt_test_data where 0 = 1',
+         against_value_in   =>   '',
+         null_ok_in         =>   true);
+      temp_rec := g_rec;
+      wtplsql_skip_save := FALSE;
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE BLOB Tests Happy Path 2 g_rec.last_pass',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => TRUE);
+      wt_assert.eq (
+         msg_in          => 'EQQUERYVALUE BLOB Tests Happy Path 2 g_rec.last_details',
+         check_this_in   => temp_rec.last_details,
+         against_this_in => 'Not sure');
    end tc_eqqueryvalue;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
@@ -2075,6 +2450,9 @@ $THEN
    procedure WTPLSQL_RUN
    is
    begin
+      select temp_clob,  temp_nclob,  temp_xml,  temp_blob
+       into  temp_clob1, temp_nclob1, temp_xml1, temp_blob1
+       from  wt_test_data;
       g_raise_exception := FALSE;
       tc_boolean_to_status;
       tc_process_assertion;

@@ -40,6 +40,7 @@ grant select, insert, delete on plsql_profiler_data to public;
 @wt_results.tab
 @wt_dbout_profiles.tab
 @wt_not_executable.tab
+@wt_test_data.tab
 
 -- Package Specifications
 
