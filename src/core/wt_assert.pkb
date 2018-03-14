@@ -614,13 +614,13 @@ begin
    wt_profiler.pause;
    g_rec.last_assert  := 'EQ';
    g_rec.last_msg     := msg_in;
-   compare_results    := DBMS_LOB.COMPARE(check_this_in, against_this_in);
+   compare_results    := nvl(DBMS_LOB.COMPARE(check_this_in, against_this_in),-1);
    g_rec.last_pass    := (    (compare_results = 0)
                            or (    check_this_in is null
                               and against_this_in is null
                               and null_ok_in              )
                          );
-   g_rec.last_details := 'BLOBs did not match, compare_results: ' || compare_results;
+   g_rec.last_details := 'DBMS_LOB.COMPARE on BLOBs, compare_results: ' || compare_results;
    process_assertion;
    wt_profiler.resume;
 end eq;
@@ -1136,8 +1136,9 @@ $THEN
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
          msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_details',
-         check_this_in   => (temp_rec.last_details = 'Expected "<?xml version="1.0" encoding="UTF-8"?><note>1</note>"' ||
-                                                     ' and got "<?xml version="1.0" encoding="UTF-8"?><note>1</note>"'));
+         check_this_in   => (substr(temp_rec.last_details,1,89) =
+                             'Expected "<?xml version="1.0" encoding="UTF-8"?>' || CHR(10) ||
+                             '<feed xmlns="http://www.w3.org/2005/Atom">'));
       --
       wtplsql_skip_save := TRUE;
       eq (
@@ -1186,7 +1187,9 @@ $THEN
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
          msg_in          => 'EQ CLOB Happy Path 1 g_rec.last_details',
-         check_this_in   => (temp_rec.last_details = 'Expected "This is a clob." and got "This is a clob."'));
+         check_this_in   => (substr(temp_rec.last_details,1,89) =
+                             'Expected "<?xml version="1.0" encoding="UTF-8"?>' || CHR(10) ||
+                             '<feed xmlns="http://www.w3.org/2005/Atom">'));
       eq (
          msg_in          => 'EQ CLOB Happy Path 2',
          check_this_in   => temp_clob1,
@@ -1347,7 +1350,7 @@ $THEN
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
          msg_in          => 'EQ BLOB Happy Path 1 g_rec.last_details',
-         check_this_in   => (temp_rec.last_details = 'Not sure what goes here'));
+         check_this_in   => (temp_rec.last_details = 'DBMS_LOB.COMPARE on BLOBs, compare_results: 0'));
       eq (
          msg_in          => 'EQ BLOB Happy Path 2',
          check_this_in   => temp_blob1,
@@ -1543,8 +1546,9 @@ $THEN
          against_this_in => 'ISNOTNULL CLOB Happy Path 1');
       wt_assert.eq (
          msg_in          => 'ISNOTNULL CLOB Happy Path 1 g_rec.last_details',
-         check_this_in   => temp_rec.last_details,
-         against_this_in => 'Expected NOT NULL and got "This is a clob."');
+         check_this_in   => substr(temp_rec.last_details,1,89),
+         against_this_in => 'Expected "<?xml version="1.0" encoding="UTF-8"?>' || CHR(10) ||
+                            '<feed xmlns="http://www.w3.org/2005/Atom">');
       --
       wtplsql_skip_save := TRUE;
       isnotnull (
@@ -1930,7 +1934,7 @@ begin
                           or (    l_rc_buff is null
                               and against_value_in is null
                               and null_ok_in               )  );
-   g_rec.last_details := 'BLOBs did not match for Query: ' ||
+   g_rec.last_details := 'DBMS_LOB.COMPARE between BLOB and Query: ' ||
                            substr(check_query_in  ,1,2000) ||
                         ', compare_results: ' || compare_results;
    --
@@ -1947,25 +1951,25 @@ $THEN
       g_testcase := 'EQQUERYVALUE Tests';
       -- VARCHAR2
       eqqueryvalue (
-         msg_in             =>   'EQQUERYVALUE VARCHAR2 Tests Happy Path 1',
+         msg_in             =>   'EQQUERYVALUE VARCHAR2 Happy Path 1',
          check_query_in     =>   'select dummy from DUAL',
          against_value_in   =>   'X',
          null_ok_in         =>   false);
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE VARCHAR2 Tests Happy Path 1 g_rec.last_pass',
+         msg_in          => 'EQQUERYVALUE VARCHAR2 Happy Path 1 g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE VARCHAR2 Tests Happy Path 1 g_rec.last_assert',
+         msg_in          => 'EQQUERYVALUE VARCHAR2 Happy Path 1 g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'EQQUERYVALUE');
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE VARCHAR2 Tests Happy Path 1 g_rec.last_msg',
+         msg_in          => 'EQQUERYVALUE VARCHAR2 Happy Path 1 g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'EQQUERYVALUE VARCHAR2 Tests Happy Path 1');
+         against_this_in => 'EQQUERYVALUE VARCHAR2 Happy Path 1');
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE VARCHAR2 Tests Happy Path 1 g_rec.last_details',
+         msg_in          => 'EQQUERYVALUE VARCHAR2 Happy Path 1 g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected "X" and got "X" for Query: select dummy from DUAL');
       wtplsql_skip_save := TRUE;
@@ -1977,58 +1981,60 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE VARCHAR2 Tests Happy Path 2 g_rec.last_pass',
+         msg_in          => 'EQQUERYVALUE VARCHAR2 Happy Path 2 g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE VARCHAR2 Tests Happy Path 2 g_rec.last_details',
+         msg_in          => 'EQQUERYVALUE VARCHAR2 Happy Path 2 g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected "" and got "" for Query: select max(dummy) from DUAL where 0 = 1');
       -- XMLTYPE Overload
       eqqueryvalue (
-         msg_in             =>   'EQQUERYVALUE XMLTYPE Tests Happy Path 1',
+         msg_in             =>   'EQQUERYVALUE XMLTYPE Happy Path 1',
          check_query_in     =>   'select temp_xml from wt_test_data',
          against_value_in   =>   temp_xml1);
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE XMLTYPE Tests Happy Path 1 g_rec.last_pass',
+         msg_in          => 'EQQUERYVALUE XMLTYPE Happy Path 1 g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE XMLTYPE Tests Happy Path 1 g_rec.last_assert',
+         msg_in          => 'EQQUERYVALUE XMLTYPE Happy Path 1 g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'EQQUERYVALUE');
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE XMLTYPE Tests Happy Path 1 g_rec.last_msg',
+         msg_in          => 'EQQUERYVALUE XMLTYPE Happy Path 1 g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'EQQUERYVALUE Tests Happy Path 1');
+         against_this_in => 'EQQUERYVALUE XMLTYPE Happy Path 1');
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE XMLTYPE Tests Happy Path 1 g_rec.last_details',
-         check_this_in   => temp_rec.last_details,
-         against_this_in => 'Not sure what goes here');
+         msg_in          => 'EQQUERYVALUE XMLTYPE Happy Path 1 g_rec.last_details',
+         check_this_in   => substr(temp_rec.last_details,1,89),
+         against_this_in => 'Expected "<?xml version="1.0" encoding="UTF-8"?>' || CHR(10) ||
+                            '<feed xmlns="http://www.w3.org/2005/Atom">');
       -- CLOB Overload
       eqqueryvalue (
-         msg_in             =>   'EQQUERYVALUE CLOB Tests Happy Path 1',
+         msg_in             =>   'EQQUERYVALUE CLOB Happy Path 1',
          check_query_in     =>   'select temp_clob from wt_test_data',
          against_value_in   =>   temp_clob1,
          null_ok_in         =>   false);
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE CLOB Tests Happy Path 1 g_rec.last_pass',
+         msg_in          => 'EQQUERYVALUE CLOB Happy Path 1 g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE CLOB Tests Happy Path 1 g_rec.last_assert',
+         msg_in          => 'EQQUERYVALUE CLOB Happy Path 1 g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'EQQUERYVALUE');
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE CLOB Tests Happy Path 1 g_rec.last_msg',
+         msg_in          => 'EQQUERYVALUE CLOB Happy Path 1 g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'EQQUERYVALUE CLOB Tests Happy Path 1');
+         against_this_in => 'EQQUERYVALUE CLOB Happy Path 1');
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE CLOB Tests Happy Path 1 g_rec.last_details',
-         check_this_in   => temp_rec.last_details,
-         against_this_in => 'Not sure');
+         msg_in          => 'EQQUERYVALUE CLOB Happy Path 1 g_rec.last_details',
+         check_this_in   => substr(temp_rec.last_details,1,89),
+         against_this_in => 'Expected "<?xml version="1.0" encoding="UTF-8"?>' || CHR(10) ||
+                            '<feed xmlns="http://www.w3.org/2005/Atom">');
       wtplsql_skip_save := TRUE;
       eqqueryvalue (
          msg_in             =>   'Not Used',
@@ -2038,52 +2044,55 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE CLOB Tests Happy Path 2 g_rec.last_pass',
+         msg_in          => 'EQQUERYVALUE CLOB Happy Path 2 g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE CLOB Tests Happy Path 2 g_rec.last_details',
-         check_this_in   => temp_rec.last_details,
-         against_this_in => 'Not sure');
+         msg_in          => 'EQQUERYVALUE CLOB Happy Path 2 g_rec.last_details',
+         check_this_in   => substr(temp_rec.last_details,1,89),
+         against_this_in => 'Expected "<?xml version="1.0" encoding="UTF-8"?>' || CHR(10) ||
+                            '<feed xmlns="http://www.w3.org/2005/Atom">');
       -- BLOB Overload
       eqqueryvalue (
-         msg_in             =>   'EQQUERYVALUE BLOB Tests Happy Path 1',
+         msg_in             =>   'EQQUERYVALUE BLOB Happy Path 1',
          check_query_in     =>   'select temp_blob from wt_test_data',
          against_value_in   =>   temp_blob1,
          null_ok_in         =>   false);
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE BLOB Tests Happy Path 1 g_rec.last_pass',
+         msg_in          => 'EQQUERYVALUE BLOB Happy Path 1 g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE BLOB Tests Happy Path 1 g_rec.last_assert',
+         msg_in          => 'EQQUERYVALUE BLOB Happy Path 1 g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'EQQUERYVALUE');
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE BLOB Tests Happy Path 1 g_rec.last_msg',
+         msg_in          => 'EQQUERYVALUE BLOB Happy Path 1 g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'EQQUERYVALUE BLOB Tests Happy Path 1');
+         against_this_in => 'EQQUERYVALUE BLOB Happy Path 1');
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE BLOB Tests Happy Path 1 g_rec.last_details',
+         msg_in          => 'EQQUERYVALUE BLOB Happy Path 1 g_rec.last_details',
          check_this_in   => temp_rec.last_details,
-         against_this_in => 'Not sure');
+         against_this_in => 'DBMS_LOB.COMPARE between BLOB and Query:' ||
+                           ' select temp_blob from wt_test_data, compare_results: 0');
       wtplsql_skip_save := TRUE;
       eqqueryvalue (
          msg_in             =>   'Not Used',
          check_query_in     =>   'select temp_blob from wt_test_data where 0 = 1',
-         against_value_in   =>   '',
+         against_value_in   =>   cast (null as BLOB),
          null_ok_in         =>   true);
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE BLOB Tests Happy Path 2 g_rec.last_pass',
+         msg_in          => 'EQQUERYVALUE BLOB Happy Path 2 g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE BLOB Tests Happy Path 2 g_rec.last_details',
+         msg_in          => 'EQQUERYVALUE BLOB Happy Path 2 g_rec.last_details',
          check_this_in   => temp_rec.last_details,
-         against_this_in => 'Not sure');
+         against_this_in => 'DBMS_LOB.COMPARE between BLOB and Query:' ||
+                           ' select temp_blob from wt_test_data, compare_results: 0');
    end tc_eqqueryvalue;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
@@ -2290,8 +2299,8 @@ $THEN
       wt_assert.eq (
          msg_in          => 'EQTABCOUNT Tests Happy Path 1 g_rec.last_details',
          check_this_in   => temp_rec.last_details,
-         against_this_in => 'Expected 7 rows from "ALL_TABLES"' ||
-                            ' and got 7 rows from "USER_TABLES"');
+         against_this_in => 'Expected 8 rows from "ALL_TABLES"' ||
+                            ' and got 8 rows from "USER_TABLES"');
       eqtabcount (
          msg_in             =>   'EQTABCOUNT Tests Happy Path 2',
          check_this_in      =>   'ALL_TABLES',
