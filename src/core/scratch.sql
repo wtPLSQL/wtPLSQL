@@ -66,3 +66,5 @@ end;
 /
 
 select * from wt_dbout_profiles where test_run_id = 26 order by line;
+
+select * from wt_test_data;

@@ -47,15 +47,16 @@ is
    --     Oracle Data Type Families
    --   https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/predefined.htm#LNPLS2047
    --
-   -- VARCHAR2 - Includes ROWID, LONG, RAW, and NVARCHAR2
-   -- DATE* - Includes TIMESTAMP and INTERVAL
-   -- NUMBER* - Includes PLS_INTEGER
+   -- VARCHAR2 - Includes ROWID, LONG*, RAW, LONG RAW*, and NVARCHAR2
+   -- DATE** - Includes TIMESTAMP and INTERVAL
+   -- NUMBER** - Includes PLS_INTEGER
    -- BOOLEAN
    -- XMLTYPE
    -- CLOB - Includes NCLOB
    -- BLOB
    --
-   -- *VARCHAR2 includes DATE and NUMBER using Implicit Data Conversions:
+   -- *LONG and LONG RAW data length is limited to VARCHAR2 length in PL/SQL (32K).
+   -- **VARCHAR2 includes DATE and NUMBER using Implicit Data Conversions:
    --   https://docs.oracle.com/cd/E11882_01/server.112/e41084/sql_elements002.htm#i163326
    --
 
