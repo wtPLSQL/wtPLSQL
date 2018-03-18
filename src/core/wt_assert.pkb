@@ -70,7 +70,7 @@ $THEN
    procedure tc_boolean_to_status
    is
    begin
-      g_testcase := 'BOOLEAN_TO_STATUS';
+      wt_assert.g_testcase := 'BOOLEAN_TO_STATUS';
       wt_assert.eq
          (msg_in            => 'Test for "TRUE" conversion'
          ,check_this_in     => boolean_to_status(TRUE)
@@ -141,11 +141,11 @@ $THEN
       g_rec.last_pass    := FALSE;
       g_rec.last_details := 'Expected "PASS" and got "FAIL"';
       g_rec.last_msg     := 'Process Assertion Forced Failure';
-      g_raise_exception  := TRUE;
+      wt_assert.g_raise_exception  := TRUE;
       wtplsql_skip_save  := TRUE;
       process_assertion;  -- Should throw exception
       wtplsql_skip_save  := FALSE;
-      g_raise_exception  := FALSE;
+      wt_assert.g_raise_exception  := FALSE;
    exception
       when ASSERT_TEST_EXCEPTION then
          wtplsql_skip_save := FALSE;
@@ -208,7 +208,7 @@ $THEN
    procedure tc_compare_queries
    is
    begin
-      g_testcase := 'COMPARE_QUERIES';
+      wt_assert.g_testcase := 'COMPARE_QUERIES';
       compare_queries (
          check_query_in     => 'select bogus123 from bogus456',
          against_query_in   => 'select bogus987 from bogus654');
@@ -282,7 +282,7 @@ $THEN
    procedure tc_last_values
    is
    begin
-      g_testcase := 'Last Values Tests';
+      wt_assert.g_testcase := 'Last Values Tests';
       wt_assert.eq (
          msg_in          => 'Last Pass',
          check_this_in   => last_pass,
@@ -416,7 +416,7 @@ $THEN
    procedure tc_nls_settings
    is
    begin
-      g_testcase := 'NLS Settings';
+      wt_assert.g_testcase := 'NLS Settings';
       set_NLS_DATE_FORMAT('DD-MON-YYYY');
       wt_assert.eq
          (msg_in          => 'Check get_NLS_DATE_FORMAT 1'
@@ -478,7 +478,7 @@ $THEN
    procedure tc_this
    is
    begin
-      g_testcase := 'This Tests';
+      wt_assert.g_testcase := 'This Tests';
       --------------------------------------  WTPLSQL Testing --
       wt_assert.this (
          msg_in         => 'This Tests Happy Path',
@@ -634,7 +634,7 @@ $THEN
    procedure tc_eq
    is
    begin
-      g_testcase := 'EQ Tests';
+      wt_assert.g_testcase := 'EQ Tests';
       --------------------------------------  WTPLSQL Testing --
       eq (
          msg_in          => 'EQ VARCHAR2 Happy Path 1',
@@ -1503,7 +1503,7 @@ $THEN
    procedure tc_isnotnull
    is
    begin
-      g_testcase := 'ISNOTNULL Tests';
+      wt_assert.g_testcase := 'ISNOTNULL Tests';
       --------------------------------------  WTPLSQL Testing --
       isnotnull (
          msg_in        => 'ISNOTNULL VARCHAR2 Happy Path 1',
@@ -1682,7 +1682,7 @@ $THEN
    procedure tc_isnull
    is
    begin
-      g_testcase := 'ISNULL Tests';
+      wt_assert.g_testcase := 'ISNULL Tests';
       --------------------------------------  WTPLSQL Testing --
       isnull (
          msg_in        => 'ISNULL VARCHAR2 Happy Path 1',
@@ -1832,7 +1832,7 @@ $THEN
    procedure tc_raises
    is
    begin
-      g_testcase := 'Raises Test';
+      wt_assert.g_testcase := 'Raises Test';
       --------------------------------------  WTPLSQL Testing --
       raises (
          msg_in         => 'Raises Tests Happy Path',
@@ -2038,7 +2038,7 @@ $THEN
    procedure tc_eqqueryvalue
    is
    begin
-      g_testcase := 'EQQUERYVALUE Tests';
+      wt_assert.g_testcase := 'EQQUERYVALUE Tests';
       --------------------------------------  WTPLSQL Testing --
       -- VARCHAR2
       eqqueryvalue (
@@ -2250,7 +2250,7 @@ $THEN
    procedure tc_eqquery
    is
    begin
-      g_testcase := 'EQQUERY Tests';
+      wt_assert.g_testcase := 'EQQUERY Tests';
       wt_assert.eqquery (
          msg_in             =>   'EQQUERY Tests Happy Path 1',
          check_query_in     =>   'select * from USER_TABLES',
@@ -2349,7 +2349,7 @@ $THEN
    procedure tc_eqtable
    is
    begin
-      g_testcase := 'EQTABLE Tests';
+      wt_assert.g_testcase := 'EQTABLE Tests';
       wt_assert.eqtable (
          msg_in             =>   'EQTABLE Tests Happy Path 1',
          check_this_in      =>   'USER_TABLES',
@@ -2492,7 +2492,7 @@ $THEN
    procedure tc_eqtabcount
    is
    begin
-      g_testcase := 'EQTABCOUNT Tests';
+      wt_assert.g_testcase := 'EQTABCOUNT Tests';
       eqtabcount (
          msg_in             =>   'EQTABCOUNT Tests Happy Path 1',
          check_this_in      =>   'ALL_TABLES',
@@ -2613,7 +2613,7 @@ $THEN
    procedure tc_object_exists
    is
    begin
-      g_testcase := 'OBJEXISTS Tests';
+      wt_assert.g_testcase := 'OBJEXISTS Tests';
       objexists (
          msg_in        =>   'OBJEXISTS Happy Path 1',
          obj_owner_in  =>   'SYS',
@@ -2700,7 +2700,7 @@ $THEN
    procedure tc_object_not_exists
    is
    begin
-      g_testcase := 'OBJNOTEXISTS Tests';
+      wt_assert.g_testcase := 'OBJNOTEXISTS Tests';
       objnotexists (
          msg_in        =>   'OBJNOTEXISTS Happy Path 1',
          obj_owner_in  =>   'BOGUS123',
@@ -2754,7 +2754,7 @@ $THEN
       select temp_clob,  temp_nclob,  temp_xml,  temp_blob
        into  temp_clob1, temp_nclob1, temp_xml1, temp_blob1
        from  wt_test_data where id = 1;
-      g_raise_exception := FALSE;
+      wt_assert.g_raise_exception := FALSE;
       tc_boolean_to_status;
       tc_process_assertion;
       tc_compare_queries;

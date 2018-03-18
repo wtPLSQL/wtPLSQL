@@ -7,12 +7,12 @@ as
    g_runners_nt      runners_nt_type;
    g_test_runs_rec   wt_test_runs%ROWTYPE;
 
-   $IF $$WTPLSQL_SELFTEST
+   $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
    $THEN
       TYPE test_all_aa_type is table of varchar2(400) index by varchar2(400);
       test_all_aa       test_all_aa_type;
       wtplsql_skip_test boolean := FALSE;
-   $END
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 ----------------------
 --  Private Procedures
@@ -63,6 +63,7 @@ $THEN
       end test_sqlerrm;
    begin
       wt_assert.g_testcase := 'CHECK_RUNNER';
+      --------------------------------------  WTPLSQL Testing --
       -- This Test Case runs in the EXECUTE IMMEDAITE in the TEST_RUN
       --   procedure in this package.
       begin
@@ -142,7 +143,7 @@ procedure test_run
 is
    l_test_runs_rec_NULL   wt_test_runs%ROWTYPE;
 begin
-   $IF $$WTPLSQL_SELFTEST
+   $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
    $THEN
       -- This will avoid running the TEST_RUN procedure for some self-tests
       if wtplsql_skip_test
@@ -150,7 +151,7 @@ begin
          test_all_aa(in_package_name) := 'X';
          return;
       end if;
-   $END
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    -- Reset the Test Runs Record before checking anything
    g_test_runs_rec              := l_test_runs_rec_NULL;
    g_test_runs_rec.id           := wt_test_runs_seq.nextval;
@@ -250,7 +251,7 @@ $THEN
          msg_in        => 'TEST_ALL Happy Path 1',
          check_this_in => test_all_aa.EXISTS('WTPLSQL'));
    end tc_test_all;
-$END  ----------------------------------------------------------
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
@@ -295,6 +296,7 @@ $THEN
       l_num_recs  number;
    begin
       wt_assert.g_testcase := 'DELETE_RECORDS';
+      --------------------------------------  WTPLSQL Testing --
       -- Can't "load" records into WT_TEST_RUNS because
       --  DELETE_RECORDS has already run when we arrive here.
       select count(*)
@@ -308,7 +310,7 @@ $THEN
       wt_assert.this (
          msg_in        => 'Number of WT_TEST_RUNS Records <= ' || C_KEEP_NUM_RECS,
          check_this_in => l_num_recs <= C_KEEP_NUM_RECS);
-      --
+      --------------------------------------  WTPLSQL Testing --
       insert into wt_test_runs values g_test_runs_rec;
       COMMIT;
       wt_assert.eqqueryvalue (
@@ -349,6 +351,7 @@ $THEN
                (msg_in          => 'g_test_runs_rec.runner_name'
                ,check_this_in   => g_test_runs_rec.runner_name
                ,against_this_in => 'WTPLSQL');
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull
                (msg_in        => 'g_test_runs_rec.dbout_owner'
                ,check_this_in => g_test_runs_rec.dbout_owner);
@@ -361,6 +364,7 @@ $THEN
       wt_assert.isnull
                (msg_in        => 'g_test_runs_rec.profiler_runid'
                ,check_this_in => g_test_runs_rec.profiler_runid);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull
                (msg_in        => 'g_test_runs_rec.end_dtm'
                ,check_this_in => g_test_runs_rec.end_dtm);

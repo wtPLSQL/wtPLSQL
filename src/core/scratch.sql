@@ -54,14 +54,15 @@ declare
       wtplsql.test_run(in_package_name);
       wt_text_report.dbms_out(in_runner_name    => in_package_name
                            --  ,in_hide_details   => TRUE
-                             ,in_summary_first  => TRUE
+                           --  ,in_summary_last   => TRUE
                              ,in_show_pass      => TRUE
                            --  ,in_show_aux       => TRUE
                              );
    end run_test;
 begin
    --run_test('WTPLSQL');
-   run_test('WT_ASSERT');
+   --run_test('WT_ASSERT');
+   run_test('WT_RESULT');
 end;
 /
 

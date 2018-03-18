@@ -56,3 +56,4 @@ Custom Error Codes:
 20006 - WT_PROFILER dbms_profiler.START_PROFILER failed
 20007 - WT_PROFILER g_rec.test_run_id is null
 20008 - WT_PROFILER Regular Expression Failure from NOT_EXECUTABLE
+20009 - WT_RESULT "in_test_run_id" cannot be NULL

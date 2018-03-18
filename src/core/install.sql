@@ -38,8 +38,8 @@ grant select, insert, delete on plsql_profiler_data to public;
 -- Core Tables
 @wt_test_runs.tab
 @wt_results.tab
-@wt_dbout_profiles.tab
 @wt_not_executable.tab
+@wt_dbout_profiles.tab
 @wt_test_data.tab
 
 -- Package Specifications

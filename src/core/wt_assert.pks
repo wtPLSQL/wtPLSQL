@@ -204,7 +204,7 @@ is
    --   WtPLSQL Self Test Procedures
    --
    -- alter system set PLSQL_CCFLAGS = 
-   --    'WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE'
+   --    'WTPLSQL_SELFTEST:TRUE'
    --    scope=BOTH;
    --
    $IF $$WTPLSQL_SELFTEST

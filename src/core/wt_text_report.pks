@@ -19,7 +19,7 @@ as
    procedure dbms_out
       (in_runner_name    in  wt_test_runs.runner_name%TYPE
       ,in_hide_details   in  boolean default FALSE
-      ,in_summary_first  in  boolean default FALSE
+      ,in_summary_last   in  boolean default FALSE
       ,in_show_pass      in  boolean default FALSE
       ,in_show_aux       in  boolean default FALSE);
 

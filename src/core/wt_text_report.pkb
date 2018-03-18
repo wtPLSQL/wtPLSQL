@@ -302,7 +302,7 @@ end ad_hoc_result;
 procedure dbms_out
       (in_runner_name    in  wt_test_runs.runner_name%TYPE
       ,in_hide_details   in  boolean default FALSE
-      ,in_summary_first  in  boolean default FALSE
+      ,in_summary_last   in  boolean default FALSE
       ,in_show_pass      in  boolean default FALSE
       ,in_show_aux       in  boolean default FALSE)
 is
@@ -325,21 +325,21 @@ begin
       g_test_runs_rec := buff;
 
       --  Setup Display Order
-      if in_summary_first
+      if in_summary_last
       then
-         summary_out;
-         if NOT in_hide_details
-         then
-            results_out(in_show_pass);
-            profile_out(in_show_aux);
-         end if;
-      else
         if NOT in_hide_details
          then
             profile_out(in_show_aux);
             results_out(in_show_pass);
          end if;
          summary_out;
+      else
+         summary_out;
+         if NOT in_hide_details
+         then
+            results_out(in_show_pass);
+            profile_out(in_show_aux);
+         end if;
       end if;
 
    end loop;

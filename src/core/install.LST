@@ -184,50 +184,158 @@ Grant succeeded.
 Grant succeeded.
 
 
-Table WT_DBOUT_PROFILES created.
+Error starting at line : 6 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\wt_dbout_profiles.tab
+In command -
+create table wt_dbout_profiles
+   (test_run_id    number(38)     constraint wt_dbout_profiles_nn1 not null
+   ,line           number(6)      constraint wt_dbout_profiles_nn2 not null
+   ,status         varchar2(4)    constraint wt_dbout_profiles_nn3 not null
+   ,total_occur    number(9)      constraint wt_dbout_profiles_nn4 not null
+   ,total_time     number(9)      constraint wt_dbout_profiles_nn5 not null
+   ,min_time       number(9)      constraint wt_dbout_profiles_nn6 not null
+   ,max_time       number(9)      constraint wt_dbout_profiles_nn7 not null
+   ,text           varchar2(4000) constraint wt_dbout_profiles_nn8 not null
+   ,not_exec_text  varchar2(4000)
+   ,constraint wt_dbout_profiles_pk primary key (test_run_id, line)
+   ,constraint wt_dbout_profiles_fk1 foreign key (test_run_id)
+       references wt_test_runs (id)
+   ,constraint wt_dbout_profiles_fk2 foreign key (not_exec_text)
+       references wt_not_executable (text) disable
+   ,constraint wt_dbout_profiles_ck1 check (status in ('EXEC','NOTX','EXCL','ANNO','UNKN'))
+   ) pctfree 0
+Error report -
+ORA-02444: Cannot resolve referenced object in referential constraints
+02444. 00000 -  "Cannot resolve referenced object in referential constraints"
+*Cause:    attempted to define foreign key referencing an object which
+           cannot be resolved to a base table reference
+*Action:   referential constraints can only be defined on objects which
+           can be resolve to base table reference
 
+Error starting at line : 24 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\wt_dbout_profiles.tab
+In command -
+comment on table wt_dbout_profiles is 'PL/SQL Profiler data for Database Object Under Test (DBOUT).'
+Error report -
+ORA-01775: looping chain of synonyms
+01775. 00000 -  "looping chain of synonyms"
+*Cause:    
+*Action:
 
-Comment created.
+Error starting at line : 25 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\wt_dbout_profiles.tab
+In command -
+comment on column wt_dbout_profiles.test_run_id is 'Foreign Key for the Test Run, Primary Key part 1.'
+Error report -
+ORA-01775: looping chain of synonyms
+01775. 00000 -  "looping chain of synonyms"
+*Cause:    
+*Action:
 
+Error starting at line : 26 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\wt_dbout_profiles.tab
+In command -
+comment on column wt_dbout_profiles.line is 'Source code line number, Primary Key part 2.'
+Error report -
+ORA-01775: looping chain of synonyms
+01775. 00000 -  "looping chain of synonyms"
+*Cause:    
+*Action:
 
-Comment created.
+Error starting at line : 27 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\wt_dbout_profiles.tab
+In command -
+comment on column wt_dbout_profiles.status is 'Executed/NotExecuted/Excluded/Annotated/Unknown Status from the Profiler'
+Error report -
+ORA-01775: looping chain of synonyms
+01775. 00000 -  "looping chain of synonyms"
+*Cause:    
+*Action:
 
+Error starting at line : 28 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\wt_dbout_profiles.tab
+In command -
+comment on column wt_dbout_profiles.total_occur is 'Number of times this line was executed.'
+Error report -
+ORA-01775: looping chain of synonyms
+01775. 00000 -  "looping chain of synonyms"
+*Cause:    
+*Action:
 
-Comment created.
+Error starting at line : 29 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\wt_dbout_profiles.tab
+In command -
+comment on column wt_dbout_profiles.total_time is 'Total time spent executing this line.'
+Error report -
+ORA-01775: looping chain of synonyms
+01775. 00000 -  "looping chain of synonyms"
+*Cause:    
+*Action:
 
+Error starting at line : 30 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\wt_dbout_profiles.tab
+In command -
+comment on column wt_dbout_profiles.min_time is 'Minimum execution time for this line.'
+Error report -
+ORA-01775: looping chain of synonyms
+01775. 00000 -  "looping chain of synonyms"
+*Cause:    
+*Action:
 
-Comment created.
+Error starting at line : 31 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\wt_dbout_profiles.tab
+In command -
+comment on column wt_dbout_profiles.max_time is 'Maximum execution time for this line.'
+Error report -
+ORA-01775: looping chain of synonyms
+01775. 00000 -  "looping chain of synonyms"
+*Cause:    
+*Action:
 
+Error starting at line : 32 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\wt_dbout_profiles.tab
+In command -
+comment on column wt_dbout_profiles.text is 'Source code text for this line number.'
+Error report -
+ORA-01775: looping chain of synonyms
+01775. 00000 -  "looping chain of synonyms"
+*Cause:    
+*Action:
 
-Comment created.
+Error starting at line : 33 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\wt_dbout_profiles.tab
+In command -
+comment on column wt_dbout_profiles.not_exec_text is 'One of the matching values from TEXT.WT_NOT_EXECUTABLE'
+Error report -
+ORA-01775: looping chain of synonyms
+01775. 00000 -  "looping chain of synonyms"
+*Cause:    
+*Action:
 
+Error starting at line : 35 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\wt_dbout_profiles.tab
+In command -
+grant select on wt_dbout_profiles to public
+Error report -
+ORA-01775: looping chain of synonyms
+01775. 00000 -  "looping chain of synonyms"
+*Cause:    
+*Action:
 
-Comment created.
+Error starting at line : 36 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\wt_dbout_profiles.tab
+In command -
+grant insert on wt_dbout_profiles to public
+Error report -
+ORA-01775: looping chain of synonyms
+01775. 00000 -  "looping chain of synonyms"
+*Cause:    
+*Action:
 
+Error starting at line : 37 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\wt_dbout_profiles.tab
+In command -
+grant update on wt_dbout_profiles to public
+Error report -
+ORA-01775: looping chain of synonyms
+01775. 00000 -  "looping chain of synonyms"
+*Cause:    
+*Action:
 
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Grant succeeded.
-
-
-Grant succeeded.
-
-
-Grant succeeded.
-
-
-Grant succeeded.
-
+Error starting at line : 38 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\wt_dbout_profiles.tab
+In command -
+grant delete on wt_dbout_profiles to public
+Error report -
+ORA-01775: looping chain of synonyms
+01775. 00000 -  "looping chain of synonyms"
+*Cause:    
+*Action:
 
 Table WT_NOT_EXECUTABLE created.
 
@@ -242,6 +350,45 @@ Comment created.
 
 
 Grant succeeded.
+
+
+1 row inserted.
+
+
+Table WT_TEST_DATA created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
 
 
 Package WTPLSQL compiled
@@ -282,10 +429,11 @@ Package Body WT_RESULT compiled
 
 Package Body WT_ASSERT compiled
 
-Errors: check compiler log
 
 Package Body WT_PROFILER compiled
 
+Errors: check compiler log
 
 Package Body WT_TEXT_REPORT compiled
 
+Errors: check compiler log
