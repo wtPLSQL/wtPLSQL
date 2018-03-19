@@ -1800,26 +1800,25 @@ is
    l_sqlerrm    varchar2(4000);
    l_errstack   varchar2(4000);
 begin
-   wt_profiler.pause;
-   --
-   g_rec.last_assert  := 'RAISES';
-   g_rec.last_msg     := msg_in;
-   --
    begin
       execute immediate 'begin ' || check_call_in || '; end;';
+      wt_profiler.pause;
    exception when OTHERS then
       l_sqlerrm := SQLERRM;
       l_errstack := substr(dbms_utility.format_error_stack  ||
                            dbms_utility.format_error_backtrace
                            ,1,4000);
+      wt_profiler.pause;
    end;
+   --
+   g_rec.last_assert  := 'RAISES';
+   g_rec.last_msg     := msg_in;
    if l_sqlerrm like '%' || against_exc_in || '%'
    then
       g_rec.last_pass := TRUE;
    else
       g_rec.last_pass := FALSE;
    end if;
-   --
    g_rec.last_details := 'Expected exception "%'           || against_exc_in ||
                        '%". Actual exception raised was "' || l_errstack     ||
                                '". Exception raised by: '  || check_call_in  ;
@@ -2748,6 +2747,8 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
+   -- Can't profile this package because all the "assert" tests
+   --   pause profiling before they execute.
    procedure WTPLSQL_RUN
    is
    begin
