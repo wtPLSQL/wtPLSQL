@@ -21,6 +21,7 @@ as
 --  Private Procedures
 ----------------------
 
+
 ------------------------------------------------------------
 -- Return DBMS_PROFILER specific error messages
 function get_error_msg
@@ -46,6 +47,29 @@ begin
    end case;
 end get_error_msg;
 
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_get_error_msg
+   is
+   begin
+      wt_assert.g_testcase := 'Get Error Messages';
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnotnull (
+         msg_in        => 'ERROR_PARAM (' || dbms_profiler.error_param ||')',
+         check_this_in => get_error_msg(dbms_profiler.error_param));
+      wt_assert.isnotnull (
+         msg_in        => 'ERROR_IO (' || dbms_profiler.error_io ||')',
+         check_this_in => get_error_msg(dbms_profiler.error_io));
+      wt_assert.isnotnull (
+         msg_in        => 'ERROR_VERSION (' || dbms_profiler.error_version ||')',
+         check_this_in => get_error_msg(dbms_profiler.error_version));
+      wt_assert.isnotnull (
+         msg_in        => 'Unknown Error (-9999)',
+         check_this_in => get_error_msg(-9999));
+   end tc_get_error_msg;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
 ------------------------------------------------------------
 procedure check_not_exec_regexp
 is
@@ -62,6 +86,79 @@ begin
       end;
    end loop;
 end check_not_exec_regexp;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_check_not_regexp
+   is
+      num_recs  number;
+      procedure l_ins_rec (in_text in varchar2) is begin
+         insert into wt_not_executable
+               (ID
+               ,OWNER
+               ,NAME
+               ,TYPE
+               ,TEXT
+               ,NOTE)
+            values
+               (wt_not_executable_seq.nextval
+               ,USER
+               ,'WT Testing'
+               ,'WT Testing'
+               ,in_text
+               ,'WT Testing');
+      end l_ins_rec;
+   begin
+      wt_assert.g_testcase := 'Check Not Regular Expression';
+      select count(*) into num_recs from wt_not_executable;
+      wt_assert.isnotnull (
+         msg_in        => 'Number of records in WT_NOT_EXECUTABLE',
+         check_this_in => num_recs);
+      --------------------------------------  WTPLSQL Testing --
+      delete from wt_not_executable;
+      begin
+         check_not_exec_regexp;
+         wt_assert.this (
+            msg_in        => 'No records: ' || SQLERRM,
+            check_this_in => TRUE);
+      exception when others then
+         wt_assert.this (
+            msg_in        => 'No records: ' || SQLERRM,
+            check_this_in => FALSE);
+      end;
+      --------------------------------------  WTPLSQL Testing --
+      l_ins_rec('Valid RegExp');
+      begin
+         check_not_exec_regexp;
+         wt_assert.this (
+            msg_in        => 'Valid record: ' || SQLERRM,
+            check_this_in => TRUE);
+      exception when others then
+         wt_assert.this (
+            msg_in        => 'Valid record: ' || SQLERRM,
+            check_this_in => FALSE);
+      end;
+      --------------------------------------  WTPLSQL Testing --
+      l_ins_rec('[[:bogus:]]');
+      begin
+         check_not_exec_regexp;
+         wt_assert.this (
+            msg_in        => 'Invalid record: ' || SQLERRM,
+            check_this_in => FALSE);
+      exception when others then
+         wt_assert.isnotnull (
+            msg_in        => 'Invalid record SQLERRM',
+            check_this_in => SQLERRM);
+      end;
+      --------------------------------------  WTPLSQL Testing --
+      rollback;
+      wt_assert.eqqueryvalue (
+         msg_in           => 'Number of records in WT_NOT_EXECUTABLE',
+         check_query_in   => 'select count(*) from wt_not_executable',
+         against_value_in => num_recs);
+   end tc_check_not_regexp;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 
 ------------------------------------------------------------
 procedure delete_plsql_profiler_recs
@@ -88,6 +185,7 @@ begin
    COMMIT;
 end delete_plsql_profiler_recs;
 
+
 ------------------------------------------------------------
 procedure reset_g_rec
 is
@@ -95,6 +193,7 @@ is
 begin
    g_rec := l_rec_NULL;
 end reset_g_rec;
+
 
 ------------------------------------------------------------
 procedure find_dbout
@@ -113,7 +212,7 @@ is
    -- Tail Regular Expression is
    --   '" %--'                   - literal string
    --
-   -- Note: Packages, Procedure, Functions, and Types are in the same namespace
+   -- Note: Packages, Procedures, Functions, and Types are in the same namespace
    --       and cannot have the same names.  However, Triggers can have the same
    --       name as any of the other objects.  Results are unknown if a Trigger
    --       name is the same as a Package, Procedure, Function or Type name.
@@ -187,6 +286,7 @@ begin
 
 end find_dbout;
 
+
 ------------------------------------------------------------
 procedure load_anno_aa
 is
@@ -257,32 +357,71 @@ begin
 
 end load_anno_aa;
 
+
 ------------------------------------------------------------
-function find_excluded
-       (in_text           in  varchar2
-       ,out_not_exec_text out varchar2)
-   return boolean
+function find_excluded_pattern
+       (in_text in  varchar2)
+   return number
 is
+   ret_id  number;
 begin
-   out_not_exec_text := '';
    -- Find NOT_EXECUTABLE excluded statements
    -- MIN is a GROUP function and will always return a record
-   select min(ne.text)
-    into  out_not_exec_text
-    from  wt_not_executable  ne
-    where regexp_like (in_text, ne.text, 'i');
-   if out_not_exec_text is not null
-   then
-      return TRUE;
-   end if;
-   return FALSE;
-end find_excluded;
+   select min(id)
+    into  ret_id
+    from  wt_not_executable
+    where regexp_like(g_rec.dbout_owner, owner, 'i')
+     and  regexp_like(g_rec.dbout_name,  name,  'i')
+     and  regexp_like(g_rec.dbout_type,  type,  'i')
+     and  regexp_like(in_text         ,  text,  'i');
+   return ret_id;
+end find_excluded_pattern;
+
 
 ------------------------------------------------------------
 procedure insert_dbout_profile
 is
    PRAGMA AUTONOMOUS_TRANSACTION;
-   prof_rec  wt_dbout_profiles%ROWTYPE;
+   prof_rec    wt_dbout_profiles%ROWTYPE;
+   l_max_line  number;
+   procedure l_set_status is begin
+      if anno_aa.EXISTS(prof_rec.line)
+      then
+         -- Found Annotated Statement
+         prof_rec.status := 'ANNO';
+         return;
+      end if;
+      prof_rec.not_exec_id := find_excluded_pattern(prof_rec.text);
+      if prof_rec.not_exec_id is not null
+      then
+         -- Found Excluded Statement
+            prof_rec.status := 'EXCL';
+         return;
+      end if;
+      if prof_rec.total_occur > 0
+      then
+         -- Found Executed Statement
+         prof_rec.status := 'EXEC';
+         return;
+      end if;
+      if    prof_rec.total_occur = 0
+        and prof_rec.total_time  = 0
+      then
+         -- Check the first line if Not Executed
+         if     prof_rec.line = 1
+            and regexp_like(prof_rec.text, '(FUNCTION|PROCEDURE|PACKAGE|TYPE|TRIGGER)', 'i')
+         then
+            -- Exclude the first line if Not Executed
+            prof_rec.status := 'EXCL';
+         else
+            -- Found Not Executed Statement
+            prof_rec.status := 'NOTX';
+         end if;
+         return;
+      end if;
+      -- Everything else is unknown
+      prof_rec.status := 'UNKN';
+   end l_set_status;
 begin
 
    prof_rec.test_run_id := g_rec.test_run_id;
@@ -316,34 +455,24 @@ begin
       prof_rec.min_time      := buf1.min_time;
       prof_rec.max_time      := buf1.max_time;
       prof_rec.text          := buf1.text;
-      prof_rec.not_exec_text := '';
+      prof_rec.status        := NULL;
+      prof_rec.not_exec_id   := NULL;
 
-      case
-      when anno_aa.EXISTS(buf1.line)
-      then
-         -- Found Annotated Statement
-         prof_rec.status := 'ANNO';
-      when find_excluded(buf1.text, prof_rec.not_exec_text)
-      then
-         -- Found Excluded Statement
-         prof_rec.status := 'EXCL';
-      when buf1.total_occur > 0
-      then
-         -- Found Executed Statement
-         prof_rec.status := 'EXEC';
-      when     buf1.total_occur = 0
-           and buf1.total_time  = 0
-      then
-         -- Found Not Executed Statement
-         prof_rec.status := 'NOTX';
-      else
-         -- Everything else is unknown
-         prof_rec.status := 'UNKN';
-      end case;
+      l_set_status;
 
+      l_max_line := buf1.line;
       insert into wt_dbout_profiles values prof_rec;
 
    end loop;
+
+   -- Exclude the last line if Not Executed
+   update wt_dbout_profiles
+     set  status = 'EXCL'
+    where test_run_id = g_rec.test_run_id
+     and  line        = l_max_line
+     and  status      = 'NOTX'
+     and  regexp_like(text, 'END', 'i');
+
    COMMIT;
 
    -- Delete PLSQL Profiler has it's own
@@ -356,6 +485,7 @@ end insert_dbout_profile;
 ---------------------
 --  Public Procedures
 ---------------------
+
 
 ------------------------------------------------------------
 procedure initialize
@@ -418,6 +548,7 @@ begin
 
 end initialize;
 
+
 ------------------------------------------------------------
 -- Because this procedure is called to cleanup after erorrs,
 --  it must be able to run multiple times without causing damage.
@@ -443,6 +574,7 @@ begin
 
 end finalize;
 
+
 ------------------------------------------------------------
 procedure pause
 is
@@ -454,6 +586,7 @@ begin
    dbms_profiler.pause_profiler;
 end pause;
 
+
 ------------------------------------------------------------
 procedure resume
 is
@@ -464,6 +597,7 @@ begin
    end if;
    dbms_profiler.resume_profiler;
 end resume;
+
 
 ------------------------------------------------------------
 -- Find begining of PL/SQL Block in a Trigger
@@ -503,6 +637,7 @@ begin
    return 0;
 end trigger_offset;
 
+
 ------------------------------------------------------------
 function calc_pct_coverage
       (in_test_run_id  in  number)
@@ -525,6 +660,7 @@ BEGIN
    return null;
 END calc_pct_coverage;
 
+
 ------------------------------------------------------------
 procedure delete_records
       (in_test_run_id  in number)
@@ -544,18 +680,15 @@ end delete_records;
 
 
 --==============================================================--
---===============--%WTPLSQL_begin_ignore_lines%--===============--
---==============================================================--
---  Embedded Test Procedures
-
-$IF $$WTPLSQL_SELFTEST
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-
-  --% WTPLSQL SET DBOUT "WT_PROFILER" %--
-
---====================================--
-
-$END
+   procedure WTPLSQL_RUN
+   is
+   begin
+      tc_get_error_msg;
+      tc_check_not_regexp;
+   end WTPLSQL_RUN;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--
 
 

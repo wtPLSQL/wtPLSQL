@@ -124,17 +124,6 @@ $THEN
    is
       ASSERT_TEST_EXCEPTION  exception;
       PRAGMA EXCEPTION_INIT(ASSERT_TEST_EXCEPTION, -20003);
-      procedure test_exception
-      is
-      begin
-         wt_assert.eq
-            (msg_in          => 'Process Assertion Actual Test'
-            ,check_this_in   => SQLERRM
-            ,against_this_in => 'ORA-20003:    --  Test Case:' ||
-                                ' PROCESS_ASSERTION  --' || CHR(10) ||
-                                '#FAIL#Process Assertion Forced Failure.' ||
-                                ' THIS - Expected "PASS" and got "FAIL"');
-      end test_exception;
    begin
       g_testcase         := 'PROCESS_ASSERTION';
       g_rec.last_assert  := 'THIS';
@@ -2437,7 +2426,7 @@ is
    l_cnt        number;
    l_success    boolean;
    l_check_cnt  number;
-   procedure run_query is
+   procedure l_run_query is
       type rc_type is ref cursor;
       l_rc rc_type;
    begin
@@ -2454,7 +2443,7 @@ is
          l_success      := FALSE;
          process_assertion;
          wt_profiler.resume;
-   end run_query;
+   end l_run_query;
 begin
    wt_profiler.pause;
    --
@@ -2466,7 +2455,7 @@ begin
    then
       l_query := l_query || ' where ' || check_where_in;
    end if;
-   run_query;
+   l_run_query;
    if NOT l_success then return; end if;
    l_check_cnt := l_cnt;
    --
@@ -2475,7 +2464,7 @@ begin
    then
       l_query := l_query || ' where ' || against_where_in;
    end if;
-   run_query;
+   l_run_query;
    if NOT l_success then return; end if;
    g_rec.last_pass    := (l_check_cnt = l_cnt);
    --

@@ -6,8 +6,12 @@ as
 
    procedure test_all;
 
-   procedure delete_records
-      (in_test_run_id  in number default NULL);
+   procedure delete_runs
+      (in_test_run_id  in number);
+
+   procedure delete_runs
+      (in_runner_owner  in varchar2
+      ,in_runner_name   in varchar2);
 
    --   WtPLSQL Self Test Procedures
    --

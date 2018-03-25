@@ -48,23 +48,34 @@ execute wtplsql.delete_records;
      and  sequence      = 0;
 
 declare
-   procedure run_test (in_package_name in varchar2)
+   procedure report_test (in_package_name in varchar2)
    is
    begin
-      wtplsql.test_run(in_package_name);
       wt_text_report.dbms_out(in_runner_name    => in_package_name
                            --  ,in_hide_details   => TRUE
                            --  ,in_summary_last   => TRUE
-                           --  ,in_show_pass      => TRUE
+                             ,in_show_pass      => TRUE
                            --  ,in_show_aux       => TRUE
                              );
-   end run_test;
+   end report_test;
 begin
-   --run_test('WTPLSQL');
-   run_test('WT_ASSERT');
-   run_test('WT_RESULT');
+   --
+   --wtplsql.test_run('WTPLSQL');
+   --wtplsql.test_run('WT_RESULT');
+   --wtplsql.test_run('WT_ASSERT');
+   wtplsql.test_run('WT_PROFILER');
+   --
+   --report_test('WTPLSQL');
+   --report_test('WT_RESULT');
+   --report_test('WT_ASSERT');
+   report_test('WT_PROFILER');
+   --
 end;
 /
+
+select * from dual
+ where regexp_like('package body wt_result', '(FUNCTION|PROCEDURE|PACKAGE|TYPE|TRIGGER)', 'i');
+
 
 select * from wt_dbout_profiles where test_run_id = 26 order by line;
 

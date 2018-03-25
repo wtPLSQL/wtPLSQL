@@ -160,7 +160,8 @@ begin
    g_test_runs_rec.runner_name  := in_package_name;
    check_runner;
    -- Initialize
-   delete_records;       -- Autonomous Transaction COMMIT
+   delete_runs(in_runner_owner => g_test_runs_rec.runner_owner  -- Autonomous Transaction COMMIT
+              ,in_runner_name  => g_test_runs_rec.runner_name);
    wt_result.initialize(g_test_runs_rec.id);
    wt_profiler.initialize(in_test_run_id      => g_test_runs_rec.id,
                           in_runner_name      => g_test_runs_rec.runner_name,
@@ -255,47 +256,48 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
-procedure delete_records
-      (in_test_run_id  in number default NULL)
+procedure delete_runs
+      (in_test_run_id  in number)
 is
    PRAGMA AUTONOMOUS_TRANSACTION;
-   num_recs    number;
-   procedure del_rec (in_id in number) is begin
-      -- Profiler delete must be first because it contains a
-      --    PRAGMA AUTONOMOUS_TRANSACTION
-      wt_profiler.delete_records(in_id);
-      wt_result.delete_records(in_id);
-      delete from wt_test_runs where id = in_id;
-      COMMIT;
-   end del_rec;
 begin
-   if in_test_run_id is not null
-   then
-      del_rec(in_test_run_id);
-   else
-      num_recs := 1;
-      for buff in (select id from wt_test_runs
-                    where runner_owner = USER
-                     and  runner_name  = g_test_runs_rec.runner_name
-                    order by start_dtm desc, id desc)
-      loop
-         -- Keep the last 20 rest runs for this USER
-         if num_recs > C_KEEP_NUM_RECS
-         then
-            del_rec(buff.id);
-         end if;
-         num_recs := num_recs + 1;
-      end loop;
-   end if;
-end delete_records;
+   -- Profiler delete must be first because it contains a
+   --    PRAGMA AUTONOMOUS_TRANSACTION
+   wt_profiler.delete_records(in_test_run_id);
+   wt_result.delete_records(in_test_run_id);
+   delete from wt_test_runs where id = in_test_run_id;
+   COMMIT;
+end delete_runs;
+
+procedure delete_runs
+      (in_runner_owner  in varchar2
+      ,in_runner_name   in varchar2)
+is
+   num_recs    number;
+begin
+   num_recs := 1;
+   for buf2 in (select id from wt_test_runs
+                 where runner_owner = g_test_runs_rec.runner_owner
+                  and  runner_name  = g_test_runs_rec.runner_name
+                 order by start_dtm desc, id desc)
+   loop
+      -- Keep the last 20 rest runs for this USER
+      if num_recs > C_KEEP_NUM_RECS
+      then
+       -- Autonomous Transaction COMMIT
+       delete_runs(buf2.id);
+      end if;
+      num_recs := num_recs + 1;
+   end loop;
+end delete_runs;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure tc_delete_records
+   procedure tc_delete_run_id
    is
       l_num_recs  number;
    begin
-      wt_assert.g_testcase := 'DELETE_RECORDS';
+      wt_assert.g_testcase := 'DELETE_RUNS TEST_RUN_ID';
       --------------------------------------  WTPLSQL Testing --
       -- Can't "load" records into WT_TEST_RUNS because
       --  DELETE_RECORDS has already run when we arrive here.
@@ -318,14 +320,14 @@ $THEN
          check_query_in   => 'select count(*) from wt_test_runs' ||
                              ' where id = ' || g_test_runs_rec.id,
          against_value_in => 1);
-      delete_records(g_test_runs_rec.id);  -- Autonomous Transaction
+      delete_runs(g_test_runs_rec.id);  -- Autonomous Transaction
       wt_assert.eqqueryvalue (
          msg_in           => 'DELETE_RECORDS Delete 1 record',
          check_query_in   => 'select count(*) from wt_test_runs' ||
                              ' where id = ' || g_test_runs_rec.id,
          against_value_in => 0);
-      delete_records(-99);  -- Should run without error
-   end tc_delete_records;
+      delete_runs(-99);  -- Should run without error
+   end tc_delete_run_id;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -385,7 +387,7 @@ $THEN
       tc_check_runner;
       tc_insert_test_run;
       tc_test_all;
-      tc_delete_records;
+      tc_delete_run_id;
    end;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--

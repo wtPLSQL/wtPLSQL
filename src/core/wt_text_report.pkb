@@ -97,10 +97,12 @@ procedure summary_out
 is
 begin
    p('');
-   p('Summary Results for Test Runner ' || g_test_runs_rec.runner_owner ||
-                                    '.' || g_test_runs_rec.runner_name  ||
-                       ' (Test Run ID ' || g_test_runs_rec.id           ||
-                                    ')' );
+   p(                    g_test_runs_rec.runner_owner ||
+                  '.' || g_test_runs_rec.runner_name  ||
+     --  ' Test Runner' ||
+     ' (Test Run ID ' || g_test_runs_rec.id           ||
+                  ')' );
+   p('----------------------------------------');
    result_summary;
    p('  Total Run Time (sec): ' ||
       to_char(extract(day from (g_test_runs_rec.end_dtm -
@@ -118,9 +120,13 @@ begin
       return;
    end if;
    p('');
-   p('Summary Results for DBOUT: ' || g_test_runs_rec.dbout_owner ||
-                               '.' || g_test_runs_rec.dbout_name  ||
-                               '(' || g_test_runs_rec.dbout_type  || ')' );
+   p(                    g_test_runs_rec.dbout_owner ||
+                  '.' || g_test_runs_rec.dbout_name  ||
+                  ' ' || g_test_runs_rec.dbout_type  ||
+     ' Code Coverage' || 
+     ' (Test Run ID ' || g_test_runs_rec.id           ||
+                  ')' );
+   p('----------------------------------------');
    profile_summary;
 end summary_out;
 
@@ -130,6 +136,16 @@ procedure results_out
 is
    l_last_testcase  wt_results.testcase%TYPE;
    l_show_pass_txt  varchar2(1);
+   header_shown     boolean;
+   procedure l_show_header is begin
+      p('');
+      p(                            g_test_runs_rec.runner_owner ||
+                             '.' || g_test_runs_rec.runner_name  ||
+      --            ' Test Runner' ||
+        ' Details (Test Run ID ' || g_test_runs_rec.id           ||
+                             ')' );
+      p('----------------------------------------');
+   end l_show_header;
 begin
    if in_show_pass
    then
@@ -137,12 +153,7 @@ begin
    else
       l_show_pass_txt := 'N';
    end if;
-   p('');
-   p('----------------------------------------');
-   p('Detailed Results for Test Runner ' || g_test_runs_rec.runner_owner ||
-                                     '.' || g_test_runs_rec.runner_name  ||
-                        ' (Test Run ID ' || g_test_runs_rec.id           ||
-                                     ')' );
+   header_shown := FALSE;
    for buff in (
       select status
             ,elapsed_msecs
@@ -156,6 +167,11 @@ begin
              or status         != 'PASS')
        order by testcase, result_seq )
    loop
+      if not header_shown
+      then
+         l_show_header;
+         header_shown := TRUE;
+      end if;
       if    buff.testcase = l_last_testcase
          OR (      buff.testcase is null
              AND l_last_testcase is null )
@@ -199,15 +215,13 @@ begin
       l_show_aux_txt := 'N';
    end if;
    p('');
-   p('----------------------------------------');
-   p('Detailed Profile for DBOUT ' || g_test_runs_rec.dbout_owner ||
-                               '.' || g_test_runs_rec.dbout_name  ||
-                              ' (' || g_test_runs_rec.dbout_type  ||
-                               ')' );
-   p('   from Test Runner ' || g_test_runs_rec.runner_owner ||
-                        '.' || g_test_runs_rec.runner_name  ||
-           ' (Test Run ID ' || g_test_runs_rec.id           ||
-                        ')' );
+   p(                             g_test_runs_rec.dbout_owner ||
+                           '.' || g_test_runs_rec.dbout_name  ||
+                           ' ' || g_test_runs_rec.dbout_type  ||
+      ' Code Coverage Details' ||
+              ' (Test Run ID ' || g_test_runs_rec.id           ||
+                           ')' );
+   --p('----------------------------------------');
    p(l_header_txt);
    for buff in (
       select line
@@ -341,6 +355,8 @@ begin
             profile_out(in_show_aux);
          end if;
       end if;
+
+      p('');
 
    end loop;
 

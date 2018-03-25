@@ -3,24 +3,25 @@
 --  Not Executable Table Installation
 --
 
+create sequence wt_not_executable_seq;
+
 create table wt_not_executable
-   (text  varchar2(4000)  constraint wt_not_executable_nn1 not null
-   ,note  varchar2(4000)
-   ,constraint wt_not_executable_pk primary key (text)
+   (id      number          constraint wt_not_executable_nn1 not null
+   ,owner   varchar2(1000)  constraint wt_not_executable_nn2 not null
+   ,name    varchar2(1000)  constraint wt_not_executable_nn3 not null
+   ,type    varchar2(1000)  constraint wt_not_executable_nn4 not null
+   ,text    varchar2(2000)  constraint wt_not_executable_nn5 not null
+   ,note    varchar2(4000)
+   ,constraint wt_not_executable_pk primary key (id)
+   ,constraint wt_not_executable_uk1 unique (owner, name, type, text)
    );
 
-comment on table wt_not_executable is 'Table to exclude non-executable lines from code coverage';
-comment on column wt_not_executable.text is 'Primary key, source text to exclude from code coverage';
-comment on column wt_not_executable.note is 'Notes regarding this non-exectuable line of code';
+comment on table wt_not_executable is 'Table of patterns to identify non-executable DBOUT (DataBase Object Under Test) source text';
+comment on column wt_not_executable.id  is 'Primary (Surrogate) Key for each non-executable pattern';
+comment on column wt_not_executable.owner is 'Required Regular Expression pattern of DBOUT owner with non-executable source text.';
+comment on column wt_not_executable.name is 'Required Regular Expression pattern of DBOUT name with non-executable source text.';
+comment on column wt_not_executable.type is 'Required Regular Expression pattern of DBOUT type with non-executable source text.';
+comment on column wt_not_executable.text is 'Required Regular Expression pattern of DBOUT non-executable source text.';
+comment on column wt_not_executable.note is 'Optional notes regarding these patterns that identify non-exectuable source text';
 
 grant select on wt_not_executable to public;
-
-/*
-insert into WT_NOT_EXECUTABLE
-     (TEXT
-     ,NOTE)
-  values
-     ('^[[:space:]]*(end|end[[:space:]]+[_$#[:alnum:]]+)[[:space:]]*[;]'
-     ,'Exclude END Statments'
-     );
-*/
