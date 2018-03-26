@@ -296,10 +296,10 @@ $THEN
    procedure tc_delete_run_id
    is
       l_num_recs  number;
+      l_sqlerrm   varchar2(4000);
    begin
       wt_assert.g_testcase := 'DELETE_RUNS TEST_RUN_ID';
       --------------------------------------  WTPLSQL Testing --
-      -- Can't "load" records into WT_TEST_RUNS because
       --  DELETE_RECORDS has already run when we arrive here.
       select count(*)
        into  l_num_recs
@@ -326,7 +326,58 @@ $THEN
          check_query_in   => 'select count(*) from wt_test_runs' ||
                              ' where id = ' || g_test_runs_rec.id,
          against_value_in => 0);
-      delete_runs(-99);  -- Should run without error
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eqqueryvalue (
+         msg_in           => 'Confirm number of records',
+         check_query_in   => 'select count(*) from wt_test_runs' ||
+                             ' where runner_owner = ''' || USER ||
+                           ''' and runner_name = ''' || g_test_runs_rec.runner_name ||
+                           '''',
+         against_value_in => l_num_recs);
+      for i in 1 .. C_KEEP_NUM_RECS
+      loop
+         insert into wt_test_runs
+               (id, start_dtm, runner_owner, runner_name)
+            values
+               (0-i, sysdate-7000-i, USER, g_test_runs_rec.runner_name);
+      end loop;
+      commit;
+      wt_assert.eqqueryvalue (
+         msg_in           => 'Check Added ' || C_KEEP_NUM_RECS || ' records',
+         check_query_in   => 'select count(*) from wt_test_runs' ||
+                             ' where runner_owner = ''' || USER ||
+                           ''' and runner_name = ''' || g_test_runs_rec.runner_name ||
+                           '''',
+         against_value_in => l_num_recs + C_KEEP_NUM_RECS);
+      delete_runs(USER, g_test_runs_rec.runner_name);
+      wt_assert.eqqueryvalue (
+         msg_in           => 'Check number of records reduced',
+         check_query_in   => 'select count(*) from wt_test_runs' ||
+                             ' where runner_owner = ''' || USER ||
+                           ''' and runner_name = ''' || g_test_runs_rec.runner_name ||
+                           '''',
+         against_value_in => C_KEEP_NUM_RECS);
+      delete from wt_test_runs
+        where id between 0-1 and 0-C_KEEP_NUM_RECS;
+      commit;
+      wt_assert.eqqueryvalue (
+         msg_in           => 'Confirm original number of records',
+         check_query_in   => 'select count(*) from wt_test_runs' ||
+                             ' where runner_owner = ''' || USER ||
+                           ''' and runner_name = ''' || g_test_runs_rec.runner_name ||
+                           '''',
+         against_value_in => l_num_recs);
+      --------------------------------------  WTPLSQL Testing --
+      begin
+         delete_runs(-99);  -- Should run without error
+         l_sqlerrm := SQLERRM;
+      exception when others then
+         l_sqlerrm := SQLERRM;
+      end;
+      wt_assert.eq (
+         msg_in          => 'Delete Runs(-99)',
+         check_this_in   => SQLERRM,
+         against_this_in => 'ORA-0000: normal, successful completion');
    end tc_delete_run_id;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 

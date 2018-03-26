@@ -91,7 +91,8 @@ $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure tc_check_not_regexp
    is
-      num_recs  number;
+      num_recs   number;
+      l_sqlerrm  varchar2(4000);
       procedure l_ins_rec (in_text in varchar2) is begin
          insert into wt_not_executable
                (ID
@@ -118,38 +119,39 @@ $THEN
       delete from wt_not_executable;
       begin
          check_not_exec_regexp;
-         wt_assert.this (
-            msg_in        => 'No records: ' || SQLERRM,
-            check_this_in => TRUE);
+         l_sqlerrm := SQLERRM;
       exception when others then
-         wt_assert.this (
-            msg_in        => 'No records: ' || SQLERRM,
-            check_this_in => FALSE);
+         l_sqlerrm := SQLERRM;
       end;
+      wt_assert.eq (
+         msg_in        => 'No records',
+         check_this_in => l_sqlerrm,
+         against_this_in => 'ORA-0000: normal, successful completion');
       --------------------------------------  WTPLSQL Testing --
       l_ins_rec('Valid RegExp');
       begin
          check_not_exec_regexp;
-         wt_assert.this (
-            msg_in        => 'Valid record: ' || SQLERRM,
-            check_this_in => TRUE);
+         l_sqlerrm := SQLERRM;
       exception when others then
-         wt_assert.this (
-            msg_in        => 'Valid record: ' || SQLERRM,
-            check_this_in => FALSE);
+         l_sqlerrm := SQLERRM;
       end;
+      wt_assert.eq (
+         msg_in        => 'Valid record',
+         check_this_in => l_sqlerrm,
+         against_this_in => 'ORA-0000: normal, successful completion');
       --------------------------------------  WTPLSQL Testing --
       l_ins_rec('[[:bogus:]]');
       begin
          check_not_exec_regexp;
-         wt_assert.this (
-            msg_in        => 'Invalid record: ' || SQLERRM,
-            check_this_in => FALSE);
+         l_sqlerrm := SQLERRM;
       exception when others then
-         wt_assert.isnotnull (
-            msg_in        => 'Invalid record SQLERRM',
-            check_this_in => SQLERRM);
+         l_sqlerrm := SQLERRM;
       end;
+      wt_assert.eq (
+         msg_in        => 'Invalid record',
+         check_this_in => l_sqlerrm,
+         against_this_in => 'ORA-20008: NOT_EXECUTABLE.TEXT value: [[:bogus:]]' ||
+                 CHR(10) || 'ORA-12729: invalid character class in regular expression');
       --------------------------------------  WTPLSQL Testing --
       rollback;
       wt_assert.eqqueryvalue (
@@ -162,44 +164,46 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 ------------------------------------------------------------
 procedure delete_plsql_profiler_recs
-      (in_runid  in number default null)
+      (in_profiler_runid  in number)
 is
    PRAGMA AUTONOMOUS_TRANSACTION;
 begin
-   -- Remove Profiler data older than 7 days if RUNID is NULL
-   --  Should not find any records because they are deleted with each run
-   for buff in (select runid from plsql_profiler_runs
-                 where (    in_runid is null
-                        and run_date < trunc(sysdate) - 7 )
-                   or  (    in_runid is not null
-                        and in_runid = runid)
-           order by run_date, runid)
-   loop
-      delete from plsql_profiler_data
-       where runid = buff.runid;
-      delete from plsql_profiler_units
-       where runid = buff.runid;
-      delete from plsql_profiler_runs
-       where runid = buff.runid;
-   end loop;
+   delete from plsql_profiler_data
+    where runid = in_profiler_runid;
+   delete from plsql_profiler_units
+    where runid = in_profiler_runid;
+   delete from plsql_profiler_runs
+    where runid = in_profiler_runid;
    COMMIT;
 end delete_plsql_profiler_recs;
 
-
-------------------------------------------------------------
-procedure reset_g_rec
-is
-   l_rec_NULL  rec_type;
-begin
-   g_rec := l_rec_NULL;
-end reset_g_rec;
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_delete_profiler_recs
+   is
+      num_recs   number;
+      l_sqlerrm  varchar2(4000);
+   begin
+      wt_assert.g_testcase := 'Delete PL/SQL Profiler Recs';
+      --------------------------------------  WTPLSQL Testing --
+      begin
+         delete_plsql_profiler_recs(-99);  -- Should run without error
+         l_sqlerrm := SQLERRM;
+      exception when others then
+         l_sqlerrm := SQLERRM;
+      end;
+      wt_assert.eq (
+         msg_in          => 'delete_plsql_profiler_recs(-99)',
+         check_this_in   => SQLERRM,
+         against_this_in => 'ORA-0000: normal, successful completion');
+   end tc_delete_profiler_recs;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
 procedure find_dbout
       (in_pkg_name  in  varchar2)
 is
-
    C_HEAD_RE CONSTANT varchar2(30) := '--% WTPLSQL SET DBOUT "';
    C_MAIN_RE CONSTANT varchar2(30) := '[[:alnum:]._$#]+';
    C_TAIL_RE CONSTANT varchar2(30) := '" %--';
@@ -227,9 +231,7 @@ is
        order by src.line;
    l_target   varchar2(32000);
    l_pos      number;
-
 begin
-
    open c_annotation;
    fetch c_annotation into l_target;
    if c_annotation%NOTFOUND
@@ -238,7 +240,6 @@ begin
       return;
    end if;
    close c_annotation;
-
    -- Strip the Head Sub-String
    l_target := regexp_replace(SRCSTR      => l_target
                              ,PATTERN     => '^' || C_HEAD_RE
@@ -251,7 +252,6 @@ begin
                              ,REPLACESTR  => ''
                              ,POSITION    => 1
                              ,OCCURRENCE  => 1);
-
    -- Locate the Owner/Name separator
    l_pos := instr(l_target,'.');
    begin
@@ -283,14 +283,24 @@ begin
       g_rec.error_message := 'Unable to find Database Object "' ||
                               l_target || '". ';
    end;
-
 end find_dbout;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_find_dbout
+   is
+      num_recs   number;
+      l_sqlerrm  varchar2(4000);
+   begin
+      wt_assert.g_testcase := 'Find DataBase Object Under Test';
+      --------------------------------------  WTPLSQL Testing --
+   end tc_find_dbout;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
 procedure load_anno_aa
 is
-
    cursor c_find_begin is
       select line
             ,instr(text,'--%WTPLSQL_begin_ignore_lines%--') col
@@ -301,7 +311,6 @@ is
         and  text like '%--\%WTPLSQL_begin_ignore_lines\%--%' escape '\'
        order by line;
    buff_find_begin  c_find_begin%ROWTYPE;
-
    cursor c_find_end (in_line in number, in_col in number) is
       with q1 as (
       select line
@@ -322,19 +331,17 @@ is
        order by line
             ,col;
    buff_find_end  c_find_end%ROWTYPE;
-
 begin
-
    anno_aa.delete;
-
    open c_find_begin;
    loop
-
+      --
       fetch c_find_begin into buff_find_begin;
       exit when c_find_begin%NOTFOUND;
-
+      --
       open c_find_end (buff_find_begin.line, buff_find_begin.col);
       fetch c_find_end into buff_find_end;
+      --
       if c_find_end%NOTFOUND
       then
          select max(line)
@@ -345,17 +352,28 @@ begin
            and  type  = g_rec.dbout_type;
       end if;
       close c_find_end;
-
+      --
       for i in buff_find_begin.line + g_rec.trigger_offset ..
                buff_find_end.line   + g_rec.trigger_offset
       loop
          anno_aa(i) := 'X';
       end loop;
-
+      --
    end loop;
    close c_find_begin;
-
 end load_anno_aa;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_load_anno_aa
+   is
+      num_recs   number;
+      l_sqlerrm  varchar2(4000);
+   begin
+      wt_assert.g_testcase := 'Load Annotation Associative Array';
+      --------------------------------------  WTPLSQL Testing --
+   end tc_load_anno_aa;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
@@ -376,6 +394,18 @@ begin
      and  regexp_like(in_text         ,  text,  'i');
    return ret_id;
 end find_excluded_pattern;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_find_excluded_pattern
+   is
+      num_recs   number;
+      l_sqlerrm  varchar2(4000);
+   begin
+      wt_assert.g_testcase := 'Find Excluded Pattern';
+      --------------------------------------  WTPLSQL Testing --
+   end tc_find_excluded_pattern;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
@@ -423,10 +453,8 @@ is
       prof_rec.status := 'UNKN';
    end l_set_status;
 begin
-
    prof_rec.test_run_id := g_rec.test_run_id;
    load_anno_aa;
-
    for buf1 in (
       select src.line
             ,ppd.total_occur
@@ -448,7 +476,6 @@ begin
         and  ppu.unit_type  = g_rec.dbout_type
         and  ppu.runid      = g_rec.prof_runid )
    loop
-
       prof_rec.line          := buf1.line;
       prof_rec.total_occur   := buf1.total_occur;
       prof_rec.total_time    := buf1.total_time;
@@ -457,14 +484,10 @@ begin
       prof_rec.text          := buf1.text;
       prof_rec.status        := NULL;
       prof_rec.not_exec_id   := NULL;
-
       l_set_status;
-
       l_max_line := buf1.line;
       insert into wt_dbout_profiles values prof_rec;
-
    end loop;
-
    -- Exclude the last line if Not Executed
    update wt_dbout_profiles
      set  status = 'EXCL'
@@ -472,14 +495,23 @@ begin
      and  line        = l_max_line
      and  status      = 'NOTX'
      and  regexp_like(text, 'END', 'i');
-
    COMMIT;
-
    -- Delete PLSQL Profiler has it's own
    --   PRAGMA AUTONOMOUS_TRANSACTION and COMMIT;
    delete_plsql_profiler_recs(g_rec.prof_runid);
-
 end insert_dbout_profile;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_insert_dbout_profile
+   is
+      num_recs   number;
+      l_sqlerrm  varchar2(4000);
+   begin
+      wt_assert.g_testcase := 'Insert DBOUT Profile';
+      --------------------------------------  WTPLSQL Testing --
+   end tc_insert_dbout_profile;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ---------------------
@@ -497,41 +529,32 @@ procedure initialize
        out_trigger_offset  out number,
        out_profiler_runid  out number)
 is
-
+   l_rec_NULL     rec_type;
    l_retnum       binary_integer;
-
 begin
-
    out_dbout_owner := NULL;
    out_dbout_name  := NULL;
    out_dbout_type  := NULL;
-
    if in_test_run_id is null
    then
       raise_application_error  (-20004, 'i_test_run_id is null');
    end if;
-
-   reset_g_rec;
+   g_rec := l_rec_NULL;
    g_rec.test_run_id := in_test_run_id;
-
    find_dbout(in_pkg_name => in_runner_name);
    if g_rec.dbout_name is null
    then
       return;
    end if;
-
    check_not_exec_regexp;
-
    out_dbout_owner    := g_rec.dbout_owner;
    out_dbout_name     := g_rec.dbout_name;
    out_dbout_type     := g_rec.dbout_type;
- 
    g_rec.trigger_offset := wt_profiler.trigger_offset
                               (dbout_owner_in => g_rec.dbout_owner
                               ,dbout_name_in  => g_rec.dbout_name
                               ,dbout_type_in  => g_rec.dbout_type );
    out_trigger_offset := g_rec.trigger_offset;
-
    l_retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
    if l_retnum <> 0 then
       --dbms_profiler.get_version(major_version, minor_version);
@@ -545,8 +568,19 @@ begin
          'dbms_profiler.START_PROFILER returned: ' || get_error_msg(l_retnum));
    end if;
    out_profiler_runid := g_rec.prof_runid;
-
 end initialize;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_initialize
+   is
+      num_recs   number;
+      l_sqlerrm  varchar2(4000);
+   begin
+      wt_assert.g_testcase := 'Initialize Test';
+      --------------------------------------  WTPLSQL Testing --
+   end tc_initialize;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
@@ -554,8 +588,8 @@ end initialize;
 --  it must be able to run multiple times without causing damage.
 procedure finalize
 is
+   l_rec_NULL  rec_type;
 begin
-
    if g_rec.dbout_name is null
    then
       return;
@@ -564,15 +598,23 @@ begin
    then
       raise_application_error  (-20000, 'g_rec.test_run_id is null');
    end if;
-
    -- DBMS_PROFILER.FLUSH_DATA is included with DBMS_PROFILER.STOP_PROFILER
    dbms_profiler.STOP_PROFILER;
-
    insert_dbout_profile;
-
-   reset_g_rec;
-
+   g_rec := l_rec_NULL;
 end finalize;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_finalize
+   is
+      num_recs   number;
+      l_sqlerrm  varchar2(4000);
+   begin
+      wt_assert.g_testcase := 'Finalize Test';
+      --------------------------------------  WTPLSQL Testing --
+   end tc_finalize;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
@@ -637,6 +679,18 @@ begin
    return 0;
 end trigger_offset;
 
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_trigger_offset
+   is
+      num_recs   number;
+      l_sqlerrm  varchar2(4000);
+   begin
+      wt_assert.g_testcase := 'Trigger Offset Test';
+      --------------------------------------  WTPLSQL Testing --
+   end tc_trigger_offset;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 
 ------------------------------------------------------------
 function calc_pct_coverage
@@ -660,6 +714,18 @@ BEGIN
    return null;
 END calc_pct_coverage;
 
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_calc_pct_coverage
+   is
+      num_recs   number;
+      l_sqlerrm  varchar2(4000);
+   begin
+      wt_assert.g_testcase := 'Calculate Percentage Offset';
+      --------------------------------------  WTPLSQL Testing --
+   end tc_calc_pct_coverage;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 
 ------------------------------------------------------------
 procedure delete_records
@@ -678,6 +744,110 @@ exception
       return;
 end delete_records;
 
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure tc_delete_records
+   is
+      c_test_run_id  constant number := -98;
+      l_rec          wt_dbout_profiles%ROWTYPE;
+      l_num_recs     number;
+      l_sqlerrm      varchar2(4000);
+   begin
+      wt_assert.g_testcase := 'Delete Records';
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eqqueryvalue (
+         msg_in           => 'DELETE_RECORDS Initial Test1',
+         check_query_in   => 'select count(*) from wt_test_runs' ||
+                             ' where id = ' || c_test_run_id,
+         against_value_in => 0);
+      wt_assert.eqqueryvalue (
+         msg_in           => 'DELETE_RECORDS Initial Test2',
+         check_query_in   => 'select count(*) from wt_dbout_profiles' ||
+                             ' where test_run_id = ' || c_test_run_id,
+         against_value_in => 0);
+      --------------------------------------  WTPLSQL Testing --
+      begin
+         insert into wt_test_runs
+               (id, start_dtm, runner_owner, runner_name)
+            values
+               (c_test_run_id, sysdate, USER, 'Unit Testing');
+         l_sqlerrm := SQLERRM;
+         commit;
+      exception when others then
+         l_sqlerrm := SQLERRM;
+      end;
+      wt_assert.eq (
+         msg_in        => 'DELETE_RECORDS Insert 1',
+         check_this_in => l_sqlerrm,
+         against_this_in => 'ORA-0000: normal, successful completion');
+      --------------------------------------  WTPLSQL Testing --
+      l_rec.test_run_id  := c_test_run_id;
+      l_rec.line         := 1;
+      l_rec.status       := 'EXEC';
+      l_rec.total_occur  := 1;
+      l_rec.total_time   := 1;
+      l_rec.min_time     := 1;
+      l_rec.max_time     := 1;
+      l_rec.text         := 'Testing';
+      begin
+         insert into wt_dbout_profiles values l_rec;
+         l_sqlerrm := SQLERRM;
+         commit;
+      exception when others then
+         l_sqlerrm := SQLERRM;
+      end;
+      wt_assert.eq (
+         msg_in        => 'DELETE_RECORDS Insert 2',
+         check_this_in => l_sqlerrm,
+         against_this_in => 'ORA-0000: normal, successful completion');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eqqueryvalue (
+         msg_in           => 'DELETE_RECORDS Insert Test1',
+         check_query_in   => 'select count(*) from wt_test_runs' ||
+                             ' where id = ' || c_test_run_id,
+         against_value_in => 1);
+      wt_assert.eqqueryvalue (
+         msg_in           => 'DELETE_RECORDS Insert Test2',
+         check_query_in   => 'select count(*) from wt_dbout_profiles' ||
+                             ' where test_run_id = ' || c_test_run_id,
+         against_value_in => 1);
+      --------------------------------------  WTPLSQL Testing --
+      begin
+         delete_records(c_test_run_id);
+         l_sqlerrm := SQLERRM;
+      exception when others then
+         l_sqlerrm := SQLERRM;
+      end;
+      wt_assert.eq (
+         msg_in        => 'DELETE_RECORDS Delete 1',
+         check_this_in => l_sqlerrm,
+         against_this_in => 'ORA-0000: normal, successful completion');
+      --------------------------------------  WTPLSQL Testing --
+      begin
+         delete from wt_test_runs where id = c_test_run_id;
+         l_sqlerrm := SQLERRM;
+         commit;
+      exception when others then
+         l_sqlerrm := SQLERRM;
+      end;
+      wt_assert.eq (
+         msg_in        => 'DELETE_RECORDS Delete 2',
+         check_this_in => l_sqlerrm,
+         against_this_in => 'ORA-0000: normal, successful completion');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eqqueryvalue (
+         msg_in           => 'DELETE_RECORDS Final Test1',
+         check_query_in   => 'select count(*) from wt_dbout_profiles' ||
+                             ' where test_run_id = ' || c_test_run_id,
+         against_value_in => 0);
+      wt_assert.eqqueryvalue (
+         msg_in           => 'DELETE_RECORDS Final Test2',
+         check_query_in   => 'select count(*) from wt_test_runs' ||
+                             ' where id = ' || c_test_run_id,
+         against_value_in => 0);
+   end tc_delete_records;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 
 --==============================================================--
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -687,6 +857,16 @@ $THEN
    begin
       tc_get_error_msg;
       tc_check_not_regexp;
+      tc_delete_profiler_recs;
+      tc_find_dbout;
+      tc_load_anno_aa;
+      tc_find_excluded_pattern;
+      tc_insert_dbout_profile;
+      tc_initialize;
+      tc_finalize;
+      tc_trigger_offset;
+      tc_calc_pct_coverage;
+      tc_delete_records;
    end WTPLSQL_RUN;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--
