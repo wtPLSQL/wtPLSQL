@@ -71,6 +71,7 @@ $THEN
    is
    begin
       wt_assert.g_testcase := 'BOOLEAN_TO_STATUS';
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq
          (msg_in            => 'Test for "TRUE" conversion'
          ,check_this_in     => boolean_to_status(TRUE)
@@ -126,6 +127,7 @@ $THEN
       PRAGMA EXCEPTION_INIT(ASSERT_TEST_EXCEPTION, -20003);
    begin
       g_testcase         := 'PROCESS_ASSERTION';
+      --------------------------------------  WTPLSQL Testing --
       g_rec.last_assert  := 'THIS';
       g_rec.last_pass    := FALSE;
       g_rec.last_details := 'Expected "PASS" and got "FAIL"';
@@ -198,6 +200,7 @@ $THEN
    is
    begin
       wt_assert.g_testcase := 'COMPARE_QUERIES';
+      --------------------------------------  WTPLSQL Testing --
       compare_queries (
          check_query_in     => 'select bogus123 from bogus456',
          against_query_in   => 'select bogus987 from bogus654');
@@ -213,6 +216,7 @@ $THEN
          msg_in          => 'Bad Query Test 1b g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             '%PL/SQL: ORA-00942: table or view does not exist%'));
+      --------------------------------------  WTPLSQL Testing --
       compare_queries (
          check_query_in     => 'select table_name from user_tables',
          against_query_in   => 'select tablespace_name from user_tables');
@@ -272,6 +276,7 @@ $THEN
    is
    begin
       wt_assert.g_testcase := 'Last Values Tests';
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in          => 'Last Pass',
          check_this_in   => last_pass,
@@ -282,6 +287,7 @@ $THEN
          check_this_in   => last_assert,
          against_this_in => g_rec.last_assert,
          null_ok_in      => TRUE);
+      --------------------------------------  WTPLSQL Testing --
       temp_rec := g_rec;
       wt_assert.eq (
          msg_in          => 'Last MSG',
@@ -319,6 +325,7 @@ $THEN
       temp_raise_excpt := g_raise_exception;
       temp_testcase    := g_testcase;
       g_testcase       := 'RESET_GLOBALS';
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull(
          msg_in        => 'g_testcase is null',
          check_this_in => temp_testcase);
@@ -406,6 +413,7 @@ $THEN
    is
    begin
       wt_assert.g_testcase := 'NLS Settings';
+      --------------------------------------  WTPLSQL Testing --
       set_NLS_DATE_FORMAT('DD-MON-YYYY');
       wt_assert.eq
          (msg_in          => 'Check get_NLS_DATE_FORMAT 1'
@@ -422,6 +430,7 @@ $THEN
          ,check_this_in   => get_NLS_TIMESTAMP_FORMAT
          ,against_this_in => 'DD-MON-YYYY');
       set_NLS_TIMESTAMP_FORMAT;
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq
          (msg_in          => 'Check get_NLS_TIMESTAMP_FORMAT 2'
          ,check_this_in   => get_NLS_TIMESTAMP_FORMAT
@@ -951,6 +960,10 @@ $THEN
          check_this_in   => 4,
          against_this_in => 4);
       eq (
+         msg_in          => 'EQ NUMBER Happy Path 2',
+         check_this_in   => 9876543210987654321098765432109876543210,
+         against_this_in => 9876543210987654321098765432109876543210);
+      eq (
          msg_in          => 'EQ PLS_INTEGER Happy Path 1',
          check_this_in   => temp_pint1,
          against_this_in => temp_pint1);
@@ -1196,6 +1209,7 @@ $THEN
          msg_in          => 'EQ CLOB Happy Path 1b g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected "<?xml version="1.0" encoding="UTF-8"?>%'));
+      --------------------------------------  WTPLSQL Testing --
       eq (
          msg_in          => 'EQ CLOB Happy Path 2',
          check_this_in   => temp_clob1,
@@ -1514,6 +1528,7 @@ $THEN
          msg_in          => 'ISNOTNULL VARCHAR2 Happy Path 1 g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected NOT NULL and got "X"');
+      --------------------------------------  WTPLSQL Testing --
       wtplsql_skip_save := TRUE;
       isnotnull (
          msg_in        => 'Not Used',
@@ -1560,6 +1575,7 @@ $THEN
          msg_in          => 'ISNOTNULL CLOB Happy Path 1b g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected NOT NULL and got "<?xml version="1.0" encoding="UTF-8"?>%'));
+      --------------------------------------  WTPLSQL Testing --
       wtplsql_skip_save := TRUE;
       isnotnull (
          msg_in        => 'Not Used',
@@ -1590,6 +1606,7 @@ $THEN
          msg_in          => 'ISNOTNULL BLOB Happy Path 1 g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'BLOB is NOT NULL');
+      --------------------------------------  WTPLSQL Testing --
       wtplsql_skip_save := TRUE;
       isnotnull (
          msg_in        => 'Not Used',
@@ -1693,6 +1710,7 @@ $THEN
          msg_in          => 'ISNULL VARCHAR2 Happy Path 1 g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected NULL and got ""');
+      --------------------------------------  WTPLSQL Testing --
       wtplsql_skip_save := TRUE;
       isnull (
          msg_in        => 'Not Used',
@@ -1736,6 +1754,7 @@ $THEN
          msg_in          => 'ISNULL CLOB Happy Path 1 g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected NULL and got ""');
+      --------------------------------------  WTPLSQL Testing --
       wtplsql_skip_save := TRUE;
       isnull (
          msg_in        => 'Not Used',
@@ -1766,6 +1785,7 @@ $THEN
          msg_in          => 'ISNULL BLOB Happy Path 1 g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'BLOB is NULL');
+      --------------------------------------  WTPLSQL Testing --
       wtplsql_skip_save := TRUE;
       isnull (
          msg_in        => 'Not Used',
@@ -2239,6 +2259,7 @@ $THEN
    is
    begin
       wt_assert.g_testcase := 'EQQUERY Tests';
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eqquery (
          msg_in             =>   'EQQUERY Tests Happy Path 1',
          check_query_in     =>   'select * from USER_TABLES',
@@ -2338,6 +2359,7 @@ $THEN
    is
    begin
       wt_assert.g_testcase := 'EQTABLE Tests';
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eqtable (
          msg_in             =>   'EQTABLE Tests Happy Path 1',
          check_this_in      =>   'USER_TABLES',
@@ -2481,6 +2503,7 @@ $THEN
    is
    begin
       wt_assert.g_testcase := 'EQTABCOUNT Tests';
+      --------------------------------------  WTPLSQL Testing --
       eqtabcount (
          msg_in             =>   'EQTABCOUNT Tests Happy Path 1',
          check_this_in      =>   'ALL_TABLES',
@@ -2602,6 +2625,7 @@ $THEN
    is
    begin
       wt_assert.g_testcase := 'OBJEXISTS Tests';
+      --------------------------------------  WTPLSQL Testing --
       objexists (
          msg_in        =>   'OBJEXISTS Happy Path 1',
          obj_owner_in  =>   'SYS',
@@ -2689,6 +2713,7 @@ $THEN
    is
    begin
       wt_assert.g_testcase := 'OBJNOTEXISTS Tests';
+      --------------------------------------  WTPLSQL Testing --
       objnotexists (
          msg_in        =>   'OBJNOTEXISTS Happy Path 1',
          obj_owner_in  =>   'BOGUS123',

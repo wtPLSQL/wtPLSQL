@@ -43,6 +43,7 @@ $THEN
       l_results_ntTEST   results_nt_type;
    begin
       wt_assert.g_testcase := 'Initialize';
+      --------------------------------------  WTPLSQL Testing --
       l_results_ntSAVE  := g_results_nt;
       l_results_recSAVE := g_results_rec;
       g_results_rec     := l_results_recNULL;
@@ -69,6 +70,7 @@ $THEN
       wt_assert.isnull (
          msg_in          => 'Initialize g_results_rec.assertion',
          check_this_in   => l_results_recTEST.assertion);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
          msg_in          => 'Initialize g_results_rec.status',
          check_this_in   => l_results_recTEST.status);
@@ -133,6 +135,7 @@ $THEN
       l_num_recs           number;
    begin
       wt_assert.g_testcase := 'Finalize';
+      --------------------------------------  WTPLSQL Testing --
       l_results_ntSAVE  := g_results_nt;    -- Capture Original Values
       l_results_recSAVE := g_results_rec;   -- Capture Original Values
       --------------------------------------  WTPLSQL Testing --
@@ -254,6 +257,7 @@ $THEN
       l_dbmsout_stat   number;
    begin
       wt_assert.g_testcase := 'Null Save Testing';
+      --------------------------------------  WTPLSQL Testing --
       l_test_run_id  := g_results_rec.test_run_id;
       g_results_rec.test_run_id := NULL;
       wt_result.save (
@@ -275,6 +279,7 @@ $THEN
       then
          return;  -- Nothing in DBMS_OUPUT buffer. End this now.
       end if;
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull (
          msg_in        => 'Save Testing NULL Test DBMS_OUTPUT 2 Line',
          check_this_in => l_dbmsout_line);
@@ -295,6 +300,7 @@ $THEN
       l_nt_count       number;
    begin
       wt_assert.g_testcase := 'Save Testing';
+      --------------------------------------  WTPLSQL Testing --
       l_nt_count     := g_results_nt.COUNT;
       wt_result.save (
          in_assertion  => 'SELFTEST2',
@@ -327,6 +333,7 @@ $THEN
          msg_in          => 'Save Testing Test g_results_nt 5 status',
          check_this_in   => g_results_nt(l_nt_count).testcase,
          against_this_in => wt_assert.g_testcase);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in          => 'Save Testing Test g_results_nt 6 message',
          check_this_in   => g_results_nt(l_nt_count).message,
@@ -365,6 +372,7 @@ $THEN
       l_num_recs       number;
    begin
       wt_assert.g_testcase := 'Delete Records';
+      --------------------------------------  WTPLSQL Testing --
       select count(*) into l_num_recs
        from  wt_results
        where test_run_id = -99;
