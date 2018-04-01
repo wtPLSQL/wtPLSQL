@@ -7,7 +7,6 @@ create table wt_dbout_profiles
    (test_run_id    number(38)     constraint wt_dbout_profiles_nn1 not null
    ,line           number(6)      constraint wt_dbout_profiles_nn2 not null
    ,status         varchar2(4)    constraint wt_dbout_profiles_nn3 not null
-   ,not_exec_id    number
    ,total_occur    number(9)      constraint wt_dbout_profiles_nn4 not null
    ,total_time     number(9)      constraint wt_dbout_profiles_nn5 not null
    ,min_time       number(9)      constraint wt_dbout_profiles_nn6 not null
@@ -16,8 +15,6 @@ create table wt_dbout_profiles
    ,constraint wt_dbout_profiles_pk primary key (test_run_id, line)
    ,constraint wt_dbout_profiles_fk1 foreign key (test_run_id)
        references wt_test_runs (id)
-   ,constraint wt_dbout_profiles_fk2 foreign key (not_exec_id)
-       references wt_not_executable (id)
    ,constraint wt_dbout_profiles_ck1 check (status in ('EXEC','NOTX','EXCL','ANNO','UNKN'))
    ) pctfree 0;
 
@@ -25,7 +22,6 @@ comment on table wt_dbout_profiles is 'PL/SQL Profiler data for Database Object 
 comment on column wt_dbout_profiles.test_run_id is 'Foreign Key for the Test Run, Primary Key part 1.';
 comment on column wt_dbout_profiles.line is 'Source code line number, Primary Key part 2.';
 comment on column wt_dbout_profiles.status is 'Executed/NotExecuted/Excluded/Annotated/Unknown Status from the Profiler';
-comment on column wt_dbout_profiles.not_exec_id is 'Foreign Key to one of the matching records from TEXT.WT_NOT_EXECUTABLE';
 comment on column wt_dbout_profiles.total_occur is 'Number of times this line was executed.';
 comment on column wt_dbout_profiles.total_time is 'Total time spent executing this line.';
 comment on column wt_dbout_profiles.min_time is 'Minimum execution time for this line.';

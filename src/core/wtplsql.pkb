@@ -142,6 +142,7 @@ procedure test_run
       (in_package_name  in  varchar2)
 is
    l_test_runs_rec_NULL   wt_test_runs%ROWTYPE;
+   l_error_message        varchar2(4000);
 begin
    $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
    $THEN
@@ -153,11 +154,12 @@ begin
       end if;
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    -- Reset the Test Runs Record before checking anything
-   g_test_runs_rec              := l_test_runs_rec_NULL;
-   g_test_runs_rec.id           := wt_test_runs_seq.nextval;
-   g_test_runs_rec.start_dtm    := systimestamp;
-   g_test_runs_rec.runner_owner := USER;
-   g_test_runs_rec.runner_name  := in_package_name;
+   g_test_runs_rec               := l_test_runs_rec_NULL;
+   g_test_runs_rec.id            := wt_test_runs_seq.nextval;
+   g_test_runs_rec.start_dtm     := systimestamp;
+   g_test_runs_rec.runner_owner  := USER;
+   g_test_runs_rec.runner_name   := in_package_name;
+   g_test_runs_rec.error_message := '';
    check_runner;
    -- Initialize
    delete_runs(in_runner_owner => g_test_runs_rec.runner_owner  -- Autonomous Transaction COMMIT
@@ -169,7 +171,16 @@ begin
                           out_dbout_name      => g_test_runs_rec.dbout_name,
                           out_dbout_type      => g_test_runs_rec.dbout_type,
                           out_trigger_offset  => g_test_runs_rec.trigger_offset,
-                          out_profiler_runid  => g_test_runs_rec.profiler_runid);
+                          out_profiler_runid  => g_test_runs_rec.profiler_runid,
+                          out_error_message   => l_error_message);
+   if g_test_runs_rec.error_message is not null
+   then
+      g_test_runs_rec.error_message := substr(l_error_message || CHR(10)||
+                                              g_test_runs_rec.error_message
+                                             ,1,4000);
+   else
+      g_test_runs_rec.error_message := l_error_message;
+   end if;
 
    -- Call the Test Runner
    begin
@@ -177,13 +188,19 @@ begin
    exception
       when OTHERS
       then
-         g_test_runs_rec.error_message := substr(dbms_utility.format_error_stack  ||
-                                                 dbms_utility.format_error_backtrace
-                                                ,1,4000);
+         l_error_message := dbms_utility.format_error_stack     ||
+                            dbms_utility.format_error_backtrace ;
+         if g_test_runs_rec.error_message is not null
+         then
+            g_test_runs_rec.error_message := substr(l_error_message || CHR(10)||
+                                                    g_test_runs_rec.error_message
+                                                   ,1,4000);
+         else
+            g_test_runs_rec.error_message := l_error_message;
+         end if;
    end;
 
    -- Finalize
-   wt_profiler.pause;
    insert_test_run;       -- Autonomous Transaction COMMIT
    wt_profiler.finalize;  -- Autonomous Transaction COMMIT
    wt_result.finalize;    -- Autonomous Transaction COMMIT
@@ -191,11 +208,16 @@ begin
 exception
    when OTHERS
    then
-      g_test_runs_rec.error_message := substr(dbms_utility.format_error_stack  ||
-                                              dbms_utility.format_error_backtrace ||
-                                              CHR(10) || g_test_runs_rec.error_message
-                                             ,1,4000);
-      wt_profiler.pause;
+      l_error_message := dbms_utility.format_error_stack     ||
+                         dbms_utility.format_error_backtrace ;
+      if g_test_runs_rec.error_message is not null
+      then
+         g_test_runs_rec.error_message := substr(l_error_message || CHR(10)||
+                                                 g_test_runs_rec.error_message
+                                                ,1,4000);
+      else
+         g_test_runs_rec.error_message := l_error_message;
+      end if;
       insert_test_run;       -- Autonomous Transaction COMMIT
       wt_profiler.finalize;  -- Autonomous Transaction COMMIT
       wt_result.finalize;    -- Autonomous Transaction COMMIT
@@ -299,6 +321,10 @@ $THEN
       l_sqlerrm   varchar2(4000);
    begin
       wt_assert.g_testcase := 'DELETE_RUNS TEST_RUN_ID';
+      -- Cleanup from previous test
+      delete from wt_test_runs
+        where id between 0-C_KEEP_NUM_RECS and 0-1;
+      commit;
       --------------------------------------  WTPLSQL Testing --
       --  DELETE_RECORDS has already run when we arrive here.
       select count(*)
@@ -358,7 +384,7 @@ $THEN
                            '''',
          against_value_in => C_KEEP_NUM_RECS);
       delete from wt_test_runs
-        where id between 0-1 and 0-C_KEEP_NUM_RECS;
+        where id between 0-C_KEEP_NUM_RECS and 0-1;
       commit;
       wt_assert.eqqueryvalue (
          msg_in           => 'Confirm original number of records',

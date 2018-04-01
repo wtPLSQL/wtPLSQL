@@ -460,7 +460,6 @@ procedure this (
       null_ok_in      in   boolean := false)
 is
 begin
-   wt_profiler.pause;
    g_rec.last_assert  := 'THIS';
    g_rec.last_msg     := msg_in;
    -- NULL_OK_IN is not used, but included for legacy calls
@@ -468,7 +467,6 @@ begin
    g_rec.last_details := 'Expected "' || C_PASS ||
                         '" and got "' || boolean_to_status(check_this_in) || '"';
    process_assertion;
-   wt_profiler.resume;
 end this;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -533,7 +531,6 @@ procedure eq (
    null_ok_in        in   boolean := false)
 is
 begin
-   wt_profiler.pause;
    g_rec.last_assert  := 'EQ';
    g_rec.last_msg     := msg_in;
    g_rec.last_pass    := (   nvl(check_this_in = against_this_in, false)
@@ -545,7 +542,6 @@ begin
                         '" and got "' || substr(check_this_in  ,1,1000) ||
                         '"';
    process_assertion;
-   wt_profiler.resume;
 end eq;
 
 -- EQ: boolean overload
@@ -569,7 +565,6 @@ procedure eq (
    against_this_in   in   XMLTYPE)
 is
 begin
-   wt_profiler.pause;
    g_rec.last_assert  := 'EQ';
    g_rec.last_msg     := msg_in;
    g_rec.last_pass    := (xmltype.getclobval(check_this_in)  =
@@ -578,7 +573,6 @@ begin
                         '" and got "' || substr(xmltype.getclobval(check_this_in)  ,1,1000) ||
                         '"';
    process_assertion;
-   wt_profiler.resume;
 end eq;
 
 -- EQ: CLOB
@@ -589,7 +583,6 @@ procedure eq (
    null_ok_in        in   boolean := false)
 is
 begin
-   wt_profiler.pause;
    g_rec.last_assert  := 'EQ';
    g_rec.last_msg     := msg_in;
    g_rec.last_pass    := (   nvl(check_this_in = against_this_in, false)
@@ -601,7 +594,6 @@ begin
                         '" and got "' || substr(check_this_in  ,1,1000) ||
                         '"';
    process_assertion;
-   wt_profiler.resume;
 end eq;
 
 -- EQ: BLOB
@@ -613,7 +605,6 @@ procedure eq (
 is
    compare_results  number;
 begin
-   wt_profiler.pause;
    g_rec.last_assert  := 'EQ';
    g_rec.last_msg     := msg_in;
    compare_results    := nvl(DBMS_LOB.COMPARE(check_this_in, against_this_in),-1);
@@ -624,7 +615,6 @@ begin
                          );
    g_rec.last_details := 'DBMS_LOB.COMPARE on BLOBs, compare_results: ' || compare_results;
    process_assertion;
-   wt_profiler.resume;
 end eq;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -1445,14 +1435,12 @@ procedure isnotnull (
    check_this_in   in   varchar2)
 is
 begin
-   wt_profiler.pause;
    g_rec.last_assert  := 'ISNOTNULL';
    g_rec.last_msg     := msg_in;
    g_rec.last_pass    := (check_this_in is not null);
    g_rec.last_details := 'Expected NOT NULL and got "' ||
                           substr(check_this_in,1,2000) || '"';
    process_assertion;
-   wt_profiler.resume;
 end isnotnull;
 
 -- ISNOTNULL boolean overload
@@ -1471,14 +1459,12 @@ procedure isnotnull (
    check_this_in   in   CLOB)
 is
 begin
-   wt_profiler.pause;
    g_rec.last_assert  := 'ISNOTNULL';
    g_rec.last_msg     := msg_in;
    g_rec.last_pass    := (check_this_in is not null);
    g_rec.last_details := 'Expected NOT NULL and got "' ||
                           substr(check_this_in,1,2000) || '"';
    process_assertion;
-   wt_profiler.resume;
 end isnotnull;
 
 -- ISNOTNULL BLOB overload
@@ -1487,7 +1473,6 @@ procedure isnotnull (
    check_this_in   in   BLOB)
 is
 begin
-   wt_profiler.pause;
    g_rec.last_assert  := 'ISNOTNULL';
    g_rec.last_msg     := msg_in;
    g_rec.last_pass    := (check_this_in is not null);
@@ -1498,7 +1483,6 @@ begin
       g_rec.last_details := 'BLOB is NULL';
    end if;
    process_assertion;
-   wt_profiler.resume;
 end isnotnull;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -1627,14 +1611,12 @@ procedure isnull (
    check_this_in   in   varchar2)
 is
 begin
-   wt_profiler.pause;
    g_rec.last_assert  := 'ISNULL';
    g_rec.last_msg     := msg_in;
    g_rec.last_pass    := (check_this_in is null);
    g_rec.last_details := 'Expected NULL and got "' ||
                       substr(check_this_in,1,2000) || '"';
    process_assertion;
-   wt_profiler.resume;
 end isnull;
 
 -- ISNULL boolean overload
@@ -1653,14 +1635,12 @@ procedure isnull (
    check_this_in   in   CLOB)
 is
 begin
-   wt_profiler.pause;
    g_rec.last_assert  := 'ISNULL';
    g_rec.last_msg     := msg_in;
    g_rec.last_pass    := (check_this_in is null);
    g_rec.last_details := 'Expected NULL and got "' ||
                       substr(check_this_in,1,2000) || '"';
    process_assertion;
-   wt_profiler.resume;
 end isnull;
 
 -- ISNULL BLOB overload
@@ -1669,7 +1649,6 @@ procedure isnull (
    check_this_in   in   BLOB)
 is
 begin
-   wt_profiler.pause;
    g_rec.last_assert  := 'ISNULL';
    g_rec.last_msg     := msg_in;
    g_rec.last_pass    := (check_this_in is null);
@@ -1680,7 +1659,6 @@ begin
       g_rec.last_details := 'BLOB is NOT NULL';
    end if;
    process_assertion;
-   wt_profiler.resume;
 end isnull;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -1811,13 +1789,11 @@ is
 begin
    begin
       execute immediate 'begin ' || check_call_in || '; end;';
-      wt_profiler.pause;
    exception when OTHERS then
       l_sqlerrm := SQLERRM;
       l_errstack := substr(dbms_utility.format_error_stack  ||
                            dbms_utility.format_error_backtrace
                            ,1,4000);
-      wt_profiler.pause;
    end;
    --
    g_rec.last_assert  := 'RAISES';
@@ -1832,7 +1808,6 @@ begin
                        '%". Actual exception raised was "' || l_errstack     ||
                                '". Exception raised by: '  || check_call_in  ;
    process_assertion;
-   wt_profiler.resume;
 end raises;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -1921,15 +1896,11 @@ is
    l_rc          rc_type;
    l_rc_buff     varchar2 (32000);
 begin
-   wt_profiler.pause;
-   --
    g_rec.last_assert  := 'EQQUERYVALUE';
    g_rec.last_msg     := msg_in;
-   --
    open l_rc for check_query_in;
    fetch l_rc into l_rc_buff;
    close l_rc;
-   --
    g_rec.last_pass    := (   l_rc_buff = against_value_in
                           or (    l_rc_buff is null
                               and against_value_in is null
@@ -1937,10 +1908,7 @@ begin
    g_rec.last_details := 'Expected "' || substr(against_value_in,1,1000) ||
                         '" and got "' || substr(l_rc_buff       ,1,1000) ||
                       '" for Query: ' || substr(check_query_in  ,1,1000) ;
-   --
    process_assertion;
-   wt_profiler.resume;
-   --
 end eqqueryvalue;
 
 -- EQQUERYVALUE XMLTYPE Overload
@@ -1953,24 +1921,17 @@ is
    l_rc          rc_type;
    l_rc_buff     XMLTYPE;
 begin
-   wt_profiler.pause;
-   --
    g_rec.last_assert  := 'EQQUERYVALUE';
    g_rec.last_msg     := msg_in;
-   --
    open l_rc for check_query_in;
    fetch l_rc into l_rc_buff;
    close l_rc;
-   --
    g_rec.last_pass    := (xmltype.getclobval(l_rc_buff)       =
                           xmltype.getclobval(against_value_in)  );
    g_rec.last_details := 'Expected "' || substr(xmltype.getclobval(against_value_in),1,1000) ||
                         '" and got "' || substr(xmltype.getclobval(l_rc_buff       ),1,1000) ||
                       '" for Query: ' || substr(                   check_query_in   ,1,1000) ;
-   --
    process_assertion;
-   wt_profiler.resume;
-   --
 end eqqueryvalue;
 
 -- EQQUERYVALUE CLOB Overload
@@ -1984,15 +1945,11 @@ is
    l_rc          rc_type;
    l_rc_buff     CLOB;
 begin
-   wt_profiler.pause;
-   --
    g_rec.last_assert  := 'EQQUERYVALUE';
    g_rec.last_msg     := msg_in;
-   --
    open l_rc for check_query_in;
    fetch l_rc into l_rc_buff;
    close l_rc;
-   --
    g_rec.last_pass    := (   l_rc_buff = against_value_in
                           or (    l_rc_buff is null
                               and against_value_in is null
@@ -2000,10 +1957,7 @@ begin
    g_rec.last_details := 'Expected "' || substr(against_value_in,1,1000) ||
                         '" and got "' || substr(l_rc_buff       ,1,1000) ||
                       '" for Query: ' || substr(check_query_in  ,1,1000) ;
-   --
    process_assertion;
-   wt_profiler.resume;
-   --
 end eqqueryvalue;
 
 -- EQQUERYVALUE BLOB Overload
@@ -2018,15 +1972,11 @@ is
    l_rc_buff       BLOB;
    compare_results number;
 begin
-   wt_profiler.pause;
-   --
    g_rec.last_assert  := 'EQQUERYVALUE';
    g_rec.last_msg     := msg_in;
-   --
    open l_rc for check_query_in;
    fetch l_rc into l_rc_buff;
    close l_rc;
-   --
    compare_results    := nvl(DBMS_LOB.COMPARE(l_rc_buff, against_value_in),-1);
    g_rec.last_pass    := (   (compare_results = 0)
                           or (    l_rc_buff is null
@@ -2035,10 +1985,7 @@ begin
    g_rec.last_details := 'DBMS_LOB.COMPARE between BLOB and Query: ' ||
                            substr(check_query_in  ,1,2000) ||
                         ', compare_results: ' || compare_results;
-   --
    process_assertion;
-   wt_profiler.resume;
-   --
 end eqqueryvalue;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -2245,12 +2192,10 @@ procedure eqquery (
       against_query_in   in   varchar2)
 is
 begin
-   wt_profiler.pause;
    g_rec.last_assert  := 'EQQUERY';
    g_rec.last_msg     := msg_in;
    compare_queries(check_query_in, against_query_in);
    process_assertion;
-   wt_profiler.resume;
 end eqquery;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -2337,7 +2282,6 @@ is
    l_check_query    varchar2(16000) := 'select * from ' || check_this_in;
    l_against_query  varchar2(16000) := 'select * from ' || against_this_in;
 begin
-   wt_profiler.pause;
    g_rec.last_assert  := 'EQTABLE';
    g_rec.last_msg     := msg_in;
    if check_where_in is not null
@@ -2350,7 +2294,6 @@ begin
    end if;
    compare_queries(l_check_query, l_against_query);
    process_assertion;
-   wt_profiler.resume;
 end eqtable;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -2464,11 +2407,8 @@ is
          g_rec.last_pass    := FALSE;
          l_success      := FALSE;
          process_assertion;
-         wt_profiler.resume;
    end l_run_query;
 begin
-   wt_profiler.pause;
-   --
    g_rec.last_assert  := 'EQTABCOUNT';
    g_rec.last_msg     := msg_in;
    --
@@ -2494,7 +2434,6 @@ begin
                         '" and got ' || l_check_cnt || ' rows from "' || check_this_in   ||
                         '"';
    process_assertion;
-   wt_profiler.resume;
 end eqtabcount;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -2578,6 +2517,29 @@ $THEN
          msg_in          => 'EQTABCOUNT Sad Path 2b g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                'Expected % rows from "USER_TAB_COLUMNS" and got % rows from "USER_TABLES"'));
+      --------------------------------------  WTPLSQL Testing --
+      wtplsql_skip_save := TRUE;
+      eqtabcount (
+         msg_in             =>   'Not Used',
+         check_this_in      =>   'BOGUS1',
+         against_this_in    =>   'BOGUS2');
+      temp_rec := g_rec;
+      wtplsql_skip_save := FALSE;
+      wt_assert.eq (
+         msg_in          => 'EQTABCOUNT Sad Path 3',
+         check_this_in   => temp_rec.last_pass,
+         against_this_in => FALSE);
+      wt_assert.isnotnull (
+         msg_in          => 'EQTABCOUNT Sad Path 3a g_rec.last_details',
+         check_this_in   => temp_rec.last_details);
+      wt_assert.this (
+         msg_in          => 'EQTABCOUNT Sad Path 3b g_rec.last_details',
+         check_this_in   => (temp_rec.last_details like
+               '%table or view does not exist%'));
+      wt_assert.this (
+         msg_in          => 'EQTABCOUNT Sad Path 3c g_rec.last_details',
+         check_this_in   => (temp_rec.last_details like
+               '%FAILURE of Compare Query%'));
    end tc_eqtabcount;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
@@ -2590,7 +2552,6 @@ procedure objexists (
 is
    l_num_objects  number;
 begin
-   wt_profiler.pause;
    g_rec.last_assert  := 'OBJEXISTS';
    g_rec.last_msg     := msg_in;
    select count(*) into l_num_objects
@@ -2604,7 +2565,6 @@ begin
                               else obj_owner_in || '.' end ||
                          obj_name_in || '" is ' || l_num_objects;
    process_assertion;
-   wt_profiler.resume;
 end objexists;
 
 -- Concatenated SCHEMA_NAME.OBJECT_NAME
@@ -2678,7 +2638,6 @@ procedure objnotexists (
 is
    l_num_objects  number;
 begin
-   wt_profiler.pause;
    g_rec.last_assert  := 'OBJNOTEXISTS';
    g_rec.last_msg     := msg_in;
    select count(*) into l_num_objects
@@ -2692,7 +2651,6 @@ begin
                               else obj_owner_in || '.' end ||
                          obj_name_in || '" is ' || l_num_objects;
    process_assertion;
-   wt_profiler.resume;
 end objnotexists;
 
 -- Concatenated SCHEMA_NAME.OBJECT_NAME
@@ -2763,7 +2721,7 @@ $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    -- Can't profile this package because all the "assert" tests
    --   pause profiling before they execute.
-   procedure WTPLSQL_RUN
+   procedure WTPLSQL_RUN  --% WTPLSQL SET DBOUT "WT_ASSERT" %--
    is
    begin
       select temp_clob,  temp_nclob,  temp_xml,  temp_blob

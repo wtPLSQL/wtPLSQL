@@ -8,13 +8,10 @@ as
        out_dbout_name      out varchar2,
        out_dbout_type      out varchar2,
        out_trigger_offset  out number,
-       out_profiler_runid  out number);
+       out_profiler_runid  out number,
+       out_error_message   out varchar2);
 
    procedure finalize;
-
-   procedure pause;
-
-   procedure resume;
 
    function trigger_offset
       (dbout_owner_in  in  varchar2

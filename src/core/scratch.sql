@@ -55,7 +55,7 @@ declare
                            --  ,in_hide_details   => TRUE
                            --  ,in_summary_last   => TRUE
                              ,in_show_pass      => TRUE
-                           --  ,in_show_aux       => TRUE
+                             ,in_show_aux       => TRUE
                              );
    end report_test;
 begin
@@ -73,6 +73,12 @@ begin
 end;
 /
 
+select * from user_errors
+ --where attribute = 'ERROR'
+ order by name, type, sequence, line, position, text;
+
+ where name = 'WT_PROFILE_TEST';
+
 select * from dual
  where regexp_like('package body wt_result', '(FUNCTION|PROCEDURE|PACKAGE|TYPE|TRIGGER)', 'i');
 
@@ -80,3 +86,24 @@ select * from dual
 select * from wt_dbout_profiles where test_run_id = 26 order by line;
 
 select * from wt_test_data;
+
+create or replace procedure wt_profile_test
+is
+  l_junk number;
+begin
+   --% WTPLSQL SET DBOUT "WT_PROFILER" %--'
+   l_junk := 1;
+end wt_profile_test;
+/
+
+begin
+      execute immediate
+         'create or replace procedure wt_profile_test'     || CHR(10) ||
+         'is'                                              || CHR(10) ||
+         '  l_junk number;'                                || CHR(10) ||
+         'begin'                                           || CHR(10) ||
+         '   --% WTPLSQL SET DBOUT "WT_PROFILE_TEST" %--'  || CHR(10) ||
+         '   l_junk := 1;'                                 || CHR(10) ||
+         'end wt_profile_test;'                            ;
+end;
+/

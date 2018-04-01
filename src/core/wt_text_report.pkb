@@ -97,11 +97,14 @@ procedure summary_out
 is
 begin
    p('');
-   p(                    g_test_runs_rec.runner_owner ||
-                  '.' || g_test_runs_rec.runner_name  ||
-     --  ' Test Runner' ||
-     ' (Test Run ID ' || g_test_runs_rec.id           ||
-                  ')' );
+--   p(                    g_test_runs_rec.runner_owner ||
+--                  '.' || g_test_runs_rec.runner_name  ||
+--     --  ' Test Runner' ||
+--     ' (Test Run ID ' || g_test_runs_rec.id           ||
+--                  ')' );
+   p('Test Results Run ID: ' || g_test_runs_rec.id           ||
+                        ', ' || g_test_runs_rec.runner_owner ||
+                         '.' || g_test_runs_rec.runner_name  );
    p('----------------------------------------');
    result_summary;
    p('  Total Run Time (sec): ' ||
@@ -120,12 +123,16 @@ begin
       return;
    end if;
    p('');
-   p(                    g_test_runs_rec.dbout_owner ||
-                  '.' || g_test_runs_rec.dbout_name  ||
-                  ' ' || g_test_runs_rec.dbout_type  ||
-     ' Code Coverage' || 
-     ' (Test Run ID ' || g_test_runs_rec.id           ||
-                  ')' );
+--   p(                    g_test_runs_rec.dbout_owner ||
+--                  '.' || g_test_runs_rec.dbout_name  ||
+--                  ' ' || g_test_runs_rec.dbout_type  ||
+--     ' Code Coverage' || 
+--     ' (Test Run ID ' || g_test_runs_rec.id           ||
+--                  ')' );
+   p('Code Coverage Run ID: ' || g_test_runs_rec.id          ||
+                         ', ' || g_test_runs_rec.dbout_type  ||
+                          ' ' || g_test_runs_rec.dbout_owner ||
+                          '.' || g_test_runs_rec.dbout_name  );
    p('----------------------------------------');
    profile_summary;
 end summary_out;
@@ -203,6 +210,17 @@ is
      '  Line Stat Occurs    (usec)  (usec)    (usec) Text' || chr(10) ||
      '------ ---- ------ --------- ------- --------- ------------';
    l_show_aux_txt  varchar2(1);
+   header_shown     boolean;
+   procedure l_show_header is begin
+     p('');
+     p(                             g_test_runs_rec.dbout_owner ||
+                              '.' || g_test_runs_rec.dbout_name  ||
+                              ' ' || g_test_runs_rec.dbout_type  ||
+         ' Code Coverage Details' ||
+                 ' (Test Run ID ' || g_test_runs_rec.id           ||
+                              ')' );
+      --p('----------------------------------------');
+   end l_show_header;
 begin
    if g_test_runs_rec.dbout_name is null
    then
@@ -214,15 +232,7 @@ begin
    else
       l_show_aux_txt := 'N';
    end if;
-   p('');
-   p(                             g_test_runs_rec.dbout_owner ||
-                           '.' || g_test_runs_rec.dbout_name  ||
-                           ' ' || g_test_runs_rec.dbout_type  ||
-      ' Code Coverage Details' ||
-              ' (Test Run ID ' || g_test_runs_rec.id           ||
-                           ')' );
-   --p('----------------------------------------');
-   p(l_header_txt);
+   header_shown := FALSE;
    for buff in (
       select line
             ,status
@@ -235,20 +245,28 @@ begin
        from  wt_dbout_profiles
        where test_run_id = g_test_runs_rec.id
        and  (   l_show_aux_txt = 'Y'
-             or status not in ('ANNO','UNKN','EXCL'))
+             or status not in ('EXEC','ANNO','UNKN','EXCL'))
        order by line  )
    loop
-      p(to_char(buff.line,'99999')               || ' ' ||
-           rpad(buff.status,4)                   || ' ' ||
+      if not header_shown
+      then
+         l_show_header;
+         p(l_header_txt);
+         header_shown := TRUE;
+      end if;
+      if mod(buff.rownum,25) = 0
+      then
+         p(l_header_txt);
+      end if;
+      p(to_char(buff.line,'99999')               ||
+        case buff.status when 'NOTX' then '#NOTX#'
+        else ' ' || rpad(buff.status,4) || ' '
+        end                                      ||
         to_char(buff.total_occur,'99999')        || ' ' ||
         to_char(buff.total_time/1000,'99999999') || ' ' ||
         to_char(buff.min_time/1000,'999999')     || ' ' ||
         to_char(buff.max_time/1000,'99999999')   || ' ' ||
         replace(buff.text,CHR(10),'')            );
-      if mod(buff.rownum,25) = 0
-      then
-         p(l_header_txt);
-      end if;
    end loop;
 end profile_out;
 
@@ -266,33 +284,25 @@ function format_test_result
       ,in_message        in wt_results.message%TYPE)
    return varchar2
 is
-
    l_out_str  varchar2(32000) := '';
-
 begin
-
    if in_testcase is not null
    then
       l_out_str := '   --  Test Case: ' || in_testcase || '  --' || CHR(10);
    end if;
-
    if in_status = wt_assert.C_PASS
    then
       l_out_str := l_out_str || ' ' || rpad(in_status,4) || ' ';
    else
       l_out_str := l_out_str || '#' || rpad(in_status,4) || '#';
    end if;
-
    if in_message is not null
    then
       l_out_str := l_out_str || in_message  || '. ';
    end if;
-
    l_out_str := l_out_str || in_assertion || ' - ';
    l_out_str := l_out_str || in_details;
-
    return l_out_str;
-   
 end format_test_result;
 
 ------------------------------------------------------------
