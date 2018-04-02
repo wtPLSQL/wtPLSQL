@@ -22,6 +22,46 @@ as
 ----------------------
 
 
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure compile_db_object
+         (in_ptype   in varchar2
+         ,in_pname   in varchar2
+         ,in_source  in varchar2)
+   is
+      l_sqlerrm  varchar2(4000);
+      l_errtxt   varchar2(32000) := '';
+   begin
+      begin
+         execute immediate 'create or replace ' ||
+            in_ptype || ' ' || in_pname || ' is ' || CHR(10) ||
+            in_source || CHR(10) || 'end ' || in_pname || ';';
+         l_sqlerrm := SQLERRM;
+      exception when others then
+         l_sqlerrm := SQLERRM;
+      end;
+      wt_assert.eq
+         (msg_in          => 'Compile ' || in_ptype || ' ' || in_pname
+         ,check_this_in   => l_sqlerrm
+         ,against_this_in => 'ORA-0000: normal, successful completion');
+      --------------------------------------  WTPLSQL Testing --
+      for buff in (select * from user_errors
+                    where attribute = 'ERROR'
+                     and  name      = in_pname
+                     and  type      = in_ptype
+                    order by sequence)
+      loop
+         l_errtxt := l_errtxt || buff.line || ', ' ||
+            buff.position || ': ' || buff.text || CHR(10);
+      end loop;
+      wt_assert.isnull
+         (msg_in        => 'Compile ' || in_ptype || ' ' || in_pname ||
+                            ' Error'
+         ,check_this_in => l_errtxt);
+   end compile_db_object;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
 ------------------------------------------------------------
 -- Return DBMS_PROFILER specific error messages
 function get_error_msg
@@ -314,296 +354,125 @@ $THEN
       l_recSAVE    rec_type;
       l_recNULL    rec_type;
       l_recTEST    rec_type;
-      l_pname      varchar2(128) := 'WT_PROFILE_TEST';
-      num_recs     number;
+      l_pname      varchar2(128) := 'WT_PROFILE_FIND_DBOUT';
       l_sqlerrm    varchar2(4000);
+      procedure run_find_dbout is begin
+         l_recSAVE := g_rec;
+         g_rec := l_recNULL;
+         find_dbout(l_pname);
+         l_recTEST := g_rec;
+         g_rec := l_recSAVE;
+      end run_find_dbout;
    begin
       wt_assert.g_testcase := 'Find DataBase Object Under Test';
+      compile_db_object
+         (in_ptype   => 'package'
+         ,in_pname   => l_pname
+         ,in_source  => '   l_junk number;' );
       --------------------------------------  WTPLSQL Testing --
-      l_recSAVE := g_rec;
       l_recTEST := g_rec;
       wt_assert.eq
-         (msg_in          => 'g_rec.dbout_owner Test 0'
+         (msg_in          => 'g_rec.dbout_owner Init Test'
          ,check_this_in   => l_recTEST.dbout_owner
          ,against_this_in => USER);
       wt_assert.eq
-         (msg_in          => 'g_rec.dbout_name Test 0'
+         (msg_in          => 'g_rec.dbout_name Init Test'
          ,check_this_in   => l_recTEST.dbout_name
          ,against_this_in => $$PLSQL_UNIT);
       wt_assert.eq
-         (msg_in        => 'g_rec.dbout_type Test 0'
+         (msg_in        => 'g_rec.dbout_type Init Test'
          ,check_this_in => l_recTEST.dbout_type
          ,against_this_in => 'PACKAGE BODY');
       wt_assert.isnull
-         (msg_in        => 'g_rec.error_message Test 0'
+         (msg_in        => 'g_rec.error_message Init Test'
          ,check_this_in => l_recTEST.error_message);
       --------------------------------------  WTPLSQL Testing --
-      begin
-         execute immediate
-            'create or replace package ' || l_pname            || CHR(10) ||
-            'is'                                               || CHR(10) ||
-            '  l_junk number;'                                 || CHR(10) ||
-            'end ' || l_pname || ';'                           ;
-         l_sqlerrm := SQLERRM;
-      exception when others then
-         l_sqlerrm := SQLERRM;
-      end;
-      wt_assert.eq
-         (msg_in          => 'Create Package ' || l_pname || ' 1'
-         ,check_this_in   => l_sqlerrm
-         ,against_this_in => 'ORA-0000: normal, successful completion');
+      compile_db_object
+         (in_ptype   => 'package body'
+         ,in_pname   => l_pname
+         ,in_source  => 'begin' || CHR(10) || '  l_junk := 1;' );
+      run_find_dbout;
+      wt_assert.isnull
+         (msg_in          => 'g_rec.dbout_owner Happy Test 1'
+         ,check_this_in   => l_recTEST.dbout_owner);
+      wt_assert.isnull
+         (msg_in          => 'g_rec.dbout_name Happy Test 1'
+         ,check_this_in   => l_recTEST.dbout_name);
+      wt_assert.isnull
+         (msg_in          => 'g_rec.dbout_type Happy Test 1'
+         ,check_this_in   => l_recTEST.dbout_type);
+      wt_assert.isnull
+         (msg_in          => 'g_rec.error_message Happy Test 1'
+         ,check_this_in   => l_recTEST.error_message);
       --------------------------------------  WTPLSQL Testing --
-      for buff in (select * from user_errors
-                    where attribute = 'ERROR'
-                     and  name      = l_pname
-                     and  type      = 'PACKAGE'
-                    order by sequence)
-      loop
-         wt_assert.isnull
-            (msg_in        => 'Create Package 1 Error ' || buff.sequence
-            ,check_this_in => buff.attribute       ||
-                              '(' || buff.line     ||
-                             ', ' || buff.position ||
-                             ') ' || buff.text     );
-      end loop;
-      --------------------------------------  WTPLSQL Testing --
-      begin
-         execute immediate
-            'create or replace package body ' || l_pname       || CHR(10) ||
-            'is'                                               || CHR(10) ||
+      compile_db_object
+         (in_ptype   => 'package body'
+         ,in_pname   => l_pname
+         ,in_source  => 
             '  --% WTPLSQL SET DBOUT "' || l_pname || '" %--'  || CHR(10) ||
             'begin'                                            || CHR(10) ||
-            '  l_junk := 1;'                                   || CHR(10) ||
-            'end ' || l_pname || ';'                           ;
-         l_sqlerrm := SQLERRM;
-      exception when others then
-         l_sqlerrm := SQLERRM;
-      end;
+            '  l_junk := 1;'                                   );
+      run_find_dbout;
       wt_assert.eq
-         (msg_in          => 'Create Package Body ' || l_pname || ' 1'
-         ,check_this_in   => l_sqlerrm
-         ,against_this_in => 'ORA-0000: normal, successful completion');
-      --------------------------------------  WTPLSQL Testing --
-      for buff in (select * from user_errors
-                    where attribute = 'ERROR'
-                     and  name      = l_pname
-                     and  type      = 'PACKAGE BODY'
-                    order by sequence)
-      loop
-         wt_assert.isnull
-            (msg_in        => 'Create Package Body 1 Error ' || buff.sequence
-            ,check_this_in => buff.attribute       ||
-                              '(' || buff.line     ||
-                             ', ' || buff.position ||
-                             ') ' || buff.text     );
-      end loop;
-      --------------------------------------  WTPLSQL Testing --
-      g_rec := l_recNULL;
-      begin
-         find_dbout(l_pname);
-         l_sqlerrm := SQLERRM;
-      exception when others then
-         l_sqlerrm := SQLERRM;
-      end;
-      l_recTEST := g_rec;
-      g_rec := l_recSAVE;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eq
-         (msg_in          => 'FIND_DBOUT Test 1'
-         ,check_this_in   => l_sqlerrm
-         ,against_this_in => 'ORA-0000: normal, successful completion');
-      wt_assert.eq
-         (msg_in          => 'g_rec.dbout_owner Test 1'
+         (msg_in          => 'g_rec.dbout_owner Happy Path 2'
          ,check_this_in   => l_recTEST.dbout_owner
          ,against_this_in => USER);
       wt_assert.eq
-         (msg_in          => 'g_rec.dbout_name Test 1'
+         (msg_in          => 'g_rec.dbout_name Happy Path 2'
          ,check_this_in   => l_recTEST.dbout_name
          ,against_this_in => l_pname);
       wt_assert.eq
-         (msg_in          => 'g_rec.dbout_type Test 1'
+         (msg_in          => 'g_rec.dbout_type Happy Path 2'
          ,check_this_in   => l_recTEST.dbout_type
          ,against_this_in => 'PACKAGE BODY');
       wt_assert.isnull
-         (msg_in        => 'g_rec.error_message Test 1'
+         (msg_in        => 'g_rec.error_message Happy Path 2'
          ,check_this_in => l_recTEST.error_message);
       --------------------------------------  WTPLSQL Testing --
-      begin
-         execute immediate
-            'create or replace package body ' || l_pname       || CHR(10) ||
-            'is'                                               || CHR(10) ||
+      compile_db_object
+         (in_ptype   => 'package body'
+         ,in_pname   => l_pname
+         ,in_source  => 
             '  --% WTPLSQL SET DBOUT "' || USER ||
                                     '.' || l_pname || '" %--'  || CHR(10) ||
             'begin'                                            || CHR(10) ||
-            '  l_junk := 1;'                                   || CHR(10) ||
-            'end ' || l_pname || ';'                           ;
-         l_sqlerrm := SQLERRM;
-      exception when others then
-         l_sqlerrm := SQLERRM;
-      end;
+            '  l_junk := 1;'                                   );
+      run_find_dbout;
       wt_assert.eq
-         (msg_in          => 'Create Package Body ' || l_pname || ' 2'
-         ,check_this_in   => l_sqlerrm
-         ,against_this_in => 'ORA-0000: normal, successful completion');
-      --------------------------------------  WTPLSQL Testing --
-      for buff in (select * from user_errors
-                    where attribute = 'ERROR'
-                     and  name      = l_pname
-                     and  type      = 'PACKAGE BODY'
-                    order by sequence)
-      loop
-         wt_assert.isnull
-            (msg_in        => 'Create Package Body 2 Error ' || buff.sequence
-            ,check_this_in => buff.attribute       ||
-                              '(' || buff.line     ||
-                             ', ' || buff.position ||
-                             ') ' || buff.text     );
-      end loop;
-      --------------------------------------  WTPLSQL Testing --
-      g_rec := l_recNULL;
-      begin
-         find_dbout(l_pname);
-         l_sqlerrm := SQLERRM;
-      exception when others then
-         l_sqlerrm := SQLERRM;
-      end;
-      l_recTEST := g_rec;
-      g_rec := l_recSAVE;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eq
-         (msg_in          => 'FIND_DBOUT Test 2'
-         ,check_this_in   => l_sqlerrm
-         ,against_this_in => 'ORA-0000: normal, successful completion');
-      wt_assert.eq
-         (msg_in          => 'g_rec.dbout_owner Test 2'
+         (msg_in          => 'g_rec.dbout_owner Happy Path 3'
          ,check_this_in   => l_recTEST.dbout_owner
          ,against_this_in => USER);
       wt_assert.eq
-         (msg_in          => 'g_rec.dbout_name Test 2'
+         (msg_in          => 'g_rec.dbout_name Happy Path 3'
          ,check_this_in   => l_recTEST.dbout_name
          ,against_this_in => l_pname);
       wt_assert.eq
-         (msg_in          => 'g_rec.dbout_type Test 2'
+         (msg_in          => 'g_rec.dbout_type Happy Path 3'
          ,check_this_in   => l_recTEST.dbout_type
          ,against_this_in => 'PACKAGE BODY');
       wt_assert.isnull
-         (msg_in        => 'g_rec.error_message Test 2'
+         (msg_in        => 'g_rec.error_message Happy Path 3'
          ,check_this_in => l_recTEST.error_message);
       --------------------------------------  WTPLSQL Testing --
-      begin
-         execute immediate
-            'create or replace package body ' || l_pname       || CHR(10) ||
-            'is'                                               || CHR(10) ||
+      compile_db_object
+         (in_ptype   => 'package body'
+         ,in_pname   => l_pname
+         ,in_source  => 
             '  --% WTPLSQL SET DBOUT ' || '"BOGUS1" %--'       || CHR(10) ||
             'begin'                                            || CHR(10) ||
-            '  l_junk := 1;'                                   || CHR(10) ||
-            'end ' || l_pname || ';'                           ;
-         l_sqlerrm := SQLERRM;
-      exception when others then
-         l_sqlerrm := SQLERRM;
-      end;
-      wt_assert.eq
-         (msg_in          => 'Create Package Body ' || l_pname || ' 3'
-         ,check_this_in   => l_sqlerrm
-         ,against_this_in => 'ORA-0000: normal, successful completion');
-      --------------------------------------  WTPLSQL Testing --
-      for buff in (select * from user_errors
-                    where attribute = 'ERROR'
-                     and  name      = l_pname
-                     and  type      = 'PACKAGE BODY'
-                    order by sequence)
-      loop
-         wt_assert.isnull
-            (msg_in        => 'Create Package Body 3 Error ' || buff.sequence
-            ,check_this_in => buff.attribute       ||
-                              '(' || buff.line     ||
-                             ', ' || buff.position ||
-                             ') ' || buff.text     );
-      end loop;
-      --------------------------------------  WTPLSQL Testing --
-      g_rec := l_recNULL;
-      begin
-         find_dbout(l_pname);
-         l_sqlerrm := SQLERRM;
-      exception when others then
-         l_sqlerrm := SQLERRM;
-      end;
-      l_recTEST := g_rec;
-      g_rec := l_recSAVE;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eq
-         (msg_in          => 'FIND_DBOUT Test 3'
-         ,check_this_in   => l_sqlerrm
-         ,against_this_in => 'ORA-0000: normal, successful completion');
+            '  l_junk := 1;'                                   );
+      run_find_dbout;
       wt_assert.isnull
-         (msg_in          => 'g_rec.dbout_owner Test 3'
+         (msg_in          => 'g_rec.dbout_owner Sad Path 1'
          ,check_this_in   => l_recTEST.dbout_owner);
       wt_assert.isnull
-         (msg_in          => 'g_rec.dbout_name Test 3'
+         (msg_in          => 'g_rec.dbout_name Sad Path 1'
          ,check_this_in   => l_recTEST.dbout_name);
       wt_assert.isnull
-         (msg_in          => 'g_rec.dbout_type Test 3'
+         (msg_in          => 'g_rec.dbout_type Sad Path 1'
          ,check_this_in   => l_recTEST.dbout_type);
       wt_assert.eq
-         (msg_in          => 'g_rec.error_message Test 3'
-         ,check_this_in   => l_recTEST.error_message
-         ,against_this_in => 'Unable to find Database Object "BOGUS1". ');
-      --------------------------------------  WTPLSQL Testing --
-      begin
-         execute immediate
-            'create or replace package body ' || l_pname       || CHR(10) ||
-            'is'                                               || CHR(10) ||
-            'begin'                                            || CHR(10) ||
-            '  l_junk := 1;'                                   || CHR(10) ||
-            'end ' || l_pname || ';'                           ;
-         l_sqlerrm := SQLERRM;
-      exception when others then
-         l_sqlerrm := SQLERRM;
-      end;
-      wt_assert.eq
-         (msg_in          => 'Create Package Body ' || l_pname || ' 4'
-         ,check_this_in   => l_sqlerrm
-         ,against_this_in => 'ORA-0000: normal, successful completion');
-      --------------------------------------  WTPLSQL Testing --
-      for buff in (select * from user_errors
-                    where attribute = 'ERROR'
-                     and  name      = l_pname
-                     and  type      = 'PACKAGE BODY'
-                    order by sequence)
-      loop
-         wt_assert.isnull
-            (msg_in        => 'Create Package Body 4 Error ' || buff.sequence
-            ,check_this_in => buff.attribute       ||
-                              '(' || buff.line     ||
-                             ', ' || buff.position ||
-                             ') ' || buff.text     );
-      end loop;
-      --------------------------------------  WTPLSQL Testing --
-      g_rec := l_recNULL;
-      begin
-         find_dbout(l_pname);
-         l_sqlerrm := SQLERRM;
-      exception when others then
-         l_sqlerrm := SQLERRM;
-      end;
-      l_recTEST := g_rec;
-      g_rec := l_recSAVE;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eq
-         (msg_in          => 'FIND_DBOUT Test 4'
-         ,check_this_in   => l_sqlerrm
-         ,against_this_in => 'ORA-0000: normal, successful completion');
-      wt_assert.isnull
-         (msg_in          => 'g_rec.dbout_owner Test 4'
-         ,check_this_in   => l_recTEST.dbout_owner);
-      wt_assert.isnull
-         (msg_in          => 'g_rec.dbout_name Test 4'
-         ,check_this_in   => l_recTEST.dbout_name);
-      wt_assert.isnull
-         (msg_in          => 'g_rec.dbout_type Test 4'
-         ,check_this_in   => l_recTEST.dbout_type);
-      wt_assert.eq
-         (msg_in          => 'g_rec.error_message Test 4'
+         (msg_in          => 'g_rec.error_message Sad Path 1'
          ,check_this_in   => l_recTEST.error_message
          ,against_this_in => 'Unable to find Database Object "BOGUS1". ');
       --------------------------------------  WTPLSQL Testing --
@@ -686,11 +555,197 @@ $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure tc_load_anno_aa
    is
-      num_recs   number;
-      l_sqlerrm  varchar2(4000);
+      l_recSAVE    rec_type;
+      l_annoSAVE  anno_aa_type;
+      l_annoTEST  anno_aa_type;
+      l_pname      varchar2(128) := 'WT_PROFILE_LOAD_ANNO';
+      l_sqlerrm    varchar2(4000);
+      procedure run_load_anno is begin
+         l_recSAVE  := g_rec;
+         l_annoSAVE := anno_aa;
+         anno_aa.delete;
+         g_rec.dbout_owner := USER;
+         g_rec.dbout_name  := l_pname;
+         g_rec.dbout_type  := 'PACKAGE BODY';
+         load_anno_aa;
+         l_annoTEST := anno_aa;
+         anno_aa := l_annoSAVE;
+         g_rec   := l_recSAVE;
+      end run_load_anno;
    begin
       wt_assert.g_testcase := 'Load Annotation Associative Array';
+      compile_db_object
+         (in_ptype   => 'package'
+         ,in_pname   => l_pname
+         ,in_source  => '  l_junk number;' );
+      wt_assert.isnotnull
+         (msg_in    => 'Number of ANNO_AA elements BEFORE'
+         ,check_this_in => anno_aa.COUNT);
       --------------------------------------  WTPLSQL Testing --
+      compile_db_object
+         (in_ptype   => 'package body'
+         ,in_pname   => l_pname
+         ,in_source  => 'begin' || CHR(10) || '  l_junk := 1;' );
+      run_load_anno;
+      wt_assert.eq
+         (msg_in          => 'Load Anno Happy Path 1 COUNT'
+         ,check_this_in   => l_annoTest.COUNT
+         ,against_this_in => 0);
+      --------------------------------------  WTPLSQL Testing --
+      compile_db_object
+         (in_ptype   => 'package body'
+         ,in_pname   => l_pname
+         ,in_source  => 
+            'begin'                                    || CHR(10) ||  -- Line 2
+            '  --%WTPLSQL_begin_' || 'ignore_lines%--' || CHR(10) ||  -- Line 3
+            '  l_junk := 1;'                           );             -- Line 4
+            -- end                                                    -- Line 5
+      run_load_anno;
+      wt_assert.eq
+         (msg_in          => 'Load Anno Happy Path 2 COUNT'
+         ,check_this_in   => l_annoTest.COUNT
+         ,against_this_in => 3);
+      for i in 3 .. 5
+      loop
+         wt_assert.eq
+            (msg_in          => 'Load Anno Happy Path 2 Line ' || i
+            ,check_this_in   => l_annoTest.exists(i)
+            ,against_this_in => TRUE);
+      end loop;
+      --------------------------------------  WTPLSQL Testing --
+      compile_db_object
+         (in_ptype   => 'package body'
+         ,in_pname   => l_pname
+         ,in_source  => 
+            'begin'                                    || CHR(10) ||  -- Line 2
+            '  l_junk := 1;'                           || CHR(10) ||  -- Line 3
+            '  --%WTPLSQL_begin_' || 'ignore_lines%--' || CHR(10) ||  -- Line 4
+            '  l_junk := 2;'                           || CHR(10) ||  -- Line 5
+            '  --%WTPLSQL_end_' || 'ignore_lines%--'   || CHR(10) ||  -- Line 6
+            '  l_junk := 3;'                           );             -- Line 7
+      run_load_anno;
+      wt_assert.eq
+         (msg_in          => 'Load Anno Happy Path 3 COUNT'
+         ,check_this_in   => l_annoTest.COUNT
+         ,against_this_in => 3);
+      for i in 4 .. 6
+      loop
+         wt_assert.eq
+            (msg_in          => 'Load Anno Happy Path 3 Line ' || i
+            ,check_this_in   => l_annoTest.exists(i)
+            ,against_this_in => TRUE);
+      end loop;
+      --------------------------------------  WTPLSQL Testing --
+      compile_db_object
+         (in_ptype   => 'package body'
+         ,in_pname   => l_pname
+         ,in_source  => 
+            'begin'                                    || CHR(10) ||  -- Line 2
+            '  l_junk := 1;'                           || CHR(10) ||  -- Line 3
+            '  --%WTPLSQL_begin_' || 'ignore_lines%--' || CHR(10) ||  -- Line 4
+            '  l_junk := 2;'                           || CHR(10) ||  -- Line 5
+            '  --%WTPLSQL_end_' || 'ignore_lines%--'   || CHR(10) ||  -- Line 6
+            '  l_junk := 3;'                           || CHR(10) ||  -- Line 7
+            '  --%WTPLSQL_begin_' || 'ignore_lines%--' || CHR(10) ||  -- Line 8
+            '  l_junk := 4;'                           );             -- Line 9
+            -- end                                                    -- Line 10
+      run_load_anno;
+      wt_assert.eq
+         (msg_in          => 'Load Anno Happy Path 4 COUNT'
+         ,check_this_in   => l_annoTest.COUNT
+         ,against_this_in => 6);
+      for i in 4 .. 6
+      loop
+         wt_assert.eq
+            (msg_in          => 'Load Anno Happy Path 4 Line ' || i
+            ,check_this_in   => l_annoTest.exists(i)
+            ,against_this_in => TRUE);
+      end loop;
+      for i in 8 .. 10
+      loop
+         wt_assert.eq
+            (msg_in          => 'Load Anno Happy Path 4 Line ' || i
+            ,check_this_in   => l_annoTest.exists(i)
+            ,against_this_in => TRUE);
+      end loop;
+      --------------------------------------  WTPLSQL Testing --
+      compile_db_object
+         (in_ptype   => 'package body'
+         ,in_pname   => l_pname
+         ,in_source  => 
+            'begin'                                    || CHR(10) ||  -- Line 2
+            '  --%WTPLSQL_end_' || 'ignore_lines%--'   || CHR(10) ||  -- Line 3
+            '  l_junk := 4;'                           );             -- Line 4
+      run_load_anno;
+      wt_assert.eq
+         (msg_in          => 'Load Anno Sad Path 1 COUNT'
+         ,check_this_in   => l_annoTest.COUNT
+         ,against_this_in => 0);
+      --------------------------------------  WTPLSQL Testing --
+      compile_db_object
+         (in_ptype   => 'package body'
+         ,in_pname   => l_pname
+         ,in_source  => 
+            'begin'                                    || CHR(10) ||  -- Line 2
+            '  l_junk := 1;'                           || CHR(10) ||  -- Line 3
+            '  --%WTPLSQL_begin_' || 'ignore_lines%--' || CHR(10) ||  -- Line 4
+            '  l_junk := 2;'                           || CHR(10) ||  -- Line 5
+            '  --%WTPLSQL_end_' || 'ignore_lines%--'   || CHR(10) ||  -- Line 6
+            '  l_junk := 3;'                           || CHR(10) ||  -- Line 7
+            '  --%WTPLSQL_end_' || 'ignore_lines%--'   || CHR(10) ||  -- Line 8
+            '  l_junk := 4;'                           );             -- Line 9
+      run_load_anno;
+      wt_assert.eq
+         (msg_in          => 'Load Anno Sad Path 2 COUNT'
+         ,check_this_in   => l_annoTest.COUNT
+         ,against_this_in => 3);
+      for i in 4 .. 6
+      loop
+         wt_assert.eq
+            (msg_in          => 'Load Anno Sad Path 2 Line ' || i
+            ,check_this_in   => l_annoTest.exists(i)
+            ,against_this_in => TRUE);
+      end loop;
+      --------------------------------------  WTPLSQL Testing --
+      compile_db_object
+         (in_ptype   => 'package body'
+         ,in_pname   => l_pname
+         ,in_source  => 
+            'begin'                                    || CHR(10) ||  -- Line 2
+            '  l_junk := 1;'                           || CHR(10) ||  -- Line 3
+            '  --%WTPLSQL_begin_' || 'ignore_lines%--' || CHR(10) ||  -- Line 4
+            '  l_junk := 2;'                           || CHR(10) ||  -- Line 5
+            '  --%WTPLSQL_begin_' || 'ignore_lines%--' || CHR(10) ||  -- Line 6
+            '  l_junk := 3;'                           || CHR(10) ||  -- Line 7
+            '  --%WTPLSQL_end_' || 'ignore_lines%--'   || CHR(10) ||  -- Line 8
+            '  l_junk := 4;'                           );             -- Line 9
+      run_load_anno;
+      wt_assert.eq
+         (msg_in          => 'Load Anno Sad Path 3 COUNT'
+         ,check_this_in   => l_annoTest.COUNT
+         ,against_this_in => 5);
+      for i in 4 .. 8
+      loop
+         wt_assert.eq
+            (msg_in          => 'Load Anno Sad Path 3 Line ' || i
+            ,check_this_in   => l_annoTest.exists(i)
+            ,against_this_in => TRUE);
+      end loop;
+      --------------------------------------  WTPLSQL Testing --
+      begin
+         execute immediate
+            'drop package ' || l_pname;
+         l_sqlerrm := SQLERRM;
+      exception when others then
+         l_sqlerrm := SQLERRM;
+      end;
+      wt_assert.eq
+         (msg_in          => 'Drop Package ' || l_pname
+         ,check_this_in   => l_sqlerrm
+         ,against_this_in => 'ORA-0000: normal, successful completion');
+      wt_assert.isnotnull
+         (msg_in    => 'Number of ANNO_AA elements AFTER'
+         ,check_this_in => anno_aa.COUNT);
    end tc_load_anno_aa;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
