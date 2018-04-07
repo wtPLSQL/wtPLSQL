@@ -67,7 +67,7 @@ end boolean_to_status;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure tc_boolean_to_status
+   procedure t_boolean_to_status
    is
    begin
       wt_assert.g_testcase := 'BOOLEAN_TO_STATUS';
@@ -83,7 +83,7 @@ $THEN
       wt_assert.isnull
          (msg_in            => 'Test for NULL'
          ,check_this_in     => boolean_to_status(temp_bool));
-   end tc_boolean_to_status;
+   end t_boolean_to_status;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -121,13 +121,13 @@ end process_assertion;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure tc_process_assertion
+   procedure t_process_assertion
    is
       ASSERT_TEST_EXCEPTION  exception;
       PRAGMA EXCEPTION_INIT(ASSERT_TEST_EXCEPTION, -20003);
    begin
-      g_testcase         := 'PROCESS_ASSERTION';
       --------------------------------------  WTPLSQL Testing --
+      g_testcase         := 'PROCESS_ASSERTION';
       g_rec.last_assert  := 'THIS';
       g_rec.last_pass    := FALSE;
       g_rec.last_details := 'Expected "PASS" and got "FAIL"';
@@ -141,7 +141,7 @@ $THEN
       when ASSERT_TEST_EXCEPTION then
          wtplsql_skip_save := FALSE;
          g_raise_exception := FALSE;
-   end tc_process_assertion;
+   end t_process_assertion;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -196,44 +196,45 @@ end compare_queries;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure tc_compare_queries
+   procedure t_compare_queries
    is
    begin
-      wt_assert.g_testcase := 'COMPARE_QUERIES';
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'COMPARE_QUERIES Bad Query Test 1';
       compare_queries (
          check_query_in     => 'select bogus123 from bogus456',
          against_query_in   => 'select bogus987 from bogus654');
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in           => 'Bad Query Test 1 g_rec.last_pass',
+         msg_in           => 'g_rec.last_pass',
          check_this_in    => temp_rec.last_pass,
          against_this_in  => FALSE);
       wt_assert.isnotnull(
-         msg_in          => 'Bad Query Test 1a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this(
-         msg_in          => 'Bad Query Test 1b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             '%PL/SQL: ORA-00942: table or view does not exist%'));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'COMPARE_QUERIES Bad Query Test 2';
       compare_queries (
          check_query_in     => 'select table_name from user_tables',
          against_query_in   => 'select tablespace_name from user_tables');
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in           => 'Bad Query Test 2 g_rec.last_pass',
+         msg_in           => 'g_rec.last_pass',
          check_this_in    => temp_rec.last_pass,
          against_this_in  => FALSE);
       wt_assert.isnotnull(
-         msg_in          => 'Bad Query Test 2a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this(
-         msg_in          => 'Bad Query Test 2b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => temp_rec.last_details like
                             '%Comparison Query: with check_query as' ||
                             ' (select table_name from user_tables%');
-   end tc_compare_queries;
+   end t_compare_queries;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -272,11 +273,11 @@ end last_details;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure tc_last_values
+   procedure t_last_values
    is
    begin
-      wt_assert.g_testcase := 'Last Values Tests';
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Last Values Tests';
       wt_assert.eq (
          msg_in          => 'Last Pass',
          check_this_in   => last_pass,
@@ -299,7 +300,7 @@ $THEN
          check_this_in   => last_details,
          against_this_in => g_rec.last_details,
          null_ok_in      => TRUE);
-   end tc_last_values;
+   end t_last_values;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -317,35 +318,35 @@ end reset_globals;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure tc_reset_globals
+   procedure t_reset_globals
    is
    begin
       reset_globals;  -- Resets g_testcase
       temp_rec         := g_rec;
       temp_raise_excpt := g_raise_exception;
       temp_testcase    := g_testcase;
-      g_testcase       := 'RESET_GLOBALS';
       --------------------------------------  WTPLSQL Testing --
+      g_testcase       := 'RESET_GLOBALS';
       wt_assert.isnull(
-         msg_in        => 'g_testcase is null',
+         msg_in        => 'g_testcase',
          check_this_in => temp_testcase);
       wt_assert.eq(
-         msg_in          => 'g_raise_exception is FALSE',
+         msg_in          => 'g_raise_exception',
          check_this_in   => temp_raise_excpt,
          against_this_in => FALSE);
       wt_assert.isnull
-         (msg_in        => 'g_rec.last_pass is null'
+         (msg_in        => 'g_rec.last_pass'
          ,check_this_in => temp_rec.last_pass);
       wt_assert.isnull
-         (msg_in        => 'g_rec.last_assert is null'
+         (msg_in        => 'g_rec.last_assert'
          ,check_this_in => temp_rec.last_assert);
       wt_assert.isnull
-         (msg_in        => 'g_rec.last_msg is null'
+         (msg_in        => 'g_rec.last_msg'
          ,check_this_in => temp_rec.last_msg);
       wt_assert.isnull
-         (msg_in        => 'g_rec.last_details is null'
+         (msg_in        => 'g_rec.last_details'
          ,check_this_in => temp_rec.last_details);
-   end tc_reset_globals;
+   end t_reset_globals;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -409,43 +410,43 @@ end set_NLS_TIMESTAMP_TZ_FORMAT;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure tc_nls_settings
+   procedure t_nls_settings
    is
    begin
-      wt_assert.g_testcase := 'NLS Settings';
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'NLS Settings';
       set_NLS_DATE_FORMAT('DD-MON-YYYY');
       wt_assert.eq
-         (msg_in          => 'Check get_NLS_DATE_FORMAT 1'
+         (msg_in          => 'get_NLS_DATE_FORMAT 1'
          ,check_this_in   => get_NLS_DATE_FORMAT
          ,against_this_in => 'DD-MON-YYYY');
       set_NLS_DATE_FORMAT;
       wt_assert.eq
-         (msg_in          => 'Check get_NLS_DATE_FORMAT 2'
+         (msg_in          => 'get_NLS_DATE_FORMAT 2'
          ,check_this_in   => get_NLS_DATE_FORMAT
          ,against_this_in => 'DD-MON-YYYY HH24:MI:SS');
       set_NLS_TIMESTAMP_FORMAT('DD-MON-YYYY');
       wt_assert.eq
-         (msg_in          => 'Check get_NLS_TIMESTAMP_FORMAT 2'
+         (msg_in          => 'get_NLS_TIMESTAMP_FORMAT 2'
          ,check_this_in   => get_NLS_TIMESTAMP_FORMAT
          ,against_this_in => 'DD-MON-YYYY');
       set_NLS_TIMESTAMP_FORMAT;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq
-         (msg_in          => 'Check get_NLS_TIMESTAMP_FORMAT 2'
+         (msg_in          => 'get_NLS_TIMESTAMP_FORMAT 2'
          ,check_this_in   => get_NLS_TIMESTAMP_FORMAT
          ,against_this_in => 'DD-MON-YYYY HH24:MI:SS.FF6');
       set_NLS_TIMESTAMP_TZ_FORMAT('DD-MON-YYYY');
       wt_assert.eq
-         (msg_in          => 'Check get_NLS_TIMESTAMP_TZ_FORMAT 2'
+         (msg_in          => 'get_NLS_TIMESTAMP_TZ_FORMAT 2'
          ,check_this_in   => get_NLS_TIMESTAMP_TZ_FORMAT
          ,against_this_in => 'DD-MON-YYYY');
       set_NLS_TIMESTAMP_TZ_FORMAT;
       wt_assert.eq
-         (msg_in          => 'Check get_NLS_TIMESTAMP_TZ_FORMAT 2'
+         (msg_in          => 'get_NLS_TIMESTAMP_TZ_FORMAT 2'
          ,check_this_in   => get_NLS_TIMESTAMP_TZ_FORMAT
          ,against_this_in => 'DD-MON-YYYY HH24:MI:SS.FF6 TZH:TZM');
-   end tc_nls_settings;
+   end t_nls_settings;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -471,32 +472,33 @@ end this;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure tc_this
+   procedure t_this
    is
    begin
-      wt_assert.g_testcase := 'This Tests';
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'This Happy Path';
       wt_assert.this (
-         msg_in         => 'This Tests Happy Path',
+         msg_in         => 'Run Test',
          check_this_in  => TRUE);
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'This Tests Happy Path g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'This Tests Happy Path g_rec.last_assert',
+         msg_in          => 'g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'THIS');
       wt_assert.eq (
-         msg_in          => 'This Tests Happy Path g_rec.last_msg',
+         msg_in          => 'g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'This Tests Happy Path');
+         against_this_in => 'Run Test');
       wt_assert.eq (
-         msg_in          => 'This Tests Happy Path g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected "PASS" and got "PASS"');
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'This Sad Path 1';
       wtplsql_skip_save := TRUE;
       this (
          msg_in         => 'Not Used',
@@ -504,10 +506,11 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'This Tests Sad Path 1',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'This Sad Path 2';
       wtplsql_skip_save := TRUE;
       this (
          msg_in         => 'Not Used',
@@ -515,10 +518,10 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'This Tests Sad Path 2',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
-   end tc_this;
+   end t_this;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -619,52 +622,55 @@ end eq;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure tc_eq
+   procedure t_eq
    is
    begin
-      wt_assert.g_testcase := 'EQ Tests';
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ VARCHAR2 Happy Path 1';
       eq (
-         msg_in          => 'EQ VARCHAR2 Happy Path 1',
+         msg_in          => 'Run Test',
          check_this_in   => 'X',
          against_this_in => 'X');
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ VARCHAR2 Happy Path 1 g_rec.last_pass value',
+         msg_in          => 'g_rec.last_pass value',
          check_this_in   => temp_rec.last_pass);
       wt_assert.this (
-         msg_in          => 'EQ VARCHAR2 Happy Path 1 g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => (temp_rec.last_pass = TRUE));
       wt_assert.isnotnull (
-         msg_in          => 'EQ VARCHAR2 Happy Path 1 g_rec.last_assert value',
+         msg_in          => 'g_rec.last_assert value',
          check_this_in   => temp_rec.last_assert);
       wt_assert.this (
-         msg_in          => 'EQ VARCHAR2 Happy Path 1 g_rec.last_assert',
+         msg_in          => 'g_rec.last_assert',
          check_this_in   => (temp_rec.last_assert = 'EQ'));
       wt_assert.isnotnull (
-         msg_in          => 'EQ VARCHAR2 Happy Path 1 g_rec.last_msg value',
+         msg_in          => 'g_rec.last_msg value',
          check_this_in   => temp_rec.last_msg);
       wt_assert.this (
-         msg_in          => 'EQ VARCHAR2 Happy Path 1 g_rec.last_msg',
-         check_this_in   => (temp_rec.last_msg = 'EQ VARCHAR2 Happy Path 1'));
+         msg_in          => 'g_rec.last_msg',
+         check_this_in   => (temp_rec.last_msg = 'Run Test'));
       wt_assert.isnotnull (
-         msg_in          => 'EQ VARCHAR2 Happy Path 1a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'EQ VARCHAR2 Happy Path 1b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => (temp_rec.last_details = 'Expected "X" and got "X"'));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ VARCHAR2 Happy Path 2';
       eq (
-         msg_in          => 'EQ VARCHAR2 Happy Path 2',
+         msg_in          => 'Run Test',
          check_this_in   => 'X',
          against_this_in => 'X',
          null_ok_in      => TRUE);
+      wt_assert.g_testcase := 'EQ VARCHAR2 Happy Path 3';
       eq (
-         msg_in          => 'EQ VARCHAR2 Happy Path 3',
+         msg_in          => 'Run Test',
          check_this_in   => '',
          against_this_in => '',
          null_ok_in      => TRUE);
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ VARCHAR2 Sad Path 1';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -673,15 +679,16 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ VARCHAR2 Sad Path 1 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => 'X');
       wt_assert.isnotnull (
-         msg_in          => 'EQ VARCHAR2 Sad Path 1 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => 'Y');
       wt_assert.this (
-         msg_in          => 'EQ VARCHAR2 Sad Path 1',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ VARCHAR2 Sad Path 2';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -690,15 +697,16 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnull (
-         msg_in          => 'EQ VARCHAR2 Sad Path 2 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => '');
       wt_assert.isnotnull (
-         msg_in          => 'EQ VARCHAR2 Sad Path 2 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => 'Y');
       wt_assert.this (
-         msg_in          => 'EQ VARCHAR2 Sad Path 2',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ VARCHAR2 Sad Path 3';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -707,15 +715,16 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnull (
-         msg_in          => 'EQ VARCHAR2 Sad Path 3 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => '');
       wt_assert.isnull (
-         msg_in          => 'EQ VARCHAR2 Sad Path 3 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => '');
       wt_assert.this (
-         msg_in          => 'EQ VARCHAR2 Sad Path 3',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ VARCHAR2 Sad Path 4';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -725,15 +734,16 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ VARCHAR2 Sad Path 4 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => 'X');
       wt_assert.isnotnull (
-         msg_in          => 'EQ VARCHAR2 Sad Path 4 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => 'Y');
       wt_assert.this (
-         msg_in          => 'EQ VARCHAR2 Sad Path 4',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ VARCHAR2 Sad Path 5';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -743,20 +753,23 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnull (
-         msg_in          => 'EQ VARCHAR2 Sad Path 5 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => '');
       wt_assert.isnotnull (
-         msg_in          => 'EQ VARCHAR2 Sad Path 5 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => 'Y');
       wt_assert.this (
-         msg_in          => 'EQ VARCHAR2 Sad Path 5',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
-      -- VARCHAR2 includes Includes ROWID, LONG, RAW, and NVARCHAR2
+      -- VARCHAR2 includes Includes ROWID
+      wt_assert.g_testcase := 'EQ ROWID Happy Path 1';
       eq (
-         msg_in          => 'EQ ROWID Happy Path 1',
+         msg_in          => 'Run Test',
          check_this_in   => temp_rowid1,
          against_this_in => temp_rowid1);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ ROWID Sad Path 1';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -765,19 +778,23 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ ROWID Sad Path 1 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => temp_rowid1);
       wt_assert.isnotnull (
-         msg_in          => 'EQ ROWID Sad Path 1 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => temp_rowid2);
       wt_assert.this (
-         msg_in          => 'EQ ROWID Sad Path 1',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      -- VARCHAR2 includes Includes LONG
+      wt_assert.g_testcase := 'EQ LONG Happy Path 1';
       eq (
-         msg_in          => 'EQ LONG Happy Path 1',
+         msg_in          => 'Run Test',
          check_this_in   => temp_long1,
          against_this_in => temp_long1);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ LONG Sad Path 1';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -786,19 +803,23 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ LONG Sad Path 1 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => temp_long1);
       wt_assert.isnotnull (
-         msg_in          => 'EQ LONG Sad Path 1 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => temp_long2);
       wt_assert.this (
-         msg_in          => 'EQ LONG Sad Path 1',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      -- VARCHAR2 includes Includes RAW
+      wt_assert.g_testcase := 'EQ RAW Happy Path 1';
       eq (
-         msg_in          => 'EQ RAW Happy Path 1',
+         msg_in          => 'Run Test',
          check_this_in   => temp_raw1,
          against_this_in => temp_raw1);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ RAW Sad Path 1';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -807,40 +828,51 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ RAW Sad Path 1 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => temp_raw1);
       wt_assert.isnotnull (
-         msg_in          => 'EQ RAW Sad Path 1 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => temp_raw2);
       wt_assert.this (
-         msg_in          => 'EQ RAW Sad Path 1',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      -- VARCHAR2 includes Includes LONG RAW
+      wt_assert.g_testcase := 'EQ LANG RAW Happy Path 1';
       eq (
-         msg_in          => 'EQ LONG RAW Happy Path 1',
+         msg_in          => 'Run Test',
          check_this_in   => temp_lraw1,
          against_this_in => temp_lraw1);
+      --------------------------------------  WTPLSQL Testing --
+      -- VARCHAR2 includes Includes LONG RAW
+      wt_assert.g_testcase := 'EQ LANG RAW Happy Path 1';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
          check_this_in   => temp_lraw1,
          against_this_in => temp_lraw2);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ LONG RAW Sad Path 1';
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ LONG RAW Sad Path 1 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => temp_lraw1);
       wt_assert.isnotnull (
-         msg_in          => 'EQ LONG RAW Sad Path 1 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => temp_lraw2);
       wt_assert.this (
-         msg_in          => 'EQ LONG RAW Sad Path 1',
+         msg_in          => 'Sad Path 1',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      -- VARCHAR2 includes Includes NVARCHAR2
+      wt_assert.g_testcase := 'EQ NVARCHAR2 Happy Path 1';
       eq (
-         msg_in          => 'EQ NVARCHAR2 Happy Path 1',
+         msg_in          => 'Run Test',
          check_this_in   => temp_nc1,
          against_this_in => temp_nc1);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ NVARCHAR2 Sad Path 1';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -849,31 +881,34 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ NVARCHAR2 Sad Path 1 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => temp_nc1);
       wt_assert.isnotnull (
-         msg_in          => 'EQ NVARCHAR2 Sad Path 1 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => temp_nc2);
       wt_assert.this (
-         msg_in          => 'EQ NVARCHAR2 Sad Path 1',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
-      -- EQ: boolean overload
+      wt_assert.g_testcase := 'EQ BOOLEAN Happy Path 1';
       eq (
-         msg_in          => 'EQ BOOLEAN Happy Path 1',
+         msg_in          => 'Run Test',
          check_this_in   => FALSE,
          against_this_in => FALSE);
+      wt_assert.g_testcase := 'EQ BOOLEAN Happy Path 2';
       eq (
-         msg_in          => 'EQ BOOLEAN Happy Path 2',
+         msg_in          => 'Run Test',
          check_this_in   => FALSE,
          against_this_in => FALSE,
          null_ok_in      => TRUE);
+      wt_assert.g_testcase := 'EQ BOOLEAN Happy Path 3';
       eq (
-         msg_in          => 'EQ BOOLEAN Happy Path 3',
+         msg_in          => 'Run Test',
          check_this_in   => temp_bool,
          against_this_in => temp_bool,
          null_ok_in      => TRUE);
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ BOOLEAN Happy Sad 1';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -882,15 +917,16 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ BOOLEAN Sad Path 1 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'EQ BOOLEAN Sad Path 1 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => TRUE);
       wt_assert.this (
-         msg_in          => 'EQ BOOLEAN Sad Path 1',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ BOOLEAN Happy Sad 2';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -899,15 +935,16 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ BOOLEAN Sad Path 2 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => FALSE);
       wt_assert.isnull (
-         msg_in          => 'EQ BOOLEAN Sad Path 2 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => temp_bool);
       wt_assert.this (
-         msg_in          => 'EQ BOOLEAN Sad Path 2',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ BOOLEAN Happy Sad 3';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -917,15 +954,16 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ BOOLEAN Sad Path 3 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'EQ BOOLEAN Sad Path 3 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => TRUE);
       wt_assert.this (
-         msg_in          => 'EQ BOOLEAN Sad Path 3',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ BOOLEAN Happy Sad 4';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -935,29 +973,27 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ BOOLEAN Sad Path 4 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => FALSE);
       wt_assert.isnull (
-         msg_in          => 'EQ BOOLEAN Sad Path 4 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => temp_bool);
       wt_assert.this (
-         msg_in          => 'EQ BOOLEAN Sad Path 4',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
-      -- EQ: NUMBER implicit conversion (includes PLS_INTEGER)
+      wt_assert.g_testcase := 'EQ NUMBER Happy Path 1';
       eq (
-         msg_in          => 'EQ NUMBER Happy Path 1',
+         msg_in          => 'Run Test',
          check_this_in   => 4,
          against_this_in => 4);
+      wt_assert.g_testcase := 'EQ NUMBER Happy Path 2';
       eq (
-         msg_in          => 'EQ NUMBER Happy Path 2',
+         msg_in          => 'Run Test',
          check_this_in   => 9876543210987654321098765432109876543210,
          against_this_in => 9876543210987654321098765432109876543210);
-      eq (
-         msg_in          => 'EQ PLS_INTEGER Happy Path 1',
-         check_this_in   => temp_pint1,
-         against_this_in => temp_pint1);
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ NUMBER Happy Path 1';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -966,16 +1002,24 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ NUMBER Sad Path 1 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => 4);
       wt_assert.isnotnull (
-         msg_in          => 'EQ NUMBER Sad Path 1 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => 5);
       wt_assert.this (
-         msg_in          => 'EQ NUMBER Sad Path 1',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      -- EQ: NUMBER implicit conversion includes PLS_INTEGER
+      wt_assert.g_testcase := 'EQ PLS_INTEGER Happy Path 1';
+      eq (
+         msg_in          => 'Run Test',
+         check_this_in   => temp_pint1,
+         against_this_in => temp_pint1);
       wtplsql_skip_save := TRUE;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ PLS_INTEGER Sad Path 1';
       eq (
          msg_in          => 'Not Used',
          check_this_in   => temp_pint1,
@@ -983,20 +1027,22 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ PLS_INTEGER Sad Path 1 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => temp_pint1);
       wt_assert.isnotnull (
-         msg_in          => 'EQ PLS_INTEGER Sad Path 1 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => temp_pint2);
       wt_assert.this (
-         msg_in          => 'EQ PLS_INTEGER Sad Path 1',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
-      -- EQ: DATE implicit conversion (includes TIMESTAMP and INTERVAL)
+      wt_assert.g_testcase := 'EQ DATE Happy Path 1';
       eq (
-         msg_in          => 'EQ DATE Happy Path 1',
+         msg_in          => 'Run Test',
          check_this_in   => temp_date,
          against_this_in => temp_date);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ DATE Sad Path 1';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -1005,19 +1051,23 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ DATE Sad Path 1 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => temp_date);
       wt_assert.isnotnull (
-         msg_in          => 'EQ DATE Sad Path 1 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => temp_date + 1/24);
       wt_assert.this (
-         msg_in          => 'EQ DATE Sad Path 1',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      -- EQ: DATE implicit conversion includes TIMESTAMP
+      wt_assert.g_testcase := 'EQ TIMSETAMP Happy Path 1';
       eq (
          msg_in          => 'EQ TIMSETAMP Happy Path 1',
          check_this_in   => temp_tstmp,
          against_this_in => temp_tstmp);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ TIMSETAMP Sad Path 1';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -1026,19 +1076,23 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ TIMESTAMP Sad Path 1 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => temp_tstmp);
       wt_assert.isnotnull (
-         msg_in          => 'EQ TIMESTAMP Sad Path 1 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => temp_tstmp + 1/24);
       wt_assert.this (
-         msg_in          => 'EQ TIMESTAMP Sad Path 1',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      -- EQ: DATE implicit conversion includes TIMESTAMP
+      wt_assert.g_testcase := 'EQ TIMSETAMP WITH LOCAL TIME ZONE Happy Path 1';
       eq (
-         msg_in          => 'EQ TIMSETAMP WITH LOCAL TIME ZONE Happy Path 1',
+         msg_in          => 'Run Test',
          check_this_in   => temp_tstzn,
          against_this_in => temp_tstzn);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ TIMSETAMP WITH LOCAL TIME ZONE Sad Path 1';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -1047,19 +1101,23 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ TIMESTAMP WITH LOCAL TIME ZONE Sad Path 1 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => temp_tstlzn);
       wt_assert.isnotnull (
-         msg_in          => 'EQ TIMESTAMP WITH LOCAL TIME ZONE Sad Path 1 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => temp_tstlzn + 1/24);
       wt_assert.this (
-         msg_in          => 'EQ TIMESTAMP WITH LOCAL TIME ZONE Sad Path 1',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      -- EQ: DATE implicit conversion includes TIMESTAMP
+      wt_assert.g_testcase := 'EQ TIMSETAMP WITH TIME ZONE Happy Path 1';
       eq (
-         msg_in          => 'EQ TIMSETAMP WITH TIME ZONE Happy Path 1',
+         msg_in          => 'Run Test',
          check_this_in   => temp_tstzn,
          against_this_in => temp_tstzn);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ TIMSETAMP WITH TIME ZONE Sad Path 1';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -1068,19 +1126,23 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ TIMESTAMP WITH TIME ZONE Sad Path 1 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => temp_tstzn);
       wt_assert.isnotnull (
-         msg_in          => 'EQ TIMESTAMP WITH TIME ZONE Sad Path 1 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => temp_tstzn + 1/24);
       wt_assert.this (
-         msg_in          => 'EQ TIMESTAMP WITH TIME ZONE Sad Path 1',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      -- EQ: DATE implicit conversion includes INTERVAL
+      wt_assert.g_testcase := 'EQ INTERVAL DAY TO SECOND Happy Path 1';
       eq (
-         msg_in          => 'EQ INTERVAL DAY TO SECOND Happy Path 1',
+         msg_in          => 'Run Test',
          check_this_in   => temp_intds1,
          against_this_in => temp_intds1);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ INTERVAL DAY TO SECOND Sad Path 1';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -1089,19 +1151,23 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ INTERVAL DAY TO SECOND Sad Path 1 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => temp_intds1);
       wt_assert.isnotnull (
-         msg_in          => 'EQ INTERVAL DAY TO SECOND Sad Path 1 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => temp_intds2);
       wt_assert.this (
-         msg_in          => 'EQ INTERVAL DAY TO SECOND Sad Path 1',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      -- EQ: DATE implicit conversion includes INTERVAL
+      wt_assert.g_testcase := 'EQ INTERVAL YEAR TO MONTH Happy Path 1';
       eq (
-         msg_in          => 'EQ INTERVAL YEAR TO MONTH Happy Path 1',
+         msg_in          => 'Run Test',
          check_this_in   => temp_intym1,
          against_this_in => temp_intym1);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ INTERVAL YEAR TO MONTH Sad Path 1';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -1110,47 +1176,48 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ INTERVAL YEAR TO MONTH Sad Path 1 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => temp_intym1);
       wt_assert.isnotnull (
-         msg_in          => 'EQ INTERVAL YEAR TO MONTH Sad Path 1 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => temp_intym2);
       wt_assert.this (
-         msg_in          => 'EQ INTERVAL YEAR TO MONTH Sad Path 1',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
-      -- EQ: XMLTYPE overload
+      wt_assert.g_testcase := 'EQ XMLTYPE Happy Path 1';
       eq (
-         msg_in          => 'EQ XMLTYPE Happy Path 1',
+         msg_in          => 'Run Test',
          check_this_in   => temp_xml1,
          against_this_in => temp_xml1);
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_pass value',
+         msg_in          => 'g_rec.last_pass value',
          check_this_in   => temp_rec.last_pass);
       wt_assert.this (
-         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => (temp_rec.last_pass = TRUE));
       wt_assert.isnotnull (
-         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_assert value',
+         msg_in          => ' g_rec.last_assert value',
          check_this_in   => temp_rec.last_assert);
       wt_assert.this (
-         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_assert',
+         msg_in          => 'g_rec.last_assert',
          check_this_in   => (temp_rec.last_assert = 'EQ'));
       wt_assert.isnotnull (
-         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_msg value',
+         msg_in          => 'g_rec.last_msg value',
          check_this_in   => temp_rec.last_msg);
       wt_assert.this (
-         msg_in          => 'EQ XMLTYPE Happy Path 1 g_rec.last_msg',
-         check_this_in   => (temp_rec.last_msg = 'EQ XMLTYPE Happy Path 1'));
+         msg_in          => 'g_rec.last_msg',
+         check_this_in   => (temp_rec.last_msg = 'Run Test'));
       wt_assert.isnotnull (
-         msg_in          => 'EQ XMLTYPE Happy Path 1a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'EQ XMLTYPE Happy Path 1b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected "<?xml version="1.0" encoding="UTF-8"?>%'));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ XMLTYPE Sad Path 1';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -1159,58 +1226,62 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ XMLTYPE Sad Path 1 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => xmltype.getclobval(temp_xml1));
       wt_assert.isnotnull (
-         msg_in          => 'EQ XMLTYPE Sad Path 1 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => xmltype.getclobval(temp_xml2));
       wt_assert.this (
-         msg_in          => 'EQ XMLTYPE Sad Path 1',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
-      -- EQ: CLOB overload
+      wt_assert.g_testcase := 'EQ CLOB Happy Path 1';
       eq (
-         msg_in          => 'EQ CLOB Happy Path 1',
+         msg_in          => 'Run Test',
          check_this_in   => temp_clob1,
          against_this_in => temp_clob1);
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ CLOB Happy Path 1 g_rec.last_pass value',
+         msg_in          => 'g_rec.last_pass value',
          check_this_in   => temp_rec.last_pass);
       wt_assert.this (
-         msg_in          => 'EQ CLOB Happy Path 1 g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => (temp_rec.last_pass = TRUE));
       wt_assert.isnotnull (
-         msg_in          => 'EQ CLOB Happy Path 1 g_rec.last_assert value',
+         msg_in          => 'g_rec.last_assert value',
          check_this_in   => temp_rec.last_assert);
       wt_assert.this (
-         msg_in          => 'EQ CLOB Happy Path 1 g_rec.last_assert',
+         msg_in          => 'g_rec.last_assert',
          check_this_in   => (temp_rec.last_assert = 'EQ'));
       wt_assert.isnotnull (
-         msg_in          => 'EQ CLOB Happy Path 1 g_rec.last_msg value',
+         msg_in          => 'g_rec.last_msg value',
          check_this_in   => temp_rec.last_msg);
       wt_assert.this (
-         msg_in          => 'EQ CLOB Happy Path 1 g_rec.last_msg',
-         check_this_in   => (temp_rec.last_msg = 'EQ CLOB Happy Path 1'));
+         msg_in          => 'g_rec.last_msg',
+         check_this_in   => (temp_rec.last_msg = 'Run Test'));
       wt_assert.isnotnull (
-         msg_in          => 'EQ CLOB Happy Path 1a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'EQ CLOB Happy Path 1b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected "<?xml version="1.0" encoding="UTF-8"?>%'));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ CLOB Happy Path 2';
       eq (
-         msg_in          => 'EQ CLOB Happy Path 2',
+         msg_in          => 'Run Test',
          check_this_in   => temp_clob1,
          against_this_in => temp_clob1,
          null_ok_in      => TRUE);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ CLOB Happy Path 3';
       eq (
-         msg_in          => 'EQ CLOB Happy Path 3',
+         msg_in          => 'Run Test',
          check_this_in   => cast (NULL as CLOB),
          against_this_in => cast (NULL as CLOB),
          null_ok_in      => TRUE);
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ CLOB Sad Path 1';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -1219,15 +1290,16 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ CLOB Sad Path 1 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => temp_clob1);
       wt_assert.isnotnull (
-         msg_in          => 'EQ CLOB Sad Path 1 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => temp_clob2);
       wt_assert.this (
-         msg_in          => 'EQ CLOB Sad Path 1',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ CLOB Sad Path 2';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -1236,15 +1308,16 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ CLOB Sad Path 2 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => temp_clob1);
       wt_assert.isnull (
-         msg_in          => 'EQ CLOB Sad Path 2 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => cast (NULL as CLOB));
       wt_assert.this (
-         msg_in          => 'EQ CLOB Sad Path 2',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ CLOB Sad Path 2';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -1254,31 +1327,36 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ CLOB Sad Path 3 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => temp_clob1);
       wt_assert.isnull (
-         msg_in          => 'EQ CLOB Sad Path 3 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => cast (NULL as CLOB));
       wt_assert.this (
-         msg_in          => 'EQ CLOB Sad Path 3',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
-      -- NCLOB
+      wt_assert.g_testcase := 'EQ NCLOB Happy Path 1';
       eq (
-         msg_in          => 'EQ NCLOB Happy Path 2',
+         msg_in          => 'Run Test',
          check_this_in   => temp_nclob1,
          against_this_in => temp_nclob1);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ NCLOB Happy Path 2';
       eq (
-         msg_in          => 'EQ NCLOB Happy Path 2',
+         msg_in          => 'Run Test',
          check_this_in   => temp_nclob1,
          against_this_in => temp_nclob1,
          null_ok_in      => TRUE);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ NCLOB Happy Path 3';
       eq (
-         msg_in          => 'EQ NCLOB Happy Path 3',
+         msg_in          => 'Run Test',
          check_this_in   => cast (NULL as NCLOB),
          against_this_in => cast (NULL as NCLOB),
          null_ok_in      => TRUE);
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ NCLOB Sad Path 1';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -1287,15 +1365,16 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ NCLOB Sad Path 1 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => temp_nclob1);
       wt_assert.isnotnull (
-         msg_in          => 'EQ NCLOB Sad Path 1 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => temp_nclob2);
       wt_assert.this (
-         msg_in          => 'EQ NCLOB Sad Path 1',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ NCLOB Sad Path 2';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -1304,15 +1383,16 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ NCLOB Sad Path 2 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => temp_nclob1);
       wt_assert.isnull (
-         msg_in          => 'EQ NCLOB Sad Path 2 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => cast (NULL as NCLOB));
       wt_assert.this (
-         msg_in          => 'EQ NCLOB Sad Path 2',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ NCLOB Sad Path 3';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -1322,57 +1402,62 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ NCLOB Sad Path 3 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => temp_nclob1);
       wt_assert.isnull (
-         msg_in          => 'EQ NCLOB Sad Path 3 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => cast (NULL as NCLOB));
       wt_assert.this (
-         msg_in          => 'EQ NCLOB Sad Path 3',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
-      -- EQ: BLOB overload
+      wt_assert.g_testcase := 'EQ BLOB Happy Path 1';
       eq (
-         msg_in          => 'EQ BLOB Happy Path 1',
+         msg_in          => 'Run Test',
          check_this_in   => temp_blob1,
          against_this_in => temp_blob1);
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ BLOB Happy Path 1 g_rec.last_pass value',
+         msg_in          => 'g_rec.last_pass value',
          check_this_in   => temp_rec.last_pass);
       wt_assert.this (
-         msg_in          => 'EQ BLOB Happy Path 1 g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => (temp_rec.last_pass = TRUE));
       wt_assert.isnotnull (
-         msg_in          => 'EQ BLOB Happy Path 1 g_rec.last_assert value',
+         msg_in          => 'g_rec.last_assert value',
          check_this_in   => temp_rec.last_assert);
       wt_assert.this (
-         msg_in          => 'EQ BLOB Happy Path 1 g_rec.last_assert',
+         msg_in          => 'g_rec.last_assert',
          check_this_in   => (temp_rec.last_assert = 'EQ'));
       wt_assert.isnotnull (
-         msg_in          => 'EQ BLOB Happy Path 1 g_rec.last_msg value',
+         msg_in          => 'g_rec.last_msg value',
          check_this_in   => temp_rec.last_msg);
       wt_assert.this (
-         msg_in          => 'EQ BLOB Happy Path 1 g_rec.last_msg',
-         check_this_in   => (temp_rec.last_msg = 'EQ BLOB Happy Path 1'));
+         msg_in          => 'g_rec.last_msg',
+         check_this_in   => (temp_rec.last_msg = 'Run Test'));
       wt_assert.isnotnull (
-         msg_in          => 'EQ BLOB Happy Path 1a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'EQ BLOB Happy Path 1b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => (temp_rec.last_details =
                             'DBMS_LOB.COMPARE on BLOBs, compare_results: 0'));
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ BLOB Happy Path 2';
       eq (
-         msg_in          => 'EQ BLOB Happy Path 2',
+         msg_in          => 'Run Test',
          check_this_in   => temp_blob1,
          against_this_in => temp_blob1,
          null_ok_in      => TRUE);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ BLOB Happy Path 3';
       eq (
-         msg_in          => 'EQ BLOB Happy Path 3',
+         msg_in          => 'Run Test',
          check_this_in   => cast (NULL as BLOB),
          against_this_in => cast (NULL as BLOB),
          null_ok_in      => TRUE);
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ BLOB Sad Path 1';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -1381,15 +1466,16 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ BLOB Sad Path 1 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => temp_blob1);
       wt_assert.isnotnull (
-         msg_in          => 'EQ BLOB Sad Path 1 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => temp_blob2);
       wt_assert.this (
-         msg_in          => 'EQ BLOB Sad Path 1',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ BLOB Sad Path 2';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -1398,15 +1484,16 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ BLOB Sad Path 2 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => temp_blob1);
       wt_assert.isnull (
-         msg_in          => 'EQ BLOB Sad Path 2 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => cast (NULL as BLOB));
       wt_assert.this (
-         msg_in          => 'EQ BLOB Sad Path 2',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQ BLOB Sad Path 3';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -1416,15 +1503,15 @@ $THEN
       wtplsql_skip_save := FALSE;
       temp_rec := g_rec;
       wt_assert.isnotnull (
-         msg_in          => 'EQ BLOB Sad Path 3 check_this_in value',
+         msg_in          => 'check_this_in value',
          check_this_in   => temp_blob1);
       wt_assert.isnull (
-         msg_in          => 'EQ BLOB Sad Path 3 against_this_in value',
+         msg_in          => 'against_this_in value',
          check_this_in   => cast (NULL as BLOB));
       wt_assert.this (
-         msg_in          => 'EQ BLOB Sad Path 3',
+         msg_in          => 'last_pass = FALSE',
          check_this_in   => (temp_rec.last_pass = FALSE));
-   end tc_eq;
+   end t_eq;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -1487,120 +1574,128 @@ end isnotnull;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure tc_isnotnull
+   procedure t_isnotnull
    is
    begin
-      wt_assert.g_testcase := 'ISNOTNULL Tests';
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'ISNOTNULL VARCHAR2 Happy Path 1';
       isnotnull (
-         msg_in        => 'ISNOTNULL VARCHAR2 Happy Path 1',
+         msg_in        => 'Run Test',
          check_this_in => 'X');
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'ISNOTNULL VARCHAR2 Happy Path 1 g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'ISNOTNULL VARCHAR2 Happy Path 1 g_rec.last_assert',
+         msg_in          => 'g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'ISNOTNULL');
       wt_assert.eq (
-         msg_in          => 'ISNOTNULL VARCHAR2 Happy Path 1 g_rec.last_msg',
+         msg_in          => 'g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'ISNOTNULL VARCHAR2 Happy Path 1');
+         against_this_in => 'Run Test');
       wt_assert.eq (
-         msg_in          => 'ISNOTNULL VARCHAR2 Happy Path 1 g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected NOT NULL and got "X"');
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'ISNOTNULL VARCHAR2 Sad Path 1';
       wtplsql_skip_save := TRUE;
       isnotnull (
          msg_in        => 'Not Used',
          check_this_in => '');
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'ISNOTNULL VARCHAR2 Sad Path 1',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => g_rec.last_pass,
          against_this_in => FALSE);
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'ISNOTNULL BOOLEAN Happy Path 1';
       isnotnull (
-         msg_in        => 'ISNOTNULL BOOLEAN Happy Path 2',
+         msg_in        => 'Run Test',
          check_this_in => TRUE);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'ISNOTNULL BOOLEAN Sad Path 1';
       wtplsql_skip_save := TRUE;
       isnotnull (
          msg_in        => 'Not Used',
          check_this_in => temp_bool);
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'ISNOTNULL BOOLEAN Sad Path 2',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => g_rec.last_pass,
          against_this_in => FALSE);
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'ISNOTNULL CLOB Happy Path 1';
       isnotnull (
-         msg_in        => 'ISNOTNULL CLOB Happy Path 1',
+         msg_in        => 'Run Test',
          check_this_in => temp_clob1);
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'ISNOTNULL CLOB Happy Path 1 g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'ISNOTNULL CLOB Happy Path 1 g_rec.last_assert',
+         msg_in          => 'g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'ISNOTNULL');
       wt_assert.eq (
-         msg_in          => 'ISNOTNULL CLOB Happy Path 1 g_rec.last_msg',
+         msg_in          => 'g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'ISNOTNULL CLOB Happy Path 1');
+         against_this_in => 'Run Test');
       wt_assert.isnotnull (
-         msg_in          => 'ISNOTNULL CLOB Happy Path 1a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'ISNOTNULL CLOB Happy Path 1b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected NOT NULL and got "<?xml version="1.0" encoding="UTF-8"?>%'));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'ISNOTNULL CLOB Sad Path 1';
       wtplsql_skip_save := TRUE;
       isnotnull (
          msg_in        => 'Not Used',
          check_this_in => cast (null as CLOB));
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'ISNOTNULL CLOB Sad Path 1',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => g_rec.last_pass,
          against_this_in => FALSE);
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'ISNOTNULL BLOB Happy Path 1';
       isnotnull (
-         msg_in        => 'ISNOTNULL BLOB Happy Path 1',
+         msg_in        => 'Run Test',
          check_this_in => temp_blob1);
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'ISNOTNULL BLOB Happy Path 1 g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'ISNOTNULL BLOB Happy Path 1 g_rec.last_assert',
+         msg_in          => 'g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'ISNOTNULL');
       wt_assert.eq (
-         msg_in          => 'ISNOTNULL BLOB Happy Path 1 g_rec.last_msg',
+         msg_in          => 'g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'ISNOTNULL BLOB Happy Path 1');
+         against_this_in => 'Run Test');
       wt_assert.eq (
-         msg_in          => 'ISNOTNULL BLOB Happy Path 1 g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'BLOB is NOT NULL');
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'ISNOTNULL BLOB Sad Path 1';
       wtplsql_skip_save := TRUE;
       isnotnull (
          msg_in        => 'Not Used',
          check_this_in => cast (null as BLOB));
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'ISNOTNULL BLOB Sad Path 1',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => g_rec.last_pass,
          against_this_in => FALSE);
-   end tc_isnotnull;
+   end t_isnotnull;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -1663,117 +1758,125 @@ end isnull;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure tc_isnull
+   procedure t_isnull
    is
    begin
-      wt_assert.g_testcase := 'ISNULL Tests';
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'ISNULL VARCHAR2 Happy Path 1';
       isnull (
-         msg_in        => 'ISNULL VARCHAR2 Happy Path 1',
+         msg_in        => 'Run Test',
          check_this_in => '');
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'ISNULL VARCHAR2 Happy Path 1 g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'ISNULL VARCHAR2 Happy Path 1 g_rec.last_assert',
+         msg_in          => 'g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'ISNULL');
       wt_assert.eq (
-         msg_in          => 'ISNULL VARCHAR2 Happy Path 1 g_rec.last_msg',
+         msg_in          => 'g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'ISNULL VARCHAR2 Happy Path 1');
+         against_this_in => 'Run Test');
       wt_assert.eq (
-         msg_in          => 'ISNULL VARCHAR2 Happy Path 1 g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected NULL and got ""');
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'ISNULL VARCHAR2 Sad Path 1';
       wtplsql_skip_save := TRUE;
       isnull (
          msg_in        => 'Not Used',
          check_this_in => 'X');
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'ISNULL VARCHAR2 Sad Path 1',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => g_rec.last_pass,
          against_this_in => FALSE);
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'ISNULL BOOLEAN Happy Path 1';
       isnull (
-         msg_in        => 'ISNULL BOOLEAN Happy Path 1',
+         msg_in        => 'Run Test',
          check_this_in => temp_bool);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'ISNULL BOOLEAN Sad Path 1';
       wtplsql_skip_save := TRUE;
       isnull (
          msg_in        => 'Not Used',
          check_this_in => FALSE);
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'ISNULL BOOLEAN Sad Path 1',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => g_rec.last_pass,
          against_this_in => FALSE);
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'ISNULL CLOB Happy Path 1';
       isnull (
-         msg_in        => 'ISNULL CLOB Happy Path 1',
+         msg_in        => 'Run Test',
          check_this_in => cast (null as CLOB));
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'ISNULL CLOB Happy Path 1 g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'ISNULL CLOB Happy Path 1 g_rec.last_assert',
+         msg_in          => 'g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'ISNULL');
       wt_assert.eq (
-         msg_in          => 'ISNULL CLOB Happy Path 1 g_rec.last_msg',
+         msg_in          => 'g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'ISNULL CLOB Happy Path 1');
+         against_this_in => 'Run Test');
       wt_assert.eq (
-         msg_in          => 'ISNULL CLOB Happy Path 1 g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected NULL and got ""');
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'ISNULL CLOB Sad Path 1';
       wtplsql_skip_save := TRUE;
       isnull (
          msg_in        => 'Not Used',
          check_this_in => temp_clob1);
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'ISNULL CLOB Sad Path 1',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => g_rec.last_pass,
          against_this_in => FALSE);
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'ISNULL BLOB Happy Path 1';
       isnull (
-         msg_in        => 'ISNULL BLOB Happy Path 1',
+         msg_in        => 'Run Test',
          check_this_in => cast (null as BLOB));
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'ISNULL BLOB Happy Path 1 g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'ISNULL BLOB Happy Path 1 g_rec.last_assert',
+         msg_in          => 'g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'ISNULL');
       wt_assert.eq (
-         msg_in          => 'ISNULL BLOB Happy Path 1 g_rec.last_msg',
+         msg_in          => 'g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'ISNULL BLOB Happy Path 1');
+         against_this_in => 'Run Test');
       wt_assert.eq (
-         msg_in          => 'ISNULL BLOB Happy Path 1 g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'BLOB is NULL');
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'ISNULL BLOB Sad Path 1';
       wtplsql_skip_save := TRUE;
       isnull (
          msg_in        => 'Not Used',
          check_this_in => temp_blob1);
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'ISNULL BLOB Sad Path 1',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => g_rec.last_pass,
          against_this_in => FALSE);
-   end tc_isnull;
+   end t_isnull;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -1812,37 +1915,38 @@ end raises;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure tc_raises
+   procedure t_raises
    is
    begin
-      wt_assert.g_testcase := 'Raises Test';
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Raises Tests Happy Path';
       raises (
-         msg_in         => 'Raises Tests Happy Path',
+         msg_in         => 'Run Test',
          check_call_in  => 'wt_assert.bogus',
          against_exc_in => 'PLS-00302: component ''BOGUS'' must be declared');
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'Raises Tests Happy Path g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'Raises Tests Happy Path g_rec.last_assert',
+         msg_in          => 'g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'RAISES');
       wt_assert.eq (
-         msg_in          => 'Raises Tests Happy Path g_rec.last_msg',
+         msg_in          => 'g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'Raises Tests Happy Path');
+         against_this_in => 'Run Test');
       wt_assert.isnotnull (
-         msg_in          => 'Raises Tests Happy Path a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'Raises Tests Happy Path b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected exception "%PLS-00302: component ''BOGUS'' must be declared%". ' ||
                             'Actual exception raised was "%PLS-00302: component ''BOGUS'' must be declared%'));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Raises Tests Sad Path 1';
       wtplsql_skip_save := TRUE;
       raises (
          msg_in         => 'Not Used',
@@ -1851,18 +1955,19 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'Raises Tests Sad Path 1 g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'Raises Tests Sad Path 1a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'Raises Tests Sad Path 1b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected exception "%Incorrect Exception%". ' ||
                             'Actual exception raised was "ORA-%'));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Raises Tests Sad Path 2';
       wtplsql_skip_save := TRUE;
       raises (
          msg_in         => 'Not Used',
@@ -1871,16 +1976,16 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'Raises Tests Sad Path 2 g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.eq (
-         msg_in          => 'Raises Tests Sad Path 2b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected exception "%Incorrect Exception%". ' ||
                             'Actual exception raised was "". ' ||
                             'Exception raised by: wt_assert.set_NLS_DATE_FORMAT');
-   end tc_raises;
+   end t_raises;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -1990,40 +2095,42 @@ end eqqueryvalue;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure tc_eqqueryvalue
+   procedure t_eqqueryvalue
    is
    begin
-      wt_assert.g_testcase := 'EQQUERYVALUE Tests';
       --------------------------------------  WTPLSQL Testing --
-      -- VARCHAR2
+      wt_assert.g_testcase := 'EQQUERYVALUE VARCHAR2 Happy Path 1';
       eqqueryvalue (
-         msg_in             =>   'EQQUERYVALUE VARCHAR2 Happy Path 1',
+         msg_in             =>   'Run Test',
          check_query_in     =>   'select dummy from DUAL',
          against_value_in   =>   'X',
          null_ok_in         =>   false);
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE VARCHAR2 Happy Path 1 g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE VARCHAR2 Happy Path 1 g_rec.last_assert',
+         msg_in          => 'g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'EQQUERYVALUE');
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE VARCHAR2 Happy Path 1 g_rec.last_msg',
+         msg_in          => 'g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'EQQUERYVALUE VARCHAR2 Happy Path 1');
+         against_this_in => 'Run Test');
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE VARCHAR2 Happy Path 1 g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected "X" and got "X" for Query: select dummy from DUAL');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQQUERYVALUE VARCHAR2 Happy Path 2';
       eqqueryvalue (
-         msg_in             =>   'EQQUERYVALUE VARCHAR2 Happy Path 2',
+         msg_in             =>   'Run Test',
          check_query_in     =>   'select max(dummy) from DUAL where 0 = 1',
          against_value_in   =>   '',
          null_ok_in         =>   true);
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQQUERYVALUE VARCHAR2 Sad Path 1';
       wtplsql_skip_save := TRUE;
       eqqueryvalue (
          msg_in             =>   'Not Used',
@@ -2032,36 +2139,37 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE VARCHAR2 Sad Path 1',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       --------------------------------------  WTPLSQL Testing --
-      -- XMLTYPE Overload
+      wt_assert.g_testcase := 'EQQUERYVALUE XMLTYPE Happy Path 1';
       eqqueryvalue (
-         msg_in           => 'EQQUERYVALUE XMLTYPE Happy Path 1',
+         msg_in           => 'Run Test',
          check_query_in   => 'select temp_xml from wt_test_data where id = 1',
          against_value_in => temp_xml1);
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE XMLTYPE Happy Path 1 g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE XMLTYPE Happy Path 1 g_rec.last_assert',
+         msg_in          => 'g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'EQQUERYVALUE');
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE XMLTYPE Happy Path 1 g_rec.last_msg',
+         msg_in          => 'g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'EQQUERYVALUE XMLTYPE Happy Path 1');
+         against_this_in => 'Run Test');
       wt_assert.isnotnull (
-         msg_in          => 'EQQUERYVALUE XMLTYPE Happy Path 1a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'EQQUERYVALUE XMLTYPE Happy Path 1b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected "<?xml version="1.0" encoding="UTF-8"?>%'));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQQUERYVALUE XMLTYPE Sad Path 1';
       wtplsql_skip_save := TRUE;
       eqqueryvalue (
          msg_in             =>   'Not Used',
@@ -2070,51 +2178,54 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE XMLTYPE Sad Path 1',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'EQQUERYVALUE XMLTYPE Sad Path 1a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'EQQUERYVALUE XMLTYPE Sad Path 1b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected "<?xml version="1.0" encoding="UTF-8"?>' ||
              '<note>2</note>" and got "<?xml version="1.0" encoding="UTF-8"?>%'));
       --------------------------------------  WTPLSQL Testing --
-      -- CLOB Overload
+      wt_assert.g_testcase := 'EQQUERYVALUE CLOB Happy Path 1';
       eqqueryvalue (
-         msg_in             =>   'EQQUERYVALUE CLOB Happy Path 1',
+         msg_in             =>   'Run Test',
          check_query_in     =>   'select temp_clob from wt_test_data where id = 1',
          against_value_in   =>   temp_clob1,
          null_ok_in         =>   false);
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE CLOB Happy Path 1 g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE CLOB Happy Path 1 g_rec.last_assert',
+         msg_in          => 'g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'EQQUERYVALUE');
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE CLOB Happy Path 1 g_rec.last_msg',
+         msg_in          => 'g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'EQQUERYVALUE CLOB Happy Path 1');
+         against_this_in => 'Run Test');
       wt_assert.isnotnull (
-         msg_in          => 'EQQUERYVALUE CLOB Happy Path 1a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'EQQUERYVALUE CLOB Happy Path 1b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected "<?xml version="1.0" encoding="UTF-8"?>%'));
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQQUERYVALUE CLOB Happy Path 2';
       eqqueryvalue (
-         msg_in             =>   'EQQUERYVALUE CLOB Happy Path 2',
+         msg_in             =>   'Run Test',
          check_query_in     =>   'select temp_clob from wt_test_data where 0 = 1',
          against_value_in   =>   '',
          null_ok_in         =>   true);
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQQUERYVALUE CLOB Sad Path 1';
       wtplsql_skip_save := TRUE;
       eqqueryvalue (
          msg_in             =>   'Not Used',
@@ -2123,48 +2234,51 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE CLOB Sad Path 1',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'EQQUERYVALUE CLOB Sad Path 1a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'EQQUERYVALUE CLOB Sad Path 1b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected "This is another clob." and got "' ||
                             '<?xml version="1.0" encoding="UTF-8"?>%'));
       --------------------------------------  WTPLSQL Testing --
-      -- BLOB Overload
+      wt_assert.g_testcase := 'EQQUERYVALUE BLOB Happy Path 1';
       eqqueryvalue (
-         msg_in             =>   'EQQUERYVALUE BLOB Happy Path 1',
+         msg_in             =>   'Run Test',
          check_query_in     =>   'select temp_blob from wt_test_data where id = 1',
          against_value_in   =>   temp_blob1,
          null_ok_in         =>   false);
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE BLOB Happy Path 1 g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE BLOB Happy Path 1 g_rec.last_assert',
+         msg_in          => 'g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'EQQUERYVALUE');
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE BLOB Happy Path 1 g_rec.last_msg',
+         msg_in          => 'g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'EQQUERYVALUE BLOB Happy Path 1');
+         against_this_in => 'Run Test');
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE BLOB Happy Path 1 g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'DBMS_LOB.COMPARE between BLOB and Query:' ||
                            ' select temp_blob from wt_test_data where id = 1, compare_results: 0');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQQUERYVALUE BLOB Happy Path 2';
       eqqueryvalue (
-         msg_in             =>   'EQQUERYVALUE BLOB Happy Path 2',
+         msg_in             =>   'Run Test',
          check_query_in     =>   'select temp_blob from wt_test_data where 0 = 1',
          against_value_in   =>   cast (null as BLOB),
          null_ok_in         =>   true);
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQQUERYVALUE BLOB Sad Path 1';
       wtplsql_skip_save := TRUE;
       eqqueryvalue (
          msg_in             =>   'Not Used',
@@ -2173,15 +2287,15 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE BLOB Sad Path 1',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.eq (
-         msg_in          => 'EQQUERYVALUE BLOB Sad Path 1 g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'DBMS_LOB.COMPARE between BLOB and Query: ' ||
                'select temp_blob from wt_test_data where id = 1, compare_results: -1');
-   end tc_eqqueryvalue;
+   end t_eqqueryvalue;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -2200,36 +2314,37 @@ end eqquery;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure tc_eqquery
+   procedure t_eqquery
    is
    begin
-      wt_assert.g_testcase := 'EQQUERY Tests';
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQQUERY Tests Happy Path 1';
       wt_assert.eqquery (
-         msg_in             =>   'EQQUERY Tests Happy Path 1',
+         msg_in             =>   'Run Test',
          check_query_in     =>   'select * from USER_TABLES',
          against_query_in   =>   'select * from USER_TABLES');
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'EQQUERY Tests Happy Path 1 g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'EQQUERY Tests Happy Path 1 g_rec.last_assert',
+         msg_in          => 'g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'EQQUERY');
       wt_assert.eq (
-         msg_in          => 'EQQUERY Tests Happy Path 1 g_rec.last_msg',
+         msg_in          => 'g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'EQQUERY Tests Happy Path 1');
+         against_this_in => 'Run Test');
       wt_assert.isnotnull (
-         msg_in          => 'EQQUERY Tests Happy Path 1a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
          msg_in          => 'EQQUERY Tests Happy Path 1b g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Comparison Query: %'));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQQUERY Tests Sad Path 1';
       wtplsql_skip_save := TRUE;
       eqquery (
          msg_in             =>   'Not Used',
@@ -2238,17 +2353,18 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'EQQUERY Sad Path 1',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'EQQUERY Sad Path 1a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'EQQUERY Sad Path 1b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Comparison Query: %'));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQQUERY Tests Sad Path 2';
       wtplsql_skip_save := TRUE;
       eqquery (
          msg_in             =>   'Not Used',
@@ -2257,17 +2373,17 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'EQQUERY Sad Path 2',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'EQQUERY Sad Path 2a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'EQQUERY Sad Path 2b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                 '%PL/SQL: ORA-01789: query block has incorrect number of result columns%'));
-   end tc_eqquery;
+   end t_eqquery;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -2298,44 +2414,47 @@ end eqtable;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure tc_eqtable
+   procedure t_eqtable
    is
    begin
-      wt_assert.g_testcase := 'EQTABLE Tests';
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQTABLE Tests Happy Path 1';
       wt_assert.eqtable (
-         msg_in             =>   'EQTABLE Tests Happy Path 1',
+         msg_in             =>   'Run Test',
          check_this_in      =>   'USER_TABLES',
          against_this_in    =>   'USER_TABLES',
          check_where_in     =>   '',
          against_where_in   =>   '');
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'EQTABLE Tests Happy Path 1 g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'EQTABLE Tests Happy Path 1 g_rec.last_assert',
+         msg_in          => 'g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'EQTABLE');
       wt_assert.eq (
-         msg_in          => 'EQTABLE Tests Happy Path 1 g_rec.last_msg',
+         msg_in          => 'g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'EQTABLE Tests Happy Path 1');
+         against_this_in => 'Run Test');
       wt_assert.isnotnull (
-         msg_in          => 'EQTABLE Tests Happy Path 1a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'EQTABLE Tests Happy Path 1b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Comparison Query: %'));
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQTABLE Tests Happy Path 2';
       eqtable (
-         msg_in             =>   'EQTABLE Tests Happy Path 2',
+         msg_in             =>   'Run Test',
          check_this_in      =>   'ALL_TABLES',
          against_this_in    =>   'ALL_TABLES',
          check_where_in     =>   'owner = ''' || USER || '''',
          against_where_in   =>   'owner = ''' || USER || '''');
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQTABLE Sad Path 1';
       wtplsql_skip_save := TRUE;
       eqtable (
          msg_in             =>   'Not Used',
@@ -2346,17 +2465,18 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'EQTABLE Sad Path 1',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'EQTABLE Sad Path 1a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'EQTABLE Sad Path 1b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Comparison Query: %'));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQTABLE Sad Path 2';
       wtplsql_skip_save := TRUE;
       eqtable (
          msg_in             =>   'Not Used',
@@ -2365,17 +2485,17 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'EQTABLE Sad Path 2',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'EQTABLE Sad Path 2a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'EQTABLE Sad Path 2b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => temp_rec.last_details like
                '%PL/SQL: ORA-01789: query block has incorrect number of result columns%');
-   end tc_eqtable;
+   end t_eqtable;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -2438,45 +2558,48 @@ end eqtabcount;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure tc_eqtabcount
+   procedure t_eqtabcount
    is
    begin
-      wt_assert.g_testcase := 'EQTABCOUNT Tests';
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQTABCOUNT Tests Happy Path 1';
       eqtabcount (
-         msg_in             =>   'EQTABCOUNT Tests Happy Path 1',
+         msg_in             =>   'Run Test',
          check_this_in      =>   'ALL_TABLES',
          against_this_in    =>   'ALL_TABLES',
          check_where_in     =>   'owner = ''' || USER || '''',
          against_where_in   =>   'owner = ''' || USER || '''');
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'EQTABCOUNT Tests Happy Path 1 g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'EQTABCOUNT Tests Happy Path 1 g_rec.last_assert',
+         msg_in          => 'g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'EQTABCOUNT');
       wt_assert.eq (
-         msg_in          => 'EQTABCOUNT Tests Happy Path 1 g_rec.last_msg',
+         msg_in          => 'g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'EQTABCOUNT Tests Happy Path 1');
+         against_this_in => 'Run Test');
       wt_assert.isnotnull (
-         msg_in          => 'EQTABCOUNT Tests Happy Path 1a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'EQTABCOUNT Tests Happy Path 1b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected % rows from "ALL_TABLES"' ||
                             ' and got % rows from "ALL_TABLES"'));
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQTABCOUNT Tests Happy Path 2';
       eqtabcount (
-         msg_in             =>   'EQTABCOUNT Tests Happy Path 2',
+         msg_in             =>   'Run Test',
          check_this_in      =>   'ALL_TABLES',
          against_this_in    =>   'USER_TABLES',
          check_where_in     =>   'owner = ''' || USER || '''',
          against_where_in   =>   '');
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQTABCOUNT Sad Path 1';
       wtplsql_skip_save := TRUE;
       eqtabcount (
          msg_in             =>   'Not Used',
@@ -2487,18 +2610,19 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'EQTABCOUNT Sad Path 1',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'EQTABCOUNT Sad Path 1a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'EQTABCOUNT Sad Path 1b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected % rows from "ALL_TABLES" and ' ||
                                  'got % rows from "ALL_TABLES"'));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQTABCOUNT Sad Path 2';
       wtplsql_skip_save := TRUE;
       eqtabcount (
          msg_in             =>   'Not Used',
@@ -2507,17 +2631,18 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'EQTABCOUNT Sad Path 2',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'EQTABCOUNT Sad Path 2a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'EQTABCOUNT Sad Path 2b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                'Expected % rows from "USER_TAB_COLUMNS" and got % rows from "USER_TABLES"'));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'EQTABCOUNT Sad Path 3';
       wtplsql_skip_save := TRUE;
       eqtabcount (
          msg_in             =>   'Not Used',
@@ -2526,21 +2651,21 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'EQTABCOUNT Sad Path 3',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'EQTABCOUNT Sad Path 3a g_rec.last_details',
+         msg_in          => 'g_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'EQTABCOUNT Sad Path 3b g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                '%table or view does not exist%'));
       wt_assert.this (
-         msg_in          => 'EQTABCOUNT Sad Path 3c g_rec.last_details',
+         msg_in          => 'g_rec.last_details 2',
          check_this_in   => (temp_rec.last_details like
                '%FAILURE of Compare Query%'));
-   end tc_eqtabcount;
+   end t_eqtabcount;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -2548,7 +2673,8 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 procedure objexists (
       msg_in        in   varchar2,
       obj_owner_in  in   varchar2,
-      obj_name_in   in   varchar2)
+      obj_name_in   in   varchar2,
+      obj_type_in   in   varchar2 default null)
 is
    l_num_objects  number;
 begin
@@ -2558,12 +2684,17 @@ begin
     from  all_objects
     where object_name = obj_name_in
      and  (   obj_owner_in is null
-           or obj_owner_in = owner);
+           or obj_owner_in = owner)
+     and  (   obj_type_in is null
+           or obj_type_in = object_type);
    g_rec.last_pass    := case l_num_objects when 0 then FALSE else TRUE end;
    g_rec.last_details := 'Number of objects found for "' ||
                          case when obj_owner_in is null then ''
                               else obj_owner_in || '.' end ||
-                         obj_name_in || '" is ' || l_num_objects;
+                         obj_name_in || '"' ||
+                         case when obj_type_in is null then ''
+                              else '(' || obj_type_in || ')' end ||
+                         ' is ' || l_num_objects;
    process_assertion;
 end objexists;
 
@@ -2581,36 +2712,51 @@ end objexists;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure tc_object_exists
+   procedure t_object_exists
    is
    begin
-      wt_assert.g_testcase := 'OBJEXISTS Tests';
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'OBJEXISTS Happy Path 1';
       objexists (
-         msg_in        =>   'OBJEXISTS Happy Path 1',
+         msg_in        =>   'Run Test',
          obj_owner_in  =>   'SYS',
          obj_name_in   =>   'DUAL');
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'OBJEXISTS Happy Path 1 g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'OBJEXISTS Happy Path 1 g_rec.last_assert',
+         msg_in          => 'g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'OBJEXISTS');
       wt_assert.eq (
-         msg_in          => 'OBJEXISTS Happy Path 1 g_rec.last_msg',
+         msg_in          => 'g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'OBJEXISTS Happy Path 1');
+         against_this_in => 'Run Test');
       wt_assert.eq (
-         msg_in          => 'OBJEXISTS Happy Path 1 g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Number of objects found for "SYS.DUAL" is 1');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'OBJEXISTS Happy Path 2';
       objexists (
-         msg_in          =>  'OBJEXISTS Happy Path 2',
+         msg_in        =>   'Run Test',
+         obj_owner_in  =>   'SYS',
+         obj_name_in   =>   'DUAL',
+         obj_type_in   =>   'TABLE');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'OBJEXISTS Happy Path 3';
+      objexists (
+         msg_in          =>  'Run Test',
          check_this_in   =>  'SYS.DUAL');
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'OBJEXISTS Happy Path 4';
+      objexists (
+         msg_in          =>  'Run Test',
+         check_this_in   =>  'DUAL');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'OBJEXISTS Sad Path 1';
       wtplsql_skip_save := TRUE;
       objexists (
          msg_in        =>   'Not Used',
@@ -2619,14 +2765,14 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'OBJEXISTS Sad Path 1',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.eq (
-         msg_in          => 'OBJEXISTS Sad Path 1 g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Number of objects found for "JOE SMITH.BOGUS" is 0');
-   end tc_object_exists;
+   end t_object_exists;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -2634,7 +2780,8 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 procedure objnotexists (
       msg_in        in   varchar2,
       obj_owner_in  in   varchar2,
-      obj_name_in   in   varchar2)
+      obj_name_in   in   varchar2,
+      obj_type_in   in   varchar2 default null)
 is
    l_num_objects  number;
 begin
@@ -2644,12 +2791,17 @@ begin
     from  all_objects
     where object_name = obj_name_in
      and  (   obj_owner_in is null
-           or obj_owner_in = owner);
+           or obj_owner_in = owner)
+     and  (   obj_type_in is null
+           or obj_type_in = object_type);
    g_rec.last_pass    := case l_num_objects when 0 then TRUE else FALSE end;
    g_rec.last_details := 'Number of objects found for "' ||
                          case when obj_owner_in is null then ''
                               else obj_owner_in || '.' end ||
-                         obj_name_in || '" is ' || l_num_objects;
+                         obj_name_in || '"' ||
+                         case when obj_type_in is null then ''
+                              else '(' || obj_type_in || ')' end ||
+                         ' is ' || l_num_objects;
    process_assertion;
 end objnotexists;
 
@@ -2667,36 +2819,46 @@ end objnotexists;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure tc_object_not_exists
+   procedure t_object_not_exists
    is
    begin
-      wt_assert.g_testcase := 'OBJNOTEXISTS Tests';
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'OBJNOTEXISTS Happy Path 1';
       objnotexists (
-         msg_in        =>   'OBJNOTEXISTS Happy Path 1',
-         obj_owner_in  =>   'BOGUS123',
-         obj_name_in   =>   'BOGUS123');
+         msg_in        =>   'Run Test',
+         obj_owner_in  =>   'BOGUS',
+         obj_name_in   =>   'THING123');
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'OBJNOTEXISTS Happy Path 1 g_rec.last_pass',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'OBJNOTEXISTS Happy Path 1 g_rec.last_assert',
+         msg_in          => 'g_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'OBJNOTEXISTS');
       wt_assert.eq (
-         msg_in          => 'OBJNOTEXISTS Happy Path 1 g_rec.last_msg',
+         msg_in          => 'g_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
-         against_this_in => 'OBJNOTEXISTS Happy Path 1');
+         against_this_in => 'Run Test');
       wt_assert.eq (
-         msg_in          => 'OBJNOTEXISTS Happy Path 1 g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => temp_rec.last_details,
-         against_this_in => 'Number of objects found for "BOGUS123.BOGUS123" is 0');
-      objnotexists (
-         msg_in          =>   'OBJNOTEXISTS Happy Path 2',
-         check_this_in   =>   'BOGUS123.BOGUS123');
+         against_this_in => 'Number of objects found for "BOGUS.THING123" is 0');
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'OBJNOTEXISTS Happy Path 2';
+      objnotexists (
+         msg_in        =>   'Run Test',
+         obj_owner_in  =>   'BOGUS',
+         obj_name_in   =>   'THING123',
+         obj_type_in   =>   'PACKAGE');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'OBJNOTEXISTS Happy Path 3';
+      objnotexists (
+         msg_in          =>   'Run Test',
+         check_this_in   =>   'BOGUS.THING123');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'OBJNOTEXISTS Sad Path 1';
       wtplsql_skip_save := TRUE;
       objnotexists (
          msg_in        =>   'Not Used',
@@ -2705,14 +2867,14 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'OBJNOTEXISTS Sad Path 1',
+         msg_in          => 'g_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.eq (
-         msg_in          => 'OBJNOTEXISTS Sad Path 1 g_rec.last_details',
+         msg_in          => 'g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Number of objects found for "SYS.DUAL" is 1');
-   end tc_object_not_exists;
+   end t_object_not_exists;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -2728,23 +2890,23 @@ $THEN
        into  temp_clob1, temp_nclob1, temp_xml1, temp_blob1
        from  wt_test_data where id = 1;
       wt_assert.g_raise_exception := FALSE;
-      tc_boolean_to_status;
-      tc_process_assertion;
-      tc_compare_queries;
-      tc_nls_settings;
-      tc_last_values;
-      tc_reset_globals;
-      tc_this;
-      tc_eq;
-      tc_isnotnull;
-      tc_isnull;
-      tc_raises;
-      tc_eqqueryvalue;
-      tc_eqquery;
-      tc_eqtable;
-      tc_eqtabcount;
-      tc_object_exists;
-      tc_object_not_exists;
+      t_boolean_to_status;
+      t_process_assertion;
+      t_compare_queries;
+      t_nls_settings;
+      t_last_values;
+      t_reset_globals;
+      t_this;
+      t_eq;
+      t_isnotnull;
+      t_isnull;
+      t_raises;
+      t_eqqueryvalue;
+      t_eqquery;
+      t_eqtable;
+      t_eqtabcount;
+      t_object_exists;
+      t_object_not_exists;
    end WTPLSQL_RUN;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--

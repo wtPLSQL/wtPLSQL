@@ -185,7 +185,8 @@ is
    procedure objexists (
       msg_in        in   varchar2,
       obj_owner_in  in   varchar2,
-      obj_name_in   in   varchar2);
+      obj_name_in   in   varchar2,
+      obj_type_in   in   varchar2 default null);
 
    procedure objexists (
       msg_in          in   varchar2,
@@ -195,7 +196,8 @@ is
    procedure objnotexists (
       msg_in        in   varchar2,
       obj_owner_in  in   varchar2,
-      obj_name_in   in   varchar2);
+      obj_name_in   in   varchar2,
+      obj_type_in   in   varchar2 default null);
 
    procedure objnotexists (
       msg_in          in   varchar2,

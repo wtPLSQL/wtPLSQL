@@ -172,7 +172,7 @@ begin
        where test_run_id = g_test_runs_rec.id
        and  (   l_show_pass_txt = 'Y'
              or status         != 'PASS')
-       order by testcase, result_seq )
+       order by result_seq )
    loop
       if not header_shown
       then
@@ -288,7 +288,8 @@ is
 begin
    if in_testcase is not null
    then
-      l_out_str := '   --  Test Case: ' || in_testcase || '  --' || CHR(10);
+      l_out_str := rpad('---***  ' || in_testcase || '  ***---'
+                       ,80,'-') || CHR(10);
    end if;
    if in_status = wt_assert.C_PASS
    then
