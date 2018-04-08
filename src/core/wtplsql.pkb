@@ -144,7 +144,17 @@ procedure test_run
       (in_package_name  in  varchar2)
 is
    l_test_runs_rec_NULL   wt_test_runs%ROWTYPE;
-   l_error_message        varchar2(4000);
+   l_error_stack          varchar2(32000);
+   procedure concat_err_message is begin
+      if g_test_runs_rec.error_message is not null
+      then
+         g_test_runs_rec.error_message := substr(l_error_stack || CHR(10)||
+                                                 g_test_runs_rec.error_message
+                                                ,1,4000);
+      else
+         g_test_runs_rec.error_message := l_error_stack;
+      end if;
+   end concat_err_message;
 begin
    $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
    $THEN
@@ -174,32 +184,17 @@ begin
                           out_dbout_type      => g_test_runs_rec.dbout_type,
                           out_trigger_offset  => g_test_runs_rec.trigger_offset,
                           out_profiler_runid  => g_test_runs_rec.profiler_runid,
-                          out_error_message   => l_error_message);
-   if g_test_runs_rec.error_message is not null
-   then
-      g_test_runs_rec.error_message := substr(l_error_message || CHR(10)||
-                                              g_test_runs_rec.error_message
-                                             ,1,4000);
-   else
-      g_test_runs_rec.error_message := l_error_message;
-   end if;
-
+                          out_error_message   => l_error_stack);
+   concat_err_message;
    -- Call the Test Runner
    begin
       execute immediate 'BEGIN ' || in_package_name || '.WTPLSQL_RUN; END;';
    exception
       when OTHERS
       then
-         l_error_message := dbms_utility.format_error_stack     ||
-                            dbms_utility.format_error_backtrace ;
-         if g_test_runs_rec.error_message is not null
-         then
-            g_test_runs_rec.error_message := substr(l_error_message || CHR(10)||
-                                                    g_test_runs_rec.error_message
-                                                   ,1,4000);
-         else
-            g_test_runs_rec.error_message := l_error_message;
-         end if;
+         l_error_stack := dbms_utility.format_error_stack     ||
+                          dbms_utility.format_error_backtrace ;
+         concat_err_message;
    end;
 
    -- Finalize
@@ -210,16 +205,9 @@ begin
 exception
    when OTHERS
    then
-      l_error_message := dbms_utility.format_error_stack     ||
-                         dbms_utility.format_error_backtrace ;
-      if g_test_runs_rec.error_message is not null
-      then
-         g_test_runs_rec.error_message := substr(l_error_message || CHR(10)||
-                                                 g_test_runs_rec.error_message
-                                                ,1,4000);
-      else
-         g_test_runs_rec.error_message := l_error_message;
-      end if;
+      l_error_stack := dbms_utility.format_error_stack     ||
+                       dbms_utility.format_error_backtrace ;
+      concat_err_message;
       insert_test_run;       -- Autonomous Transaction COMMIT
       wt_profiler.finalize;  -- Autonomous Transaction COMMIT
       wt_result.finalize;    -- Autonomous Transaction COMMIT
@@ -319,8 +307,8 @@ $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure t_delete_run_id
    is
-      l_num_recs  number;
-      l_sqlerrm   varchar2(4000);
+      l_num_recs   number;
+      l_err_stack  varchar2(32000);
    begin
       --  DELETE_RECORDS has already run when we arrive here.
       -- Cleanup from previous test
@@ -399,15 +387,16 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'DELETE_RUNS Sad Path 1';
       begin
-         delete_runs(-99);  -- Should run without error
-         l_sqlerrm := SQLERRM;
+         delete_runs(-9995);  -- Should run without error
+         l_err_stack := dbms_utility.format_error_stack     ||
+                        dbms_utility.format_error_backtrace ;
       exception when others then
-         l_sqlerrm := SQLERRM;
+         l_err_stack := dbms_utility.format_error_stack     ||
+                        dbms_utility.format_error_backtrace ;
       end;
-      wt_assert.eq (
-         msg_in          => 'Delete Runs(-99)',
-         check_this_in   => SQLERRM,
-         against_this_in => 'ORA-0000: normal, successful completion');
+      wt_assert.isnull (
+         msg_in          => 'Delete Runs(-9995)',
+         check_this_in   => l_err_stack);
    end t_delete_run_id;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
