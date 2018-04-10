@@ -25,6 +25,9 @@ as
 --==============================================================--
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
+
+   g_skip_this  boolean := FALSE;
+
    procedure compile_db_object
          (in_ptype   in varchar2
          ,in_pname   in varchar2
@@ -679,9 +682,10 @@ $THEN
          l_recSAVE  := g_rec;
          l_annoSAVE := anno_aa;
          anno_aa.delete;
-         g_rec.dbout_owner := USER;
-         g_rec.dbout_name  := l_pname;
-         g_rec.dbout_type  := 'PACKAGE BODY';
+         g_rec.dbout_owner    := USER;
+         g_rec.dbout_name     := l_pname;
+         g_rec.dbout_type     := 'PACKAGE BODY';
+         g_rec.trigger_offset := 0;
          load_anno_aa;
          l_annoTEST := anno_aa;
          anno_aa := l_annoSAVE;
@@ -1023,7 +1027,7 @@ $THEN
       units_rec.runid        := c_test_run_id;
       units_rec.unit_number  := 1;
       units_rec.unit_owner   := USER;
-      units_rec.unit_name    := upper(l_pname);
+      units_rec.unit_name    := l_pname;
       units_rec.unit_type    := 'PACKAGE BODY';
       units_rec.total_time   := 0;
       begin
@@ -1066,7 +1070,7 @@ $THEN
       l_recSAVE := g_rec;
       g_rec.test_run_id     := c_test_run_id;
       g_rec.dbout_owner     := USER;
-      g_rec.dbout_name      := upper(l_pname);
+      g_rec.dbout_name      := l_pname;
       g_rec.dbout_type      := 'PACKAGE BODY';
       g_rec.prof_runid      := c_test_run_id;
       g_rec.trigger_offset  := 0;
@@ -1169,15 +1173,19 @@ begin
    out_trigger_offset := g_rec.trigger_offset;
    l_retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
    if l_retnum <> 0 then
+      ------%WTPLSQL_begin_ignore_lines%------  Can't test this
       --dbms_profiler.get_version(major_version, minor_version);
       raise_application_error(-20005,
          'dbms_profiler.INTERNAL_VERSION_CHECK returned: ' || get_error_msg(l_retnum));
+      ----------------%WTPLSQL_end_ignore_lines%----------------
    end if;
    -- This starts the PROFILER Running!!!
    l_retnum := dbms_profiler.START_PROFILER(run_number => g_rec.prof_runid);
    if l_retnum <> 0 then
+      ------%WTPLSQL_begin_ignore_lines%------  Can't test this
       raise_application_error(-20006,
          'dbms_profiler.START_PROFILER returned: ' || get_error_msg(l_retnum));
+      ----------------%WTPLSQL_end_ignore_lines%----------------
    end if;
    out_profiler_runid := g_rec.prof_runid;
 end initialize;
@@ -1263,9 +1271,9 @@ $THEN
          (in_ptype   => 'package body'
          ,in_pname   => l_pname
          ,in_source  => 
-            'begin'                              || CHR(10) ||  -- Line 2
-            '--% WTPLSQL SET DBOUT "WTP123" %--' || CHR(10) ||  -- Line 3
-            '  l_junk := 7;'                     );             -- Line 4
+            'begin'                                         || CHR(10) ||  -- Line 2
+            '--% WTPLSQL SET DBOUT "' || l_pname || '" %--' || CHR(10) ||  -- Line 3
+            '  l_junk := 7;'                                );             -- Line 4
       l_recSAVE := g_rec;
       initialize
          (in_test_run_id      => c_test_run_id,
@@ -1286,7 +1294,7 @@ $THEN
       wt_assert.eq (
          msg_in          => 'OUT dbout_name',
          check_this_in   => l_recOUT.dbout_name,
-         against_this_in => 'WTP123');
+         against_this_in => l_pname);
       wt_assert.eq (
          msg_in          => 'OUT dbout_type',
          check_this_in   => l_recOUT.dbout_type,
@@ -1309,7 +1317,7 @@ $THEN
       wt_assert.eq (
          msg_in          => 'g_rec.dbout_name',
          check_this_in   => l_recTEST.dbout_name,
-         against_this_in => 'WTP123');
+         against_this_in => l_pname);
       wt_assert.eq (
          msg_in          => 'g_rec.dbout_type',
          check_this_in   => l_recTEST.dbout_type,
@@ -1364,11 +1372,20 @@ begin
    end if;
    if g_rec.test_run_id is null
    then
-      raise_application_error  (-20000, 'g_rec.test_run_id is null');
+      raise_application_error (-20000, 'g_rec.test_run_id is null');
    end if;
+   $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+   $THEN
+      if not g_skip_this
+      then
+   $END
    -- DBMS_PROFILER.FLUSH_DATA is included with DBMS_PROFILER.STOP_PROFILER
    dbms_profiler.STOP_PROFILER;
    insert_dbout_profile;
+   $IF $$WTPLSQL_SELFTEST
+   $THEN
+      end if;
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    g_rec := l_rec_NULL;
 end finalize;
 
@@ -1376,9 +1393,98 @@ $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure t_finalize
    is
+      l_recSAVE    rec_type;
+      l_recTEST    rec_type;
+      l_sqlerrm    varchar2(4000);
+      l_err_stack  varchar2(32000);
    begin
-      wt_assert.g_testcase := 'Finalize Test';
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Finalize Happy Path 1';
+      l_recSAVE := g_rec;
+      g_rec.dbout_name := '';
+      wt_assert.isnull (
+         msg_in          => 'g_rec.dbout_name',
+         check_this_in   => g_rec.dbout_name);
+      begin
+         finalize;
+         l_err_stack := dbms_utility.format_error_stack     ||
+                        dbms_utility.format_error_backtrace ;
+      exception when others then
+         l_err_stack := dbms_utility.format_error_stack     ||
+                        dbms_utility.format_error_backtrace ;
+      end;
+      g_rec := l_recSAVE;
+      wt_assert.isnull (
+         msg_in          => 'SQLERRM',
+         check_this_in   => l_err_stack);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Finalize Happy Path 2';
+      wt_assert.isnotnull (
+         msg_in          => 'g_rec.dbout_owner',
+         check_this_in   => g_rec.dbout_owner);
+      wt_assert.isnotnull (
+         msg_in          => 'g_rec.dbout_name',
+         check_this_in   => g_rec.dbout_name);
+      wt_assert.isnotnull (
+         msg_in          => 'g_rec.dbout_type',
+         check_this_in   => g_rec.dbout_type);
+      wt_assert.isnotnull (
+         msg_in          => 'g_rec.prof_runid',
+         check_this_in   => g_rec.prof_runid);
+      wt_assert.isnotnull (
+         msg_in          => 'g_rec.trigger_offset',
+         check_this_in   => g_rec.trigger_offset);
+      wt_assert.isnull (
+         msg_in          => 'g_rec.error_message',
+         check_this_in   => g_rec.error_message);
+      --------------------------------------  WTPLSQL Testing --
+      l_recSAVE := g_rec;
+      g_skip_this := TRUE;
+      begin
+         finalize;
+         l_err_stack := dbms_utility.format_error_stack     ||
+                        dbms_utility.format_error_backtrace ;
+      exception when others then
+         l_err_stack := dbms_utility.format_error_stack     ||
+                        dbms_utility.format_error_backtrace ;
+      end;
+      g_skip_this := FALSE;
+      l_recTEST := g_rec;
+      g_rec := l_recSAVE;
+      wt_assert.isnull (
+         msg_in          => 'SQLERRM',
+         check_this_in   => l_err_stack);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnull (
+         msg_in          => 'g_rec.dbout_owner',
+         check_this_in   => l_recTEST.dbout_owner);
+      wt_assert.isnull (
+         msg_in          => 'g_rec.dbout_name',
+         check_this_in   => l_recTEST.dbout_name);
+      wt_assert.isnull (
+         msg_in          => 'g_rec.dbout_type',
+         check_this_in   => l_recTEST.dbout_type);
+      wt_assert.isnull (
+         msg_in          => 'g_rec.prof_runid',
+         check_this_in   => l_recTEST.prof_runid);
+      wt_assert.isnull (
+         msg_in          => 'g_rec.trigger_offset',
+         check_this_in   => l_recTEST.trigger_offset);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Finalize Sad Path 1';
+      l_recSAVE := g_rec;
+      g_rec.dbout_name  := 'BOGUS1';
+      g_rec.test_run_id := NULL;
+      begin
+         finalize;
+      exception when others then
+         l_sqlerrm := SQLERRM;
+      end;
+      g_rec := l_recSAVE;
+      wt_assert.eq (
+         msg_in          => 'SQLERRM',
+         check_this_in   => l_sqlerrm,
+         against_this_in => 'ORA-20000: g_rec.test_run_id is null');
    end t_finalize;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
