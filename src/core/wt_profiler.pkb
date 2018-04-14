@@ -228,6 +228,7 @@ $THEN
       exception when others then
          l_sqlerrm := SQLERRM;
       end;
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in        => 'Insert wt_test_runs (' || in_test_run_id || ')',
          check_this_in => l_sqlerrm,
@@ -262,6 +263,59 @@ $THEN
                              ' where id = ' || in_test_run_id,
          against_value_in => 0);
    end delete_test_runs;
+--==============================================================--
+   procedure insert_dbout_profiles
+         (in_rec  in wt_dbout_profiles%ROWTYPE)
+   is
+      l_sqlerrm  varchar2(4000);
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      begin
+         insert into wt_dbout_profiles values in_rec;
+         l_sqlerrm := SQLERRM;
+         commit;
+      exception when others then
+         l_sqlerrm := SQLERRM;
+      end;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq (
+         msg_in        => 'Insert wt_dbout_profiles (' || in_rec.test_run_id ||
+                                                   ',' || in_rec.line || ')',
+         check_this_in => l_sqlerrm,
+         against_this_in => 'ORA-0000: normal, successful completion');
+      wt_assert.eqqueryvalue (
+         msg_in           => 'wt_dbout_profiles (' || in_rec.test_run_id || 
+                                               ',' || in_rec.line || ') Count',
+         check_query_in   => 'select count(*) from wt_dbout_profiles' ||
+                             ' where test_run_id = ' || in_rec.test_run_id ||
+                             ' and line = ' || in_rec.line,
+         against_value_in => 1);
+   end insert_dbout_profiles;
+--==============================================================--
+   procedure delete_dbout_profiles
+         (in_test_run_id  in NUMBER)
+   is
+      l_sqlerrm  varchar2(4000);
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      begin
+         delete from wt_dbout_profiles where test_run_id = in_test_run_id;
+         l_sqlerrm := SQLERRM;
+         commit;
+      exception when others then
+         l_sqlerrm := SQLERRM;
+      end;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq (
+         msg_in        => 'Delete wt_dbout_profiles (' || in_test_run_id || ')',
+         check_this_in => l_sqlerrm,
+         against_this_in => 'ORA-0000: normal, successful completion');
+      wt_assert.eqqueryvalue (
+         msg_in           => 'wt_dbout_profiles (' || in_test_run_id || ') Count',
+         check_query_in   => 'select count(*) from wt_dbout_profiles' ||
+                             ' where test_run_id = ' || in_test_run_id,
+         against_value_in => 0);
+   end delete_dbout_profiles;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--
 
@@ -1102,22 +1156,7 @@ $THEN
       test_dbout_profiler(8, 'TEXT',   'end WT_PROFILE_INSERT_DBOUT;');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Insert DBOUT Profile Teardown';
-      begin
-         delete from wt_dbout_profiles where test_run_id = c_test_run_id;
-         l_sqlerrm := SQLERRM;
-         commit;
-      exception when others then
-         l_sqlerrm := SQLERRM;
-      end;
-      wt_assert.eq (
-         msg_in        => 'Delete wt_dbout_profiles (' || c_test_run_id || ')',
-         check_this_in => l_sqlerrm,
-         against_this_in => 'ORA-0000: normal, successful completion');
-      wt_assert.eqqueryvalue (
-         msg_in           => 'wt_dbout_profiles (' || c_test_run_id || ') Count',
-         check_query_in   => 'select count(*) from wt_dbout_profiles' ||
-                             ' where test_run_id = ' || c_test_run_id,
-         against_value_in => 0);
+      delete_dbout_profiles(c_test_run_id);
       delete_test_runs(c_test_run_id);
       delete_plsql_profiler_records(c_test_run_id);
       count_plsql_profiler_records(c_test_run_id, 0);
@@ -1532,8 +1571,28 @@ $THEN
    procedure t_trigger_offset
    is
    begin
-      wt_assert.g_testcase := 'Trigger Offset Test';
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Trigger Offset Happy Path';
+      wt_assert.eq (
+         msg_in          => 'Trigger Test',
+         check_this_in   => trigger_offset (dbout_owner_in => USER
+                                           ,dbout_name_in  => 'WT_TEST_DATA$TEST'
+                                           ,dbout_type_in  => 'TRIGGER'),
+         against_this_in => 3);
+      wt_assert.eq (
+         msg_in          => 'Package Test',
+         check_this_in   => trigger_offset (dbout_owner_in => USER
+                                           ,dbout_name_in  => 'WT_PROFILER'
+                                           ,dbout_type_in  => 'PACKAGE BODY'),
+         against_this_in => 0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Trigger Offset Sad Path';
+      wt_assert.eq (
+         msg_in          => 'Non Existent Object',
+         check_this_in   => trigger_offset (dbout_owner_in => 'BOGUS456'
+                                           ,dbout_name_in  => 'BOGUS123'
+                                           ,dbout_type_in  => 'TRIGGER'),
+         against_this_in => 0);
    end t_trigger_offset;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
@@ -1564,9 +1623,71 @@ $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure t_calc_pct_coverage
    is
+      c_test_run_id  constant number := -95;
+      l_rec          wt_dbout_profiles%ROWTYPE;
    begin
-      wt_assert.g_testcase := 'Calculate Percentage Offset';
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Calculate Percentage Offset Setup';
+      insert_test_runs(c_test_run_id, 'Calculate Offset Test');
+      l_rec.test_run_id  := c_test_run_id;
+      l_rec.total_occur  := 1;
+      l_rec.total_time   := 1;
+      l_rec.min_time     := 1;
+      l_rec.max_time     := 1;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Calculate Percentage Offset Happy Path 1';
+      l_rec.line         := 1;
+      l_rec.status       := 'EXEC';
+      l_rec.text         := 'Testing ' || l_rec.line;
+      insert_dbout_profiles(l_rec);
+      --
+      l_rec.line         := 2;
+      l_rec.status       := 'NOTX';
+      l_rec.text         := 'Testing ' || l_rec.line;
+      insert_dbout_profiles(l_rec);
+      --
+      l_rec.line         := 3;
+      l_rec.status       := 'EXEC';
+      l_rec.text         := 'Testing ' || l_rec.line;
+      insert_dbout_profiles(l_rec);
+      wt_assert.eq (
+         msg_in          => 'Main Test',
+         check_this_in   => calc_pct_coverage(c_test_run_id),
+         against_this_in => 66.67);
+      delete_dbout_profiles(c_test_run_id);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Calculate Percentage Offset Happy Path 2';
+      --
+      l_rec.line         := 1;
+      l_rec.status       := 'EXCL';
+      l_rec.text         := 'Testing ' || l_rec.line;
+      insert_dbout_profiles(l_rec);
+      --
+      l_rec.line         := 2;
+      l_rec.status       := 'UNKN';
+      l_rec.text         := 'Testing ' || l_rec.line;
+      insert_dbout_profiles(l_rec);
+      --
+      l_rec.line         := 3;
+      l_rec.status       := 'EXCL';
+      l_rec.text         := 'Testing ' || l_rec.line;
+      insert_dbout_profiles(l_rec);
+      wt_assert.eq (
+         msg_in          => 'Main Test',
+         check_this_in   => calc_pct_coverage(c_test_run_id),
+         against_this_in => -1);
+      delete_dbout_profiles(c_test_run_id);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Calculate Percentage Offset Sad Path';
+      wt_assert.isnull (
+         msg_in        => 'Missing Test Run ID',
+         check_this_in => calc_pct_coverage(-99990));
+      wt_assert.isnull (
+         msg_in        => 'NULL Test Run ID',
+         check_this_in => calc_pct_coverage(null));
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Calculate Percentage Offset Teardown';
+      delete_test_runs(c_test_run_id);
    end t_calc_pct_coverage;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
@@ -1594,8 +1715,6 @@ $THEN
    is
       c_test_run_id  constant number := -98;
       l_rec          wt_dbout_profiles%ROWTYPE;
-      l_num_recs     number;
-      l_sqlerrm      varchar2(4000);
       l_err_stack    varchar2(32000);
    begin
       --------------------------------------  WTPLSQL Testing --
@@ -1620,26 +1739,47 @@ $THEN
       l_rec.min_time     := 1;
       l_rec.max_time     := 1;
       l_rec.text         := 'Testing';
-      begin
-         insert into wt_dbout_profiles values l_rec;
-         l_sqlerrm := SQLERRM;
-         commit;
-      exception when others then
-         l_sqlerrm := SQLERRM;
-      end;
-      wt_assert.eq (
-         msg_in        => 'Insert 2',
-         check_this_in => l_sqlerrm,
-         against_this_in => 'ORA-0000: normal, successful completion');
-      wt_assert.eqqueryvalue (
-         msg_in           => 'wt_dbout_profiles Count 1',
-         check_query_in   => 'select count(*) from wt_dbout_profiles' ||
-                             ' where test_run_id = ' || c_test_run_id,
-         against_value_in => 1);
+      insert_dbout_profiles(l_rec);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Delete Records Happy Path 1';
       begin
          delete_records(c_test_run_id);
+         l_err_stack := dbms_utility.format_error_stack     ||
+                        dbms_utility.format_error_backtrace ;
+      exception when others then
+         l_err_stack := dbms_utility.format_error_stack     ||
+                        dbms_utility.format_error_backtrace ;
+      end;
+      wt_assert.isnull (
+         msg_in        => 'SQLERRM',
+         check_this_in => l_err_stack);
+      wt_assert.eqqueryvalue (
+         msg_in           => 'wt_dbout_profiles Count 2',
+         check_query_in   => 'select count(*) from wt_dbout_profiles' ||
+                             ' where test_run_id = ' || c_test_run_id,
+         against_value_in => 0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Delete Records Sad Path 1';
+      begin
+         delete_records(-9876);
+         l_err_stack := dbms_utility.format_error_stack     ||
+                        dbms_utility.format_error_backtrace ;
+      exception when others then
+         l_err_stack := dbms_utility.format_error_stack     ||
+                        dbms_utility.format_error_backtrace ;
+      end;
+      wt_assert.isnull (
+         msg_in        => 'SQLERRM',
+         check_this_in => l_err_stack);
+      wt_assert.eqqueryvalue (
+         msg_in           => 'wt_dbout_profiles Count 2',
+         check_query_in   => 'select count(*) from wt_dbout_profiles' ||
+                             ' where test_run_id = ' || c_test_run_id,
+         against_value_in => 0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Delete Records Sad Path 2';
+      begin
+         delete_records(NULL);
          l_err_stack := dbms_utility.format_error_stack     ||
                         dbms_utility.format_error_backtrace ;
       exception when others then

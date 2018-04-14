@@ -23,6 +23,16 @@ grant select on wt_test_data to public;
 grant insert on wt_test_data to public;
 grant delete on wt_test_data to public;
 
+create or replace trigger wt_test_data$test
+   before insert on wt_test_data
+   for each row
+declare
+   l_junk  number;
+begin
+   l_junk := 1;
+end;
+/
+
 set define off
 
 declare
