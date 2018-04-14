@@ -18,8 +18,7 @@ begin
    --
    wtplsql.test_all;
    --
-   for buff in (select max(start_dtm)   MAXDTM
-                      ,runner_name
+   for buff in (select runner_name
                  from  wt_test_runs
                  where runner_owner = USER
                  group by runner_name
