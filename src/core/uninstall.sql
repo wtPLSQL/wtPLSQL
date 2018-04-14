@@ -1,4 +1,6 @@
 
+spool uninstall
+
 @common_setup.sql
 
 drop user &schema_owner. cascade;
@@ -33,3 +35,5 @@ begin
    end if;
 end;
 /
+
+spool off

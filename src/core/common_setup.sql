@@ -7,5 +7,5 @@
 set define "&"
 set concat "."
 
--- Set Schema Owner
-define schema_owner = "wtp"
+accept schema_owner CHAR default 'wtp' -
+prompt 'Enter Schema Name (WTP): '

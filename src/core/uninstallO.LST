@@ -1,0 +1,54 @@
+old:drop user &schema_owner. cascade
+new:drop user wtp cascade
+
+User WTP dropped.
+
+old:declare
+   sql_txt   varchar2(4000);
+begin
+   for buff in (select synonym_name from dba_synonyms
+                 where owner = 'PUBLIC'
+				  and  regexp_like(table_owner, '&schema_owner.', 'i') )
+   loop
+      sql_txt := 'drop public synonym ' || buff.synonym_name;
+      dbms_output.put_line(sql_txt);
+	  execute immediate sql_txt;
+   end loop;
+end;
+
+new:declare
+   sql_txt   varchar2(4000);
+begin
+   for buff in (select synonym_name from dba_synonyms
+                 where owner = 'PUBLIC'
+				  and  regexp_like(table_owner, 'wtp', 'i') )
+   loop
+      sql_txt := 'drop public synonym ' || buff.synonym_name;
+      dbms_output.put_line(sql_txt);
+	  execute immediate sql_txt;
+   end loop;
+end;
+drop public synonym WT_WTPLSQL
+drop public synonym WT_TEXT_REPORT
+drop public synonym WT_TEST_RUNS_SEQ
+drop public synonym WT_TEST_RUNS
+drop public synonym WT_RESULTS
+drop public synonym WT_RESULT
+drop public synonym WT_PROFILER
+drop public synonym WT_NOT_EXECUTABLE
+drop public synonym WT_DBOUT_PROFILES
+drop public synonym WT_ASSERT
+drop public synonym WTPLSQL
+drop public synonym PLSQL_PROFILER_UNITS
+drop public synonym PLSQL_PROFILER_RUNS
+drop public synonym PLSQL_PROFILER_DATA
+
+
+PL/SQL procedure successfully completed.
+
+Remove "WTPLSQL_ENABLE" from PLSQL_CCFLAGS
+  *) "WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE"
+
+
+PL/SQL procedure successfully completed.
+
