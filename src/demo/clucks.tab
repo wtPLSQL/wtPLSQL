@@ -1,0 +1,18 @@
+
+create table clucks
+  (clucker_id     number
+  ,cluck_tstmp    timestamp
+  ,flock_mate_id  number         constraint clucks_nn1 not null
+  ,message        varchar2(140)  constraint clucks_nn2 not null
+  ,constraint clucks_pk primary key (clucker_id, cluck_tstmp)
+  ,constraint clucks_fk1 foreign key (clucker_id) references cluckers
+  ,constraint clucks_fk2 foreign key (flock_mate_id) references cluckers
+  );
+
+create trigger clucks_bir
+  before insert on clucks
+  for each row
+begin
+  :new.cluck_tstmp := systimestamp;
+end;
+/

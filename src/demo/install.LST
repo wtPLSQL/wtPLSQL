@@ -1,0 +1,36 @@
+
+PL/SQL procedure successfully completed.
+
+old:create user &schema_owner. identified by &schema_owner.
+   default tablespace users
+   temporary tablespace temp
+new:create user wtp_demo identified by wtp_demo
+   default tablespace users
+   temporary tablespace temp
+
+User WTP_DEMO created.
+
+old:grant connect, resource to &schema_owner.
+new:grant connect, resource to wtp_demo
+
+Grant succeeded.
+
+Connected.
+old:begin
+   if USER != upper('&schema_owner')
+   then
+      raise_application_error (-20000,
+        'Not logged in as &schema_owner');
+   end if;
+end;
+
+new:begin
+   if USER != upper('wtp_demo')
+   then
+      raise_application_error (-20000,
+        'Not logged in as wtp_demo');
+   end if;
+end;
+
+PL/SQL procedure successfully completed.
+

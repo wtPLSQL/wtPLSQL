@@ -29,7 +29,6 @@ create user &schema_owner. identified by &schema_owner.
    temporary tablespace temp;
 
 grant connect, resource to &schema_owner.;
---grant create view to wtp;
 
 begin
    for buff in (select p.value PLSQL_CCFLAGS
