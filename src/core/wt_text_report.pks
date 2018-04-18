@@ -24,4 +24,6 @@ as
       ,in_show_pass      in  boolean default FALSE
       ,in_show_aux       in  boolean default FALSE);
 
+   procedure dbms_out_all;
+
 end wt_text_report;

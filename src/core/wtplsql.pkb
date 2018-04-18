@@ -3,8 +3,6 @@ as
 
    C_KEEP_NUM_RECS  number := 20;
 
-   TYPE runners_nt_type is table of varchar2(128);
-   g_runners_nt      runners_nt_type;
    g_test_runs_rec   wt_test_runs%ROWTYPE;
 
    $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -268,9 +266,11 @@ end test_run;
 ------------------------------------------------------------
 procedure test_all
 is
+   TYPE runners_nt_type is table of varchar2(128);
+   l_runners_nt      runners_nt_type;
 begin
    select package_name
-     bulk collect into g_runners_nt
+     bulk collect into l_runners_nt
     from  all_arguments  t1
     where owner       = USER
      and  object_name = 'WTPLSQL_RUN'
@@ -286,9 +286,9 @@ begin
             and  (   t2.overload is null
                   OR t2.overload = t1.overload)
           );
-   for i in 1 .. g_runners_nt.COUNT
+   for i in 1 .. l_runners_nt.COUNT
    loop
-      test_run(g_runners_nt(i));
+      test_run(l_runners_nt(i));
    end loop;
 end test_all;
 

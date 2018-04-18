@@ -382,4 +382,31 @@ begin
 
 end dbms_out;
 
+------------------------------------------------------------
+procedure dbms_out_all
+is
+begin
+   for buff in (
+      select package_name
+       from  all_arguments  t1
+       where owner       = USER
+        and  object_name = 'WTPLSQL_RUN'
+        and  position    = 1
+        and  sequence    = 0
+        and  data_type   is null
+        and  not exists (
+             select 'x' from all_arguments  t2
+              where t2.owner       = USER
+               and  t2.object_name = t1.object_name
+               and  t2.position    > t1.position
+               and  t2.sequence    > t1.sequence
+               and  (   t2.overload is null
+                     OR t2.overload = t1.overload)
+             )  )
+   loop
+      dbms_out(in_runner_name   => buff.package_name
+              ,in_hide_details  => TRUE);
+   end loop;
+end dbms_out_all;
+
 end wt_text_report;
