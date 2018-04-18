@@ -6,7 +6,8 @@ as
       ,in_status         in wt_results.status%TYPE
       ,in_details        in wt_results.details%TYPE
       ,in_testcase       in wt_results.testcase%TYPE
-      ,in_message        in wt_results.message%TYPE)
+      ,in_message        in wt_results.message%TYPE
+      ,in_elapsed_msecs  in wt_results.elapsed_msecs%TYPE DEFAULT NULL)
    return varchar2;
 
    procedure ad_hoc_result

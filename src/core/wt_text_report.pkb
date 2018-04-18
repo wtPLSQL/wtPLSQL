@@ -190,14 +190,16 @@ begin
                         ,in_status         => buff.status
                         ,in_details        => buff.details
                         ,in_testcase       => NULL
-                        ,in_message        => buff.message) );
+                        ,in_message        => buff.message
+                        ,in_elapsed_msecs  => buff.elapsed_msecs) );
       else
          p(format_test_result
                         (in_assertion      => buff.assertion
                         ,in_status         => buff.status
                         ,in_details        => buff.details
                         ,in_testcase       => buff.testcase
-                        ,in_message        => buff.message) );
+                        ,in_message        => buff.message
+                        ,in_elapsed_msecs  => buff.elapsed_msecs) );
          l_last_testcase := buff.testcase;
       end if;
    end loop;
@@ -283,7 +285,8 @@ function format_test_result
       ,in_status         in wt_results.status%TYPE
       ,in_details        in wt_results.details%TYPE
       ,in_testcase       in wt_results.testcase%TYPE
-      ,in_message        in wt_results.message%TYPE)
+      ,in_message        in wt_results.message%TYPE
+      ,in_elapsed_msecs  in wt_results.elapsed_msecs%TYPE DEFAULT NULL)
    return varchar2
 is
    l_out_str  varchar2(32000) := '';
@@ -302,6 +305,10 @@ begin
    if in_message is not null
    then
       l_out_str := l_out_str || in_message  || '. ';
+   end if;
+   if in_elapsed_msecs is not null
+   then
+      l_out_str := l_out_str || in_elapsed_msecs || ' msecs: ';
    end if;
    l_out_str := l_out_str || in_assertion || ' - ';
    l_out_str := l_out_str || in_details;

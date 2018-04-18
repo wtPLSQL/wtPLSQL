@@ -1,0 +1,21 @@
+
+--
+--  Version Table Installation
+--
+
+create table wt_version
+   (install_dtm    date
+   ,action         varchar2(15)
+   ,text           varchar2(15)
+   ) pctfree 0;
+
+comment on table wt_version is 'Records the installed and upgraded versions.';
+comment on column wt_version.install_dtm is 'Date/Time the version that was installed/upgraded';
+comment on column wt_version.text is 'Name of the version that was installed/upgraded';
+
+insert into wt_version (install_dtm, action, text)
+   values (sysdate, 'INSTALL', '1.0');
+
+commit;
+
+grant select on wt_version to public;

@@ -140,6 +140,50 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
+function show_version
+   return varchar2
+is
+   ret_str  wt_version.text%TYPE;
+begin
+   select max(t1.text) into ret_str
+    from  wt_version  t1
+    where t1.install_dtm = (select max(t2.install_dtm)
+                             from  wt_version  t2);
+   return ret_str;
+exception when NO_DATA_FOUND
+then
+   return '';
+end show_version;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_show_version
+   is
+      existing_version   wt_version.text%TYPE;
+   begin
+      wt_assert.g_testcase := 'Show Version Happy Path';
+      existing_version := show_version;
+      wt_assert.isnotnull (
+         msg_in        => 'Test Existing Version',
+         check_this_in => existing_version);
+      --------------------------------------  WTPLSQL Testing --
+      insert into wt_version (install_dtm, action, text)
+         values (to_date('31-DEC-4000','DD-MON-YYYY'), 'TESTING', 'TESTING');
+      wt_assert.eq (
+         msg_in          => 'Test New Version',
+         check_this_in   => show_version,
+         against_this_in => 'TESTING');
+      --------------------------------------  WTPLSQL Testing --
+      rollback;
+      wt_assert.eq (
+         msg_in          => 'Return to Existing Version',
+         check_this_in   => show_version,
+         against_this_in => existing_version);
+   end t_show_version;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
+------------------------------------------------------------
 procedure test_run
       (in_package_name  in  varchar2)
 is
@@ -453,6 +497,7 @@ $THEN
    procedure WTPLSQL_RUN
    is
    begin
+      t_show_version;
       t_check_runner;
       t_insert_test_run;
       t_test_all;
