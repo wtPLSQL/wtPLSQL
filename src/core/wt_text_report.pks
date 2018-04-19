@@ -1,6 +1,15 @@
 create or replace package wt_text_report authid current_user
 as
 
+   --   To report the latest result details for test runner:
+   -- begin
+   --    wt_text_report.dbms_out('TEST_RUNNER', FALSE, FALSE, TRUE, TRUE);
+   -- end;
+   -- /
+
+   -- Turn this off to allow output across multiple lines of text
+   g_single_line_output  boolean := TRUE;
+
    function format_test_result
       (in_assertion      in wt_results.assertion%TYPE
       ,in_status         in wt_results.status%TYPE

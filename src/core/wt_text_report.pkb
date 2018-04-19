@@ -304,19 +304,19 @@ begin
    end if;
    if in_elapsed_msecs is not null
    then
-      if in_elapsed_msecs >= 0
-      then
-         l_out_str := l_out_str || lpad(in_elapsed_msecs,4) || 'ms ';
-      else
-         l_out_str := l_out_str || 'NEG ms ';
-      end if;
+      l_out_str := l_out_str || lpad(in_elapsed_msecs,4) || 'ms ';
    end if;
    if in_message is not null
    then
       l_out_str := l_out_str || in_message  || '. ';
    end if;
    l_out_str := l_out_str || in_assertion || ' - ';
-   l_out_str := l_out_str || replace(replace(in_details,CHR(13),'\r'),CHR(10),'\n');
+   if g_single_line_output
+   then
+      l_out_str := l_out_str || replace(replace(in_details,CHR(13),'\r'),CHR(10),'\n');
+   else
+      l_out_str := l_out_str || in_details;
+   end if;
    return l_out_str;
 end format_test_result;
 
