@@ -50,12 +50,14 @@
 <TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#finalize">finalize</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
 <TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#initialize">initialize</A></B>( in_test_run_id in wt_test_runs . id % TYPE ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
 <TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#save">save</A></B>( in_assertion in wt_results . assertion % TYPE , in_status in wt_results . status % TYPE , in_details in wt_results . details % TYPE , in_testcase in wt_results . testcase % TYPE , in_message in wt_results . message % TYPE ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#WTPLSQL_RUN">WTPLSQL_RUN</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
 </TABLE>
 <P></P><A NAME="method_detail"></A><TABLE WIDTH="100%" CELLSPACING="0" CELLPADDING="3" BORDER="1"><TR CLASS="TableHeadingColor"><TD COLSPAN="2"><FONT SIZE="+2"><B>Method Detail</B></FONT></TD></TABLE><A NAME="delete_records"></A>
 <H3>delete_records</H3><PRE>          <B>delete_records</B>( in_test_run_id in number ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="finalize"></A>
 <H3>finalize</H3><PRE>          <B>finalize</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="initialize"></A>
 <H3>initialize</H3><PRE>          <B>initialize</B>( in_test_run_id in wt_test_runs . id % TYPE ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="save"></A>
-<H3>save</H3><PRE>          <B>save</B>( in_assertion in wt_results . assertion % TYPE , in_status in wt_results . status % TYPE , in_details in wt_results . details % TYPE , in_testcase in wt_results . testcase % TYPE , in_message in wt_results . message % TYPE ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
+<H3>save</H3><PRE>          <B>save</B>( in_assertion in wt_results . assertion % TYPE , in_status in wt_results . status % TYPE , in_details in wt_results . details % TYPE , in_testcase in wt_results . testcase % TYPE , in_message in wt_results . message % TYPE ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="WTPLSQL_RUN"></A>
+<H3>WTPLSQL_RUN</H3><PRE>          <B>WTPLSQL_RUN</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
 <TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE></div>
 </div>
 <div id="Master.1">
@@ -78,7 +80,7 @@
 </tr>
 <tr>
 <td>OBJECT_ID</td>
-<td>37186</td>
+<td>38722</td>
 </tr>
 <tr>
 <td>DATA_OBJECT_ID</td>
@@ -90,15 +92,15 @@
 </tr>
 <tr>
 <td>CREATED</td>
-<td>08-JAN-2018&nbsp;03:08:45</td>
+<td>14-APR-2018&nbsp;17:27:18</td>
 </tr>
 <tr>
 <td>LAST_DDL_TIME</td>
-<td>08-JAN-2018&nbsp;03:08:45</td>
+<td>20-APR-2018&nbsp;16:59:18</td>
 </tr>
 <tr>
 <td>TIMESTAMP</td>
-<td>2018-01-08:03:08:45</td>
+<td>2018-04-20:16:59:18</td>
 </tr>
 <tr>
 <td>STATUS</td>
@@ -181,9 +183,6 @@
 package wt_result authid current_user
 as
 
-   C_PASS  CONSTANT varchar2(10) := 'PASS';
-   C_FAIL  CONSTANT varchar2(10) := 'FAIL';
-
    procedure initialize
       (in_test_run_id   in wt_test_runs.id%TYPE);
 
@@ -198,6 +197,17 @@ as
 
    procedure delete_records
       (in_test_run_id  in number);
+
+   --   WtPLSQL Self Test Procedures
+   --
+   -- alter system set PLSQL_CCFLAGS = 
+   --    'WTPLSQL_SELFTEST:TRUE'
+   --    scope=BOTH;
+   --
+   $IF $$WTPLSQL_SELFTEST
+   $THEN
+      procedure WTPLSQL_RUN;
+   $END
 
 end wt_result;</pre>
 </div>

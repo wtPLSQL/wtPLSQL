@@ -102,8 +102,9 @@ begin
 --     --  ' Test Runner' ||
 --     ' (Test Run ID ' || g_test_runs_rec.id           ||
 --                  ')' );
-   p('    Start Date/Time: ' || to_char(g_test_runs_rec.start_dtm
-                                        ,'DD-Mon-YYYY HH24:MI:SS'));
+   p('   wtPLSQL V' || wtplsql.show_version || ' - Start Date/Time: ' ||
+         to_char(g_test_runs_rec.start_dtm, g_date_format) ||
+         CHR(10));
    p('Test Results Run ID: ' || g_test_runs_rec.id           ||
                         ', ' || g_test_runs_rec.runner_owner ||
                          '.' || g_test_runs_rec.runner_name  );

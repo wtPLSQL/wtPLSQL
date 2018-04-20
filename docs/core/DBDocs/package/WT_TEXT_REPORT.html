@@ -46,14 +46,16 @@
 <div id="Master.0">
 <div class="currentmasterreport">
 <TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
-<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE><HR><P></P><HR><P></P><A NAME="method_summary"></A><TABLE WIDTH="100%" CELLSPACING="0" CELLPADDING="3" BORDER="1"><TR CLASS="TableHeadingColor"><TD COLSPAN="2"><FONT SIZE="+2"><B>Method Summary</B></FONT></TD><TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#ad_hoc_result">ad_hoc_result</A></B>( in_assertion in wt_results . assertion % TYPE , in_status in wt_results . status % TYPE , in_details in wt_results . details % TYPE , in_testcase in wt_results . testcase % TYPE , in_message in wt_results . message % TYPE ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
-<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#dbms_out">dbms_out</A></B>( in_runner_name in wt_test_runs . runner_name % TYPE , in_hide_details in boolean default FALSE , in_summary_first in boolean default FALSE , in_show_pass in boolean default FALSE , in_show_anno in boolean default FALSE ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
-<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#format_test_result">format_test_result</A></B>( in_assertion in wt_results . assertion % TYPE , in_status in wt_results . status % TYPE , in_details in wt_results . details % TYPE , in_testcase in wt_results . testcase % TYPE , in_message in wt_results . message % TYPE ) return varchar2 ; </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE><HR><P>   To report the latest result details for test runner:</P><HR><P></P><A NAME="method_summary"></A><TABLE WIDTH="100%" CELLSPACING="0" CELLPADDING="3" BORDER="1"><TR CLASS="TableHeadingColor"><TD COLSPAN="2"><FONT SIZE="+2"><B>Method Summary</B></FONT></TD><TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#ad_hoc_result">ad_hoc_result</A></B>( in_assertion in wt_results . assertion % TYPE , in_status in wt_results . status % TYPE , in_details in wt_results . details % TYPE , in_testcase in wt_results . testcase % TYPE , in_message in wt_results . message % TYPE ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#dbms_out">dbms_out</A></B>( in_runner_name in wt_test_runs . runner_name % TYPE , in_hide_details in boolean default FALSE , in_summary_last in boolean default FALSE , in_show_pass in boolean default FALSE , in_show_aux in boolean default FALSE ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#dbms_out_all">dbms_out_all</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#format_test_result">format_test_result</A></B>( in_assertion in wt_results . assertion % TYPE , in_status in wt_results . status % TYPE , in_details in wt_results . details % TYPE , in_testcase in wt_results . testcase % TYPE , in_message in wt_results . message % TYPE , in_elapsed_msecs in wt_results . elapsed_msecs % TYPE DEFAULT NULL ) return varchar2 ; </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
 </TABLE>
 <P></P><A NAME="method_detail"></A><TABLE WIDTH="100%" CELLSPACING="0" CELLPADDING="3" BORDER="1"><TR CLASS="TableHeadingColor"><TD COLSPAN="2"><FONT SIZE="+2"><B>Method Detail</B></FONT></TD></TABLE><A NAME="ad_hoc_result"></A>
 <H3>ad_hoc_result</H3><PRE>          <B>ad_hoc_result</B>( in_assertion in wt_results . assertion % TYPE , in_status in wt_results . status % TYPE , in_details in wt_results . details % TYPE , in_testcase in wt_results . testcase % TYPE , in_message in wt_results . message % TYPE ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="dbms_out"></A>
-<H3>dbms_out</H3><PRE>          <B>dbms_out</B>( in_runner_name in wt_test_runs . runner_name % TYPE , in_hide_details in boolean default FALSE , in_summary_first in boolean default FALSE , in_show_pass in boolean default FALSE , in_show_anno in boolean default FALSE ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="format_test_result"></A>
-<H3>format_test_result</H3><PRE>          <B>format_test_result</B>( in_assertion in wt_results . assertion % TYPE , in_status in wt_results . status % TYPE , in_details in wt_results . details % TYPE , in_testcase in wt_results . testcase % TYPE , in_message in wt_results . message % TYPE ) return varchar2 ; </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
+<H3>dbms_out</H3><PRE>          <B>dbms_out</B>( in_runner_name in wt_test_runs . runner_name % TYPE , in_hide_details in boolean default FALSE , in_summary_last in boolean default FALSE , in_show_pass in boolean default FALSE , in_show_aux in boolean default FALSE ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="dbms_out_all"></A>
+<H3>dbms_out_all</H3><PRE>          <B>dbms_out_all</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="format_test_result"></A>
+<H3>format_test_result</H3><PRE>          <B>format_test_result</B>( in_assertion in wt_results . assertion % TYPE , in_status in wt_results . status % TYPE , in_details in wt_results . details % TYPE , in_testcase in wt_results . testcase % TYPE , in_message in wt_results . message % TYPE , in_elapsed_msecs in wt_results . elapsed_msecs % TYPE DEFAULT NULL ) return varchar2 ; </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
 <TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE></div>
 </div>
 <div id="Master.1">
@@ -76,7 +78,7 @@
 </tr>
 <tr>
 <td>OBJECT_ID</td>
-<td>37189</td>
+<td>38725</td>
 </tr>
 <tr>
 <td>DATA_OBJECT_ID</td>
@@ -88,15 +90,15 @@
 </tr>
 <tr>
 <td>CREATED</td>
-<td>08-JAN-2018&nbsp;03:08:45</td>
+<td>14-APR-2018&nbsp;17:27:18</td>
 </tr>
 <tr>
 <td>LAST_DDL_TIME</td>
-<td>13-JAN-2018&nbsp;13:47:27</td>
+<td>20-APR-2018&nbsp;16:59:18</td>
 </tr>
 <tr>
 <td>TIMESTAMP</td>
-<td>2018-01-13:13:47:27</td>
+<td>2018-04-20:16:59:18</td>
 </tr>
 <tr>
 <td>STATUS</td>
@@ -179,12 +181,25 @@
 package wt_text_report authid current_user
 as
 
+   --   To report the latest result details for test runner:
+   -- begin
+   --    wt_text_report.dbms_out('TEST_RUNNER', FALSE, FALSE, TRUE, TRUE);
+   -- end;
+   -- /
+
+   -- Turn this off to allow output across multiple lines of text
+   g_single_line_output  boolean := TRUE;
+
+   -- DATE data type format for Report Header
+   g_date_format  varchar2(100) := 'DD-Mon-YYYY HH:MI:SS PM';
+
    function format_test_result
       (in_assertion      in wt_results.assertion%TYPE
       ,in_status         in wt_results.status%TYPE
       ,in_details        in wt_results.details%TYPE
       ,in_testcase       in wt_results.testcase%TYPE
-      ,in_message        in wt_results.message%TYPE)
+      ,in_message        in wt_results.message%TYPE
+      ,in_elapsed_msecs  in wt_results.elapsed_msecs%TYPE DEFAULT NULL)
    return varchar2;
 
    procedure ad_hoc_result
@@ -197,9 +212,11 @@ as
    procedure dbms_out
       (in_runner_name    in  wt_test_runs.runner_name%TYPE
       ,in_hide_details   in  boolean default FALSE
-      ,in_summary_first  in  boolean default FALSE
+      ,in_summary_last   in  boolean default FALSE
       ,in_show_pass      in  boolean default FALSE
-      ,in_show_anno      in  boolean default FALSE);
+      ,in_show_aux       in  boolean default FALSE);
+
+   procedure dbms_out_all;
 
 end wt_text_report;</pre>
 </div>

@@ -10,6 +10,9 @@ as
    -- Turn this off to allow output across multiple lines of text
    g_single_line_output  boolean := TRUE;
 
+   -- DATE data type format for Report Header
+   g_date_format  varchar2(100) := 'DD-Mon-YYYY HH:MI:SS PM';
+
    function format_test_result
       (in_assertion      in wt_results.assertion%TYPE
       ,in_status         in wt_results.status%TYPE
