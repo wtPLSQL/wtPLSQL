@@ -4,6 +4,8 @@
 
 FILE                   DESCRIPTION
 ---------------------  -----------------------
+downgrades             Folder of downgrade scripts for this release
+upgrades               Folder of upgrade scripts for this release
 common_setup.sql       Common setup script.  Contains values for install/uninstall.
 install.sql            Install script.  Run as SYS or SYSTEM.
 installO.LST           Example of a successfull install.
