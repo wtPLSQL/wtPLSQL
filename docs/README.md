@@ -1,10 +1,16 @@
-The [Project Wiki](https://github.com/DDieterich/wtPLSQL/wiki) has the description of this project.  The Wiki also includes wtPLSQL features, definitions, and best practices.
+The [Project Wiki](https://github.com/DDieterich/wtPLSQL/wiki) has the description of this project. The Wiki also includes wtPLSQL features, definitions, and best practices.
 
-[The latest release is located here](https://github.com/DDieterich/wtPLSQL/releases)
+The latest release is located [here](https://github.com/DDieterich/wtPLSQL/releases)
 
 ### Demonstrations and Examples
 
-* [Under Construction](demo/README.md)
+[Under Construction](demo/README.md)
+
+### Repository Documentation
+
+[Database Docs](core/DBDocs/index.html)
+
+[E-R Diagram]{core/ER_Diagrams.pdf)
 
 ---
 
