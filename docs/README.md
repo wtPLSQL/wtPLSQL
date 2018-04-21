@@ -2,11 +2,9 @@ The [Project Wiki](https://github.com/DDieterich/wtPLSQL/wiki) has the descripti
 
 [The latest release is located here](https://github.com/DDieterich/wtPLSQL/releases)
 
-### Highlights
+### Demonstrations and Examples
 
-* [Core ER Diagrams](core/ER_Diagrams.pdf)
-* [Core Call Tree Diagrams - PDF](core/Call_Tree_Diagrams.pdf)
-* [Core SQL Developer DBDocs](core/DBDocs/index.html)
+* [Under Construction](demo/README.md)
 
 ---
 
