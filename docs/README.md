@@ -1,6 +1,6 @@
 The [Project Wiki](https://github.com/DDieterich/wtPLSQL/wiki) has the description of this project. The Wiki also includes wtPLSQL features, definitions, and best practices.
 
-The latest release is located [here](https://github.com/DDieterich/wtPLSQL/releases)
+Download the latest ZIP file from [here](https://github.com/DDieterich/wtPLSQL/releases)
 
 ### Demonstrations and Examples
 
@@ -10,7 +10,7 @@ The latest release is located [here](https://github.com/DDieterich/wtPLSQL/relea
 
 [Database Docs](core/DBDocs/index.html)
 
-[E-R Diagram]{core/ER_Diagrams.pdf)
+[E-R Diagram](core/ER_Diagrams.pdf)
 
 ---
 
