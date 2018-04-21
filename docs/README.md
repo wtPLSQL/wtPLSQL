@@ -13,14 +13,6 @@ The [Project Wiki](https://github.com/DDieterich/wtPLSQL/wiki) has the descripti
 * [Core Call Tree Diagrams - PDF](core/Call_Tree_Diagrams.pdf)
 * [Core SQL Developer DBDocs](core/DBDocs/index.html)
 
-### Files and Directories
-
-File Name    | Description
------------  |------------
-[Core](https://github.com/DDieterich/wtPLSQL/tree/master/docs/core) | Core Documentation
-[README.md](https://github.com/DDieterich/wtPLSQL/tree/master/docs/README.md) | README Markdown file for this directory
-_config.tml  | YAML Configuration File for this Website
-
 ---
 
 _Oracle and Java are registered trademarks of Oracle and/or its affiliates. Other names may be trademarks of their respective owners._
