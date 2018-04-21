@@ -102,13 +102,13 @@ begin
 --     --  ' Test Runner' ||
 --     ' (Test Run ID ' || g_test_runs_rec.id           ||
 --                  ')' );
-   p('   wtPLSQL V' || wtplsql.show_version || ' - Start Date/Time: ' ||
-         to_char(g_test_runs_rec.start_dtm, g_date_format) ||
-         CHR(10));
-   p('Test Results Run ID: ' || g_test_runs_rec.id           ||
-                        ', ' || g_test_runs_rec.runner_owner ||
-                         '.' || g_test_runs_rec.runner_name  );
-   p('----------------------------------------');
+   p('    wtPLSQL ' || wtplsql.show_version ||
+       ' - Run ID ' || g_test_runs_rec.id   ||
+               ': ' || to_char(g_test_runs_rec.start_dtm, g_date_format) ||
+            CHR(10) );
+   p('  Test Results for ' || g_test_runs_rec.runner_owner ||
+                       '.' || g_test_runs_rec.runner_name  );
+ --  p('  ----------------------------------------');
    result_summary;
    p('  Total Run Time (sec): ' ||
       to_char(extract(day from (g_test_runs_rec.end_dtm -
@@ -132,11 +132,10 @@ begin
 --     ' Code Coverage' || 
 --     ' (Test Run ID ' || g_test_runs_rec.id           ||
 --                  ')' );
-   p('Code Coverage Run ID: ' || g_test_runs_rec.id          ||
-                         ', ' || g_test_runs_rec.dbout_type  ||
-                          ' ' || g_test_runs_rec.dbout_owner ||
-                          '.' || g_test_runs_rec.dbout_name  );
-   p('----------------------------------------');
+   p('  Code Coverage for ' || g_test_runs_rec.dbout_type  ||
+                        ' ' || g_test_runs_rec.dbout_owner ||
+                        '.' || g_test_runs_rec.dbout_name  );
+ --  p('  ----------------------------------------');
    profile_summary;
 end summary_out;
 
@@ -294,8 +293,9 @@ is
 begin
    if in_testcase is not null
    then
-      l_out_str := rpad('---***  ' || in_testcase || '  ***---'
-                       ,80,'-') || CHR(10);
+      l_out_str := ' ---- Test Case: ' || in_testcase || CHR(10);
+   --   l_out_str := rpad('---***  ' || in_testcase || '  ***---'
+   --                    ,80,'-') || CHR(10);
    end if;
    if in_status = wt_assert.C_PASS
    then

@@ -1,0 +1,9 @@
+
+wtPLSQL 1.1.0 Release Notes:
+
+New Features:
+-------------
+ -) Added THROWS assertion.
+ -) Fully implemented the utPLSQL V1 UT_ASSERT API for implemented assertions.
+ -) Exceptions from "query" assertions are now handled.
+ -) Streamlined WT_TEST_REPORT output.

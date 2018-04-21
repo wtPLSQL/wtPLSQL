@@ -1,14 +1,13 @@
 create or replace package wt_assert authid current_user
 is
 
+   ASSERT_FAILURE_EXCEPTION  exception;
+   PRAGMA EXCEPTION_INIT(ASSERT_FAILURE_EXCEPTION, -20003);
+
    C_PASS  CONSTANT varchar2(10) := 'PASS';
    C_FAIL  CONSTANT varchar2(10) := 'FAIL';
 
    -- See RESET_GLOBALS procedure for default global values
-
-   -- Raise exception whenever an assertion fails.
-   --   Modify as required
-   g_raise_exception  boolean := FALSE;
 
    -- Testcase name for a series of assetions.
    --   Modify as required
@@ -63,71 +62,94 @@ is
    procedure this (
       msg_in          in   varchar2,
       check_this_in   in   boolean,
-      null_ok_in      in   boolean := false);
+      null_ok_in      in   boolean := false,   -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
 
    --
    procedure eq (
       msg_in            in   varchar2,
       check_this_in     in   varchar2,
       against_this_in   in   varchar2,
-      null_ok_in        in   boolean := false);
+      null_ok_in        in   boolean := false,
+      raise_exc_in      in   boolean := false);
 
    procedure eq (
       msg_in            in   varchar2,
       check_this_in     in   boolean,
       against_this_in   in   boolean,
-      null_ok_in        in   boolean := false);
+      null_ok_in        in   boolean := false,
+      raise_exc_in      in   boolean := false);
 
    procedure eq (
       msg_in            in   varchar2,
       check_this_in     in   XMLTYPE,
-      against_this_in   in   XMLTYPE);
+      against_this_in   in   XMLTYPE,
+      null_ok_in        in   boolean := false,   -- Not Used, utPLSQL V1 API
+      raise_exc_in      in   boolean := false);
 
    procedure eq (
       msg_in            in   varchar2,
       check_this_in     in   CLOB,
       against_this_in   in   CLOB,
-      null_ok_in        in   boolean := false);
+      null_ok_in        in   boolean := false,
+      raise_exc_in      in   boolean := false);
 
    procedure eq (
       msg_in            in   varchar2,
       check_this_in     in   BLOB,
       against_this_in   in   BLOB,
-      null_ok_in        in   boolean := false);
+      null_ok_in        in   boolean := false,
+      raise_exc_in      in   boolean := false);
 
    --
    procedure isnotnull (
       msg_in          in   varchar2,
-      check_this_in   in   varchar2);
+      check_this_in   in   varchar2,
+      null_ok_in      in   boolean := false,   -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
 
    procedure isnotnull (
       msg_in          in   varchar2,
-      check_this_in   in   boolean);
+      check_this_in   in   boolean,
+      null_ok_in      in   boolean := false,   -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
 
    procedure isnotnull (
       msg_in          in   varchar2,
-      check_this_in   in   CLOB);
+      check_this_in   in   CLOB,
+      null_ok_in      in   boolean := false,   -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
 
    procedure isnotnull (
       msg_in          in   varchar2,
-      check_this_in   in   BLOB);
+      check_this_in   in   BLOB,
+      null_ok_in      in   boolean := false,   -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
 
    --
    procedure isnull (
       msg_in          in   varchar2,
-      check_this_in   in   varchar2);
+      check_this_in   in   varchar2,
+      null_ok_in      in   boolean := false,   -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
 
    procedure isnull (
       msg_in          in   varchar2,
-      check_this_in   in   boolean);
+      check_this_in   in   boolean,
+      null_ok_in      in   boolean := false,   -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
 
    procedure isnull (
       msg_in          in   varchar2,
-      check_this_in   in   CLOB);
+      check_this_in   in   CLOB,
+      null_ok_in      in   boolean := false,   -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
 
    procedure isnull (
       msg_in          in   varchar2,
-      check_this_in   in   BLOB);
+      check_this_in   in   BLOB,
+      null_ok_in      in   boolean := false,   -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
 
    --
    procedure raises (
@@ -135,35 +157,56 @@ is
       check_call_in    in   varchar2,
       against_exc_in   in   varchar2);
 
+   procedure raises (
+      msg_in                varchar2,
+      check_call_in    in   varchar2,
+      against_exc_in   in   number);
+
+   procedure throws (
+      msg_in                varchar2,
+      check_call_in    in   varchar2,
+      against_exc_in   in   varchar2);
+
+   procedure throws (
+      msg_in                varchar2,
+      check_call_in    in   varchar2,
+      against_exc_in   in   number);
+
    --
    procedure eqqueryvalue (
       msg_in             in   varchar2,
       check_query_in     in   varchar2,
       against_value_in   in   varchar2,
-      null_ok_in         in   boolean := false);
+      null_ok_in         in   boolean := false,
+      raise_exc_in       in   boolean := false);
 
    procedure eqqueryvalue (
       msg_in             in   varchar2,
       check_query_in     in   varchar2,
-      against_value_in   in   XMLTYPE);
+      against_value_in   in   XMLTYPE,
+      null_ok_in         in   boolean := false,  -- Not Used, utPLSQL V1 API
+      raise_exc_in       in   boolean := false);
 
    procedure eqqueryvalue (
       msg_in             in   varchar2,
       check_query_in     in   varchar2,
       against_value_in   in   CLOB,
-      null_ok_in         in   boolean := false);
+      null_ok_in         in   boolean := false,
+      raise_exc_in       in   boolean := false);
 
    procedure eqqueryvalue (
       msg_in             in   varchar2,
       check_query_in     in   varchar2,
       against_value_in   in   BLOB,
-      null_ok_in         in   boolean := false);
+      null_ok_in         in   boolean := false,
+      raise_exc_in       in   boolean := false);
 
    --
    procedure eqquery (
       msg_in             in   varchar2,
       check_query_in     in   varchar2,
-      against_query_in   in   varchar2);
+      against_query_in   in   varchar2,
+      raise_exc_in       in   boolean := false);
 
    --
    procedure eqtable (
@@ -171,7 +214,8 @@ is
       check_this_in      in   varchar2,
       against_this_in    in   varchar2,
       check_where_in     in   varchar2 := null,
-      against_where_in   in   varchar2 := null);
+      against_where_in   in   varchar2 := null,
+      raise_exc_in       in   boolean := false);
 
    --
    procedure eqtabcount (
@@ -179,29 +223,36 @@ is
       check_this_in      in   varchar2,
       against_this_in    in   varchar2,
       check_where_in     in   varchar2 := null,
-      against_where_in   in   varchar2 := null);
+      against_where_in   in   varchar2 := null,
+      raise_exc_in       in   boolean := false);
 
    --
    procedure objexists (
       msg_in        in   varchar2,
       obj_owner_in  in   varchar2,
       obj_name_in   in   varchar2,
-      obj_type_in   in   varchar2 default null);
+      obj_type_in   in   varchar2 default null,
+      raise_exc_in  in   boolean := false);
 
    procedure objexists (
       msg_in          in   varchar2,
-      check_this_in   in   varchar2);
+      check_this_in   in   varchar2,
+      null_ok_in      in   boolean := false,  -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
 
    --
    procedure objnotexists (
       msg_in        in   varchar2,
       obj_owner_in  in   varchar2,
       obj_name_in   in   varchar2,
-      obj_type_in   in   varchar2 default null);
+      obj_type_in   in   varchar2 default null,
+      raise_exc_in  in   boolean := false);
 
    procedure objnotexists (
       msg_in          in   varchar2,
-      check_this_in   in   varchar2);
+      check_this_in   in   varchar2,
+      null_ok_in      in   boolean := false,  -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
 
    --   WtPLSQL Self Test Procedures
    --
