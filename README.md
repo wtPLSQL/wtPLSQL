@@ -1,5 +1,4 @@
-# wtPLSQL
-Whitebox Testing for PL/SQL
+# wtPLSQL - Whitebox Testing for PL/SQL
 
 Welcome to the wtPLSQL repository on GitHub. This site is for anyone that wants to contribute.
 

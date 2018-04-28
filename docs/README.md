@@ -1,17 +1,17 @@
 
-Download the latest ZIP file from [here](https://github.com/DDieterich/wtPLSQL/releases)
+To install/upgrade, download the [latest ZIP file](https://github.com/DDieterich/wtPLSQL/releases)
 
 ### What is wtPLSQL?
 
-wtPLSQL is a testing framework designed to assist with white-box testing of Oracle database objects.  It is particularly well suited for unit testing and simple integration testing.  It is written in PL/SQL.  It can test itself (self-test), making easier to support and customize.
+wtPLSQL helps with white-box testing of Oracle database objects.  It is particularly well suited for unit testing and simple integration testing.  It is written in PL/SQL.  It can self-test, making easier to support and customize.
+
+Like utPLSQL, wtPLSQL provides a set of assertion tests that can be used to determine how well an Oracle database object is performing. These assertions record the outcome (success or failure) of each test.  These assertions also record the time between calls. These assetion tests are writting into a test runner (PL/SQL package).  When the test runner is executed, the assertions record the results.  The [Core Features page](Core-Features.md) introduces the main functionality of wtPLSQL.
+
+Because wtPLSQL is for PL/SQL developers, a [Best Practices page](Best-Practices.md) includes some guidance for creating Test Runner packages in PL/SQL.
 
 The [About page](About.md) has more information about the history and philosophy of wtPLSQL.
 
-Because it is bounded by few rules, a [Best Practices page](Best-Practices.md) describes some guidance for creating Test Runner packages.
-
-The [Core Features page](Core-Features.md) introduces the main functionality of wtPLSQL.
-
-The [Definitions page](Definitions.md) includes definitions from many sources to help define the names used in software testing.
+The [Definitions page](Definitions.md) includes definitions from many sources to help define the terms used in various software testing methodologies.
 
 ### How does wtPLSQL compare to utPLSQL V3?
 
@@ -25,7 +25,7 @@ wtPLSQL has a different focus than utPLSQL V3.  More information is available [h
 
 ### Contribute
 
-Help us makle improvements at the [wtPLSQL repsoitory](https://github.com/DDieterich/wtPLSQL).
+Help us improve at the [wtPLSQL repository](https://github.com/DDieterich/wtPLSQL).
 
 ---
 
