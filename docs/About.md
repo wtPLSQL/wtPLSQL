@@ -1,17 +1,3 @@
-### Contents
-1. [**History**](#history)
-1. [**Background**](#background)
-1. [**Goals**](#goals)
-  1. [Simple Framework](#simple-framework)
-  1. [Robust Framework](#robust-framework)
-  1. [Dynamic Testing](#dynamic-testing)
-  1. [White Box Testing](#white-box-testing)
-  1. [Oracle Database Objects](#oracle-database-objects)
-1. [**Unit Testing**](#unit-testing)
-  1. [Test Isolation](#test-isolation)
-  1. [Test Transience](#test-transience)
-1. [**Test Driven Development**](#test-driven-development)
-
 ## History
 Following are some links regarding the history of utPLSQL.
 

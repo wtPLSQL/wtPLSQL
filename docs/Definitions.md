@@ -1,14 +1,4 @@
-### Contents
-
-1. [Definitions for wtPLSQL](#wtPLSQL)
-1. [Definitions for Oracle Database](#oracle-database)
-1. [Definitions for XUnit](#xunit)
-1. [Definitions for JUnit](#junit)
-1. [Definitions for JUnit XML For Jenkins](#junit-xml-for-jenkins)
-1. [Definitions for Java](#java)
-
-***
-# wtPLSQL
+ wtPLSQL
 These are the working definitions for the wtPLSQL project.
 
 ### Assertion

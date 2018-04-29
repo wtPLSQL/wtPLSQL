@@ -1,17 +1,3 @@
-### Contents
-1. [PL/SQL Driven Testing](#plsql-driven-testing)
-1. [Test Anything in the Oracle Database](#test-anything-in-the-oracle-database)
-1. [Built-in Code Coverage](#built-in-code-coverage)
-1. [Built-in Schema-wide Testing](#built-in-schema-wide-testing)
-1. [Test Result Capture](#test-result-capture)
-1. [Test Result Reporting](#test-result-reporting)
-1. [Stand Alone Assertion Execution](#stand-alone-assertion-execution)
-1. [Private Procedure Testing within a Package](#private-procedure-testing-within-a-package)
-1. [Optional Setup and Teardown](#optional-setup-and-teardown)
-1. [Simpler Installation Scripts](#simpler-installation-scripts)
-1. [Minimal Database Footprint](#minimal-database-footprint)
-1. [Operation Overview](#operation-overview)
-
 ## PLSQL Driven Testing
 User written Test Runner packages are collections of assertions.  The simplest way to get started with testing is to create a Test Runner package with a single assertion.  After the one assertion is successfully running, more assertions and supporting PL/SQL can be added until white-box testing is complete.  A Test Runner Package can also call other packages.  Groups of assertions can be separated into Test Cases.  The Test Runner package can also be the same package as the package being tested (embedded Test Runner).
 
