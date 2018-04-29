@@ -1,11 +1,13 @@
 # wtPLSQL Home Page
 
 ***
-## Install Now
+## Installation
 
 To install/upgrade, download the [latest Release](https://github.com/DDieterich/wtPLSQL/releases)
 
 [Compatibility page](https://github.com/DDieterich/wtPLSQL/wiki/Compatibility) in the wtPLSQL repository wiki.
+
+For now, [use GitHub "issues" for support](https://github.com/DDieterich/wtPLSQL/issues/new).  This will require a (free) GitHub account.
 
 ### Site Map
 
