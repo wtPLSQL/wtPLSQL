@@ -1,7 +1,7 @@
 
 To install/upgrade, download the [latest Release](https://github.com/DDieterich/wtPLSQL/releases)
 
-wtplsql_core_install_N.N.N.zip contains the minimum needed for a wtPLSQL core installation.
+The "wtplsql_core_install_N.N.N.zip" file contains the minimum needed for a wtPLSQL core installation.
 
 ### What is wtPLSQL?
 
