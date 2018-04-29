@@ -7,28 +7,28 @@ User written Test Runner packages are collections of assertions.  The simplest w
 
 ## Test Anything in the Oracle database
 Because the Test Runner packages are user written, they can be used to test anything in the database.
-* PL/SQL Packages, Procedures, Functions
-* Table Constraints and Triggers
-* Types and Type Bodies
+- PL/SQL Packages, Procedures, Functions
+- Table Constraints and Triggers
+- Types and Type Bodies
 
 ## Built-in Code Coverage
 The Database Object Under Test, or DBOUT, is a database object that is the target of the Test Runner.  An annotation is used to identify the DBOUT in a Test Runner Package.  If the DBOUT annotation is missing from a Test Runner Package, no code coverage data is collected.  If more than one annotation occurs in a Test Runner Package, the first occurrence in the source code is used.
 
-Regular Expression:
+**Regular Expression:**
 ```
     --% WTPLSQL SET DBOUT "[[:alnum:]._$#]+" %--
 ```
-Example:
+**Example:**
 ```
     --% WTPLSQL SET DBOUT "SCHEMA.TEST_ME" %--
 ```
 "Ignore" annotations are used to exclude source code lines from the code coverage data.
 
-Regular Expression:
+**Regular Expression:**
 ```
     --%WTPLSQL_(begin|end)_ignore_lines%--
 ```
-Example:
+**Example:**
 ```
     --%WTPLSQL_begin_ignore_lines%--
 ```
@@ -42,17 +42,20 @@ Test results from assertions executed in a Test Runner package are automatically
 
 ## Test Result Reporting
 Reporting of the assertion test results is not a included with the execution of the Test Runner(s).  A separate call to a Reporting Package must be executed to display the assertion test results.  This allows the following choices during test execution:
-* **Run the WT_TEXT_REPORT.DBMS_OUT Report** - This is the default Reporting Package to report test results using DBMS_OUTPUT.  Several parameter options are available to change level of detail and report sequencing.
-* **Run an Add-On Reporting Package** - Bespoke reporting packages can be created or downloaded to provide for the exact requirements of test result reporting.
-* **Copy Test Results** - Create or download bespoke storage and reporting systems that copy the test result data from the WTPLSQL database tables for more complex test result reporting.
-* **No Action** - Test results remain in the WTPLSQL database tables until they are automatically deleted.
+- **Run the WT_TEXT_REPORT.DBMS_OUT Report** - This is the default Reporting Package to report test results using DBMS_OUTPUT.  Several parameter options are available to change level of detail and report sequencing.
+- **Run an Add-On Reporting Package** - Bespoke reporting packages can be created or downloaded to provide for the exact requirements of test result reporting.
+- **Copy Test Results** - Create or download bespoke storage and reporting systems that copy the test result data from the WTPLSQL database tables for more complex test result reporting.
+- **No Action** - Test results remain in the WTPLSQL database tables until they are automatically deleted.
 
 ## Stand Alone Assertion Execution
 In utPLSQL V2, executing an assertion outside of the test execution procedure produced an error message.  wtPLSQL allows a single assertion can be executed outside of the WTPLSQL.test_run procedure.  The results of the assertion will be output to DBMS_OUTPUT.  The result is the same when executing a WTPLSQL_RUN procedure in a Test Runner package.
 
 ## Private Procedure Testing within a Package
 One of the difficult parts of testing a package is testing the private "internals" within the package.  With wtPLSQL, the Test Runner procedure (WTPLSQL_RUN) can be included, or embedded, in the package that is being testing.  In this way, the Test Runner has full access to all internal procedures and variables.  It also keeps the package and the test together.  The Test Runner can be "hidden" in the production deployment by using the "PLSQL_CCFLAGS" conditional compilation select directives.  If the directive is missing, FALSE is assumed:
-* "WTPLSQL_ENABLE:TRUE"
+
+```
+alter system set PLSQL_CCFLAGS = 'WTPLSQL_ENABLE:TRUE';
+```
 
 ## Optional Setup and Teardown
 In utPLSQL V2, setup and teardown procedures were required in each test suite.  V2 also has a "per method setup" parameter to control startup and teardown timing/sequencing.  In wtPSQL, setup and teardown are optional.  Setup and teardown are written into a Test Runner package.

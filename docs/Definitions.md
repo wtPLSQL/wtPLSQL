@@ -3,7 +3,7 @@
 # Definitions
 
 ***
-# wtPLSQL
+## wtPLSQL
 These are the working definitions for the wtPLSQL project.
 
 **Assertion** - A function that performs a single test and records/reports the result.
@@ -19,7 +19,7 @@ These are the working definitions for the wtPLSQL project.
 **Test Runner** - A PL/SQL package that runs test cases.  It always contains a call to the WTPLSQL.TEST_RUN procedure.  It may contain DBOUT annotations and/or "exclude source lines" annotations.
 
 ***
-# Oracle Database
+## Oracle Database
 Note: Some Oracle database terms overlap with Object Oriented terms.
 
 **Database Object** - Listed in USER_OBJECTS.  Examples include packages, types, and tables.
@@ -27,7 +27,7 @@ Note: Some Oracle database terms overlap with Object Oriented terms.
 **Schema** - Database owner of a database object.
 
 ***
-# XUnit
+## XUnit
 These definitions were taken from [Xunit at Wikipedia](https://en.wikipedia.org/wiki/XUnit).  They include minor editing for clarification.
 
 **Test runner** - An executable program that runs tests implemented using an xUnit framework and reports the test results.
@@ -39,18 +39,18 @@ These definitions were taken from [Xunit at Wikipedia](https://en.wikipedia.org/
 **Test suites** - Set of tests that all share the same test fixture. The order of the tests shouldn't matter.
 
 **Test execution** - The execution of an individual unit test including:
-* Setup - First, we should prepare our 'world' to make an isolated environment for testing
-* Body of test - Here we make all the tests
-* Teardown - At the end, whether we succeed or fail, we should clean up our 'world' to not disturb other tests or code.
+* **Setup** - First, we should prepare our 'world' to make an isolated environment for testing
+* **Body of test** - Here we make all the tests
+* **Teardown** - At the end, whether we succeed or fail, we should clean up our 'world' to not disturb other tests or code.
 
 The setup and teardown serve to initialize and clean up test fixtures.
 
-**Test result formatter - Produces results in one or more output formats. In addition to a plain, human-readable format, there is often a test result formatter that produces XML output. The XML test result format originated with JUnit but is also used by some other xUnit testing frameworks, for instance build tools such as Jenkins and Atlassian Bamboo.
+**Test result formatter** - Produces results in one or more output formats. In addition to a plain, human-readable format, there is often a test result formatter that produces XML output. The XML test result format originated with JUnit but is also used by some other xUnit testing frameworks, for instance build tools such as Jenkins and Atlassian Bamboo.
 
 **Assertions** - A function or macro that verifies the behavior (or the state) of the unit under test. Usually an assertion expresses a logical condition that is true for results expected in a correctly running system under test (SUT). Failure of an assertion typically throws an exception, aborting the execution of the current test.
 
 ***
-# JUnit
+## JUnit
 These definitions were taken from the [JUnit Team at GitHub](https://github.com/junit-team/junit/wiki)
 
 **Assertion** - JUnit provides overloaded assertion methods for all primitive types and Objects and arrays (of primitives or Objects).
@@ -64,10 +64,10 @@ These definitions were taken from the [JUnit Team at GitHub](https://github.com/
 **Test Fixture** - A test fixture is a fixed state of a set of objects used as a baseline for running tests. The purpose of a test fixture is to ensure that there is a well known and fixed environment in which tests are run so that results are repeatable.
 
 ***
-# JUnit XML For Jenkins
+## JUnit XML For Jenkins
 These definitions are based around the JUnit XML for Jenkins requirement.  There is some translating required as the Oracle database is relational, not object oriented.  Additionally, the Jenkins XML specification has some nuances that are not obvious.
+
 [How Jenkins CI Parses and Displays JUnit Output](http://nelsonwells.net/2012/09/how-jenkins-ci-parses-and-displays-junit-output/)
-[Jenkins vs JUnit XML Format](https://pzolee.blogs.balabit.com/2012/11/jenkins-vs-junit-xml-format/)
 
 **Class** - Java Unit Under Tested (UUT).  In the Oracle database, this equates to a database object
 
@@ -80,7 +80,7 @@ These definitions are based around the JUnit XML for Jenkins requirement.  There
 **TestSuite** - Collection of TestCases.
 
 ***
-# Java
+## Java
 These Java definitions are provided for reference
 
 **Object** - In computer science, an object can be a variable, a data structure, or a function, and as such, is a location in memory having a value and possibly referenced by an identifier.  See also [Object at Wikipedia](https://en.wikipedia.org/wiki/Object_(computer_science))
