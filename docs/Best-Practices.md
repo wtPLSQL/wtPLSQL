@@ -1,10 +1,15 @@
 [Website Home Page](README.md)
 
+# Best Practices
+
 Place the "WTPLSQL_RUN" procedure at the end of a package body. This allows the procedure call any procedure/function in the package.
 
 Place the "--% WTPLSQL SET DBOUT" annotation next to the WTPLSQL_RUN procedure definition in the package body.
 
-    `procedure WTPLSQL_RUN  --% WTPLSQL SET DBOUT "MY_PACKAGE" %--`
+```
+   procedure WTPLSQL_RUN  --% WTPLSQL SET DBOUT "MY_PACKAGE" %--
+   is
+```
 
 Separate "setup" and "teardown" steps into their own Test Cases.
 
@@ -32,15 +37,19 @@ Use conditional compilation select directive "WTPLSQL_ENABLE" in the Oracle data
 
 Use consistent begin and end test code markers for embedded tests. These examples will setup conditional compiling and annotate lines of code to be excluded from code coverage calculations.
 
-   `$IF $$WTPLSQL_ENABLE  -------%WTPLSQL_begin_ignore_lines%-------`
-   `$THEN`
-   ` ... `
-   `$END  ----------------%WTPLSQL_end_ignore_lines%----------------`
+```
+$IF $$WTPLSQL_ENABLE  -------%WTPLSQL_begin_ignore_lines%-------
+$THEN
+ ...
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+```
 
 Keep embedded test code indented between the test code markers
 
 Add WTPLSQL markers every 10-15 lines in an embedded procedure. This helps identify a long embedded test procedure while scrolling through source code.
 
-   `--------------------------------------  WTPLSQL Testing --`
+```
+   --------------------------------------  WTPLSQL Testing --
+```
 
 [Website Home Page](README.md)
