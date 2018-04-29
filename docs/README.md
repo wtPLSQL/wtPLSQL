@@ -1,3 +1,4 @@
+# Install Now
 
 To install/upgrade, download the [latest Release](https://github.com/DDieterich/wtPLSQL/releases)
 
@@ -32,3 +33,5 @@ Help us improve by joining us at the [wtPLSQL repository](https://github.com/DDi
 ---
 
 _Oracle and Java are registered trademarks of Oracle and/or its affiliates. Other names may be trademarks of their respective owners._
+
+[Home](README)
