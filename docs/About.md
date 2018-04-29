@@ -2,7 +2,7 @@
 
 # About wtPLSQL
 
-***
+---
 ## History
 Following are some links regarding the history of utPLSQL.
 
@@ -93,4 +93,5 @@ With **TDD** (Test Driven Development), [you write a test before you write just 
 
 The wtPLSQL framework is not intended for Test Driven Development.  100% code coverage is not desirable under the **TDD** approach.  Test isolation and test transience are welcomed mechanisms to assist in getting tests to pass quickly in **TDD**.  The wtPLSQL framework embraces 100% code coverage and does not require test isolation or test transience.
 
+---
 [Website Home Page](README.md)

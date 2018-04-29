@@ -2,7 +2,7 @@
 
 # Definitions
 
-***
+---
 ## wtPLSQL
 These are the working definitions for the wtPLSQL project.
 
@@ -87,4 +87,5 @@ These Java definitions are provided for reference
 
 **Class** - In object-oriented programming, a class is an extensible program-code-template for creating objects, providing initial values for state (member variables) and implementations of behavior (member functions or methods).  See also [Class at Wikipedia](https://en.wikipedia.org/wiki/Class_(computer_programming))
 
+---
 [Website Home Page](README.md)
