@@ -20,7 +20,9 @@ To install/upgrade, download the [latest Release](https://github.com/DDieterich/
 
 wtPLSQL helps with white-box testing of Oracle database objects.  It is particularly well suited for unit testing and simple integration testing.  It is written in PL/SQL.  It contains a self-test which makes it easier to support and customize.
 
-Like utPLSQL, wtPLSQL provides a set of assertion tests that can be used to determine how well an Oracle database object is performing. These assertions record the outcome (success or failure) of each test.  These assertions also record the time between calls. These assertion tests are writting into a test runner (PL/SQL package).  When the test runner is executed, the assertions record the results.  The [Core Features page](Core-Features.md) introduces the main functionality of wtPLSQL.
+Like utPLSQL, wtPLSQL provides a set of assertion tests that can be used to determine how well an Oracle database object is performing. These assertions record the outcome (success or failure) of each test.  These assertions also record the time between calls. A test runner (PL/SQL package) must be created with these assertion tests included.  When the test runner is executed, the outcome and timing of the assertion tests are recorded.  The [Core Features page](Core-Features.md) introduces the main functionality of wtPLSQL.
+
+A simple text based reporting package called "WT_TEXT_REPORT" is included with the core installation.  Custom reports are easy to create because the outcome and timing data is stored in the Oracle database.  A set of DBDocs and E-R diagrams are provided to assist with any reporting customization.
 
 Because wtPLSQL is for PL/SQL developers, a [Best Practices page](Best-Practices.md) has some guidance for creating Test Runner packages in PL/SQL.
 
