@@ -32,7 +32,7 @@ The [Definitions page](Definitions.md) includes definitions from many sources to
 
 ## How does wtPLSQL compare to utPLSQL V3?
 
-utPLSQL V3 is an excellent choice for unit testing.  It is well supported and included extensive functionality.
+utPLSQL V3 is an excellent choice for unit testing.  It is well supported and includes extensive functionality.
 
 wtPLSQL has a different focus than utPLSQL V3.  More information is available [in this link](utPLSQL-V3-Comparison).
 
