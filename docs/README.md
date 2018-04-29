@@ -4,6 +4,15 @@ To install/upgrade, download the [latest Release](https://github.com/DDieterich/
 
 The "wtplsql_core_install_N.N.N.zip" file contains the minimum needed for a wtPLSQL core installation.
 
+### Site Map
+
+* [Core Features](Core-Features.md)
+* [About](About.md)
+* [Best Practices](Best-Practices.md)
+* [Definitions](Definitions.md)
+* [utPLSQL V3 Comparison](utPLSQL-V3-vs.-wtPLSQL.md)
+
+***
 ## What is wtPLSQL?
 
 wtPLSQL helps with white-box testing of Oracle database objects.  It is particularly well suited for unit testing and simple integration testing.  It is written in PL/SQL.  It contains a self-test which makes it easier to support and customize.
@@ -33,5 +42,3 @@ Help us improve by joining us at the [wtPLSQL repository](https://github.com/DDi
 ---
 
 _Oracle and Java are registered trademarks of Oracle and/or its affiliates. Other names may be trademarks of their respective owners._
-
-[Home](README)
