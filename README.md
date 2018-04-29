@@ -1,12 +1,8 @@
 # wtPLSQL - Whitebox Testing for PL/SQL
 
-Welcome to the wtPLSQL repository on GitHub. This site is for anyone that wants to contribute.
+Welcome to the wtPLSQL repository on GitHub. This site is for contributors.  The main website is on [GitHub.io](https://ddieterich.github.io/wtPLSQL/).
 
-[Latest Release](https://github.com/DDieterich/wtPLSQL/releases)
-
-Note: "wtplsql_core_install_N.N.N.zip" contains the minimum needed for a wtPLSQL core installation
-
-The main website is at [GitHub.io](https://ddieterich.github.io/wtPLSQL/).
+[Get the latest release here.](https://github.com/DDieterich/wtPLSQL/releases)  Note: "wtplsql_core_install_N.N.N.zip" contains the minimum needed for a wtPLSQL core installation
 
 ### Files and Directories
 
@@ -22,9 +18,9 @@ See the "To Do" column in one of the [Projects](https://github.com/DDieterich/wt
 
 The [Project Wiki](https://github.com/DDieterich/wtPLSQL/wiki) includes helpful this project. The Wiki also includes wtPLSQL features, definitions, and best practices.
 
-[Database Docs](https://ddieterich.github.io/wtPLSQL/core/DBDocs/index.html)
+[Database Docs on GitHub.io](https://ddieterich.github.io/wtPLSQL/core/DBDocs/index.html)
 
-[E-R Diagram](https://ddieterich.github.io/wtPLSQL/core/ER_Diagrams.pdf)
+[E-R Diagram on GitHub.io](https://ddieterich.github.io/wtPLSQL/core/ER_Diagrams.pdf)
 
 ---
 

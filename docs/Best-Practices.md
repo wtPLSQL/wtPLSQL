@@ -1,4 +1,4 @@
-[Home](README.md)
+[Website Home Page](README.md)
 
 Place the "WTPLSQL_RUN" procedure at the end of a package body. This allows the procedure call any procedure/function in the package.
 
@@ -43,4 +43,4 @@ Add WTPLSQL markers every 10-15 lines in an embedded procedure. This helps ident
 
    `--------------------------------------  WTPLSQL Testing --`
 
-[Home](README.md)
+[Website Home Page](README.md)

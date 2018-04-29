@@ -1,4 +1,4 @@
-[Home](README.md)
+[Website Home Page](README.md)
 
 ## History
 Following are some links regarding the history of utPLSQL.
@@ -7,9 +7,9 @@ Following are some links regarding the history of utPLSQL.
 
 [Steven Feuerstein's Recommendations for Unit Testing PL/SQL Programs](http://stevenfeuersteinonplsql.blogspot.com/2015/03/recommendations-for-unit-testing-plsql.html)
 
-[utPLSQL V2 Documentation](https://utplsql.github.io/docs/index.html)
+[utPLSQL V2 Documentation](https://utplsql.org/utPLSQL/v2.3.1/)
 
-[utPLSQL V3 on GitHub](https://github.com/utPLSQL/utPLSQL)
+[utPLSQL V3 Website](https://utplsql.org/)
 
 ## Background
 Because of his reputation with Oracle's PL/SQL, Steven Feuerstein's utPLSQL has been widely adopted.  However, maintenance of the utPLSQL source code became a problem with the latest utPLSQL V2 releases.  Inspection of the utPLSQL V2 source code revealed some very complex code pathways.  Much of this resulted from the layering of the V1 API on top of the V2 implementation.  There is no documentation on how the V1 layering was intended to work.  There is no documentation on the overall design of the V2 implementation.  There is no documentation on how to use the V2 API.  (Kudos to [@PaulWalkerUK](https://github.com/PaulWalkerUK) for an amazing job of maintaining the V2 code set.)  As a result, most all unit tests written with utPLSQL V2 use the V1 APIs.
@@ -90,4 +90,4 @@ With **TDD** (Test Driven Development), [you write a test before you write just 
 
 The wtPLSQL framework is not intended for Test Driven Development.  100% code coverage is not desirable under the **TDD** approach.  Test isolation and test transience are welcomed mechanisms to assist in getting tests to pass quickly in **TDD**.  The wtPLSQL framework embraces 100% code coverage and does not require test isolation or test transience.
 
-[Home](README.md)
+[Website Home Page](README.md)

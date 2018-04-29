@@ -1,4 +1,4 @@
-[Home](README.md)
+[Website Home Page](README.md)
 
 # Is there a choice between utPLSQL V3 and wtPLSQL?
 
@@ -57,6 +57,6 @@ TDD places no value on 100% code coverage. TDD typically avoids testing sad path
 
 White box testing is centered on 100% code coverage. "Happy path" and "sad path" testing are typically required to achieve 100% code coverage.
 
-Here is more discussion on [Test Driven Development](https://github.com/DDieterich/wtPLSQL/wiki/About#test-driven-development)
+Here is more discussion on [Test Driven Development](About.html#test-driven-development)
 
-[Home](README.md)
+[Website Home Page](README.md)

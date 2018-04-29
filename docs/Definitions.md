@@ -1,4 +1,4 @@
-[Home](README.md)
+[Website Home Page](README.md)
 
 ***
 # wtPLSQL
@@ -112,4 +112,4 @@ In computer science, an object can be a variable, a data structure, or a functio
 ### Class
 In object-oriented programming, a class is an extensible program-code-template for creating objects, providing initial values for state (member variables) and implementations of behavior (member functions or methods).  See also [Class at Wikipedia](https://en.wikipedia.org/wiki/Class_(computer_programming))
 
-[Home](README.md)
+[Website Home Page](README.md)
