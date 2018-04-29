@@ -1,22 +1,28 @@
-# wtPLSQL - Whitebox Testing for PL/SQL
+# wtPLSQL - PL/SQL Whitebox Testing
 
-Welcome to the wtPLSQL repository on GitHub. This site is for contributors.  The main website is on [GitHub.io](https://ddieterich.github.io/wtPLSQL/).
+Welcome to the wtPLSQL repository on GitHub. This site is for contributors.
 
-[Get the latest release here.](https://github.com/DDieterich/wtPLSQL/releases)  Note: "wtplsql_core_install_N.N.N.zip" contains the minimum needed for a wtPLSQL core installation
+More information about how to use wtPLSQL and why it is different is on the [wtPLSQL Home Page (on GitHub.io)](https://ddieterich.github.io/wtPLSQL/).
+
+[Get the latest release here.](https://github.com/DDieterich/wtPLSQL/releases)
+
+The [wtPLSQL Compatability page](https://github.com/DDieterich/wtPLSQL/wiki/Compatibility) includes which versions of Oracle are compatible with the current release of wtPLSQL. 
 
 ### Files and Directories
 
 File Name            | Description
 ---------------------|------------
-docs                 | Directory of project documentation. Also contains GitHub.io source.
+docs                 | Documentation directory. Also contains wtPLSQL website (GitHub.io) source.
+releases             | Current and previous releases (zip files)
+src                  | Source code directory.
 LICENSE              | Open Source Terms and Conditions.
-README.md            | Top level Markdown file for wtPLSQL project on GitHub
+README.md            | Top level Markdown file for the wtPLSQL repository on GitHub
 
 ### Participation
 
 See the "To Do" column in one of the [Projects](https://github.com/DDieterich/wtPLSQL/projects) for cards/issues that are ready to work.
 
-The [Project Wiki](https://github.com/DDieterich/wtPLSQL/wiki) includes helpful this project. The Wiki also includes wtPLSQL features, definitions, and best practices.
+The [repository Wiki](https://github.com/DDieterich/wtPLSQL/wiki) includes helpful procedures and discussions. The Wiki also includes wtPLSQL features, definitions, and best practices.
 
 [Database Docs on GitHub.io](https://ddieterich.github.io/wtPLSQL/core/DBDocs/index.html)
 
