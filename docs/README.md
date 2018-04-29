@@ -5,7 +5,7 @@
 
 To install/upgrade, download the [latest Release](https://github.com/DDieterich/wtPLSQL/releases)
 
-[Compatability page](https://github.com/DDieterich/wtPLSQL/wiki/Compatibility) in the wtPLSQL repository wiki.
+[Compatibility page](https://github.com/DDieterich/wtPLSQL/wiki/Compatibility) in the wtPLSQL repository wiki.
 
 ### Site Map
 
@@ -13,7 +13,7 @@ To install/upgrade, download the [latest Release](https://github.com/DDieterich/
 * [About](About.md)
 * [Best Practices](Best-Practices.md)
 * [Definitions](Definitions.md)
-* [utPLSQL V3 Comparison](utPLSQL-V3-vs.-wtPLSQL.md)
+* [utPLSQL V3 Comparison](utPLSQL-V3-Comparison)
 
 ***
 ## What is wtPLSQL?
@@ -34,7 +34,7 @@ The [Definitions page](Definitions.md) includes definitions from many sources to
 
 utPLSQL V3 is an excellent choice for unit testing.  It is well supported and included extensive functionality.
 
-wtPLSQL has a different focus than utPLSQL V3.  More information is available [in this link](utPLSQL-V3-vs.-wtPLSQL).
+wtPLSQL has a different focus than utPLSQL V3.  More information is available [in this link](utPLSQL-V3-Comparison).
 
 ## Demonstrations and Examples
 
