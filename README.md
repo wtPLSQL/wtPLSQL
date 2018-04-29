@@ -4,6 +4,8 @@ Welcome to the wtPLSQL repository on GitHub. This site is for anyone that wants 
 
 [Latest Release](https://github.com/DDieterich/wtPLSQL/releases)
 
+Note: wtplsql_core_install_N.N.N.zip contains the minimum needed for a wtPLSQL core installation
+
 The main website is at [GitHub.io](https://ddieterich.github.io/wtPLSQL/).
 
 ### Files and Directories
