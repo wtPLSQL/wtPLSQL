@@ -7,7 +7,7 @@ To install/upgrade, download the [latest Release](https://github.com/DDieterich/
 
 [Compatibility page](https://github.com/DDieterich/wtPLSQL/wiki/Compatibility) in the wtPLSQL repository wiki.
 
-For now, [use GitHub "issues" for support](https://github.com/DDieterich/wtPLSQL/issues/new).  This will require a (free) GitHub account.
+Use [GitHub "issues"](https://github.com/DDieterich/wtPLSQL/issues) for support.  A (free) GitHub account will be required to create a new issue.  Issues can be searched without an account.
 
 ### Site Map
 
