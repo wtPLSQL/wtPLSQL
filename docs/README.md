@@ -1,8 +1,5 @@
 # wtPLSQL Home Page
 
-***
-## Installation
-
 To install/upgrade, download the [latest Release](https://github.com/DDieterich/wtPLSQL/releases)
 
 Also see the [compatibility page](https://github.com/DDieterich/wtPLSQL/wiki/Compatibility) in the wtPLSQL repository wiki.

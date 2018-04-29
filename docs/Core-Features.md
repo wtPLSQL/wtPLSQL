@@ -2,6 +2,7 @@
 
 # Core Features
 
+***
 ## PLSQL Driven Testing
 User written Test Runner packages are collections of assertions.  The simplest way to get started with testing is to create a Test Runner package with a single assertion.  After the one assertion is successfully running, more assertions and supporting PL/SQL can be added until white-box testing is complete.  A Test Runner Package can also call other packages.  Groups of assertions can be separated into Test Cases.  The Test Runner package can also be the same package as the package being tested (embedded Test Runner).
 
