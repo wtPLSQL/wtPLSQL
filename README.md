@@ -6,7 +6,7 @@ The [wtPLSQL website (on GitHub.io)](https://ddieterich.github.io/wtPLSQL/) has 
 
 [Get the latest release here.](https://github.com/DDieterich/wtPLSQL/releases)
 
-[wtPLSQL compatability page.](https://github.com/DDieterich/wtPLSQL/wiki/Compatibility)
+[wtPLSQL compatability wiki page.](https://github.com/DDieterich/wtPLSQL/wiki/Compatibility)
 
 ### Files and Directories
 
