@@ -3,7 +3,7 @@ To install/upgrade, download the [latest Release](https://github.com/DDieterich/
 
 The "wtplsql_core_install_N.N.N.zip" file contains the minimum needed for a wtPLSQL core installation.
 
-### What is wtPLSQL?
+## What is wtPLSQL?
 
 wtPLSQL helps with white-box testing of Oracle database objects.  It is particularly well suited for unit testing and simple integration testing.  It is written in PL/SQL.  It contains a self-test which makes it easier to support and customize.
 
@@ -15,17 +15,17 @@ The [About page](About.md) has more information about the history and testing me
 
 The [Definitions page](Definitions.md) includes definitions from many sources to help define the terms used in various software testing methodologies.
 
-### How does wtPLSQL compare to utPLSQL V3?
+## How does wtPLSQL compare to utPLSQL V3?
 
 utPLSQL V3 is an excellent choice for unit testing.  It is well supported and included extensive functionality.
 
 wtPLSQL has a different focus than utPLSQL V3.  More information is available [in this link](utPLSQL-V3-vs.-wtPLSQL).
 
-### Demonstrations and Examples
+## Demonstrations and Examples
 
 [Under Construction](demo/README.md)
 
-### Contribute
+## Contribute
 
 Help us improve by joining us at the [wtPLSQL repository](https://github.com/DDieterich/wtPLSQL).
 
