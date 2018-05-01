@@ -59,38 +59,55 @@ WHENEVER SQLERROR continue
 -- Type Specifications
 ----------------------------------------
 
+create type flock_nt_type
+  as table of number;
+
+----------------------------------------
+
+create type flock_obj_type
+   as object
+   (flock_nt   flock_nt_type
+   ,member procedure send_cluck
+         (in_id  in number
+         ,in_msg in varchar2)
+   );
 
 ----------------------------------------
 -- Tables
 ----------------------------------------
 
-create synonym test_test_seq;
+create sequence cluckers_seq;
 
-create table trigger_test
-  (id           number
-  ,name         varchar2(30)
-  ,created_dtm  date
+create table cluckers
+  (id         number
+  ,name       varchar2(30)
+  ,flock_obj  flock_obj_type
   ,constraint customers_pk primary key (id)
   ,constraint customers_nk1 unique (name)
   );
 
-create trigger trigger_test_bir
+create trigger cluckers_bir
   before insert on cluckers
   for each row
 begin
   if :new.id is null
   then
-     :new.id := trigger_test_seq.nextval;
-  end if;
-  if :new.created_dtm is null
-  then
-     :new.created_dtm := sysdate;
+     :new.id := cluckers_seq.nextval;
   end if;
 end;
 /
 
 ----------------------------------------
 
+create table clucks
+  (clucker_id     number
+  ,cluck_tstmp    timestamp
+  ,flock_mate_id  number         constraint clucks_nn1 not null
+  ,message        varchar2(140)  constraint clucks_nn2 not null
+  ,constraint clucks_pk primary key (clucker_id, cluck_tstmp)
+  ,constraint clucks_fk1 foreign key (clucker_id) references cluckers
+  ,constraint clucks_fk2 foreign key (flock_mate_id) references cluckers
+  );
 
 create trigger clucks_bir
   before insert on clucks
@@ -130,10 +147,14 @@ end;
 -- Package Specifications
 ----------------------------------------
 
+@clucking.pks
+/
 
 ----------------------------------------
 -- Package Bodies
 ----------------------------------------
 
+@clucking.pkb
+/
 
 spool off

@@ -54,7 +54,7 @@ An important part of establishing code coverage is identifying what code is bein
 ### Oracle Database Objects
 [Some of the (database) objects that schemas can contain are Packages, Procedures, Functions, Triggers, and Views.](https://docs.oracle.com/database/122/CNCPT/tables-and-table-clusters.htm#GUID-7567BE77-AFC0-446C-832A-FCC1337DEED8)
 
-utPLSQL V1 and V2 targeted PL/SQL packages for the testing.  However, other database objects need to be tested as well.  PL/SQL procedures and functions that are created outside of packages need to be tested.  Triggers containing PL/SQL need to be tested.  With the addition of inline functions in SQL, views can contain PL/SQL as well.  [Oracle Type Bodies](https://docs.oracle.com/database/122/ADOBJ/object-methods.htm#ADOBJ00202) also include PL/SQL procedures and functions.  All of these database objects can be tested with wtPSQL.
+Many kinds of database objects need to be tested, not just packages. Triggers containing PL/SQL need to be tested.  With the addition of [inline functions in SQL](https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sqlrf/SELECT.html#GUID-CFA006CA-6FF1-4972-821E-6996142A51C6), views can contain PL/SQL as well.  [Oracle Type Bodies](https://docs.oracle.com/database/122/ADOBJ/object-methods.htm#ADOBJ00202) also include PL/SQL procedures and functions.  All of these database objects can be tested with wtPSQL.
 
 In the wtPLSQL framework, the DBOUT can be any of the following PL/SQL objects:
 * Packages
@@ -62,6 +62,14 @@ In the wtPLSQL framework, the DBOUT can be any of the following PL/SQL objects:
 * Functions (standalone)
 * Triggers
 * Views (Not yet implemented)
+
+### Embedded Selftest
+
+[Put Test Code in Same Package](https://utplsql.org/utPLSQL/v2.3.1/samepack.html)
+
+With utPLSQL V1/V2, packages can include an embedded self-test. The required calls can be exposed within the package that is being tested. This is particularly useful for testing package internals like private variables and procedures. These embedded selftests also remove the need to expose private variables and procudures to public calls so they can be tested.
+
+wtPLSQL continues this capability. However, with wtPLSQL, the addition of an embedded selftest requires only 1 additional procedure call in the package specification (WTPLSQL_RUN).
 
 ## Unit Testing
 As mentioned above, white box testing can occur at various levels of development, including:
@@ -87,6 +95,14 @@ There are many arguments to be made regarding the idea of a known good state in 
 * Built-in auditing
 
 In the wtPLSQL framework, integration testing of multiple database objects (no mocks or fakes) is allowed (i.e. not bound by the **transience** aspect).  Artifacts from multiple test runs can remain in the database after the testing is complete.  Additionally, artifacts that remain after testing can help identify other problems in the database.
+
+### Test Fixtures and Test Suites
+
+[A test fixture ... is the set of preconditions or state needed to run a test](https://en.wikipedia.org/wiki/XUnit#Test_fixtures)
+
+[A test suite is a set of tests that all share the same fixture.](https://en.wikipedia.org/wiki/XUnit#Test_suites)
+
+Test fixtures and test suites are a part of the xUnit testing framework. At the core, wtPLSQL does not include test fixtures or test suites. These can be defined and implemented in a variety of ways.
 
 ## Test Driven Development
 With **TDD** (Test Driven Development), [you write a test before you write just enough production code to fulfill that test](http://agiledata.org/essays/tdd.html)
