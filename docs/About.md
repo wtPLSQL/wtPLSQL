@@ -54,7 +54,7 @@ An important part of establishing code coverage is identifying what code is bein
 ### Oracle Database Objects
 [Some of the (database) objects that schemas can contain are Packages, Procedures, Functions, Triggers, and Views.](https://docs.oracle.com/database/122/CNCPT/tables-and-table-clusters.htm#GUID-7567BE77-AFC0-446C-832A-FCC1337DEED8)
 
-Many kinds of database objects need to be tested, not just packages. Triggers containing PL/SQL need to be tested.  With the addition of [inline functions in SQL](https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sqlrf/SELECT.html#GUID-CFA006CA-6FF1-4972-821E-6996142A51C6), views can contain PL/SQL as well.  [Oracle Type Bodies](https://docs.oracle.com/database/122/ADOBJ/object-methods.htm#ADOBJ00202) also include PL/SQL procedures and functions.  All of these database objects can be tested with wtPSQL.
+Many kinds of database objects need to be tested, not just packages. Triggers containing PL/SQL need to be tested.  With the addition of [inline functions in SQL](https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sqlrf/SELECT.html#GUID-CFA006CA-6FF1-4972-821E-6996142A51C6__BABJFIDC), views can contain PL/SQL as well.  [Oracle Type Bodies](https://docs.oracle.com/database/122/ADOBJ/object-methods.htm#ADOBJ00202) also include PL/SQL procedures and functions.  All of these database objects can be tested with wtPSQL.
 
 In the wtPLSQL framework, the DBOUT can be any of the following PL/SQL objects:
 * Packages
@@ -102,7 +102,7 @@ In the wtPLSQL framework, integration testing of multiple database objects (no m
 
 [A test suite is a set of tests that all share the same fixture.](https://en.wikipedia.org/wiki/XUnit#Test_suites)
 
-Test fixtures and test suites are a part of the xUnit testing framework. At the core, wtPLSQL does not include test fixtures or test suites. These can be defined and implemented in a variety of ways.
+Test fixtures and test suites are a part of the xUnit testing framework. At the core, wtPLSQL does not include test fixtures or test suites. If needed, these can be defined and implemented in a variety of ways.
 
 ## Test Driven Development
 With **TDD** (Test Driven Development), [you write a test before you write just enough production code to fulfill that test](http://agiledata.org/essays/tdd.html)
