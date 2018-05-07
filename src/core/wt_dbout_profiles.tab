@@ -8,9 +8,9 @@ create table wt_dbout_profiles
    ,line           number(6)      constraint wt_dbout_profiles_nn2 not null
    ,status         varchar2(4)    constraint wt_dbout_profiles_nn3 not null
    ,total_occur    number(9)      constraint wt_dbout_profiles_nn4 not null
-   ,total_time     number(9)      constraint wt_dbout_profiles_nn5 not null
-   ,min_time       number(9)      constraint wt_dbout_profiles_nn6 not null
-   ,max_time       number(9)      constraint wt_dbout_profiles_nn7 not null
+   ,total_usecs    number         constraint wt_dbout_profiles_nn5 not null
+   ,min_usecs      number         constraint wt_dbout_profiles_nn6 not null
+   ,max_usecs      number         constraint wt_dbout_profiles_nn7 not null
    ,text           varchar2(4000) constraint wt_dbout_profiles_nn8 not null
    ,constraint wt_dbout_profiles_pk primary key (test_run_id, line)
    ,constraint wt_dbout_profiles_fk1 foreign key (test_run_id)
@@ -23,9 +23,9 @@ comment on column wt_dbout_profiles.test_run_id is 'Foreign Key for the Test Run
 comment on column wt_dbout_profiles.line is 'Source code line number, Primary Key part 2.';
 comment on column wt_dbout_profiles.status is 'Executed/NotExecuted/Excluded/Annotated/Unknown Status from the Profiler';
 comment on column wt_dbout_profiles.total_occur is 'Number of times this line was executed.';
-comment on column wt_dbout_profiles.total_time is 'Total time spent executing this line.';
-comment on column wt_dbout_profiles.min_time is 'Minimum execution time for this line.';
-comment on column wt_dbout_profiles.max_time is 'Maximum execution time for this line.';
+comment on column wt_dbout_profiles.total_usecs is 'Total time in microseconds spent executing this line.';
+comment on column wt_dbout_profiles.min_usecs is 'Minimum execution time in microseconds for this line.';
+comment on column wt_dbout_profiles.max_usecs is 'Maximum execution time in microseconds for this line.';
 comment on column wt_dbout_profiles.text is 'Source code text for this line number.';
 
 grant select on wt_dbout_profiles to public;

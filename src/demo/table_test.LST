@@ -1,0 +1,23 @@
+
+    wtPLSQL 1.1.0 - Run ID 112: 03-May-2018 10:45:25 PM
+
+  Test Results for WTP_DEMO.TABLE_TEST_PKG
+       Total Testcases:        2      Total Assertions:        8
+  Minimum Elapsed msec:        0     Failed Assertions:        0
+  Average Elapsed msec:        1      Error Assertions:        0
+  Maximum Elapsed msec:        2            Test Yield:   100.00%
+  Total Run Time (sec):      0.0
+
+WTP_DEMO.TABLE_TEST_PKG Details (Test Run ID 112)
+----------------------------------------
+ ---- Test Case: Happy Path 1
+ PASS    2ms Successful Insert. RAISES/THROWS - Expected exception "%ORA-0000: normal, successful completion%". Actual exception raised was "ORA-0000: normal, successful completion". Exception raised by: "insert into table_test_tab (id, name) values (1, 'TEST1')".
+ PASS    0ms Number of Rows After Insert. EQQUERYVALUE - Expected "1" and got "1" for Query: select count(*) from table_test_tab
+ PASS    0ms Confirm l_rec.name. EQ - Expected "TEST1" and got "TEST1"
+ PASS    1ms Number of Rows After Rollback. EQQUERYVALUE - Expected "0" and got "0" for Query: select count(*) from table_test_tab
+ ---- Test Case: Sad Path 1
+ PASS    0ms Primary Key Constraint Test 1. RAISES/THROWS - Expected exception "%ORA-01400: cannot insert NULL into ("WTP_DEMO"."TABLE_TEST_TAB"."ID")%". Actual exception raised was "ORA-01400: cannot insert NULL into ("WTP_DEMO"."TABLE_TEST_TAB"."ID")". Exception raised by: "insert into table_test_tab (id, name) values (NULL, 'TEST1')".
+ PASS    1ms Primary Key Constraint Test 2 Setup. RAISES/THROWS - Expected exception "%ORA-0000: normal, successful completion%". Actual exception raised was "ORA-0000: normal, successful completion". Exception raised by: "insert into table_test_tab (id, name) values (2, 'TEST1')".
+ PASS    0ms Primary Key Constraint Test 2. RAISES/THROWS - Expected exception "%ORA-00001: unique constraint (WTP_DEMO.TABLE_TEST_TAB_PK) violated%". Actual exception raised was "ORA-00001: unique constraint (WTP_DEMO.TABLE_TEST_TAB_PK) violated". Exception raised by: "insert into table_test_tab (id, name) values (2, 'TEST1')".
+ PASS    1ms Check Constraint 1 Test 3. RAISES/THROWS - Expected exception "%ORA-02290: check constraint (WTP_DEMO.TABLE_TEST_TAB_CK1) violated%". Actual exception raised was "ORA-02290: check constraint (WTP_DEMO.TABLE_TEST_TAB_CK1) violated". Exception raised by: "insert into table_test_tab (id, name) values (3, 'Test1')".
+

@@ -56,84 +56,16 @@ end;
 WHENEVER SQLERROR continue
 
 ----------------------------------------
--- Type Specifications
+-- Test Installation
 ----------------------------------------
 
+prompt Install Trigger Test
+@trigger_test.sql
 
-----------------------------------------
--- Tables
-----------------------------------------
+prompt Install Table Test
+@table_test.sql
 
-create synonym test_test_seq;
-
-create table trigger_test
-  (id           number
-  ,name         varchar2(30)
-  ,created_dtm  date
-  ,constraint customers_pk primary key (id)
-  ,constraint customers_nk1 unique (name)
-  );
-
-create trigger trigger_test_bir
-  before insert on cluckers
-  for each row
-begin
-  if :new.id is null
-  then
-     :new.id := trigger_test_seq.nextval;
-  end if;
-  if :new.created_dtm is null
-  then
-     :new.created_dtm := sysdate;
-  end if;
-end;
-/
-
-----------------------------------------
-
-
-create trigger clucks_bir
-  before insert on clucks
-  for each row
-begin
-  :new.cluck_tstmp := systimestamp;
-end;
-/
-
-----------------------------------------
--- Type Bodies
-----------------------------------------
-
-create or replace type body flock_obj_type
-as
-
-member procedure send_cluck
-       (in_id  in number
-       ,in_msg in varchar2)
-is
-   PRAGMA AUTONOMOUS_TRANSACTION;
-   l_rec  clucks%ROWTYPE;
-begin
-   l_rec.clucker_id := in_id;
-   l_rec.message    := in_msg;
-   for i in 1 .. self.flock_nt.COUNT
-   loop
-      l_rec.flock_mate_id := self.flock_nt(i);
-      insert into clucks values l_rec;
-   end loop;
-   commit;
-end send_cluck;
-
-end;
-
-----------------------------------------
--- Package Specifications
-----------------------------------------
-
-
-----------------------------------------
--- Package Bodies
-----------------------------------------
-
+prompt Install Type Test
+@type_test.sql
 
 spool off

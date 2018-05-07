@@ -47,7 +47,7 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 **Keep embedded test code indented** between the test code markers
 
-**Add WTPLSQL markers every 10-15 lines** in an embedded procedure. This helps identify a long embedded test procedure while scrolling through source code.
+**Add WTPLSQL markers every 10 lines or less** in an embedded procedure. This helps identify a long embedded test procedure while scrolling through source code. When in doubt, add more of these.
 
 ```
    --------------------------------------  WTPLSQL Testing --

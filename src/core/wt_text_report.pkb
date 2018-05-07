@@ -34,8 +34,9 @@ begin
    loop
       if buff.tot_cnt = 0
       then
-         l_yield_txt := '(Divide by Zero)';
+         l_yield_txt := '    0.00%';
       else
+         -- Some cases will produce '%'
          l_yield_txt := to_char(round( ( 1 - (buff.fail_cnt+buff.err_cnt)
                                                  / buff.tot_cnt
                                        ) * 100
@@ -49,7 +50,7 @@ begin
       p('  Average Elapsed msec: ' || to_char(nvl(buff.avg_msec ,0),'9999999') ||
         '      Error Assertions: ' || to_char(nvl(buff.err_cnt  ,0),'9999999') );
       p('  Maximum Elapsed msec: ' || to_char(nvl(buff.max_msec ,0),'9999999') ||
-        '            Test Yield: ' || l_yield_txt                      );
+        '            Test Yield: ' ||             l_yield_txt                  );
    end loop;
 end result_summary;
 
@@ -65,14 +66,14 @@ begin
             ,sum(decode(status,'EXCL',1,0))  EXCL_LINES
             ,sum(decode(status,'NOTX',1,0))  NOTX_LINES
             ,sum(decode(status,'UNKN',1,0))  UNKN_LINES
-            ,min(min_time)/1000              MIN_USEC
-            ,sum(total_time)/1000/count(*)   AVG_USEC
-            ,max(max_time)/1000              MAX_USEC
+            ,min(min_usecs)                  MIN_USEC
+            ,sum(total_usecs)/count(*)       AVG_USEC
+            ,max(max_usecs)                  MAX_USEC
        from  wt_dbout_profiles
        where test_run_id = g_test_runs_rec.id )
    loop
       p('    Total Source Lines: ' || to_char(nvl(buff.tot_lines ,0),'9999999') ||
-        '          Missed Lines: ' || to_char(nvl(buff.notx_lines,0),'9999999') );
+        '    Not Executed Lines: ' || to_char(nvl(buff.notx_lines,0),'9999999') );
       p('  Minimum Elapsed usec: ' || to_char(nvl(buff.min_usec  ,0),'9999999') ||
         '       Annotated Lines: ' || to_char(nvl(buff.anno_lines,0),'9999999') );
       p('  Average Elapsed usec: ' || to_char(nvl(buff.avg_usec  ,0),'9999999') ||
@@ -97,18 +98,12 @@ procedure summary_out
 is
 begin
    p('');
---   p(                    g_test_runs_rec.runner_owner ||
---                  '.' || g_test_runs_rec.runner_name  ||
---     --  ' Test Runner' ||
---     ' (Test Run ID ' || g_test_runs_rec.id           ||
---                  ')' );
    p('    wtPLSQL ' || wtplsql.show_version ||
        ' - Run ID ' || g_test_runs_rec.id   ||
                ': ' || to_char(g_test_runs_rec.start_dtm, g_date_format) ||
             CHR(10) );
    p('  Test Results for ' || g_test_runs_rec.runner_owner ||
                        '.' || g_test_runs_rec.runner_name  );
- --  p('  ----------------------------------------');
    result_summary;
    p('  Total Run Time (sec): ' ||
       to_char(extract(day from (g_test_runs_rec.end_dtm -
@@ -121,21 +116,14 @@ begin
       p(g_test_runs_rec.error_message);
    end if;
    ----------------------------------------
-   if g_test_runs_rec.dbout_name is null
+   if g_test_runs_rec.profiler_runid is null
    then
       return;
    end if;
    p('');
---   p(                    g_test_runs_rec.dbout_owner ||
---                  '.' || g_test_runs_rec.dbout_name  ||
---                  ' ' || g_test_runs_rec.dbout_type  ||
---     ' Code Coverage' || 
---     ' (Test Run ID ' || g_test_runs_rec.id           ||
---                  ')' );
    p('  Code Coverage for ' || g_test_runs_rec.dbout_type  ||
                         ' ' || g_test_runs_rec.dbout_owner ||
                         '.' || g_test_runs_rec.dbout_name  );
- --  p('  ----------------------------------------');
    profile_summary;
 end summary_out;
 
@@ -148,10 +136,10 @@ is
    header_shown     boolean;
    procedure l_show_header is begin
       p('');
-      p(                            g_test_runs_rec.runner_owner ||
-                             '.' || g_test_runs_rec.runner_name  ||
-      --            ' Test Runner' ||
-        ' Details (Test Run ID ' || g_test_runs_rec.id           ||
+      p(                     '"' || g_test_runs_rec.runner_owner ||
+                           '"."' || g_test_runs_rec.runner_name  ||
+         '" Test Result Details' ||
+                ' (Test Run ID ' || g_test_runs_rec.id           ||
                              ')' );
       p('----------------------------------------');
    end l_show_header;
@@ -217,16 +205,15 @@ is
    header_shown     boolean;
    procedure l_show_header is begin
      p('');
-     p(                             g_test_runs_rec.dbout_owner ||
+     p(                              g_test_runs_rec.dbout_owner ||
                               '.' || g_test_runs_rec.dbout_name  ||
                               ' ' || g_test_runs_rec.dbout_type  ||
          ' Code Coverage Details' ||
-                 ' (Test Run ID ' || g_test_runs_rec.id           ||
+                 ' (Test Run ID ' || g_test_runs_rec.id          ||
                               ')' );
-      --p('----------------------------------------');
    end l_show_header;
 begin
-   if g_test_runs_rec.dbout_name is null
+   if g_test_runs_rec.profiler_runid is null
    then
       return;
    end if;
@@ -241,9 +228,9 @@ begin
       select line
             ,status
             ,total_occur
-            ,total_time
-            ,min_time
-            ,max_time
+            ,total_usecs
+            ,min_usecs
+            ,max_usecs
             ,text
             ,rownum
        from  wt_dbout_profiles
@@ -262,14 +249,14 @@ begin
       then
          p(l_header_txt);
       end if;
-      p(to_char(buff.line,'99999')               ||
+      p(to_char(buff.line,'99999') ||
         case buff.status when 'NOTX' then '#NOTX#'
         else ' ' || rpad(buff.status,4) || ' '
-        end                                      ||
-        to_char(buff.total_occur,'99999')        || ' ' ||
-        to_char(buff.total_time/1000,'99999999') || ' ' ||
-        to_char(buff.min_time/1000,'999999')     || ' ' ||
-        to_char(buff.max_time/1000,'99999999')   || ' ' ||
+        end                                  ||
+        to_char(buff.total_occur,'99999')    || ' ' ||
+        to_char(buff.total_usecs,'99999999') || ' ' ||
+        to_char(buff.min_usecs,'999999')     || ' ' ||
+        to_char(buff.max_usecs,'99999999')   || ' ' ||
         replace(buff.text,CHR(10),'')            );
    end loop;
 end profile_out;
@@ -294,8 +281,6 @@ begin
    if in_testcase is not null
    then
       l_out_str := ' ---- Test Case: ' || in_testcase || CHR(10);
-   --   l_out_str := rpad('---***  ' || in_testcase || '  ***---'
-   --                    ,80,'-') || CHR(10);
    end if;
    if in_status = wt_assert.C_PASS
    then

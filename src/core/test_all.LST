@@ -1,0 +1,41 @@
+WTPLSQL selftest Enabled for Test Runner "WTPLSQL"
+ORA-06528: Error executing PL/SQL profiler
+ORA-06512: at "SYS.DBMS_PROFILER", line 164
+ORA-06512: at "WTP.WT_PROFILER", line 1556
+ORA-06512: at "WTP.WTPLSQL", line 319
+
+---------------------------
+
+
+
+Error starting at line : 29 in command -
+begin
+   --
+   wtplsql.test_all;
+   --
+   for buff in (select runner_name, max(start_dtm)
+                 from  wt_test_runs
+                 where runner_owner = USER
+                 group by runner_name
+                 order by max(start_dtm))
+   loop
+      wt_text_report.dbms_out(in_runner_name    => buff.runner_name
+                           --  ,in_hide_details   => TRUE
+                           --  ,in_summary_last   => TRUE
+                             ,in_show_pass      => TRUE
+                             ,in_show_aux       => TRUE
+                             );
+   end loop;
+   --
+end;
+Error report -
+ORA-06528: Error executing PL/SQL profiler
+ORA-06512: at "SYS.DBMS_PROFILER", line 164
+ORA-06512: at "WTP.WT_PROFILER", line 1556
+ORA-06512: at "WTP.WTPLSQL", line 336
+ORA-06528: Error executing PL/SQL profiler
+ORA-06512: at "WTP.WTPLSQL", line 371
+ORA-06512: at line 3
+06528. 00000 -  "Error executing PL/SQL profiler"
+*Cause:    An error occurred in during execution of a PL/SQL profiler
+           procedure.

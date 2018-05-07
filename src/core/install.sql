@@ -84,11 +84,12 @@ create or replace public synonym wt_test_runs_seq  for &schema_owner..wt_test_ru
 create or replace public synonym wt_test_runs      for &schema_owner..wt_test_runs;
 create or replace public synonym wt_results        for &schema_owner..wt_results;
 create or replace public synonym wt_dbout_profiles for &schema_owner..wt_dbout_profiles;
-create or replace public synonym wt_not_executable for &schema_owner..wt_not_executable;
+create or replace public synonym wt_version        for &schema_owner..wt_version;
 
-create or replace public synonym plsql_profiler_runs  for &schema_owner..plsql_profiler_runs;
-create or replace public synonym plsql_profiler_units for &schema_owner..plsql_profiler_units;
-create or replace public synonym plsql_profiler_data  for &schema_owner..plsql_profiler_data;
+create or replace public synonym plsql_profiler_runs      for &schema_owner..plsql_profiler_runs;
+create or replace public synonym plsql_profiler_units     for &schema_owner..plsql_profiler_units;
+create or replace public synonym plsql_profiler_data      for &schema_owner..plsql_profiler_data;
+create or replace public synonym plsql_profiler_runnumber for &schema_owner..plsql_profiler_runnumber;
 
 --create or replace public synonym ut_assert         for &schema_owner..wt_assert;
 create or replace public synonym wt_assert         for &schema_owner..wt_assert;
@@ -125,10 +126,10 @@ WHENEVER SQLERROR continue
 --
 create index plsql_profiler_runs_idx1
    on plsql_profiler_runs (run_date);
-grant select, insert, delete on plsql_profiler_runs to public;
-grant select, insert, delete on plsql_profiler_units to public;
-grant select, insert, delete on plsql_profiler_data to public;
-
+grant select, insert, update, delete on plsql_profiler_runs to public;
+grant select, insert, update, delete on plsql_profiler_units to public;
+grant select, insert, update, delete on plsql_profiler_data to public;
+grant select on plsql_profiler_runnumber to public;
 -- Core Tables
 @wt_test_runs.tab
 @wt_results.tab

@@ -4,25 +4,37 @@ spool test_all
 set serveroutput on size unlimited format wrapped
 
 /*
+
 alter system
   set PLSQL_CCFLAGS = 'WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE'
   --set PLSQL_CCFLAGS = 'WTPLSQL_ENABLE:TRUE'
-  scope=BOTH';
+  scope=BOTH;
+
 select p.value PLSQL_CCFLAGS
  from  dual  d
   left join v$parameter  p
             on  p.name in 'plsql_ccflags';
+
+begin
+   $IF $$WTPLSQL_SELFTEST
+   $THEN
+      dbms_output.put_line('WTPLSQL_SELFTEST is TRUE');
+   $END
+   dbms_output.put_line('Check WTPLSQL_SELFTEST is Done.');
+end;
+/
+
 */
 
 begin
    --
    wtplsql.test_all;
    --
-   for buff in (select runner_name
+   for buff in (select runner_name, max(start_dtm)
                  from  wt_test_runs
                  where runner_owner = USER
                  group by runner_name
-                 order by runner_name)
+                 order by max(start_dtm), runner_name)
    loop
       wt_text_report.dbms_out(in_runner_name    => buff.runner_name
                            --  ,in_hide_details   => TRUE

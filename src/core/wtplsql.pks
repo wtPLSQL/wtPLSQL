@@ -19,8 +19,13 @@ as
    --   WtPLSQL Self Test Procedures
    --
    -- alter system set PLSQL_CCFLAGS = 
-   --    'WTPLSQL_SELFTEST:TRUE'
+   --    'WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE'
    --    scope=BOTH;
+   --
+   -- begin
+   --    dbms_utility.compile_schema('WTP',TRUE,FALSE);
+   -- end;
+   -- /
    --
    $IF $$WTPLSQL_SELFTEST
    $THEN

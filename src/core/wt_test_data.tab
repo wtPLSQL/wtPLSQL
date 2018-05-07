@@ -19,10 +19,6 @@ comment on column wt_test_data.temp_nclob is 'NCLOB test data';
 comment on column wt_test_data.temp_xml is 'XML test data';
 comment on column wt_test_data.temp_blob is 'BLOB test data';
 
-grant select on wt_test_data to public;
-grant insert on wt_test_data to public;
-grant delete on wt_test_data to public;
-
 create or replace trigger wt_test_data$test
    before insert on wt_test_data
    for each row

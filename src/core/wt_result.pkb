@@ -42,6 +42,7 @@ $THEN
       l_results_ntSAVE   results_nt_type;
       l_results_ntTEST   results_nt_type;
    begin
+      --------------------------------------  WTPLSQL Testing --
       l_results_ntSAVE  := g_results_nt;
       l_results_recSAVE := g_results_rec;
       g_results_rec     := l_results_recNULL;
@@ -56,6 +57,7 @@ $THEN
          msg_in          => 'g_results_rec.test_run_id',
          check_this_in   => l_results_recTEST.test_run_id,
          against_this_in => -99);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in          => 'g_results_rec.result_seq',
          check_this_in   => l_results_recTEST.result_seq,
@@ -63,6 +65,7 @@ $THEN
       wt_assert.isnotnull (
          msg_in          => 'g_results_rec.executed_dtm',
          check_this_in   => l_results_recTEST.executed_dtm);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
          msg_in          => 'g_results_rec.elapsed_msecs',
          check_this_in   => l_results_recTEST.elapsed_msecs);
@@ -76,6 +79,7 @@ $THEN
       wt_assert.isnull (
          msg_in          => 'g_results_rec.details',
          check_this_in   => l_results_recTEST.details);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
          msg_in          => 'g_results_rec.testcase',
          check_this_in   => l_results_recTEST.testcase);
@@ -92,7 +96,7 @@ $THEN
          check_this_in   => l_results_ntTEST(1).test_run_id);
       wt_assert.raises (
          msg_in         => 'Raises ORA-20009',
-         check_call_in  => 'wt_result.initialize(NULL)',
+         check_call_in  => 'begin wt_result.initialize(NULL); end;',
          against_exc_in => 'ORA-20009: "in_test_run_id" cannot be NULL');
    end t_initialize;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
@@ -123,6 +127,7 @@ $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure t_finalize
    is
+      --------------------------------------  WTPLSQL Testing --
       type num_recs_aa_type is table of number index by varchar2(50);
       num_recs_aa   num_recs_aa_type;
       l_test_runs_rec      wt_test_runs%ROWTYPE;
@@ -133,6 +138,7 @@ $THEN
       l_results_ntTEST     results_nt_type;
       l_num_recs           number;
    begin
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := '   ';
       l_results_ntSAVE     := g_results_nt;    -- Capture Original Values
       l_results_recSAVE    := g_results_rec;   -- Capture Original Values
@@ -143,6 +149,7 @@ $THEN
       g_results_rec.result_seq    := 1;
       g_results_rec.executed_dtm  := systimestamp;
       g_results_rec.elapsed_msecs := 99;
+      --------------------------------------  WTPLSQL Testing --
       g_results_rec.assertion     := 'FINALTEST';
       g_results_rec.status        := wt_assert.C_PASS;
       g_results_rec.details       := 'This is a WT_RESULT.FINALIZE Test';
@@ -157,6 +164,7 @@ $THEN
        from  wt_results
        where test_run_id = -99;
       finalize;
+      --------------------------------------  WTPLSQL Testing --
       select count(*)
        into  num_recs_aa('Finalize After NULL Test Record Count')
        from  wt_results
@@ -171,6 +179,7 @@ $THEN
       l_test_runs_rec.runner_owner := 'BOGUS';
       insert into wt_test_runs values l_test_runs_rec;
       commit;      -- Must commit because finalize is AUTONOMOUS TRANSACTION
+      --------------------------------------  WTPLSQL Testing --
       finalize;    -- g_results_nt is still loaded with one element
       l_results_ntTEST  := g_results_nt;
       l_results_recTEST := g_results_rec;
@@ -186,6 +195,7 @@ $THEN
       -- Restore values so we can test
       g_results_rec := l_results_recSAVE;
       g_results_nt  := l_results_ntSAVE;
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in          => 'Before NULL Test Record Count',
          check_this_in   => num_recs_aa('Finalize Before NULL Test Record Count'),
@@ -194,6 +204,7 @@ $THEN
          msg_in          => 'After NULL Test Record Count',
          check_this_in   => num_recs_aa('Finalize After NULL Test Record Count'),
          against_this_in => 0);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
          msg_in        => 'g_results_rec.test_run_id',
          check_this_in => l_results_recTEST.test_run_id);
@@ -251,6 +262,7 @@ $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure t_save_testing
    is
+      --------------------------------------  WTPLSQL Testing --
       TYPE l_dbmsout_buff_type is table of varchar2(32767);
       l_dbmsout_buff   l_dbmsout_buff_type := l_dbmsout_buff_type(1);
       l_test_run_id    number;
@@ -283,30 +295,30 @@ $THEN
          in_testcase   => wt_assert.g_testcase,
          in_message    => 't_save_testing Message');
       g_results_rec.test_run_id := l_test_run_id;
+      --------------------------------------  WTPLSQL Testing --
       DBMS_OUTPUT.GET_LINE (
          line   => l_dbmsout_line,
          status => l_dbmsout_stat);
-      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in          => 'DBMS_OUTPUT Status',
          check_this_in   => l_dbmsout_stat,
          against_this_in => 0);
-      if not wt_assert.last_pass
+      --------------------------------------  WTPLSQL Testing --
+      if wt_assert.last_pass
       then
-         return;  -- DBMS_OUPUT.GET_LINE failes. End this now.
-      end if;
-      wt_assert.isnotnull (
-         msg_in        => 'DBMS_OUTPUT Line',
-         check_this_in => l_dbmsout_line);
-      wt_assert.this (
-         msg_in        => 'Save Testing NULL Test DBMS_OUTPUT 3 Message',
-         check_this_in => (l_dbmsout_line like '%' || wt_assert.g_testcase ||
-                          '%t_save_testing %'));
-      if not wt_assert.last_pass
-      then
-         -- No match, put the line back into DBMS_OUTPUT buffer and end this.
-         DBMS_OUTPUT.PUT_LINE(l_dbmsout_line);
-         return;
+         wt_assert.isnotnull (
+            msg_in        => 'DBMS_OUTPUT Line',
+            check_this_in => l_dbmsout_line);
+         wt_assert.this (
+            msg_in        => 'Save Testing NULL Test DBMS_OUTPUT 3 Message',
+            check_this_in => (l_dbmsout_line like '%' || wt_assert.g_testcase ||
+                             '%t_save_testing %'));
+      --------------------------------------  WTPLSQL Testing --
+         if not wt_assert.last_pass
+         then
+            -- No match, put the line back into DBMS_OUTPUT buffer and end this.
+            DBMS_OUTPUT.PUT_LINE(l_dbmsout_line);
+         end if;
       end if;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Ad Hoc Save Happy Path Teardown';
@@ -327,6 +339,7 @@ $THEN
          in_details    => 't_save_testing Testing Details',
          in_testcase   => wt_assert.g_testcase,
          in_message    => 't_save_testing Testing Message');
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in          => 'g_results_nt.COUNT',
          check_this_in   => g_results_nt.COUNT,
@@ -344,6 +357,7 @@ $THEN
          msg_in          => 'g_results_nt(' || l_nt_count || ').status',
          check_this_in   => g_results_nt(l_nt_count).status,
          against_this_in => wt_assert.C_PASS);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in          => 'g_results_nt(' || l_nt_count || ').details',
          check_this_in   => g_results_nt(l_nt_count).details,
@@ -360,6 +374,7 @@ $THEN
       wt_assert.isnotnull (
          msg_in          => 'g_results_nt(' || l_nt_count || ').elapsed_msecs',
          check_this_in   => g_results_nt(l_nt_count).elapsed_msecs);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull (
          msg_in          => 'g_results_nt(' || l_nt_count || ').executed_dtm',
          check_this_in   => g_results_nt(l_nt_count).executed_dtm);
@@ -386,6 +401,7 @@ $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure t_delete_records
    is
+      --------------------------------------  WTPLSQL Testing --
       l_test_runs_rec  wt_test_runs%ROWTYPE;
       l_results_rec    wt_results%ROWTYPE;
       l_num_recs       number;
@@ -405,6 +421,7 @@ $THEN
       l_test_runs_rec.runner_owner := 'BOGUS';
       insert into wt_test_runs values l_test_runs_rec;
       l_results_rec.test_run_id   := -99;
+      --------------------------------------  WTPLSQL Testing --
       l_results_rec.result_seq    := 1;
       l_results_rec.executed_dtm  := sysdate;
       l_results_rec.elapsed_msecs := 99;
@@ -419,6 +436,7 @@ $THEN
                               ' where test_run_id = -99',
          against_value_in  => l_num_recs + 1);
       delete_records(-99);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (
          msg_in            => 'After Test Count',
          check_query_in    => 'select count(*) from wt_results' ||
@@ -437,9 +455,10 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure WTPLSQL_RUN  --% WTPLSQL SET DBOUT "WT_RESULT" %--
+   procedure WTPLSQL_RUN  --% WTPLSQL SET DBOUT "WT_RESULT:PACKAGE BODY" %--
    is
    begin
+      --------------------------------------  WTPLSQL Testing --
       t_initialize;
       t_finalize;
       t_save_testing;

@@ -40,7 +40,8 @@ begin
    if l_package_check != 1
    then
       raise_application_error (-20002, 'RUNNER_NAME "' ||
-                        g_test_runs_rec.runner_name || '" is not valid');
+                           g_test_runs_rec.runner_name ||
+                           '.WTPLSQL_RUN" is not valid');
    end if;
 end check_runner;
 
@@ -51,6 +52,7 @@ $THEN
       l_save_test_runs_rec   wt_test_runs%ROWTYPE := g_test_runs_rec;
       l_msg_in   varchar2(4000);
       l_err_in   varchar2(4000);
+      --------------------------------------  WTPLSQL Testing --
       procedure l_test_sqlerrm is begin
          -- Restore the G_TEST_RUNS_REC
          g_test_runs_rec := l_save_test_runs_rec;
@@ -73,11 +75,12 @@ $THEN
       exception when others then
          l_test_sqlerrm;
       end;
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'CHECK_RUNNER Sad Path 2';
       begin
          g_test_runs_rec.runner_name := 'BOGUS';
          l_msg_in := 'Invalid RUNNER_NAME';
-         l_err_in := 'ORA-20002: RUNNER_NAME "BOGUS" is not valid';
+         l_err_in := 'ORA-20002: RUNNER_NAME "BOGUS.WTPLSQL_RUN" is not valid';
          check_runner;
          l_test_sqlerrm;
       exception when others then
@@ -101,17 +104,27 @@ begin
    insert into wt_test_runs values g_test_runs_rec;
    g_test_runs_rec := l_wt_test_runs_recNULL;
    COMMIT;
+exception
+   when OTHERS
+   then
+      DBMS_OUTPUT.PUT_LINE(dbms_utility.format_error_stack ||
+                           dbms_utility.format_error_backtrace);
 end insert_test_run;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure t_insert_test_run
    is
+      --------------------------------------  WTPLSQL Testing --
+      TYPE l_dbmsout_buff_type is table of varchar2(32767);
+      l_dbmsout_buff   l_dbmsout_buff_type := l_dbmsout_buff_type(1);
       l_test_runs_rec  wt_test_runs%ROWTYPE;
+      l_dbmsout_line   varchar2(32767);
+      l_dbmsout_stat   number;
       l_num_recs       number;
    begin
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'INSERT_TEST_RUN Happy Path';
+      wt_assert.g_testcase := 'INSERT_TEST_RUN Happy Path 1';
       l_test_runs_rec := g_test_runs_rec;
       insert_test_run;
       g_test_runs_rec := l_test_runs_rec;
@@ -120,6 +133,7 @@ $THEN
          check_query_in   => 'select count(*) from wt_test_runs' ||
                              ' where id = ' || l_test_runs_rec.id,
          against_value_in => 1);
+      --------------------------------------  WTPLSQL Testing --
       delete from wt_test_runs
        where id = l_test_runs_rec.id;
       COMMIT;
@@ -128,6 +142,64 @@ $THEN
          check_query_in   => 'select count(*) from wt_test_runs' ||
                              ' where id = ' || l_test_runs_rec.id,
          against_value_in => 0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'INSERT_TEST_RUN Sad Path 1';
+      -- Save/Clear the DBMS_OUPTUT Buffer
+      loop
+         DBMS_OUTPUT.GET_LINE (
+            line   => l_dbmsout_line,
+            status => l_dbmsout_stat);
+         exit when l_dbmsout_stat != 0;
+         l_dbmsout_buff(l_dbmsout_buff.COUNT) := l_dbmsout_line;
+         l_dbmsout_buff.extend;
+      end loop;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnotnull (
+         msg_in        => 'l_dbmsout_buff.COUNT - 1',
+         check_this_in => l_dbmsout_buff.COUNT - 1);
+      --------------------------------------  WTPLSQL Testing --
+      select count(*) into l_num_recs from wt_test_runs;
+      l_test_runs_rec := g_test_runs_rec;
+      g_test_runs_rec.start_dtm := null;
+      insert_test_run;
+      g_test_runs_rec := l_test_runs_rec;
+      wt_assert.eqqueryvalue (
+         msg_in           => 'Number of Records should stay the same',
+         check_query_in   => 'select count(*) from wt_test_runs',
+         against_value_in => l_num_recs);
+      --------------------------------------  WTPLSQL Testing --
+      DBMS_OUTPUT.GET_LINE (
+         line   => l_dbmsout_line,
+         status => l_dbmsout_stat);
+      wt_assert.eq (
+         msg_in          => 'DBMS_OUTPUT Status',
+         check_this_in   => l_dbmsout_stat,
+         against_this_in => 0);
+      --------------------------------------  WTPLSQL Testing --
+      if wt_assert.last_pass
+      then
+         wt_assert.isnotnull (
+            msg_in        => 'DBMS_OUTPUT Line',
+            check_this_in => l_dbmsout_line);
+         wt_assert.this (
+            msg_in        => 'Confirm DBMS_OUTPUT Line text',
+            check_this_in => (l_dbmsout_line like 'ORA-01400: cannot insert NULL into ("WTP"."WT_TEST_RUNS"."START_DTM")%'));
+      --------------------------------------  WTPLSQL Testing --
+         if not wt_assert.last_pass
+         then
+            -- No match, put the line back into DBMS_OUTPUT buffer and end this.
+            DBMS_OUTPUT.PUT_LINE(l_dbmsout_line);
+         end if;
+      end if;
+      --------------------------------------  WTPLSQL Testing --
+      -- Restore the DBMS_OUPTUT Buffer
+      for i in 1 .. l_dbmsout_buff.COUNT - 1
+      loop
+         DBMS_OUTPUT.PUT_LINE(l_dbmsout_buff(i));
+      end loop;
+      wt_assert.isnotnull (
+         msg_in        => 'l_dbmsout_buff.COUNT - 1',
+         check_this_in =>  l_dbmsout_buff.COUNT - 1);
    end t_insert_test_run;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
@@ -159,6 +231,7 @@ $THEN
    is
       existing_version   wt_version.text%TYPE;
    begin
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Show Version Happy Path';
       existing_version := show_version;
       wt_assert.isnotnull (
@@ -206,6 +279,7 @@ begin
          test_all_aa(in_package_name) := 'X';
          return;
       end if;
+      DBMS_OUTPUT.PUT_LINE('WTPLSQL selftest Enabled for Test Runner "' || in_package_name || '"');
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    -- Reset the Test Runs Record before checking anything
    g_test_runs_rec               := l_test_runs_rec_NULL;
@@ -218,6 +292,7 @@ begin
    -- Initialize
    delete_runs(in_runner_owner => g_test_runs_rec.runner_owner  -- Autonomous Transaction COMMIT
               ,in_runner_name  => g_test_runs_rec.runner_name);
+   wt_assert.reset_globals;
    wt_result.initialize(g_test_runs_rec.id);
    wt_profiler.initialize(in_test_run_id      => g_test_runs_rec.id,
                           in_runner_name      => g_test_runs_rec.runner_name,
@@ -249,8 +324,15 @@ exception
    then
       l_error_stack := dbms_utility.format_error_stack     ||
                        dbms_utility.format_error_backtrace ;
-      concat_err_message;
-      insert_test_run;       -- Autonomous Transaction COMMIT
+      if g_test_runs_rec.id is null
+      then
+         DBMS_OUTPUT.PUT_LINE(l_error_stack);
+         DBMS_OUTPUT.PUT_LINE('---------------------------');
+         DBMS_OUTPUT.PUT_LINE(g_test_runs_rec.error_message);
+      else
+         concat_err_message;
+         insert_test_run;       -- Autonomous Transaction COMMIT
+      end if;
       wt_profiler.finalize;  -- Autonomous Transaction COMMIT
       wt_result.finalize;    -- Autonomous Transaction COMMIT
 
@@ -271,16 +353,14 @@ is
 begin
    select package_name
      bulk collect into l_runners_nt
-    from  all_arguments  t1
-    where owner       = USER
-     and  object_name = 'WTPLSQL_RUN'
+    from  user_arguments  t1
+    where object_name = 'WTPLSQL_RUN'
      and  position    = 1
      and  sequence    = 0
      and  data_type   is null
      and  not exists (
-          select 'x' from all_arguments  t2
-           where t2.owner       = USER
-            and  t2.object_name = t1.object_name
+          select 'x' from user_arguments  t2
+           where t2.object_name = t1.object_name
             and  t2.position    > t1.position
             and  t2.sequence    > t1.sequence
             and  (   t2.overload is null
@@ -297,6 +377,7 @@ $THEN
    procedure t_test_all
    is
    begin
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'TEST_ALL Happy Path';
       test_all_aa.DELETE;
       wtplsql_skip_test := TRUE;
@@ -304,6 +385,7 @@ $THEN
       wtplsql.test_all;
       wtplsql_skip_test := FALSE;
       -- This package should be in the test_all_aa array
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.this (
          msg_in        => 'test_all_aa.EXISTS(''WTPLSQL'')',
          check_this_in => test_all_aa.EXISTS('WTPLSQL'));
@@ -333,8 +415,8 @@ is
 begin
    num_recs := 1;
    for buf2 in (select id from wt_test_runs
-                 where runner_owner = g_test_runs_rec.runner_owner
-                  and  runner_name  = g_test_runs_rec.runner_name
+                 where runner_owner = in_runner_owner
+                  and  runner_name  = in_runner_name
                  order by start_dtm desc, id desc)
    loop
       -- Keep the last 20 rest runs for this USER
@@ -354,6 +436,7 @@ $THEN
       l_num_recs   number;
       l_err_stack  varchar2(32000);
    begin
+      --------------------------------------  WTPLSQL Testing --
       --  DELETE_RECORDS has already run when we arrive here.
       -- Cleanup from previous test
       delete from wt_test_runs
@@ -366,6 +449,7 @@ $THEN
        from  wt_test_runs
        where runner_owner = USER
         and  runner_name  = g_test_runs_rec.runner_name;
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull (
          msg_in        => 'Number of Records Before Insert',
          check_this_in => l_num_recs);
@@ -381,6 +465,7 @@ $THEN
                              ' where id = ' || g_test_runs_rec.id,
          against_value_in => 1);
       delete_runs(g_test_runs_rec.id);  -- Autonomous Transaction
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (
          msg_in           => 'Number of Records After Delete',
          check_query_in   => 'select count(*) from wt_test_runs' ||
@@ -395,6 +480,7 @@ $THEN
                            ''' and runner_name = ''' || g_test_runs_rec.runner_name ||
                            '''',
          against_value_in => l_num_recs);
+      --------------------------------------  WTPLSQL Testing --
       for i in 1 .. C_KEEP_NUM_RECS
       loop
          insert into wt_test_runs
@@ -403,6 +489,7 @@ $THEN
                (0-i, sysdate-7000-i, USER, g_test_runs_rec.runner_name);
       end loop;
       commit;
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (
          msg_in           => 'Check Added ' || C_KEEP_NUM_RECS || ' records',
          check_query_in   => 'select count(*) from wt_test_runs' ||
@@ -411,6 +498,7 @@ $THEN
                            '''',
          against_value_in => l_num_recs + C_KEEP_NUM_RECS);
       delete_runs(USER, g_test_runs_rec.runner_name);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (
          msg_in           => 'Check number of records reduced',
          check_query_in   => 'select count(*) from wt_test_runs' ||
@@ -421,6 +509,7 @@ $THEN
       delete from wt_test_runs
         where id between 0-C_KEEP_NUM_RECS and 0-1;
       commit;
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (
          msg_in           => 'Confirm original number of records',
          check_query_in   => 'select count(*) from wt_test_runs' ||
@@ -438,6 +527,7 @@ $THEN
          l_err_stack := dbms_utility.format_error_stack     ||
                         dbms_utility.format_error_backtrace ;
       end;
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
          msg_in          => 'Delete Runs(-9995)',
          check_this_in   => l_err_stack);
@@ -451,6 +541,7 @@ $THEN
    procedure t_test_runs_rec_and_table
    is
    begin
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'TEST_RUNS_REC_AND_TABLE Happy Path';
       -- This Test Case runs in the EXECUTE IMMEDAITE in the TEST_RUN
       --   procedure in this package.
@@ -460,6 +551,7 @@ $THEN
       wt_assert.isnotnull
                (msg_in        => 'g_test_runs_rec.start_dtm'
                ,check_this_in => g_test_runs_rec.start_dtm);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull
                (msg_in        => 'g_test_runs_rec.runner_owner'
                ,check_this_in => g_test_runs_rec.runner_owner);
@@ -474,6 +566,7 @@ $THEN
       wt_assert.isnull
                (msg_in          => 'g_test_runs_rec.dbout_name'
                ,check_this_in   => g_test_runs_rec.dbout_name);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull
                (msg_in          => 'g_test_runs_rec.dbout_type'
                ,check_this_in   => g_test_runs_rec.dbout_type);
@@ -487,6 +580,7 @@ $THEN
       wt_assert.isnull
                (msg_in        => 'g_test_runs_rec.error_message'
                ,check_this_in => g_test_runs_rec.error_message);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue
                (msg_in             => 'TEST_RUNS Record for this TEST_RUN'
                ,check_query_in     => 'select count(*) from WT_TEST_RUNS' ||
@@ -494,9 +588,10 @@ $THEN
                ,against_value_in   => 0);
    end t_test_runs_rec_and_table;
    ----------------------------------------
-   procedure WTPLSQL_RUN
+   procedure WTPLSQL_RUN  --% WTPLSQL SET DBOUT "WTPLSQL:PACKAGE" %--
    is
    begin
+      --------------------------------------  WTPLSQL Testing --
       t_show_version;
       t_check_runner;
       t_insert_test_run;
