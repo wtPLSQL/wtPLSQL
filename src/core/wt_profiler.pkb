@@ -543,8 +543,10 @@ begin
                               'TYPE BODY', 'TRIGGER')
       then
          -- These object types should have PL/SQL source code available
+         --%WTPLSQL_begin_ignore_lines%--  Untestable:
          g_rec.error_message := 'Unable to read source for ' || g_rec.dbout_type ||
                              ' ' || g_rec.dbout_owner || '.' || g_rec.dbout_name ;
+         --%WTPLSQL_end_ignore_lines%--
       else
          g_rec.error_message := g_rec.dbout_type || ' ' || g_rec.dbout_owner ||
                          '.' || g_rec.dbout_name || ' will not be profiled.';
@@ -700,11 +702,6 @@ $THEN
          (msg_in          => 'g_rec.dbout_name'
          ,check_this_in   => l_recTEST.dbout_name
          ,against_this_in => l_pname);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eq
-         (msg_in          => 'g_rec.dbout_type'
-         ,check_this_in   => l_recTEST.dbout_type
-         ,against_this_in => 'PACKAGE BODY');
       wt_assert.eq
          (msg_in          => 'g_rec.error_message'
          ,check_this_in   => l_recTEST.error_message
@@ -1571,7 +1568,7 @@ $THEN
       l_recTEST := g_rec;
       g_rec := l_recSAVE;
       wt_assert.isnull (
-         msg_in          => 'SQLERRM',
+         msg_in          => 'format_error_stack and format_error_backtrace',
          check_this_in   => l_err_stack);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Finalize Happy Path 2';
