@@ -584,7 +584,8 @@ $THEN
       compile_db_object
          (in_ptype   => 'package body'
          ,in_pname   => l_pname
-         ,in_source  => 'begin' || CHR(10) || '  l_junk := 1;' );
+         ,in_source  => 'begin'          || CHR(10) ||
+                        '  l_junk := 1;' );
       run_find_dbout;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull
@@ -838,7 +839,8 @@ $THEN
       compile_db_object
          (in_ptype   => 'package body'
          ,in_pname   => l_pname
-         ,in_source  => 'begin' || CHR(10) || '  l_junk := 1;' );
+         ,in_source  => 'begin'          || CHR(10) ||
+                        '  l_junk := 1;' );
       run_load_anno;
       wt_assert.eq
          (msg_in          => 'l_annoTest.COUNT'
@@ -1284,6 +1286,11 @@ begin
    out_profiler_runid  := NULL;
    out_error_message   := '';
    g_rec := l_rec_NULL;
+   $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+   $THEN
+      -- In case a test failed and left this set to TRUE
+      g_skip_this := FALSE;
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    -- Abort if there is no Test Run ID
    if in_test_run_id is null
    then
@@ -1354,8 +1361,8 @@ $THEN
          ,in_source  => 
             'begin'          || CHR(10) ||  -- Line 2
             '  l_junk := 7;' );             -- Line 3
-      l_recSAVE := g_rec;
       --------------------------------------  WTPLSQL Testing --
+      l_recSAVE := g_rec;
       initialize
          (in_test_run_id      => c_test_run_id,
           in_runner_name      => l_pname,
@@ -1419,8 +1426,8 @@ $THEN
             '--% WTPLSQL SET DBOUT "' || l_pname ||
                                    ':PACKAGE BODY" %--' || CHR(10) ||  -- Line 3
             '  l_junk := 7;'                            );             -- Line 4
-      l_recSAVE := g_rec;
       --------------------------------------  WTPLSQL Testing --
+      l_recSAVE := g_rec;
       initialize
          (in_test_run_id      => c_test_run_id,
           in_runner_name      => l_pname,
@@ -1496,12 +1503,13 @@ $THEN
              out_profiler_runid  => l_recOUT.prof_runid,
              out_error_message   => l_recOUT.error_message);
          l_sqlerrm := SQLERRM;
+      --------------------------------------  WTPLSQL Testing --
       exception when others then
          l_sqlerrm := SQLERRM;
       end;
-      --------------------------------------  WTPLSQL Testing --
       l_recTEST := g_rec;
       g_rec := l_recSAVE;
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in          => 'SQLERRM',
          check_this_in   => l_sqlerrm,
@@ -1565,35 +1573,21 @@ $THEN
          l_err_stack := dbms_utility.format_error_stack     ||
                         dbms_utility.format_error_backtrace ;
       end;
-      l_recTEST := g_rec;
       g_rec := l_recSAVE;
       wt_assert.isnull (
          msg_in          => 'format_error_stack and format_error_backtrace',
          check_this_in   => l_err_stack);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Finalize Happy Path 2';
-      wt_assert.isnotnull (
-         msg_in          => 'g_rec.dbout_owner',
-         check_this_in   => l_recTEST.dbout_owner);
-      wt_assert.isnotnull (
-         msg_in          => 'g_rec.dbout_name',
-         check_this_in   => l_recTEST.dbout_name);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnotnull (
-         msg_in          => 'g_rec.dbout_type',
-         check_this_in   => l_recTEST.dbout_type);
-      wt_assert.isnotnull (
-         msg_in          => 'g_rec.prof_runid',
-         check_this_in   => l_recTEST.prof_runid);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnotnull (
-         msg_in          => 'g_rec.trigger_offset',
-         check_this_in   => l_recTEST.trigger_offset);
-      wt_assert.isnull (
-         msg_in          => 'g_rec.error_message',
-         check_this_in   => l_recTEST.error_message);
-      --------------------------------------  WTPLSQL Testing --
       l_recSAVE := g_rec;
+      g_rec.test_run_id    := -1;
+      g_rec.dbout_owner    := 'TEST OWNER';
+      g_rec.dbout_name     := 'TEST NAME';
+      g_rec.dbout_type     := 'TEST TYPE';
+      g_rec.prof_runid     := -2;
+      g_rec.trigger_offset := -3;
+      g_rec.error_message  := 'TEST MESSAGE';
+      --------------------------------------  WTPLSQL Testing --
       g_skip_this := TRUE;
       begin
          finalize;
@@ -1603,8 +1597,8 @@ $THEN
          l_err_stack := dbms_utility.format_error_stack     ||
                         dbms_utility.format_error_backtrace ;
       end;
-      --------------------------------------  WTPLSQL Testing --
       g_skip_this := FALSE;
+      --------------------------------------  WTPLSQL Testing --
       l_recTEST := g_rec;
       g_rec := l_recSAVE;
       wt_assert.isnull (
@@ -1612,25 +1606,32 @@ $THEN
          check_this_in   => l_err_stack);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
+         msg_in          => 'g_rec.test_run_id',
+         check_this_in   => l_recTEST.test_run_id);
+      wt_assert.isnull (
          msg_in          => 'g_rec.dbout_owner',
          check_this_in   => l_recTEST.dbout_owner);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
          msg_in          => 'g_rec.dbout_name',
          check_this_in   => l_recTEST.dbout_name);
-      --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
          msg_in          => 'g_rec.dbout_type',
          check_this_in   => l_recTEST.dbout_type);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
          msg_in          => 'g_rec.prof_runid',
          check_this_in   => l_recTEST.prof_runid);
       wt_assert.isnull (
          msg_in          => 'g_rec.trigger_offset',
          check_this_in   => l_recTEST.trigger_offset);
+      wt_assert.isnull (
+         msg_in          => 'g_rec.error_message',
+         check_this_in   => l_recTEST.error_message);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Finalize Sad Path 1';
       l_recSAVE := g_rec;
-      g_rec.dbout_name  := 'BOGUS1';
+      g_rec.prof_runid := -1;
       g_rec.test_run_id := NULL;
       begin
          finalize;
