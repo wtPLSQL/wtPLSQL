@@ -109,6 +109,14 @@ begin
       to_char(extract(day from (g_test_runs_rec.end_dtm -
                                 g_test_runs_rec.start_dtm) * 86400 * 100) / 100
              ,'99990.9') );
+   if     g_test_runs_rec.dbout_name is not null
+      AND g_test_runs_rec.profiler_runid is null
+   then
+      p('');
+      p('  Note: ' || g_test_runs_rec.dbout_type  || ' ' ||
+                      g_test_runs_rec.dbout_owner || '.' ||
+                      g_test_runs_rec.dbout_name  || ' was not profiled.');
+   end if;
    if g_test_runs_rec.error_message is not null
    then
       p('');

@@ -97,7 +97,7 @@ begin
       against_value_in => l_num_recs);
 end insert_test;
 
-procedure wtplsql_run  --% WTPLSQL SET DBOUT "TRIGGER_TEST_BIR" %--
+procedure wtplsql_run  --% WTPLSQL SET DBOUT "TRIGGER_TEST_BIR:TRIGGER" %--
 is
 begin
    insert_test;

@@ -3,24 +3,24 @@
 --  Test Runs Table Installation
 --
 
-create table wt_test_data
+create table wt_self_test
    (id         number
    ,temp_clob  clob
    ,temp_nclob nclob
    ,temp_xml   xmltype
    ,temp_blob  blob
-   ,constraint wt_test_data_pk primary key (id)
+   ,constraint wt_self_test_pk primary key (id)
    );
 
-comment on table wt_test_data is 'Test Data for unit testing of WTPLSQL.';
-comment on column wt_test_data.id is 'Primary Key';
-comment on column wt_test_data.temp_clob is 'CLOB test data';
-comment on column wt_test_data.temp_nclob is 'NCLOB test data';
-comment on column wt_test_data.temp_xml is 'XML test data';
-comment on column wt_test_data.temp_blob is 'BLOB test data';
+comment on table wt_self_test is 'Test Data for unit testing of WTPLSQL.';
+comment on column wt_self_test.id is 'Primary Key';
+comment on column wt_self_test.temp_clob is 'CLOB test data';
+comment on column wt_self_test.temp_nclob is 'NCLOB test data';
+comment on column wt_self_test.temp_xml is 'XML test data';
+comment on column wt_self_test.temp_blob is 'BLOB test data';
 
-create or replace trigger wt_test_data$test
-   before insert on wt_test_data
+create or replace trigger wt_self_test$test
+   before insert on wt_self_test
    for each row
 declare
    l_junk  number;
@@ -32,7 +32,7 @@ end;
 set define off
 
 declare
-   l_rec   wt_test_data%ROWTYPE;
+   l_rec   wt_self_test%ROWTYPE;
    buff    varchar2(32000);
    t_blob  blob;
    l_dest_offset   pls_integer := 1;
@@ -2361,14 +2361,14 @@ ORACLE PL/SQL PROGRAMMERS</ns1:descriptionOfContractRequirement>
    l_rec.temp_blob := t_blob;
    --
    l_rec.id := 1;
-   insert into wt_test_data values l_rec;
+   insert into wt_self_test values l_rec;
    --
    l_rec.temp_clob  := NULL;
    l_rec.temp_nclob := NULL;
    l_rec.temp_xml   := NULL;
    l_rec.temp_blob  := NULL;
    l_rec.id         := 2;
-   insert into wt_test_data values l_rec;
+   insert into wt_self_test values l_rec;
 end;
 /
 

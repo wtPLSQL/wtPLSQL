@@ -31,7 +31,7 @@ begin
    wt_assert.raises (
       msg_in         => 'Successful Insert',
       check_call_in  => 'insert into table_test_tab (id, name) values (1, ''TEST1'')',
-      against_exc_in => 'ORA-0000: normal, successful completion');
+      against_exc_in => '');
 
    wt_assert.eqqueryvalue (
       msg_in           => 'Number of Rows After Insert',
@@ -70,7 +70,7 @@ begin
    wt_assert.raises (
       msg_in         => 'Primary Key Constraint Test 2 Setup',
       check_call_in  => 'insert into table_test_tab (id, name) values (2, ''TEST1'')',
-      against_exc_in => 'ORA-0000: normal, successful completion');
+      against_exc_in => '');
    wt_assert.raises (
       msg_in         => 'Primary Key Constraint Test 2',
       check_call_in  => 'insert into table_test_tab (id, name) values (2, ''TEST1'')',
@@ -82,7 +82,7 @@ begin
    rollback;
 end sad_path_1;
 
-procedure wtplsql_run
+procedure wtplsql_run  --% WTPLSQL SET DBOUT "TABLE_TEST_TAB" %--
 is
 begin
    happy_path_1;

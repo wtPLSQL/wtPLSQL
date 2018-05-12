@@ -2833,7 +2833,7 @@ $THEN
       wt_assert.g_testcase := 'EQQUERYVALUE XMLTYPE Happy Path 1';
       eqqueryvalue (
          msg_in           => 'Run Test',
-         check_query_in   => 'select temp_xml from wt_test_data where id = 1',
+         check_query_in   => 'select temp_xml from wt_self_test where id = 1',
          against_value_in => temp_xml1);
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
@@ -2862,7 +2862,7 @@ $THEN
       wtplsql_skip_save := TRUE;
       eqqueryvalue (
          msg_in             =>   'Not Used',
-         check_query_in     =>   'select temp_xml from wt_test_data where id = 1',
+         check_query_in     =>   'select temp_xml from wt_self_test where id = 1',
          against_value_in   =>   temp_xml2);
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
@@ -2885,7 +2885,7 @@ $THEN
       begin
          eqqueryvalue (
             msg_in             =>   'Not Used',
-            check_query_in     =>   'select temp_xml from wt_test_data where id = 1',
+            check_query_in     =>   'select temp_xml from wt_self_test where id = 1',
             against_value_in   =>   temp_xml2,
             raise_exc_in       =>   TRUE);
          l_found_exception := FALSE;
@@ -2929,7 +2929,7 @@ $THEN
       wt_assert.g_testcase := 'EQQUERYVALUE CLOB Happy Path 1';
       eqqueryvalue (
          msg_in             =>   'Run Test',
-         check_query_in     =>   'select temp_clob from wt_test_data where id = 1',
+         check_query_in     =>   'select temp_clob from wt_self_test where id = 1',
          against_value_in   =>   temp_clob1,
          null_ok_in         =>   false);
       temp_rec := g_rec;
@@ -2958,7 +2958,7 @@ $THEN
       wt_assert.g_testcase := 'EQQUERYVALUE CLOB Happy Path 2';
       eqqueryvalue (
          msg_in             =>   'Run Test',
-         check_query_in     =>   'select temp_clob from wt_test_data where 0 = 1',
+         check_query_in     =>   'select temp_clob from wt_self_test where 0 = 1',
          against_value_in   =>   '',
          null_ok_in         =>   true);
       temp_rec := g_rec;
@@ -2967,7 +2967,7 @@ $THEN
       wtplsql_skip_save := TRUE;
       eqqueryvalue (
          msg_in             =>   'Not Used',
-         check_query_in     =>   'select temp_clob from wt_test_data where id = 1',
+         check_query_in     =>   'select temp_clob from wt_self_test where id = 1',
          against_value_in   =>   temp_clob2);
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
@@ -2990,7 +2990,7 @@ $THEN
       begin
          eqqueryvalue (
             msg_in             =>   'Not Used',
-            check_query_in     =>   'select temp_clob from wt_test_data where id = 1',
+            check_query_in     =>   'select temp_clob from wt_self_test where id = 1',
             against_value_in   =>   temp_clob2,
             raise_exc_in       =>   TRUE);
          l_found_exception := FALSE;
@@ -3034,7 +3034,7 @@ $THEN
       wt_assert.g_testcase := 'EQQUERYVALUE BLOB Happy Path 1';
       eqqueryvalue (
          msg_in             =>   'Run Test',
-         check_query_in     =>   'select temp_blob from wt_test_data where id = 1',
+         check_query_in     =>   'select temp_blob from wt_self_test where id = 1',
          against_value_in   =>   temp_blob1,
          null_ok_in         =>   false);
       temp_rec := g_rec;
@@ -3056,12 +3056,12 @@ $THEN
          msg_in          => 'g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'DBMS_LOB.COMPARE between BLOB and Query:' ||
-                           ' select temp_blob from wt_test_data where id = 1, compare_results: 0');
+                           ' select temp_blob from wt_self_test where id = 1, compare_results: 0');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'EQQUERYVALUE BLOB Happy Path 2';
       eqqueryvalue (
          msg_in             =>   'Run Test',
-         check_query_in     =>   'select temp_blob from wt_test_data where 0 = 1',
+         check_query_in     =>   'select temp_blob from wt_self_test where 0 = 1',
          against_value_in   =>   cast (null as BLOB),
          null_ok_in         =>   true);
       --------------------------------------  WTPLSQL Testing --
@@ -3069,7 +3069,7 @@ $THEN
       wtplsql_skip_save := TRUE;
       eqqueryvalue (
          msg_in             =>   'Not Used',
-         check_query_in     =>   'select temp_blob from wt_test_data where id = 1',
+         check_query_in     =>   'select temp_blob from wt_self_test where id = 1',
          against_value_in   =>   temp_blob2);
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
@@ -3082,14 +3082,14 @@ $THEN
          msg_in          => 'g_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'DBMS_LOB.COMPARE between BLOB and Query: ' ||
-               'select temp_blob from wt_test_data where id = 1, compare_results: -1');
+               'select temp_blob from wt_self_test where id = 1, compare_results: -1');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'EQQUERYVALUE BLOB Sad Path 2';
       wtplsql_skip_save := TRUE;
       begin
          eqqueryvalue (
             msg_in             =>   'Not Used',
-            check_query_in     =>   'select temp_blob from wt_test_data where id = 1',
+            check_query_in     =>   'select temp_blob from wt_self_test where id = 1',
             against_value_in   =>   temp_blob2,
             raise_exc_in       =>   TRUE);
          l_found_exception := FALSE;
@@ -3886,7 +3886,7 @@ $THEN
    begin
       select temp_clob,  temp_nclob,  temp_xml,  temp_blob
        into  temp_clob1, temp_nclob1, temp_xml1, temp_blob1
-       from  wt_test_data where id = 1;
+       from  wt_self_test where id = 1;
       --------------------------------------  WTPLSQL Testing --
       t_boolean_to_status;
       t_process_assertion;

@@ -134,7 +134,7 @@ grant select on plsql_profiler_runnumber to public;
 @wt_test_runs.tab
 @wt_results.tab
 @wt_dbout_profiles.tab
-@wt_test_data.tab
+@wt_self_test.tab
 
 -- Package Specifications
 

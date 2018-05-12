@@ -279,7 +279,7 @@ begin
          test_all_aa(in_package_name) := 'X';
          return;
       end if;
-      DBMS_OUTPUT.PUT_LINE('WTPLSQL selftest Enabled for Test Runner "' || in_package_name || '"');
+      --DBMS_OUTPUT.PUT_LINE('DEBUG WTPLSQL selftest Enabled for Test Runner "' || in_package_name || '"');
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    -- Reset the Test Runs Record before checking anything
    g_test_runs_rec               := l_test_runs_rec_NULL;
@@ -293,7 +293,6 @@ begin
    delete_runs(in_runner_owner => g_test_runs_rec.runner_owner  -- Autonomous Transaction COMMIT
               ,in_runner_name  => g_test_runs_rec.runner_name);
    wt_assert.reset_globals;
-   wt_result.initialize(g_test_runs_rec.id);
    wt_profiler.initialize(in_test_run_id      => g_test_runs_rec.id,
                           in_runner_name      => g_test_runs_rec.runner_name,
                           out_dbout_owner     => g_test_runs_rec.dbout_owner,
@@ -303,6 +302,7 @@ begin
                           out_profiler_runid  => g_test_runs_rec.profiler_runid,
                           out_error_message   => l_error_stack);
    concat_err_message;
+   wt_result.initialize(g_test_runs_rec.id);
    -- Call the Test Runner
    begin
       execute immediate 'BEGIN ' || in_package_name || '.WTPLSQL_RUN; END;';
@@ -316,8 +316,8 @@ begin
 
    -- Finalize
    insert_test_run;       -- Autonomous Transaction COMMIT
-   wt_profiler.finalize;  -- Autonomous Transaction COMMIT
    wt_result.finalize;    -- Autonomous Transaction COMMIT
+   wt_profiler.finalize;  -- Autonomous Transaction COMMIT
 
 exception
    when OTHERS
@@ -333,8 +333,8 @@ exception
          concat_err_message;
          insert_test_run;       -- Autonomous Transaction COMMIT
       end if;
-      wt_profiler.finalize;  -- Autonomous Transaction COMMIT
       wt_result.finalize;    -- Autonomous Transaction COMMIT
+      wt_profiler.finalize;  -- Autonomous Transaction COMMIT
 
 end test_run;
 
@@ -588,7 +588,7 @@ $THEN
                ,against_value_in   => 0);
    end t_test_runs_rec_and_table;
    ----------------------------------------
-   procedure WTPLSQL_RUN  --% WTPLSQL SET DBOUT "WTPLSQL:PACKAGE" %--
+   procedure WTPLSQL_RUN
    is
    begin
       --------------------------------------  WTPLSQL Testing --

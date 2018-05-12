@@ -9,8 +9,8 @@
 -- "Some PL/SQL operations, such as the first execution of a PL/SQL unit, may involve I/O to catalog tables to load the byte code for the PL/SQL unit being executed. Also, it may take some time executing package initialization code the first time a package procedure or function is called."
 -- https://docs.oracle.com/cd/E11882_01/appdev.112/e40758/d_profil.htm#CHDJGHEG
 
-execute wtp.wtplsql.test_all;
-execute wt_text_report.dbms_out_all;
+--execute wtp.wtplsql.test_all;
+--execute wt_text_report.dbms_out_all;
 
 execute wtplsql.test_run('TRIGGER_TEST_PKG');
 execute wt_text_report.dbms_out('TRIGGER_TEST_PKG',FALSE,FALSE,TRUE,TRUE);
