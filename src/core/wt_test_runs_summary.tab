@@ -1,0 +1,54 @@
+
+--
+--  Test Runs Summary Table Installation
+--
+
+create table wt_test_runs_summary
+   (id             number(38)     constraint wt_test_runs_summary_nn1 not null
+   ,tot_cnt        number
+   ,fail_cnt       number
+   ,err_cnt        number
+   ,tcase_cnt      number
+   ,min_msec       number
+   ,avg_msec       number
+   ,max_msec       number
+   ,std_msec       number
+   ,tot_lines      number
+   ,exec_lines     number
+   ,anno_lines     number
+   ,excl_lines     number
+   ,notx_lines     number
+   ,unkn_lines     number
+   ,min_usec       number
+   ,avg_usec       number
+   ,max_usec       number
+   ,std_usec       number
+   ,constraint wt_test_runs_summary_pk primary key (id)
+   ,constraint wt_test_runs_summary_fk1 foreign key (id)
+       references wt_test_runs (id)
+   ) pctfree 0;
+
+comment on table wt_test_runs_summary is 'Test Run data summaries for each execution of the WTPLSQL_RUN procedure.';
+comment on column wt_test_runs_summary.id is 'Primary (Surrogate) Key for each Test Run. Also the Test Runs foreign key.';
+comment on column wt_test_runs_summary.tot_cnt is 'Total number of assetions.';
+comment on column wt_test_runs_summary.fail_cnt is 'Number of failed assertions.';
+comment on column wt_test_runs_summary.err_cnt is 'Number of errored assertions.';
+comment on column wt_test_runs_summary.tcase_cnt is 'Total number of test cases.';
+comment on column wt_test_runs_summary.min_msec is 'Minimum elapsed time between assertions in milliseconds';
+comment on column wt_test_runs_summary.avg_msec is 'Average elapsed time between assertions in milliseconds';
+comment on column wt_test_runs_summary.max_msec is 'Maximum elapsed time between assertions in milliseconds';
+comment on column wt_test_runs_summary.std_msec is 'Standard deviation in elapsed time between assertions in milliseconds';
+comment on column wt_test_runs_summary.tot_lines is 'Total number of source lines as counted by DBMS_PROFILER';
+comment on column wt_test_runs_summary.exec_lines is 'Number of source lines actually executed';
+comment on column wt_test_runs_summary.anno_lines is 'Number of source lines annotated as uncountable';
+comment on column wt_test_runs_summary.excl_lines is 'Number of source lines excluded due to unexplained DBMS_PROFILER metrics';
+comment on column wt_test_runs_summary.notx_lines is 'Number of source lines not executed';
+comment on column wt_test_runs_summary.unkn_lines is 'Number of source lines that have unexplained DBMS_PROFILER metrics';
+comment on column wt_test_runs_summary.min_usec is 'Minumum execution time for a line of source in microseconds';
+comment on column wt_test_runs_summary.avg_usec is 'Average execution time for a line of source in microseconds';
+comment on column wt_test_runs_summary.max_usec is 'Maximum execution time for a line of source in microseconds';
+comment on column wt_test_runs_summary.std_usec is 'Standard deviation in execution time for a line of source in microseconds';
+
+grant select on wt_test_runs_summary to public;
+grant insert on wt_test_runs_summary to public;
+grant delete on wt_test_runs_summary to public;

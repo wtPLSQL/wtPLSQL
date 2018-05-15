@@ -132,6 +132,7 @@ grant select, insert, update, delete on plsql_profiler_data to public;
 grant select on plsql_profiler_runnumber to public;
 -- Core Tables
 @wt_test_runs.tab
+@wt_test_runs_summary.tab
 @wt_results.tab
 @wt_dbout_profiles.tab
 @wt_self_test.tab

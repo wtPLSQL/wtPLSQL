@@ -204,6 +204,81 @@ $THEN
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
+------------------------------------------------------------
+procedure insert_test_run_summary
+is
+   PRAGMA AUTONOMOUS_TRANSACTION;
+   cursor c_results (in_test_run_id in number) is
+      select count(*)                        TOT_CNT
+            ,sum(decode(status,'FAIL',1,0))  FAIL_CNT
+            ,sum(decode(status,'ERR',1,0))   ERR_CNT
+            ,count(distinct testcase)        TCASE_CNT
+            ,min(elapsed_msecs)              MIN_MSEC
+            ,round(avg(elapsed_msecs),3)     AVG_MSEC
+            ,max(elapsed_msecs)              MAX_MSEC
+            ,stddev(elapsed_msecs)           STD_MSEC
+       from  wt_results
+       where test_run_id = in_test_run_id;
+   b_results  c_results%ROWTYPE;
+   cursor c_profiles (in_test_run_id in number) is
+      select count(*)                        TOT_LINES
+            ,sum(decode(status,'EXEC',1,0))  EXEC_LINES
+            ,sum(decode(status,'ANNO',1,0))  ANNO_LINES
+            ,sum(decode(status,'EXCL',1,0))  EXCL_LINES
+            ,sum(decode(status,'NOTX',1,0))  NOTX_LINES
+            ,sum(decode(status,'UNKN',1,0))  UNKN_LINES
+            ,min(min_usecs)                  MIN_USEC
+            ,sum(total_usecs)/count(*)       AVG_USEC
+            ,max(max_usecs)                  MAX_USEC
+            ,stddev(max_usecs)               STD_USEC
+       from  wt_dbout_profiles
+       where test_run_id = in_test_run_id;
+   b_profiles  c_profiles%ROWTYPE;
+   l_wt_test_runs_summary_rec  wt_test_runs_summary%ROWTYPE;
+begin
+   --
+   if g_test_runs_rec.id is null
+   then
+      return;
+   end if;
+   --
+   open c_results(g_test_runs_rec.id);
+   fetch c_results into b_results;
+   close c_results;
+   l_wt_test_runs_summary_rec.tot_cnt   := b_results.tot_cnt;
+   l_wt_test_runs_summary_rec.fail_cnt  := b_results.fail_cnt;
+   l_wt_test_runs_summary_rec.err_cnt   := b_results.err_cnt;
+   l_wt_test_runs_summary_rec.tcase_cnt := b_results.tcase_cnt;
+   l_wt_test_runs_summary_rec.min_msec  := b_results.min_msec;
+   l_wt_test_runs_summary_rec.avg_msec  := b_results.avg_msec;
+   l_wt_test_runs_summary_rec.max_msec  := b_results.max_msec;
+   l_wt_test_runs_summary_rec.std_msec  := b_results.std_msec;
+   --
+   open c_profiles(g_test_runs_rec.id);
+   fetch c_profiles into b_profiles;
+   close c_profiles;
+   l_wt_test_runs_summary_rec.tot_lines  := b_profiles.tot_lines;
+   l_wt_test_runs_summary_rec.exec_lines := b_profiles.exec_lines;
+   l_wt_test_runs_summary_rec.anno_lines := b_profiles.anno_lines;
+   l_wt_test_runs_summary_rec.excl_lines := b_profiles.excl_lines;
+   l_wt_test_runs_summary_rec.notx_lines := b_profiles.notx_lines;
+   l_wt_test_runs_summary_rec.unkn_lines := b_profiles.unkn_lines;
+   l_wt_test_runs_summary_rec.min_usec   := b_profiles.min_usec;
+   l_wt_test_runs_summary_rec.avg_usec   := b_profiles.avg_usec;
+   l_wt_test_runs_summary_rec.max_usec   := b_profiles.max_usec;
+   l_wt_test_runs_summary_rec.std_usec   := b_profiles.std_usec;
+   --
+   insert into wt_test_runs_summary values l_wt_test_runs_summary_rec;
+   COMMIT;
+   --
+exception
+   when OTHERS
+   then
+      DBMS_OUTPUT.PUT_LINE(dbms_utility.format_error_stack ||
+                           dbms_utility.format_error_backtrace);
+end insert_test_run_summary;
+
+
 ---------------------
 --  Public Procedures
 ---------------------
@@ -315,9 +390,10 @@ begin
    end;
 
    -- Finalize
-   insert_test_run;       -- Autonomous Transaction COMMIT
-   wt_result.finalize;    -- Autonomous Transaction COMMIT
-   wt_profiler.finalize;  -- Autonomous Transaction COMMIT
+   insert_test_run;          -- Autonomous Transaction COMMIT
+   wt_result.finalize;       -- Autonomous Transaction COMMIT
+   wt_profiler.finalize;     -- Autonomous Transaction COMMIT
+   insert_test_run_summary;  -- Autonomous Transaction COMMIT
 
 exception
    when OTHERS
