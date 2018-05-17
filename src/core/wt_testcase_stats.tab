@@ -1,0 +1,33 @@
+
+--
+--  Test Runs Statistics Table Installation
+--
+
+create table wt_testcase_stats
+   (test_run_id        number(38)   constraint wt_testcase_stats_nn1 not null
+   ,testcase           varchar2(50) constraint wt_testcase_stats_nn2 not null
+   ,asserts            number
+   ,passes             number
+   ,failures           number
+   ,errors             number
+   ,tot_elapsed_msecs  number
+   ,min_elapsed_msecs  number
+   ,max_elapsed_msecs  number
+   ,constraint wt_testcase_stats_pk primary key (test_run_id)
+   ,constraint wt_testcase_stats_fk1 foreign key (test_run_id)
+       references wt_test_runs (id)
+   ) pctfree 0;
+
+comment on table wt_testcase_stats is 'Test Run data statistics for each testcase in the execution of the WTPLSQL_RUN procedure.';
+comment on column wt_testcase_stats.test_run_id is 'Primary (Surrogate) Key for each Test Run. Also the Test Runs Foreign Key.';
+comment on column wt_testcase_stats.testcase is 'Primary Key (part 2). The testcase name';
+comment on column wt_testcase_stats.asserts is 'Total number of assetions for the testcase.';
+comment on column wt_testcase_stats.passes is 'Number of passed assertions for the testcase.';
+comment on column wt_testcase_stats.failures is 'Number of failed assertions for the testcase.';
+comment on column wt_testcase_stats.errors is 'Number of errored assertions for the testcase.';
+comment on column wt_testcase_stats.tot_elapsed_msecs is 'Total (sum) of elapsed times between assertions in milliseconds for the testcase';
+comment on column wt_testcase_stats.min_elapsed_msecs is 'Minimum elapsed time between assertions in milliseconds for the testcase';
+comment on column wt_testcase_stats.max_elapsed_msecs is 'Maximum elapsed time between assertions in milliseconds for the testcase';
+
+grant select on wt_testcase_stats to public;
+grant delete on wt_testcase_stats to public;

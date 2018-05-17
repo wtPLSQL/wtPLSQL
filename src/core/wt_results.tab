@@ -31,5 +31,4 @@ comment on column wt_results.testcase is 'Optional Test Case name.';
 comment on column wt_results.message is 'Optional test identifier that helps connect an Assertion to the Test Runner.';
 
 grant select on wt_results to public;
-grant insert on wt_results to public;
 grant delete on wt_results to public;

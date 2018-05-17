@@ -256,6 +256,7 @@ begin
    g_results_rec.result_seq    := g_results_rec.result_seq + 1;
    g_results_nt(g_results_nt.COUNT) := g_results_rec;
    g_results_nt.extend;
+   wt_test_run_stat.add_result(g_results_rec);
 end save;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------

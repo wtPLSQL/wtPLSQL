@@ -95,6 +95,7 @@ create or replace public synonym plsql_profiler_runnumber for &schema_owner..pls
 create or replace public synonym wt_assert         for &schema_owner..wt_assert;
 create or replace public synonym wt_profiler       for &schema_owner..wt_profiler;
 create or replace public synonym wt_result         for &schema_owner..wt_result;
+create or replace public synonym wt_test_run_stat  for &schema_owner..wt_test_run_stat;
 create or replace public synonym wt_text_report    for &schema_owner..wt_text_report;
 create or replace public synonym wt_wtplsql        for &schema_owner..wtplsql;
 create or replace public synonym wtplsql           for &schema_owner..wtplsql;
@@ -126,15 +127,16 @@ WHENEVER SQLERROR continue
 --
 create index plsql_profiler_runs_idx1
    on plsql_profiler_runs (run_date);
-grant select, insert, update, delete on plsql_profiler_runs to public;
-grant select, insert, update, delete on plsql_profiler_units to public;
-grant select, insert, update, delete on plsql_profiler_data to public;
+grant select, delete on plsql_profiler_runs to public;
+grant select, delete on plsql_profiler_units to public;
+grant select, delete on plsql_profiler_data to public;
 grant select on plsql_profiler_runnumber to public;
 -- Core Tables
 @wt_test_runs.tab
-@wt_test_runs_summary.tab
 @wt_results.tab
 @wt_dbout_profiles.tab
+@wt_test_run_stats.tab
+@wt_testcase_stats.tab
 @wt_self_test.tab
 
 -- Package Specifications
@@ -155,6 +157,10 @@ grant execute on wt_assert to public;
 /
 grant execute on wt_profiler to public;
 
+@wt_test_run_stat.pks
+/
+grant execute on wt_profiler to public;
+
 @wt_text_report.pks
 /
 grant execute on wt_text_report to public;
@@ -167,6 +173,8 @@ grant execute on wt_text_report to public;
 @wt_assert.pkb
 /
 @wt_profiler.pkb
+/
+@wt_test_run_stat.pkb
 /
 @wt_text_report.pkb
 /

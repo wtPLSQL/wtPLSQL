@@ -5,6 +5,9 @@
 
 create sequence wt_test_runs_seq;
 
+grant select on wt_test_runs_seq to public;
+
+
 create table wt_test_runs
    (id             number(38)     constraint wt_test_runs_nn1 not null
    ,start_dtm      timestamp      constraint wt_test_runs_nn2 not null
@@ -39,7 +42,5 @@ comment on column wt_test_runs.trigger_offset is 'Optional calculated offset fro
 comment on column wt_test_runs.profiler_runid is 'Optional DBMS_PROFILER unique run identifier from plsql_profiler_runnumber sequence';
 comment on column wt_test_runs.error_message is 'Optional Last error messages from this Test Run.';
 
-grant select on wt_test_runs_seq to public;
 grant select on wt_test_runs to public;
-grant insert on wt_test_runs to public;
 grant delete on wt_test_runs to public;

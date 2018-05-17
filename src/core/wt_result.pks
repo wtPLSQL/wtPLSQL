@@ -1,4 +1,4 @@
-create or replace package wt_result authid current_user
+create or replace package wt_result authid definer
 as
 
    procedure initialize

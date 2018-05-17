@@ -1,4 +1,4 @@
-create or replace package wt_assert authid current_user
+create or replace package wt_assert authid definer
 is
 
    ASSERT_FAILURE_EXCEPTION  exception;

@@ -1,4 +1,4 @@
-create or replace package wt_text_report authid current_user
+create or replace package wt_text_report authid definer
 as
 
    --   To report the latest result details for test runner:

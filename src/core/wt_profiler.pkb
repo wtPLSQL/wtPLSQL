@@ -1080,6 +1080,7 @@ begin
       l_set_status;
       l_max_line := buf1.line;
       insert into wt_dbout_profiles values prof_rec;
+      wt_test_run_stat.add_profile(prof_rec);
    end loop;
    -- Exclude the last line if Not Executed
    update wt_dbout_profiles

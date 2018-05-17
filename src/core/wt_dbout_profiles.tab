@@ -29,6 +29,4 @@ comment on column wt_dbout_profiles.max_usecs is 'Maximum execution time in micr
 comment on column wt_dbout_profiles.text is 'Source code text for this line number.';
 
 grant select on wt_dbout_profiles to public;
-grant insert on wt_dbout_profiles to public;
-grant update on wt_dbout_profiles to public;
 grant delete on wt_dbout_profiles to public;
