@@ -295,7 +295,7 @@ begin
    delete_runs(in_runner_owner => g_test_runs_rec.runner_owner  -- Autonomous Transaction COMMIT
               ,in_runner_name  => g_test_runs_rec.runner_name);
    wt_assert.reset_globals;
-   wt_test_run_stat.initialize;
+   wt_result.initialize(g_test_runs_rec.id);
    wt_profiler.initialize(in_test_run_id      => g_test_runs_rec.id,
                           in_runner_name      => g_test_runs_rec.runner_name,
                           out_dbout_owner     => g_test_runs_rec.dbout_owner,
@@ -305,7 +305,7 @@ begin
                           out_profiler_runid  => g_test_runs_rec.profiler_runid,
                           out_error_message   => l_error_stack);
    concat_err_message;
-   wt_result.initialize(g_test_runs_rec.id);
+   wt_test_run_stat.initialize;
    -- Call the Test Runner
    begin
       execute immediate 'BEGIN ' || in_package_name || '.WTPLSQL_RUN; END;';
@@ -335,10 +335,11 @@ exception
          DBMS_OUTPUT.PUT_LINE(g_test_runs_rec.error_message);
       else
          concat_err_message;
-         insert_test_run;       -- Autonomous Transaction COMMIT
+         insert_test_run;    -- Autonomous Transaction COMMIT
       end if;
-      wt_result.finalize;    -- Autonomous Transaction COMMIT
-      wt_profiler.finalize;  -- Autonomous Transaction COMMIT
+      wt_result.finalize;         -- Autonomous Transaction COMMIT
+      wt_profiler.finalize;       -- Autonomous Transaction COMMIT
+      wt_test_run_stat.finalize;  -- Autonomous Transaction COMMIT
 
 end test_run;
 
@@ -405,6 +406,7 @@ is
 begin
    -- Profiler delete must be first because it contains a
    --    PRAGMA AUTONOMOUS_TRANSACTION
+   wt_test_run_stat.delete_records(in_test_run_id);
    wt_profiler.delete_records(in_test_run_id);
    wt_result.delete_records(in_test_run_id);
    delete from wt_test_runs where id = in_test_run_id;

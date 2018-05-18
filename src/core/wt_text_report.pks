@@ -30,12 +30,9 @@ as
       ,in_message        in wt_results.message%TYPE);
 
    procedure dbms_out
-      (in_runner_name    in  wt_test_runs.runner_name%TYPE
-      ,in_hide_details   in  boolean default FALSE
-      ,in_summary_last   in  boolean default FALSE
-      ,in_show_pass      in  boolean default FALSE
-      ,in_show_aux       in  boolean default FALSE);
-
-   procedure dbms_out_all;
+      (in_runner_owner   in  wt_test_runs.runner_owner%TYPE default USER
+      ,in_runner_name    in  wt_test_runs.runner_name%TYPE  default null
+      ,in_detail_level   in  number                         default 0
+      ,in_summary_last   in  boolean                        default FALSE);
 
 end wt_text_report;

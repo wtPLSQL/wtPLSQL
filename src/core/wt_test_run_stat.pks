@@ -11,6 +11,9 @@ as
 
    procedure finalize;
 
+   procedure delete_records
+      (in_test_run_id  in number);
+
    --   WtPLSQL Self Test Procedures
    --
    -- alter system set PLSQL_CCFLAGS = 

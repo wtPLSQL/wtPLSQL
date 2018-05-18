@@ -1,7 +1,8 @@
 create or replace package body wt_text_report
 as
 
-   g_test_runs_rec  wt_test_runs%ROWTYPE;
+   g_test_runs_rec       wt_test_runs%ROWTYPE;
+   g_test_run_stats_rec  wt_test_run_stats%ROWTYPE;
 
 
 ----------------------
@@ -19,78 +20,31 @@ end p;
 ------------------------------------------------------------
 procedure result_summary
 is
-   l_yield_txt  varchar2(50);
 begin
-   for buff in (
-      select count(*)                        TOT_CNT
-            ,sum(decode(status,'FAIL',1,0))  FAIL_CNT
-            ,sum(decode(status,'ERR',1,0))   ERR_CNT
-            ,count(distinct testcase)        TCASE_CNT
-            ,min(elapsed_msecs)              MIN_MSEC
-            ,round(avg(elapsed_msecs),3)     AVG_MSEC
-            ,max(elapsed_msecs)              MAX_MSEC
-       from  wt_results
-       where test_run_id = g_test_runs_rec.id )
-   loop
-      if buff.tot_cnt = 0
-      then
-         l_yield_txt := '    0.00%';
-      else
-         -- Some cases will produce '%'
-         l_yield_txt := to_char(round( ( 1 - (buff.fail_cnt+buff.err_cnt)
-                                                 / buff.tot_cnt
-                                       ) * 100
-                                     ,2)
-                               ,'9990.99') || '%';
-      end if;
-      p('       Total Testcases: ' || to_char(nvl(buff.tcase_cnt,0),'9999999') ||
-        '      Total Assertions: ' || to_char(nvl(buff.tot_cnt  ,0),'9999999') );
-      p('  Minimum Elapsed msec: ' || to_char(nvl(buff.min_msec ,0),'9999999') ||
-        '     Failed Assertions: ' || to_char(nvl(buff.fail_cnt ,0),'9999999') );
-      p('  Average Elapsed msec: ' || to_char(nvl(buff.avg_msec ,0),'9999999') ||
-        '      Error Assertions: ' || to_char(nvl(buff.err_cnt  ,0),'9999999') );
-      p('  Maximum Elapsed msec: ' || to_char(nvl(buff.max_msec ,0),'9999999') ||
-        '            Test Yield: ' ||             l_yield_txt                  );
-   end loop;
+   p('       Total Testcases: ' || to_char(nvl(g_test_run_stats_rec.testcases        ,0),'9999999') ||
+     '      Total Assertions: ' || to_char(nvl(g_test_run_stats_rec.asserts          ,0),'9999999') );
+   p('  Minimum Elapsed msec: ' || to_char(nvl(g_test_run_stats_rec.min_elapsed_msecs,0),'9999999') ||
+     '     Failed Assertions: ' || to_char(nvl(g_test_run_stats_rec.failures         ,0),'9999999') );
+   p('  Average Elapsed msec: ' || to_char(nvl(g_test_run_stats_rec.avg_elapsed_msecs,0),'9999999') ||
+     '      Error Assertions: ' || to_char(nvl(g_test_run_stats_rec.errors           ,0),'9999999') );
+   p('  Maximum Elapsed msec: ' || to_char(nvl(g_test_run_stats_rec.max_elapsed_msecs,0),'9999999') ||
+     '            Test Yield: ' || to_char(    g_test_run_stats_rec.test_yield * 100    ,'9990.99') || '%' );
 end result_summary;
 
 ------------------------------------------------------------
 procedure profile_summary
 is
-   l_code_coverage  varchar2(100);
 begin
-   for buff in (
-      select count(*)                        TOT_LINES
-            ,sum(decode(status,'EXEC',1,0))  EXEC_LINES
-            ,sum(decode(status,'ANNO',1,0))  ANNO_LINES
-            ,sum(decode(status,'EXCL',1,0))  EXCL_LINES
-            ,sum(decode(status,'NOTX',1,0))  NOTX_LINES
-            ,sum(decode(status,'UNKN',1,0))  UNKN_LINES
-            ,min(min_usecs)                  MIN_USEC
-            ,sum(total_usecs)/count(*)       AVG_USEC
-            ,max(max_usecs)                  MAX_USEC
-       from  wt_dbout_profiles
-       where test_run_id = g_test_runs_rec.id )
-   loop
-      p('    Total Source Lines: ' || to_char(nvl(buff.tot_lines ,0),'9999999') ||
-        '    Not Executed Lines: ' || to_char(nvl(buff.notx_lines,0),'9999999') );
-      p('  Minimum Elapsed usec: ' || to_char(nvl(buff.min_usec  ,0),'9999999') ||
-        '       Annotated Lines: ' || to_char(nvl(buff.anno_lines,0),'9999999') );
-      p('  Average Elapsed usec: ' || to_char(nvl(buff.avg_usec  ,0),'9999999') ||
-        '        Excluded Lines: ' || to_char(nvl(buff.excl_lines,0),'9999999') );
-      p('  Maximum Elapsed usec: ' || to_char(nvl(buff.max_usec  ,0),'9999999') ||
-        '         Unknown Lines: ' || to_char(nvl(buff.unkn_lines,0),'9999999') );
-      if (buff.exec_lines + buff.notx_lines) = 0
-      then
-         l_code_coverage := '(Divide by Zero)';
-      else
-         l_code_coverage := to_char(      100 * buff.exec_lines /
-                                    (buff.exec_lines + buff.notx_lines)
-                                   ,'9990.99') || '%';
-      end if;
-      p(' Trigger Source Offset: ' || to_char(g_test_runs_rec.trigger_offset,'9999999') ||
-        '         Code Coverage: ' || l_code_coverage);
-   end loop;
+   p('  Total Profiled Lines: ' || to_char(nvl(g_test_run_stats_rec.profiled_lines    ,0),'9999999') ||
+     '    Not Executed Lines: ' || to_char(nvl(g_test_run_stats_rec.notexec_lines     ,0),'9999999') );
+   p('  Minimum Elapsed usec: ' || to_char(nvl(g_test_run_stats_rec.min_executed_usecs,0),'9999999') ||
+     '       Annotated Lines: ' || to_char(nvl(g_test_run_stats_rec.annotated_lines   ,0),'9999999') );
+   p('  Average Elapsed usec: ' || to_char(nvl(g_test_run_stats_rec.avg_executed_usecs,0),'9999999') ||
+     '        Excluded Lines: ' || to_char(nvl(g_test_run_stats_rec.excluded_lines    ,0),'9999999') );
+   p('  Maximum Elapsed usec: ' || to_char(nvl(g_test_run_stats_rec.max_executed_usecs,0),'9999999') ||
+     '         Unknown Lines: ' || to_char(nvl(g_test_run_stats_rec.unknown_lines     ,0),'9999999') );
+   p(' Trigger Source Offset: ' || to_char(         g_test_runs_rec.trigger_offset       ,'9999999') ||
+     '         Code Coverage: ' || to_char(    g_test_run_stats_rec.code_coverage * 100  ,'9990.99') || '%' );
 end profile_summary;
 
 ------------------------------------------------------------
@@ -333,45 +287,56 @@ end ad_hoc_result;
 
 ------------------------------------------------------------
 procedure dbms_out
-      (in_runner_name    in  wt_test_runs.runner_name%TYPE
-      ,in_hide_details   in  boolean default FALSE
-      ,in_summary_last   in  boolean default FALSE
-      ,in_show_pass      in  boolean default FALSE
-      ,in_show_aux       in  boolean default FALSE)
+      (in_runner_owner   in  wt_test_runs.runner_owner%TYPE default USER
+      ,in_runner_name    in  wt_test_runs.runner_name%TYPE  default null
+      ,in_detail_level   in  number                         default 0
+      ,in_summary_last   in  boolean                        default FALSE)
 is
+
+   cursor c_main(in_test_run_id  in number) is
+      select * from wt_test_run_stats
+       where test_run_id = in_test_run_id;
+   g_test_run_statsNULL   wt_test_run_stats%ROWTYPE;
+
 begin
 
    for buff in (
       select * from wt_test_runs
-       where (runner_name, start_dtm) in (
-             select runner_name
-                    ,max(start_dtm)        MAX_START_DTM
-              from  wt_test_runs
-              where (   (    in_runner_name is not null
-                        and in_runner_name = runner_name)
-                     OR in_runner_name is null  )
-               and  runner_owner = USER
-              group by runner_name  )  )
+       where (          runner_name,        start_dtm) in
+             (select t2.runner_name, max(t2.start_dtm)
+               from  wt_test_runs  t2
+               where (   (    in_runner_name is not null
+                          and in_runner_name = t2.runner_name)
+                      OR in_runner_name is null  )
+                and  t2.runner_owner = in_runner_owner
+               group by t2.runner_name )
+       order by start_dtm, runner_name )
    loop
 
       --  Load Test Run Record
       g_test_runs_rec := buff;
 
+      --  Load the Stats Record
+      g_test_run_stats_rec := g_test_run_statsNULL;
+      open c_main(buff.id);
+      fetch c_main into g_test_run_stats_rec;
+      close c_main;
+
       --  Setup Display Order
       if in_summary_last
       then
-        if NOT in_hide_details
+        if in_detail_level >= 10
          then
-            profile_out(in_show_aux);
-            results_out(in_show_pass);
+            profile_out(in_detail_level >= 30);
+            results_out(in_detail_level >= 20);
          end if;
          summary_out;
       else
          summary_out;
-         if NOT in_hide_details
+         if in_detail_level >= 10
          then
-            results_out(in_show_pass);
-            profile_out(in_show_aux);
+            results_out(in_detail_level >= 20);
+            profile_out(in_detail_level >= 30);
          end if;
       end if;
 
@@ -381,20 +346,5 @@ begin
 
 end dbms_out;
 
-------------------------------------------------------------
-procedure dbms_out_all
-is
-begin
-   for buff in (select runner_name
-                 from  wt_test_runs
-                 where runner_owner = USER
-                 group by runner_name
-                 order by max(start_dtm)
-                      ,runner_name)
-   loop
-      dbms_out(in_runner_name   => buff.runner_name
-              ,in_hide_details  => TRUE);
-   end loop;
-end dbms_out_all;
 
 end wt_text_report;

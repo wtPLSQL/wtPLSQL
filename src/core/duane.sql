@@ -1,4 +1,7 @@
 
+execute wt_text_report.dbms_out(in_detail_level => 50);
+execute wt_text_report.dbms_out;
+
 -- Need to test the new insert_test_runs_summary.
 -- Need to create the view that uses this data.
 
@@ -16,6 +19,7 @@ select obj.owner
       ,obj.object_name
       ,obj.object_type
       ,q1.max_start_dtm
+      ,stat.
  from  all_objects  obj
   left join q1
             on  q1.dbout_owner = obj.owner
@@ -26,6 +30,8 @@ select obj.owner
             and run.dbout_name  = q1.dbout_name
             and run.dbout_type  = q1.dbout_type
             and run.start_dtm   = q1.max_start_dtm
+  left join wt_test_run_stats  stat
+            on  stat.test_run_id = run.id
  where obj.object_type in ('FUNCTION','LIBRARY','OPERATOR',
           'PACKAGE','PACKAGE BODY','PROCEDURE','TABLE',
           'TRIGGER','TYPE','TYPE BODY','VIEW')
