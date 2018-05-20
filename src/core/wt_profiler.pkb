@@ -16,6 +16,10 @@ as
       index by PLS_INTEGER;
    g_anno_aa   anno_aa_type;
 
+   $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
+      g_skip_insert  boolean := FALSE;
+      g_skip_add     boolean := FALSE;
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 ----------------------
 --  Private Procedures
@@ -25,8 +29,6 @@ as
 --==============================================================--
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-
-   g_skip_this  boolean := FALSE;
 
    procedure tl_compile_db_object
          (in_ptype   in varchar2
@@ -114,7 +116,7 @@ $THEN
    end tl_count_plsql_profiler_recs;
 --==============================================================--
       --------------------------------------  WTPLSQL Testing --
-   procedure tl_count_plsql_profiler_recs
+   procedure tl_insert_plsql_profiler_recs
          (in_test_run_id     in number)
    is
       l_sql_txt    varchar2(4000);
@@ -141,7 +143,7 @@ $THEN
          check_call_in  => l_sql_txt,
          against_exc_in => '');
       commit;
-   end tl_count_plsql_profiler_recs;
+   end tl_insert_plsql_profiler_recs;
 --==============================================================--
       --------------------------------------  WTPLSQL Testing --
    procedure tl_delete_plsql_profiler_recs
@@ -376,7 +378,7 @@ $THEN
       tl_count_plsql_profiler_recs(c_test_run_id, 0);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Delete PL/SQL Profiler Records Happy Path 2';
-      tl_count_plsql_profiler_recs(c_test_run_id);
+      tl_insert_plsql_profiler_recs(c_test_run_id);
       tl_count_plsql_profiler_recs(c_test_run_id, 1);
       begin
          delete_plsql_profiler_recs(c_test_run_id);  -- Should run without error
@@ -1051,6 +1053,7 @@ is
       prof_rec.status := 'UNKN';
    end l_set_status;
 begin
+   -- This will not RAISE NO_DATA_FOUND because it uses a GROUP FUNCTION.
    select max(ppd.line#) into l_max_line
     from  plsql_profiler_units ppu
           join plsql_profiler_data  ppd
@@ -1092,7 +1095,15 @@ begin
       prof_rec.status      := NULL;
       l_set_status;
       insert into wt_dbout_profiles values prof_rec;
+
+   $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
+      if not g_skip_add then
+   $END
       wt_test_run_stat.add_profile(prof_rec);
+   $IF $$WTPLSQL_SELFTEST $THEN
+      end if;
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
    end loop;
    COMMIT;
    -- Delete PLSQL Profiler has it's own
@@ -1169,8 +1180,10 @@ $THEN
             '  --%WTPLSQL_begin_' || 'ignore_lines%--' || CHR(10) ||  -- Line 4
             '  l_junk := 2;'                           || CHR(10) ||  -- Line 5
             '  --%WTPLSQL_end_' || 'ignore_lines%--'   || CHR(10) ||  -- Line 6
-            '  l_junk := 3;'                           );             -- Line 7
-      tl_count_plsql_profiler_recs(c_test_run_id);
+            '  if 0 = 1 then'                          || CHR(10) ||  -- Line 7
+            '     l_junk := 3;'                        || CHR(10) ||  -- Line 8
+            '  end if;'                                );             -- Line 9
+      tl_insert_plsql_profiler_recs(c_test_run_id);
       tl_count_plsql_profiler_recs(c_test_run_id, 1);
       tl_insert_test_runs(c_test_run_id, 'Insert DBOUT Test');
       --------------------------------------  WTPLSQL Testing --
@@ -1211,13 +1224,15 @@ $THEN
       insert_plsql_profiler_data(5, 1, 1);
       insert_plsql_profiler_data(7, 1, 1);
       insert_plsql_profiler_data(8, 0, 0);
+      insert_plsql_profiler_data(9, 1, 1);
+      insert_plsql_profiler_data(10, 0, 0);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue
          (msg_in           => 'Number of UNIT 1 plsql_profiler_data'
          ,check_query_in   => 'select count(*) from plsql_profiler_data' ||
                               ' where runid = ' || c_test_run_id ||
                               ' and unit_number = 1'
-         ,against_value_in => 6);
+         ,against_value_in => 8);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Insert DBOUT Profile Happy Path';
       l_recSAVE := g_rec;
@@ -1229,6 +1244,7 @@ $THEN
       g_rec.trigger_offset  := 0;
       g_rec.error_message   := '';
       --------------------------------------  WTPLSQL Testing --
+      g_skip_add := TRUE;
       begin
          insert_dbout_profile;
          l_err_stack := dbms_utility.format_error_stack     ||
@@ -1237,6 +1253,7 @@ $THEN
          l_err_stack := dbms_utility.format_error_stack     ||
                         dbms_utility.format_error_backtrace ;
       end;
+      g_skip_add := FALSE;
       g_rec := l_recSAVE;
       wt_assert.isnull (
          msg_in          => 'SQLERRM',
@@ -1251,9 +1268,13 @@ $THEN
       test_dbout_profiler(5, 'STATUS', 'ANNO');
       test_dbout_profiler(5, 'TEXT',   '  l_junk := 2;' || CHR(10));
       test_dbout_profiler(7, 'STATUS', 'EXEC');
-      test_dbout_profiler(7, 'TEXT',   '  l_junk := 3;' || CHR(10));
-      test_dbout_profiler(8, 'STATUS', 'EXCL');
-      test_dbout_profiler(8, 'TEXT',   'end WT_PROFILE_INSERT_DBOUT;');
+      test_dbout_profiler(7, 'TEXT',   '  if 0 = 1 then' || CHR(10));
+      test_dbout_profiler(8, 'STATUS', 'NOTX');
+      test_dbout_profiler(8, 'TEXT',   '     l_junk := 3;' || CHR(10));
+      test_dbout_profiler(9, 'STATUS', 'EXEC');
+      test_dbout_profiler(9, 'TEXT',   '  end if;' || CHR(10));
+      test_dbout_profiler(10, 'STATUS', 'EXCL');
+      test_dbout_profiler(10, 'TEXT',   'end WT_PROFILE_INSERT_DBOUT;');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Insert DBOUT Profile Teardown';
       tl_delete_dbout_profiles(c_test_run_id);
@@ -1295,7 +1316,8 @@ begin
    $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
    $THEN
       -- In case a test failed and left this set to TRUE
-      g_skip_this := FALSE;
+      g_skip_insert := FALSE;
+      g_skip_add    := FALSE;
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    -- Abort if there is no Test Run ID
    if in_test_run_id is null
@@ -1549,7 +1571,7 @@ begin
    end if;
    $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
    $THEN
-      if not g_skip_this
+      if not g_skip_insert
       then
    $END
    begin
@@ -1609,7 +1631,7 @@ $THEN
       g_rec.trigger_offset := -3;
       g_rec.error_message  := 'TEST MESSAGE';
       --------------------------------------  WTPLSQL Testing --
-      g_skip_this := TRUE;
+      g_skip_insert := TRUE;
       begin
          finalize;
          l_err_stack := dbms_utility.format_error_stack     ||
@@ -1618,7 +1640,7 @@ $THEN
          l_err_stack := dbms_utility.format_error_stack     ||
                         dbms_utility.format_error_backtrace ;
       end;
-      g_skip_this := FALSE;
+      g_skip_insert := FALSE;
       --------------------------------------  WTPLSQL Testing --
       l_recTEST := g_rec;
       g_rec := l_recSAVE;

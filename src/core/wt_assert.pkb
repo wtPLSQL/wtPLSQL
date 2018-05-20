@@ -9,8 +9,7 @@ create or replace package body wt_assert is
       ,last_details     wt_results.details%TYPE);
    g_rec  g_rec_type;
 
-   $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
-   $THEN
+   $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
       temp_rowid1 CONSTANT rowid          := chartorowid('AAAFd1AAFAAAABSAA/');
       temp_rowid2 CONSTANT rowid          := chartorowid('AAAFd1AAFAAAABSAB/');
       temp_long1  CONSTANT long           := hextoraw('0123456789ABCDEF0123456789ABCDEF');
@@ -96,14 +95,9 @@ procedure process_assertion
 is
 begin
 
-   $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
-      -- This is an odd section of code.  It is conditionally compiled.
-      -- This will skip over the wt_result.save call below during some self-tests.
-      -- The wtplsql_skip_save variable is also part of the conditional compilation.
-      if not wtplsql_skip_save then
-      --
-   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
-
+$IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
+   if not wtplsql_skip_save then
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
    wt_result.save
       (in_assertion      => g_rec.last_assert
       ,in_status         => case g_rec.last_pass
@@ -113,14 +107,9 @@ begin
       ,in_details        => g_rec.last_details
       ,in_testcase       => g_testcase
       ,in_message        => g_rec.last_msg);
-
-   $IF $$WTPLSQL_SELFTEST $THEN   ------%WTPLSQL_begin_ignore_lines%------
-      -- This is an odd section of code.  It is conditionally compiled.
-      -- This will skip over the wt_result.save call above during some self-tests.
-      -- It is required for the IF - THEN - END IF syntax.
-      end if;
-      --
-   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
+$IF $$WTPLSQL_SELFTEST $THEN   ------%WTPLSQL_begin_ignore_lines%------
+   end if;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
    if g_rec.raise_exception and not g_rec.last_pass
    then

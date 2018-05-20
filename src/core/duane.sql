@@ -12,6 +12,8 @@ end;
 
 execute wtplsql.test_run('WT_RESULT');
 execute wt_text_report.dbms_out(in_runner_name => 'WT_RESULT', in_detail_level => 50);
+execute wtplsql.test_run('WT_PROFILER');
+execute wt_text_report.dbms_out(in_runner_name => 'WT_PROFILER', in_detail_level => 50);
 
 execute wt_text_report.dbms_out(in_detail_level => 50);
 execute wt_text_report.dbms_out;

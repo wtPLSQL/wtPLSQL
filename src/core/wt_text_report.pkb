@@ -38,12 +38,12 @@ end result_summary;
 procedure profile_summary
 is
 begin
-   p('  Total Profiled Lines: ' || to_char(nvl(g_test_run_stats_rec.profiled_lines    ,0),'9999999') ||
-     '       Annotated Lines: ' || to_char(nvl(g_test_run_stats_rec.annotated_lines   ,0),'9999999') );
-   p('  Total Executed Lines: ' || to_char(nvl(g_test_run_stats_rec.executed_lines    ,0),'9999999') ||
-     '    Not Executed Lines: ' || to_char(nvl(g_test_run_stats_rec.notexec_lines     ,0),'9999999') );
+   p('       Annotated Lines: ' || to_char(nvl(g_test_run_stats_rec.annotated_lines   ,0),'9999999') ||
+     '  Total Profiled Lines: ' || to_char(nvl(g_test_run_stats_rec.profiled_lines    ,0),'9999999') );
+   p('        Excluded Lines: ' || to_char(nvl(g_test_run_stats_rec.excluded_lines    ,0),'9999999') ||
+     '  Total Executed Lines: ' || to_char(nvl(g_test_run_stats_rec.executed_lines    ,0),'9999999') );
    p('  Minimum Elapsed usec: ' || to_char(nvl(g_test_run_stats_rec.min_executed_usecs,0),'9999999') ||
-     '        Excluded Lines: ' || to_char(nvl(g_test_run_stats_rec.excluded_lines    ,0),'9999999') );
+     '    Not Executed Lines: ' || to_char(nvl(g_test_run_stats_rec.notexec_lines     ,0),'9999999') );
    p('  Average Elapsed usec: ' || to_char(nvl(g_test_run_stats_rec.avg_executed_usecs,0),'9999999') ||
      '         Unknown Lines: ' || to_char(nvl(g_test_run_stats_rec.unknown_lines     ,0),'9999999') );
    p('  Maximum Elapsed usec: ' || to_char(nvl(g_test_run_stats_rec.max_executed_usecs,0),'9999999') ||

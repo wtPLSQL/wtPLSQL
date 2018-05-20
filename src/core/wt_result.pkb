@@ -5,6 +5,9 @@ as
    g_results_nt      results_nt_type;
    g_results_rec     wt_results%ROWTYPE;
 
+   $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
+      g_skip_add  BOOLEAN := FALSE;
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 ----------------------
 --  Private Procedures
@@ -30,6 +33,9 @@ begin
    g_results_rec.result_seq   := 0;
    g_results_rec.executed_dtm := systimestamp;
    g_results_nt := results_nt_type(null);
+$IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
+   g_skip_add := FALSE;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
 end initialize;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -256,7 +262,15 @@ begin
    g_results_rec.result_seq    := g_results_rec.result_seq + 1;
    g_results_nt(g_results_nt.COUNT) := g_results_rec;
    g_results_nt.extend;
+
+$IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
+   if not g_skip_add then
+$END
    wt_test_run_stat.add_result(g_results_rec);
+$IF $$WTPLSQL_SELFTEST $THEN
+   end if;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 end save;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -289,12 +303,14 @@ $THEN
       wt_assert.g_testcase := 'Ad Hoc Save Testing Happy Path';
       l_test_run_id  := g_results_rec.test_run_id;
       g_results_rec.test_run_id := NULL;
+      g_skip_add := TRUE;
       wt_result.save (
          in_assertion  => 'SELFTEST1',
          in_status     => wt_assert.C_PASS,
          in_details    => 't_save_testing Details',
          in_testcase   => wt_assert.g_testcase,
          in_message    => 't_save_testing Message');
+      g_skip_add := FALSE;
       g_results_rec.test_run_id := l_test_run_id;
       --------------------------------------  WTPLSQL Testing --
       DBMS_OUTPUT.GET_LINE (
@@ -334,12 +350,14 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Save Testing Happy Path';
       l_nt_count     := g_results_nt.COUNT;
+      g_skip_add := TRUE;
       wt_result.save (
          in_assertion  => 'SELFTEST2',
          in_status     => wt_assert.C_PASS,
          in_details    => 't_save_testing Testing Details',
          in_testcase   => wt_assert.g_testcase,
          in_message    => 't_save_testing Testing Message');
+      g_skip_add := FALSE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in          => 'g_results_nt.COUNT',
