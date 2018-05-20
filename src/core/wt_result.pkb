@@ -54,45 +54,45 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Initialize Happy Path';
       wt_assert.eq (
-         msg_in          => 'g_results_rec.test_run_id',
+         msg_in          => 'l_results_recTEST.test_run_id',
          check_this_in   => l_results_recTEST.test_run_id,
          against_this_in => -99);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_results_rec.result_seq',
+         msg_in          => 'l_results_recTEST.result_seq',
          check_this_in   => l_results_recTEST.result_seq,
          against_this_in => 0);
       wt_assert.isnotnull (
-         msg_in          => 'g_results_rec.executed_dtm',
+         msg_in          => 'l_results_recTEST.executed_dtm',
          check_this_in   => l_results_recTEST.executed_dtm);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
-         msg_in          => 'g_results_rec.elapsed_msecs',
+         msg_in          => 'l_results_recTEST.elapsed_msecs',
          check_this_in   => l_results_recTEST.elapsed_msecs);
       wt_assert.isnull (
-         msg_in          => 'g_results_rec.assertion',
+         msg_in          => 'l_results_recTEST.assertion',
          check_this_in   => l_results_recTEST.assertion);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
-         msg_in          => 'g_results_rec.status',
+         msg_in          => 'l_results_recTEST.status',
          check_this_in   => l_results_recTEST.status);
       wt_assert.isnull (
-         msg_in          => 'g_results_rec.details',
+         msg_in          => 'l_results_recTEST.details',
          check_this_in   => l_results_recTEST.details);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
-         msg_in          => 'g_results_rec.testcase',
+         msg_in          => 'l_results_recTEST.testcase',
          check_this_in   => l_results_recTEST.testcase);
       wt_assert.isnull (
-         msg_in          => 'g_results_rec.message',
+         msg_in          => 'l_results_recTEST.message',
          check_this_in   => l_results_recTEST.message);
       wt_assert.eq (
-         msg_in          => 'g_results_nt.COUNT',
+         msg_in          => 'l_results_ntTEST.COUNT',
          check_this_in   => l_results_ntTEST.COUNT,
          against_this_in => 1);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
-         msg_in          => 'g_results_nt(1).test_run_id',
+         msg_in          => 'l_results_ntTEST(1).test_run_id',
          check_this_in   => l_results_ntTEST(1).test_run_id);
       wt_assert.raises (
          msg_in         => 'Raises ORA-20009',
@@ -206,10 +206,10 @@ $THEN
          against_this_in => 0);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
-         msg_in        => 'g_results_rec.test_run_id',
+         msg_in        => 'l_results_recTEST.test_run_id',
          check_this_in => l_results_recTEST.test_run_id);
       wt_assert.eq (
-         msg_in          => 'g_results_nt.COUNT',
+         msg_in          => 'l_results_ntTEST.COUNT',
          check_this_in   => l_results_ntTEST.COUNT,
          against_this_in => 1);
       wt_assert.eq (

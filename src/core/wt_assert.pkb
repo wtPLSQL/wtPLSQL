@@ -218,15 +218,15 @@ $THEN
          against_query_in   => 'select bogus987 from bogus654');
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in           => 'g_rec.last_pass',
+         msg_in           => 'temp_rec.last_pass',
          check_this_in    => temp_rec.last_pass,
          against_this_in  => FALSE);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull(
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this(
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             '%PL/SQL: ORA-00942: table or view does not exist%'));
       --------------------------------------  WTPLSQL Testing --
@@ -236,15 +236,15 @@ $THEN
          against_query_in   => 'select tablespace_name from user_tables');
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in           => 'g_rec.last_pass',
+         msg_in           => 'temp_rec.last_pass',
          check_this_in    => temp_rec.last_pass,
          against_this_in  => FALSE);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull(
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this(
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details like
                             '%Comparison Query: with check_query as' ||
                             ' (select table_name from user_tables%');
@@ -341,25 +341,25 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       g_testcase       := 'RESET_GLOBALS';
       wt_assert.isnull(
-         msg_in        => 'g_testcase',
+         msg_in        => 'temp_testcase',
          check_this_in => temp_testcase);
       wt_assert.isnull
-         (msg_in        => 'g_rec.last_pass'
+         (msg_in        => 'temp_rec.last_pass'
          ,check_this_in => temp_rec.last_pass);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq(
-         msg_in          => 'g_rec.raise_exception',
+         msg_in          => 'temp_rec.raise_exception',
          check_this_in   => temp_rec.raise_exception,
          against_this_in => FALSE);
       wt_assert.isnull
-         (msg_in        => 'g_rec.last_assert'
+         (msg_in        => 'temp_rec.last_assert'
          ,check_this_in => temp_rec.last_assert);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull
-         (msg_in        => 'g_rec.last_msg'
+         (msg_in        => 'temp_rec.last_msg'
          ,check_this_in => temp_rec.last_msg);
       wt_assert.isnull
-         (msg_in        => 'g_rec.last_details'
+         (msg_in        => 'temp_rec.last_details'
          ,check_this_in => temp_rec.last_details);
    end t_reset_globals;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
@@ -501,20 +501,20 @@ $THEN
          check_this_in  => TRUE);
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_assert',
+         msg_in          => 'temp_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'THIS');
       wt_assert.eq (
-         msg_in          => 'g_rec.last_msg',
+         msg_in          => 'temp_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
          against_this_in => 'Run Test');
       wt_assert.eq (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected "TRUE" and got "TRUE"');
       --------------------------------------  WTPLSQL Testing --
@@ -526,7 +526,7 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       --------------------------------------  WTPLSQL Testing --
@@ -549,7 +549,7 @@ $THEN
          check_this_in   => l_found_exception,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       --------------------------------------  WTPLSQL Testing --
@@ -561,7 +561,7 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
    end t_this;
@@ -693,31 +693,31 @@ $THEN
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_pass value',
+         msg_in          => 'temp_rec.last_pass value',
          check_this_in   => temp_rec.last_pass);
       wt_assert.this (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => (temp_rec.last_pass = TRUE));
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_assert value',
+         msg_in          => 'temp_rec.last_assert value',
          check_this_in   => temp_rec.last_assert);
       wt_assert.this (
-         msg_in          => 'g_rec.last_assert',
+         msg_in          => 'temp_rec.last_assert',
          check_this_in   => (temp_rec.last_assert = 'EQ'));
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_msg value',
+         msg_in          => 'temp_rec.last_msg value',
          check_this_in   => temp_rec.last_msg);
       wt_assert.this (
-         msg_in          => 'g_rec.last_msg',
+         msg_in          => 'temp_rec.last_msg',
          check_this_in   => (temp_rec.last_msg = 'Run Test'));
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => (temp_rec.last_details = 'Expected "X" and got "X"'));
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'EQ VARCHAR2 Happy Path 2';
@@ -1302,31 +1302,31 @@ $THEN
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_pass value',
+         msg_in          => 'temp_rec.last_pass value',
          check_this_in   => temp_rec.last_pass);
       wt_assert.this (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => (temp_rec.last_pass = TRUE));
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull (
          msg_in          => ' g_rec.last_assert value',
          check_this_in   => temp_rec.last_assert);
       wt_assert.this (
-         msg_in          => 'g_rec.last_assert',
+         msg_in          => 'temp_rec.last_assert',
          check_this_in   => (temp_rec.last_assert = 'EQ'));
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_msg value',
+         msg_in          => 'temp_rec.last_msg value',
          check_this_in   => temp_rec.last_msg);
       wt_assert.this (
-         msg_in          => 'g_rec.last_msg',
+         msg_in          => 'temp_rec.last_msg',
          check_this_in   => (temp_rec.last_msg = 'Run Test'));
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected "<?xml version="1.0" encoding="UTF-8"?>%'));
       --------------------------------------  WTPLSQL Testing --
@@ -1380,31 +1380,31 @@ $THEN
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_pass value',
+         msg_in          => 'temp_rec.last_pass value',
          check_this_in   => temp_rec.last_pass);
       wt_assert.this (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => (temp_rec.last_pass = TRUE));
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_assert value',
+         msg_in          => 'temp_rec.last_assert value',
          check_this_in   => temp_rec.last_assert);
       wt_assert.this (
-         msg_in          => 'g_rec.last_assert',
+         msg_in          => 'temp_rec.last_assert',
          check_this_in   => (temp_rec.last_assert = 'EQ'));
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_msg value',
+         msg_in          => 'temp_rec.last_msg value',
          check_this_in   => temp_rec.last_msg);
       wt_assert.this (
-         msg_in          => 'g_rec.last_msg',
+         msg_in          => 'temp_rec.last_msg',
          check_this_in   => (temp_rec.last_msg = 'Run Test'));
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected "<?xml version="1.0" encoding="UTF-8"?>%'));
       --------------------------------------  WTPLSQL Testing --
@@ -1612,31 +1612,31 @@ $THEN
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_pass value',
+         msg_in          => 'temp_rec.last_pass value',
          check_this_in   => temp_rec.last_pass);
       wt_assert.this (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => (temp_rec.last_pass = TRUE));
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_assert value',
+         msg_in          => 'temp_rec.last_assert value',
          check_this_in   => temp_rec.last_assert);
       wt_assert.this (
-         msg_in          => 'g_rec.last_assert',
+         msg_in          => 'temp_rec.last_assert',
          check_this_in   => (temp_rec.last_assert = 'EQ'));
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_msg value',
+         msg_in          => 'temp_rec.last_msg value',
          check_this_in   => temp_rec.last_msg);
       wt_assert.this (
-         msg_in          => 'g_rec.last_msg',
+         msg_in          => 'temp_rec.last_msg',
          check_this_in   => (temp_rec.last_msg = 'Run Test'));
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => (temp_rec.last_details =
                             'DBMS_LOB.COMPARE on BLOBs, compare_results: 0'));
       --------------------------------------  WTPLSQL Testing --
@@ -1826,20 +1826,20 @@ $THEN
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'g_rec.last_assert',
+         msg_in          => 'temp_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'ISNOTNULL');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_msg',
+         msg_in          => 'temp_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
          against_this_in => 'Run Test');
       wt_assert.eq (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected NOT NULL and got "X"');
       --------------------------------------  WTPLSQL Testing --
@@ -1921,23 +1921,23 @@ $THEN
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'g_rec.last_assert',
+         msg_in          => 'temp_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'ISNOTNULL');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_msg',
+         msg_in          => 'temp_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
          against_this_in => 'Run Test');
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected NOT NULL and got "<?xml version="1.0" encoding="UTF-8"?>%'));
       --------------------------------------  WTPLSQL Testing --
@@ -1981,20 +1981,20 @@ $THEN
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'g_rec.last_assert',
+         msg_in          => 'temp_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'ISNOTNULL');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_msg',
+         msg_in          => 'temp_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
          against_this_in => 'Run Test');
       wt_assert.eq (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'BLOB is NOT NULL');
       --------------------------------------  WTPLSQL Testing --
@@ -2118,20 +2118,20 @@ $THEN
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'g_rec.last_assert',
+         msg_in          => 'temp_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'ISNULL');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_msg',
+         msg_in          => 'temp_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
          against_this_in => 'Run Test');
       wt_assert.eq (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected NULL and got ""');
       --------------------------------------  WTPLSQL Testing --
@@ -2213,20 +2213,20 @@ $THEN
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'g_rec.last_assert',
+         msg_in          => 'temp_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'ISNULL');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_msg',
+         msg_in          => 'temp_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
          against_this_in => 'Run Test');
       wt_assert.eq (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected NULL and got ""');
       --------------------------------------  WTPLSQL Testing --
@@ -2270,20 +2270,20 @@ $THEN
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'g_rec.last_assert',
+         msg_in          => 'temp_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'ISNULL');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_msg',
+         msg_in          => 'temp_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
          against_this_in => 'Run Test');
       wt_assert.eq (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'BLOB is NULL');
       --------------------------------------  WTPLSQL Testing --
@@ -2437,20 +2437,20 @@ $THEN
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'g_rec.last_assert',
+         msg_in          => 'temp_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'RAISES/THROWS');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_msg',
+         msg_in          => 'temp_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
          against_this_in => 'RAISES Varchar2 Test');
       wt_assert.eq (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected exception "%PLS-00302: component ''BOGUS'' must be declared%". ' ||
                             'Actual exception raised was "ORA-06550: line 1, column 17:' || CHR(10) ||
@@ -2466,7 +2466,7 @@ $THEN
          against_exc_in => 302);
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected exception "%-00302%". ' ||
                             'Actual exception raised was "' ||
@@ -2482,7 +2482,7 @@ $THEN
          against_exc_in => 'PLS-00302: component ''BOGUS'' must be declared');
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected exception "%PLS-00302: component ''BOGUS'' must be declared%". ' ||
                             'Actual exception raised was "' ||
@@ -2498,7 +2498,7 @@ $THEN
          against_exc_in => 302);
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected exception "%-00302%". ' ||
                             'Actual exception raised was "' ||
@@ -2515,7 +2515,7 @@ $THEN
          against_exc_in => '');
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'No exception was expected. ' ||
                             'Exception raised was "". ' ||
@@ -2527,7 +2527,7 @@ $THEN
          against_exc_in => cast (null as number));
       temp_rec := g_rec;
       wt_assert.eq (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'No exception was expected. ' ||
                             'Exception raised was "". ' ||
@@ -2543,14 +2543,14 @@ $THEN
       wtplsql_skip_save := FALSE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected exception "%Incorrect Exception%". ' ||
                             'Actual exception raised was "ORA-%'));
@@ -2565,11 +2565,11 @@ $THEN
       wtplsql_skip_save := FALSE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.eq (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected exception "%Incorrect Exception%". ' ||
                             'No exception was raised by: "begin wt_assert.set_NLS_DATE_FORMAT; end;". ' ||
@@ -2747,20 +2747,20 @@ $THEN
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'g_rec.last_assert',
+         msg_in          => 'temp_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'EQQUERYVALUE');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_msg',
+         msg_in          => 'temp_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
          against_this_in => 'Run Test');
       wt_assert.eq (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected "X" and got "X" for Query: select dummy from DUAL');
       --------------------------------------  WTPLSQL Testing --
@@ -2780,7 +2780,7 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       --------------------------------------  WTPLSQL Testing --
@@ -2800,7 +2800,7 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.eq (
@@ -2818,14 +2818,14 @@ $THEN
       wtplsql_skip_save := FALSE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details like
             'Exception raised for Query: Garbage query that won''t work' ||
             CHR(10) || 'ORA-00900: invalid SQL statement%');
@@ -2838,23 +2838,23 @@ $THEN
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'g_rec.last_assert',
+         msg_in          => 'temp_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'EQQUERYVALUE');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_msg',
+         msg_in          => 'temp_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
          against_this_in => 'Run Test');
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected "<?xml version="1.0" encoding="UTF-8"?>%'));
       --------------------------------------  WTPLSQL Testing --
@@ -2868,14 +2868,14 @@ $THEN
       wtplsql_skip_save := FALSE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected "<?xml version="1.0" encoding="UTF-8"?>' ||
              '<note>2</note>" and got "<?xml version="1.0" encoding="UTF-8"?>%'));
@@ -2896,7 +2896,7 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.eq (
@@ -2914,14 +2914,14 @@ $THEN
       wtplsql_skip_save := FALSE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details like
             'Exception raised for Query: Garbage query that won''t work' ||
             CHR(10) || 'ORA-00900: invalid SQL statement%');
@@ -2935,23 +2935,23 @@ $THEN
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'g_rec.last_assert',
+         msg_in          => 'temp_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'EQQUERYVALUE');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_msg',
+         msg_in          => 'temp_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
          against_this_in => 'Run Test');
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected "<?xml version="1.0" encoding="UTF-8"?>%'));
       --------------------------------------  WTPLSQL Testing --
@@ -2973,14 +2973,14 @@ $THEN
       wtplsql_skip_save := FALSE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected "This is another clob." and got "' ||
                             '<?xml version="1.0" encoding="UTF-8"?>%'));
@@ -3001,7 +3001,7 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.eq (
@@ -3019,14 +3019,14 @@ $THEN
       wtplsql_skip_save := FALSE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details like
             'Exception raised for Query: Garbage query that won''t work' ||
             CHR(10) || 'ORA-00900: invalid SQL statement%');
@@ -3040,20 +3040,20 @@ $THEN
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'g_rec.last_assert',
+         msg_in          => 'temp_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'EQQUERYVALUE');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_msg',
+         msg_in          => 'temp_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
          against_this_in => 'Run Test');
       wt_assert.eq (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'DBMS_LOB.COMPARE between BLOB and Query:' ||
                            ' select temp_blob from wt_self_test where id = 1, compare_results: 0');
@@ -3075,11 +3075,11 @@ $THEN
       wtplsql_skip_save := FALSE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.eq (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'DBMS_LOB.COMPARE between BLOB and Query: ' ||
                'select temp_blob from wt_self_test where id = 1, compare_results: -1');
@@ -3100,7 +3100,7 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.eq (
@@ -3118,14 +3118,14 @@ $THEN
       wtplsql_skip_save := FALSE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details like
             'Exception raised for Query: Garbage query that won''t work' ||
             CHR(10) || 'ORA-00900: invalid SQL statement%');
@@ -3163,20 +3163,20 @@ $THEN
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'g_rec.last_assert',
+         msg_in          => 'temp_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'EQQUERY');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_msg',
+         msg_in          => 'temp_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
          against_this_in => 'Run Test');
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
          msg_in          => 'EQQUERY Tests Happy Path 1b g_rec.last_details',
@@ -3193,14 +3193,14 @@ $THEN
       wtplsql_skip_save := FALSE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Comparison Query: %'));
       --------------------------------------  WTPLSQL Testing --
@@ -3220,7 +3220,7 @@ $THEN
       wtplsql_skip_save := FALSE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.eq (
@@ -3238,14 +3238,14 @@ $THEN
       wtplsql_skip_save := FALSE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                 '%PL/SQL: ORA-01789: query block has incorrect number of result columns%'));
    end t_eqquery;
@@ -3296,23 +3296,23 @@ $THEN
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'g_rec.last_assert',
+         msg_in          => 'temp_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'EQTABLE');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_msg',
+         msg_in          => 'temp_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
          against_this_in => 'Run Test');
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Comparison Query: %'));
       --------------------------------------  WTPLSQL Testing --
@@ -3336,14 +3336,14 @@ $THEN
       wtplsql_skip_save := FALSE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Comparison Query: %'));
       --------------------------------------  WTPLSQL Testing --
@@ -3365,7 +3365,7 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.eq (
@@ -3383,14 +3383,14 @@ $THEN
       wtplsql_skip_save := FALSE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details like
                '%PL/SQL: ORA-01789: query block has incorrect number of result columns%');
    end t_eqtable;
@@ -3474,23 +3474,23 @@ $THEN
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'g_rec.last_assert',
+         msg_in          => 'temp_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'EQTABCOUNT');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_msg',
+         msg_in          => 'temp_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
          against_this_in => 'Run Test');
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected % rows from "ALL_TABLES"' ||
                             ' and got % rows from "ALL_TABLES"'));
@@ -3515,14 +3515,14 @@ $THEN
       wtplsql_skip_save := FALSE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                             'Expected % rows from "ALL_TABLES" and ' ||
                                  'got % rows from "ALL_TABLES"'));
@@ -3545,7 +3545,7 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.eq (
@@ -3563,14 +3563,14 @@ $THEN
       wtplsql_skip_save := FALSE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       wt_assert.this (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                'Expected % rows from "USER_TAB_COLUMNS" and got % rows from "USER_TABLES"'));
       --------------------------------------  WTPLSQL Testing --
@@ -3584,19 +3584,19 @@ $THEN
       wtplsql_skip_save := FALSE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.isnotnull (
-         msg_in          => 'g_rec.last_details value',
+         msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.this (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => (temp_rec.last_details like
                '%table or view does not exist%'));
       wt_assert.this (
-         msg_in          => 'g_rec.last_details 2',
+         msg_in          => 'temp_rec.last_details 2',
          check_this_in   => (temp_rec.last_details like
                '%FAILURE of Compare Query%'));
    end t_eqtabcount;
@@ -3663,20 +3663,20 @@ $THEN
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'g_rec.last_assert',
+         msg_in          => 'temp_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'OBJEXISTS');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_msg',
+         msg_in          => 'temp_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
          against_this_in => 'Run Test');
       wt_assert.eq (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Number of objects found for "SYS.DUAL" is 1');
       --------------------------------------  WTPLSQL Testing --
@@ -3707,11 +3707,11 @@ $THEN
       wtplsql_skip_save := FALSE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.eq (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Number of objects found for "JOE SMITH.BOGUS" is 0');
       --------------------------------------  WTPLSQL Testing --
@@ -3731,7 +3731,7 @@ $THEN
       wtplsql_skip_save := FALSE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.eq (
@@ -3802,20 +3802,20 @@ $THEN
       temp_rec := g_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => TRUE);
       wt_assert.eq (
-         msg_in          => 'g_rec.last_assert',
+         msg_in          => 'temp_rec.last_assert',
          check_this_in   => temp_rec.last_assert,
          against_this_in => 'OBJNOTEXISTS');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_msg',
+         msg_in          => 'temp_rec.last_msg',
          check_this_in   => temp_rec.last_msg,
          against_this_in => 'Run Test');
       wt_assert.eq (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Number of objects found for "BOGUS.THING123" is 0');
       --------------------------------------  WTPLSQL Testing --
@@ -3841,11 +3841,11 @@ $THEN
       wtplsql_skip_save := FALSE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.eq (
-         msg_in          => 'g_rec.last_details',
+         msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Number of objects found for "SYS.DUAL" is 1');
       --------------------------------------  WTPLSQL Testing --
@@ -3865,7 +3865,7 @@ $THEN
       temp_rec := g_rec;
       wtplsql_skip_save := FALSE;
       wt_assert.eq (
-         msg_in          => 'g_rec.last_pass',
+         msg_in          => 'temp_rec.last_pass',
          check_this_in   => temp_rec.last_pass,
          against_this_in => FALSE);
       wt_assert.eq (

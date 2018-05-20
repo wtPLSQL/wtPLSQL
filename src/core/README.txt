@@ -55,3 +55,5 @@ Custom Error Codes:
 20007 - WT_PROFILER g_rec.test_run_id is null
 20008 - WT_PROFILER Regular Expression Failure from NOT_EXECUTABLE
 20009 - WT_RESULT "in_test_run_id" cannot be NULL
+20010 - WT_TEST_RUN_STAT Unknown WT_RESUTS.STATUS "status"
+20011 - WT_TEST_RUN_STAT Unknown WT_DBOUT_PROFILES.STATUS "status"

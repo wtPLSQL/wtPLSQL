@@ -28,7 +28,10 @@ begin
    p('  Average Elapsed msec: ' || to_char(nvl(g_test_run_stats_rec.avg_elapsed_msecs,0),'9999999') ||
      '      Error Assertions: ' || to_char(nvl(g_test_run_stats_rec.errors           ,0),'9999999') );
    p('  Maximum Elapsed msec: ' || to_char(nvl(g_test_run_stats_rec.max_elapsed_msecs,0),'9999999') ||
-     '            Test Yield: ' || to_char(    g_test_run_stats_rec.test_yield * 100    ,'9990.99') || '%' );
+     '            Test Yield: ' || to_char(    g_test_run_stats_rec.test_yield * 100    ,'9990.99') ||
+                                                                                                '%' );
+   p('  Total Run Time (sec): ' || to_char(extract(day from (g_test_runs_rec.end_dtm -
+                                               g_test_runs_rec.start_dtm)*86400*100)/100,'99990.9') );
 end result_summary;
 
 ------------------------------------------------------------
@@ -36,15 +39,17 @@ procedure profile_summary
 is
 begin
    p('  Total Profiled Lines: ' || to_char(nvl(g_test_run_stats_rec.profiled_lines    ,0),'9999999') ||
+     '       Annotated Lines: ' || to_char(nvl(g_test_run_stats_rec.annotated_lines   ,0),'9999999') );
+   p('  Total Executed Lines: ' || to_char(nvl(g_test_run_stats_rec.executed_lines    ,0),'9999999') ||
      '    Not Executed Lines: ' || to_char(nvl(g_test_run_stats_rec.notexec_lines     ,0),'9999999') );
    p('  Minimum Elapsed usec: ' || to_char(nvl(g_test_run_stats_rec.min_executed_usecs,0),'9999999') ||
-     '       Annotated Lines: ' || to_char(nvl(g_test_run_stats_rec.annotated_lines   ,0),'9999999') );
-   p('  Average Elapsed usec: ' || to_char(nvl(g_test_run_stats_rec.avg_executed_usecs,0),'9999999') ||
      '        Excluded Lines: ' || to_char(nvl(g_test_run_stats_rec.excluded_lines    ,0),'9999999') );
-   p('  Maximum Elapsed usec: ' || to_char(nvl(g_test_run_stats_rec.max_executed_usecs,0),'9999999') ||
+   p('  Average Elapsed usec: ' || to_char(nvl(g_test_run_stats_rec.avg_executed_usecs,0),'9999999') ||
      '         Unknown Lines: ' || to_char(nvl(g_test_run_stats_rec.unknown_lines     ,0),'9999999') );
-   p(' Trigger Source Offset: ' || to_char(         g_test_runs_rec.trigger_offset       ,'9999999') ||
-     '         Code Coverage: ' || to_char(    g_test_run_stats_rec.code_coverage * 100  ,'9990.99') || '%' );
+   p('  Maximum Elapsed usec: ' || to_char(nvl(g_test_run_stats_rec.max_executed_usecs,0),'9999999') ||
+     '         Code Coverage: ' || to_char(    g_test_run_stats_rec.code_coverage * 100  ,'9990.99') ||
+                                                                                                 '%' );
+   p(' Trigger Source Offset: ' || to_char(    g_test_runs_rec.trigger_offset            ,'9999999') );
 end profile_summary;
 
 ------------------------------------------------------------
@@ -59,10 +64,6 @@ begin
    p('  Test Results for ' || g_test_runs_rec.runner_owner ||
                        '.' || g_test_runs_rec.runner_name  );
    result_summary;
-   p('  Total Run Time (sec): ' ||
-      to_char(extract(day from (g_test_runs_rec.end_dtm -
-                                g_test_runs_rec.start_dtm) * 86400 * 100) / 100
-             ,'99990.9') );
    if     g_test_runs_rec.dbout_name is not null
       AND g_test_runs_rec.profiler_runid is null
    then
