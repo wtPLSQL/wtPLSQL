@@ -55,6 +55,8 @@ end;
 
 WHENEVER SQLERROR continue
 
+create synonym utassert for wtp.wt_assert;
+
 ----------------------------------------
 -- Test Installation
 ----------------------------------------
@@ -67,5 +69,8 @@ prompt Install Table Test
 
 prompt Install Type Test
 @type_test.sql
+
+prompt utPLSQL 2.3 Betwnstr Example
+@ut_betwnstr.sql
 
 spool off

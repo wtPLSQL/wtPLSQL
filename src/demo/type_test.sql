@@ -1,23 +1,35 @@
 
-create or replace type body flock_obj_type
-as
+create or replace type type_test_typ as object
+   (fill_dtm  date
+   ,gallons   number(6)
+   ,miles     number(9)
+   ,member procedure fill_up
+          (in_fill_dtm  date
+          ,in_gallons   number
+          ,in_miles     number)
+   ,member function get_mpg
+       return number
+   );
+/
 
-member procedure send_cluck
-       (in_id  in number
-       ,in_msg in varchar2)
+create or replace type body type_test_typ
 is
-   PRAGMA AUTONOMOUS_TRANSACTION;
-   l_rec  clucks%ROWTYPE;
+
+member procedure fill_up
+      (in_fill_dtm  date
+      ,in_gallons   number
+      ,in_miles     number)
+is
 begin
-   l_rec.clucker_id := in_id;
-   l_rec.message    := in_msg;
-   for i in 1 .. self.flock_nt.COUNT
-   loop
-      l_rec.flock_mate_id := self.flock_nt(i);
-      insert into clucks values l_rec;
-   end loop;
-   commit;
-end send_cluck;
+   null;
+end;
+
+member function get_mpg
+   return number
+is
+begin
+   null;
+end;
 
 end;
 /

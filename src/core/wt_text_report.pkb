@@ -99,12 +99,12 @@ is
    header_shown     boolean;
    procedure l_show_header is begin
       p('');
-      p(                     '"' || g_test_runs_rec.runner_owner ||
-                           '"."' || g_test_runs_rec.runner_name  ||
-         '" Test Result Details' ||
-                ' (Test Run ID ' || g_test_runs_rec.id           ||
-                             ')' );
-      p('----------------------------------------');
+      p(' - ' || g_test_runs_rec.runner_owner  ||
+          '.' || g_test_runs_rec.runner_name   || 
+          ' Test Result Details (Test Run ID ' ||
+                 g_test_runs_rec.id            ||
+          ')' );
+      p('-----------------------------------------------------------');
    end l_show_header;
 begin
    if in_show_pass
@@ -168,12 +168,12 @@ is
    header_shown     boolean;
    procedure l_show_header is begin
      p('');
-     p(                              g_test_runs_rec.dbout_owner ||
-                              '.' || g_test_runs_rec.dbout_name  ||
-                              ' ' || g_test_runs_rec.dbout_type  ||
-         ' Code Coverage Details' ||
-                 ' (Test Run ID ' || g_test_runs_rec.id          ||
-                              ')' );
+     p(' - ' || g_test_runs_rec.dbout_owner     ||
+         '.' || g_test_runs_rec.dbout_name      ||
+         ' ' || g_test_runs_rec.dbout_type      ||
+         ' Code Coverage Details (Test Run ID ' ||
+                g_test_runs_rec.id              ||
+         ')' );
    end l_show_header;
 begin
    if g_test_runs_rec.profiler_runid is null
