@@ -2,7 +2,9 @@
 
 Welcome to the wtPLSQL repository on GitHub. This site is for contributors.
 
-The [wtPLSQL website (on GitHub.io)](https://ddieterich.github.io/wtPLSQL/) has more information about how to use wtPLSQL and why it is different.  It also includes wtPLSQL features, definitions, and best practices.
+[wtPLSQL website (on GitHub.io)](https://ddieterich.github.io/wtPLSQL/)
+
+The wtPLSQL website has more information about how to use wtPLSQL and why it is different.  It also includes wtPLSQL features, definitions, and best practices.
 
 [Get the latest release here.](https://github.com/DDieterich/wtPLSQL/releases)
 
