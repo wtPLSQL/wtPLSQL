@@ -260,21 +260,20 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 procedure add_profile
       (in_dbout_profiles_rec  in wt_dbout_profiles%ROWTYPE)
 is
-   procedure add_time is begin
-      g_rec.min_executed_usecs := least(nvl(g_rec.min_executed_usecs,999999999)
-                                       ,in_dbout_profiles_rec.min_usecs);
-      g_rec.max_executed_usecs := greatest(nvl(g_rec.max_executed_usecs,0)
-                                          ,in_dbout_profiles_rec.max_usecs);
-      g_rec.tot_executed_usecs := nvl(g_rec.tot_executed_usecs,0) +
-                                  in_dbout_profiles_rec.total_usecs;
-   end add_time;
 begin
    -- If this raises an exception, it must be done before any other values
    --   are set because they will not be rolled-back after the "raise".
    case in_dbout_profiles_rec.status
       when 'EXEC' then
          g_rec.executed_lines := nvl(g_rec.executed_lines,0) + 1;
-         add_time;       -- Only count the executed time.
+         -- Only count the executed time.
+         g_rec.min_executed_usecs := least(nvl(g_rec.min_executed_usecs,999999999)
+                                          ,in_dbout_profiles_rec.min_usecs);
+         g_rec.max_executed_usecs := greatest(nvl(g_rec.max_executed_usecs,0)
+                                             ,in_dbout_profiles_rec.max_usecs);
+         g_rec.tot_executed_usecs := nvl(g_rec.tot_executed_usecs,0) +
+                                     ( in_dbout_profiles_rec.total_usecs /
+                                       in_dbout_profiles_rec.total_occur  );
       when 'ANNO' then
          g_rec.annotated_lines := nvl(g_rec.annotated_lines,0) + 1;
       when 'EXCL' then
@@ -285,7 +284,7 @@ begin
          g_rec.unknown_lines := nvl(g_rec.unknown_lines,0) + 1;
       else
          raise_application_error(-20011, 'Unknown Profile status "' ||
-                                                 in_dbout_profiles_rec.status || '"');
+                                       in_dbout_profiles_rec.status || '"');
    end case;
    g_rec.test_run_id    := in_dbout_profiles_rec.test_run_id;
    g_rec.profiled_lines := nvl(g_rec.profiled_lines,0) + 1;
