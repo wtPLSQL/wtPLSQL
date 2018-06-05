@@ -13,7 +13,7 @@ This is the summary from the WT_ASSERT package self-test.  This is the default
 DBMS_OUTPUT format.
 
 ```
-    wtPLSQL 1.1.0 - Run ID 422: 20-May-2018 03:39:54 PM
+    wtPLSQL 1.1.0 - Run ID 421: 20-May-2018 03:39:54 PM
 
   Test Results for WTP.WT_ASSERT
        Total Testcases:      150      Total Assertions:      404
