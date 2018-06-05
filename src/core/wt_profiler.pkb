@@ -11,10 +11,10 @@ as
       ,error_message   varchar2(4000));
    g_rec  rec_type;
    
-   TYPE anno_aa_type is table
+   TYPE ignr_aa_type is table
       of varchar2(1)
       index by PLS_INTEGER;
-   g_anno_aa   anno_aa_type;
+   g_ignr_aa   ignr_aa_type;
 
    $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
       g_skip_insert  boolean := FALSE;
@@ -745,7 +745,7 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
-procedure load_anno_aa
+procedure load_ignr_aa
 is
    cursor c_find_begin is
       select line
@@ -778,7 +778,7 @@ is
             ,col;
    buff_find_end  c_find_end%ROWTYPE;
 begin
-   g_anno_aa.delete;
+   g_ignr_aa.delete;
    open c_find_begin;
    loop
       fetch c_find_begin into buff_find_begin;
@@ -798,58 +798,58 @@ begin
       for i in buff_find_begin.line + g_rec.trigger_offset ..
                buff_find_end.line   + g_rec.trigger_offset
       loop
-         g_anno_aa(i) := 'X';
+         g_ignr_aa(i) := 'X';
       end loop;
    end loop;
    close c_find_begin;
-end load_anno_aa;
+end load_ignr_aa;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure t_load_anno_aa
+   procedure t_load_ignr_aa
    is
       l_recSAVE    rec_type;
-      l_annoSAVE   anno_aa_type;
-      l_annoTEST   anno_aa_type;
-      l_pname      varchar2(128) := 'WT_PROFILE_LOAD_ANNO';
+      l_ignrSAVE   ignr_aa_type;
+      l_ignrTEST   ignr_aa_type;
+      l_pname      varchar2(128) := 'WT_PROFILE_LOAD_IGNR';
       --------------------------------------  WTPLSQL Testing --
-      procedure run_load_anno is begin
+      procedure run_load_ignr is begin
          l_recSAVE  := g_rec;
-         l_annoSAVE := g_anno_aa;
-         g_anno_aa.delete;
+         l_ignrSAVE := g_ignr_aa;
+         g_ignr_aa.delete;
          g_rec.dbout_owner    := USER;
          g_rec.dbout_name     := l_pname;
          g_rec.dbout_type     := 'PACKAGE BODY';
          g_rec.trigger_offset := 0;
-         load_anno_aa;
-         l_annoTEST := g_anno_aa;
-         g_anno_aa := l_annoSAVE;
+         load_ignr_aa;
+         l_ignrTEST := g_ignr_aa;
+         g_ignr_aa := l_ignrSAVE;
          g_rec   := l_recSAVE;
-      end run_load_anno;
+      end run_load_ignr;
    begin
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Load Anno Setup';
+      wt_assert.g_testcase := 'Load Ignr Setup';
       wt_assert.isnotnull
-         (msg_in    => 'Number of ANNO_AA elements'
-         ,check_this_in => g_anno_aa.COUNT);
+         (msg_in    => 'Number of IGNR_AA elements'
+         ,check_this_in => g_ignr_aa.COUNT);
       tl_compile_db_object
          (in_ptype   => 'package'
          ,in_pname   => l_pname
          ,in_source  => '  l_junk number;' );
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Load Anno Happy Path 1';
+      wt_assert.g_testcase := 'Load Ignr Happy Path 1';
       tl_compile_db_object
          (in_ptype   => 'package body'
          ,in_pname   => l_pname
          ,in_source  => 'begin'          || CHR(10) ||
                         '  l_junk := 1;' );
-      run_load_anno;
+      run_load_ignr;
       wt_assert.eq
-         (msg_in          => 'l_annoTest.COUNT'
-         ,check_this_in   => l_annoTest.COUNT
+         (msg_in          => 'l_ignrTest.COUNT'
+         ,check_this_in   => l_ignrTest.COUNT
          ,against_this_in => 0);
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Load Anno Happy Path 2';
+      wt_assert.g_testcase := 'Load Ignr Happy Path 2';
       tl_compile_db_object
          (in_ptype   => 'package body'
          ,in_pname   => l_pname
@@ -858,21 +858,21 @@ $THEN
             '  --%WTPLSQL_begin_' || 'ignore_lines%--' || CHR(10) ||  -- Line 3
             '  l_junk := 1;'                           );             -- Line 4
             -- end                                                    -- Line 5
-      run_load_anno;
+      run_load_ignr;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq
-         (msg_in          => 'l_annoTest.COUNT'
-         ,check_this_in   => l_annoTest.COUNT
+         (msg_in          => 'l_ignrTest.COUNT'
+         ,check_this_in   => l_ignrTest.COUNT
          ,against_this_in => 3);
       for i in 3 .. 5
       loop
          wt_assert.eq
-            (msg_in          => 'l_annoTest.exists(' || i || ')'
-            ,check_this_in   => l_annoTest.exists(i)
+            (msg_in          => 'l_ignrTest.exists(' || i || ')'
+            ,check_this_in   => l_ignrTest.exists(i)
             ,against_this_in => TRUE);
       end loop;
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Load Anno Happy Path 3';
+      wt_assert.g_testcase := 'Load Ignr Happy Path 3';
       tl_compile_db_object
          (in_ptype   => 'package body'
          ,in_pname   => l_pname
@@ -883,21 +883,21 @@ $THEN
             '  l_junk := 2;'                           || CHR(10) ||  -- Line 5
             '  --%WTPLSQL_end_' || 'ignore_lines%--'   || CHR(10) ||  -- Line 6
             '  l_junk := 3;'                           );             -- Line 7
-      run_load_anno;
+      run_load_ignr;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq
-         (msg_in          => 'l_annoTest.COUNT'
-         ,check_this_in   => l_annoTest.COUNT
+         (msg_in          => 'l_ignrTest.COUNT'
+         ,check_this_in   => l_ignrTest.COUNT
          ,against_this_in => 3);
       for i in 4 .. 6
       loop
          wt_assert.eq
-            (msg_in          => 'l_annoTest.exists(' || i || ')'
-            ,check_this_in   => l_annoTest.exists(i)
+            (msg_in          => 'l_ignrTest.exists(' || i || ')'
+            ,check_this_in   => l_ignrTest.exists(i)
             ,against_this_in => TRUE);
       end loop;
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Load Anno Happy Path 4';
+      wt_assert.g_testcase := 'Load Ignr Happy Path 4';
       tl_compile_db_object
          (in_ptype   => 'package body'
          ,in_pname   => l_pname
@@ -911,29 +911,29 @@ $THEN
             '  --%WTPLSQL_begin_' || 'ignore_lines%--' || CHR(10) ||  -- Line 8
             '  l_junk := 4;'                           );             -- Line 9
             -- end                                                    -- Line 10
-      run_load_anno;
+      run_load_ignr;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq
-         (msg_in          => 'l_annoTest.COUNT'
-         ,check_this_in   => l_annoTest.COUNT
+         (msg_in          => 'l_ignrTest.COUNT'
+         ,check_this_in   => l_ignrTest.COUNT
          ,against_this_in => 6);
       for i in 4 .. 6
       loop
          wt_assert.eq
-            (msg_in          => 'l_annoTest.exists(' || i || ')'
-            ,check_this_in   => l_annoTest.exists(i)
+            (msg_in          => 'l_ignrTest.exists(' || i || ')'
+            ,check_this_in   => l_ignrTest.exists(i)
             ,against_this_in => TRUE);
       end loop;
       --------------------------------------  WTPLSQL Testing --
       for i in 8 .. 10
       loop
          wt_assert.eq
-            (msg_in          => 'l_annoTest.exists(' || i || ')'
-            ,check_this_in   => l_annoTest.exists(i)
+            (msg_in          => 'l_ignrTest.exists(' || i || ')'
+            ,check_this_in   => l_ignrTest.exists(i)
             ,against_this_in => TRUE);
       end loop;
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Load Anno Sad Path 1';
+      wt_assert.g_testcase := 'Load Ignr Sad Path 1';
       tl_compile_db_object
          (in_ptype   => 'package body'
          ,in_pname   => l_pname
@@ -941,13 +941,13 @@ $THEN
             'begin'                                    || CHR(10) ||  -- Line 2
             '  --%WTPLSQL_end_' || 'ignore_lines%--'   || CHR(10) ||  -- Line 3
             '  l_junk := 4;'                           );             -- Line 4
-      run_load_anno;
+      run_load_ignr;
       wt_assert.eq
-         (msg_in          => 'l_annoTest.COUNT'
-         ,check_this_in   => l_annoTest.COUNT
+         (msg_in          => 'l_ignrTest.COUNT'
+         ,check_this_in   => l_ignrTest.COUNT
          ,against_this_in => 0);
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Load Anno Sad Path 2';
+      wt_assert.g_testcase := 'Load Ignr Sad Path 2';
       tl_compile_db_object
          (in_ptype   => 'package body'
          ,in_pname   => l_pname
@@ -960,21 +960,21 @@ $THEN
             '  l_junk := 3;'                           || CHR(10) ||  -- Line 7
             '  --%WTPLSQL_end_' || 'ignore_lines%--'   || CHR(10) ||  -- Line 8
             '  l_junk := 4;'                           );             -- Line 9
-      run_load_anno;
+      run_load_ignr;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq
-         (msg_in          => 'l_annoTest.COUNT'
-         ,check_this_in   => l_annoTest.COUNT
+         (msg_in          => 'l_ignrTest.COUNT'
+         ,check_this_in   => l_ignrTest.COUNT
          ,against_this_in => 3);
       for i in 4 .. 6
       loop
          wt_assert.eq
-            (msg_in          => 'l_annoTest.exists(' || i || ')'
-            ,check_this_in   => l_annoTest.exists(i)
+            (msg_in          => 'l_ignrTest.exists(' || i || ')'
+            ,check_this_in   => l_ignrTest.exists(i)
             ,against_this_in => TRUE);
       end loop;
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Load Anno Sad Path 3';
+      wt_assert.g_testcase := 'Load Ignr Sad Path 3';
       tl_compile_db_object
          (in_ptype   => 'package body'
          ,in_pname   => l_pname
@@ -987,26 +987,26 @@ $THEN
             '  l_junk := 3;'                           || CHR(10) ||  -- Line 7
             '  --%WTPLSQL_end_' || 'ignore_lines%--'   || CHR(10) ||  -- Line 8
             '  l_junk := 4;'                           );             -- Line 9
-      run_load_anno;
+      run_load_ignr;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq
-         (msg_in          => 'l_annoTest.COUNT'
-         ,check_this_in   => l_annoTest.COUNT
+         (msg_in          => 'l_ignrTest.COUNT'
+         ,check_this_in   => l_ignrTest.COUNT
          ,against_this_in => 5);
       for i in 4 .. 8
       loop
          wt_assert.eq
-            (msg_in          => 'l_annoTest.exists(' || i || ')'
-            ,check_this_in   => l_annoTest.exists(i)
+            (msg_in          => 'l_ignrTest.exists(' || i || ')'
+            ,check_this_in   => l_ignrTest.exists(i)
             ,against_this_in => TRUE);
       end loop;
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Load Anno Teardown';
+      wt_assert.g_testcase := 'Load Ignr Teardown';
       tl_drop_db_object(l_pname, 'package');
       wt_assert.isnotnull
-         (msg_in    => 'Number of ANNO_AA elements'
-         ,check_this_in => g_anno_aa.COUNT);
-   end t_load_anno_aa;
+         (msg_in    => 'Number of IGNR_AA elements'
+         ,check_this_in => g_ignr_aa.COUNT);
+   end t_load_ignr_aa;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -1017,10 +1017,10 @@ is
    prof_rec    wt_dbout_profiles%ROWTYPE;
    l_max_line  number;
    procedure l_set_status is begin
-      if g_anno_aa.EXISTS(prof_rec.line)
+      if g_ignr_aa.EXISTS(prof_rec.line)
       then
-         -- Found Annotated Statement
-         prof_rec.status := 'ANNO';
+         -- Found Statement to Ignore
+         prof_rec.status := 'IGNR';
          return;
       end if;
       if prof_rec.total_occur > 0
@@ -1063,7 +1063,7 @@ begin
      and  ppu.unit_name  = g_rec.dbout_name
      and  ppu.unit_type  = g_rec.dbout_type
      and  ppu.runid      = g_rec.prof_runid;
-   load_anno_aa;
+   load_ignr_aa;
    prof_rec.test_run_id := g_rec.test_run_id;
    for buf1 in (
       select src.line
@@ -1108,7 +1108,7 @@ begin
    COMMIT;
    -- Delete PLSQL Profiler has it's own
    --   PRAGMA AUTONOMOUS_TRANSACTION and COMMIT;
-   g_anno_aa.delete;
+   g_ignr_aa.delete;
    delete_plsql_profiler_recs(g_rec.prof_runid);
 end insert_dbout_profile;
 
@@ -1265,7 +1265,7 @@ $THEN
       test_dbout_profiler(2, 'TEXT',   'begin' || CHR(10));
       test_dbout_profiler(3, 'STATUS', 'EXEC');
       test_dbout_profiler(3, 'TEXT',   '  l_junk := 1;' || CHR(10));
-      test_dbout_profiler(5, 'STATUS', 'ANNO');
+      test_dbout_profiler(5, 'STATUS', 'IGNR');
       test_dbout_profiler(5, 'TEXT',   '  l_junk := 2;' || CHR(10));
       test_dbout_profiler(7, 'STATUS', 'EXEC');
       test_dbout_profiler(7, 'TEXT',   '  if 0 = 1 then' || CHR(10));
@@ -1976,7 +1976,7 @@ $THEN
       t_get_error_msg;
       t_delete_profiler_recs;
       t_find_dbout;
-      t_load_anno_aa;
+      t_load_ignr_aa;
       t_insert_dbout_profile;
       t_initialize;
       t_finalize;

@@ -23,7 +23,7 @@ The Database Object Under Test, or DBOUT, is a database object that is the targe
 ```
     --% WTPLSQL SET DBOUT "SCHEMA.TEST_ME" %--
 ```
-"Ignore" annotations are used to exclude source code lines from the code coverage data.
+"Ignore" annotations are used to indicate source code lines to ignore when calculating code coverage metrics.
 
 **Regular Expression:**
 ```
@@ -33,7 +33,7 @@ The Database Object Under Test, or DBOUT, is a database object that is the targe
 ```
     --%WTPLSQL_begin_ignore_lines%--
 ```
-Occasionally, DBMS_PROFILER does not capture the execution of some PL/SQL source.  Examples PL/SQL source that are reported incorrectly include "end if", "select", and "return".  Use the "Ignore" annotations to remove these lines of PL/SQL from code coverage metrics.
+Occasionally, DBMS_PROFILER does not capture the execution of some PL/SQL source.  Examples PL/SQL source that are reported incorrectly include "end if", "select", and "return".  wtPLSQL excludes some of these source lines when calculating code coverage metrics.  Use the "Ignore" annotations to ignore other lines of PL/SQL when calculating code coverage metrics.
 
 ## Built-in Schema-wide Testing
 wtPLSQL will locate and execute all Test Runner packages in a schema.  This is done by finding all packages with a WTPLSQL_RUN procedure that has no parameters.  There is no requirement to pre-define the Test Runners in a schema.

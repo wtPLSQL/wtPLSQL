@@ -274,8 +274,8 @@ begin
          g_rec.tot_executed_usecs := nvl(g_rec.tot_executed_usecs,0) +
                                      ( in_dbout_profiles_rec.total_usecs /
                                        in_dbout_profiles_rec.total_occur  );
-      when 'ANNO' then
-         g_rec.annotated_lines := nvl(g_rec.annotated_lines,0) + 1;
+      when 'IGNR' then
+         g_rec.ignored_lines := nvl(g_rec.ignored_lines,0) + 1;
       when 'EXCL' then
          g_rec.excluded_lines := nvl(g_rec.excluded_lines,0) + 1;
       when 'NOTX' then
@@ -314,6 +314,7 @@ $THEN
       l_profileTEST.min_usecs   := 10;
       l_profileTEST.max_usecs   := 20;
       l_profileTEST.total_usecs := 30;
+      l_profileTEST.total_occur := 1;
       l_profileTEST.status := 'EXEC';
       add_profile(l_profileTEST);
       l_profileTEST.status := 'EXEC';
@@ -325,14 +326,14 @@ $THEN
       add_profile(l_profileTEST);
       l_profileTEST.status := 'EXEC';
       add_profile(l_profileTEST);
-      l_profileTEST.status := 'ANNO';
+      l_profileTEST.status := 'IGNR';
       add_profile(l_profileTEST);
-      l_profileTEST.status := 'ANNO';
+      l_profileTEST.status := 'IGNR';
       add_profile(l_profileTEST);
       --------------------------------------  WTPLSQL Testing --
-      l_profileTEST.status := 'ANNO';
+      l_profileTEST.status := 'IGNR';
       add_profile(l_profileTEST);
-      l_profileTEST.status := 'ANNO';
+      l_profileTEST.status := 'IGNR';
       add_profile(l_profileTEST);
       l_profileTEST.status := 'NOTX';
       add_profile(l_profileTEST);
@@ -347,8 +348,8 @@ $THEN
       add_profile(l_profileTEST);
       l_profileTEST.status := 'UNKN';
       add_profile(l_profileTEST);
-      l_profileTEST.status := 'ABC';
       --------------------------------------  WTPLSQL Testing --
+      l_profileTEST.status := 'ABC';
       begin
          add_profile(l_profileTEST);
          l_sqlerrm := SQLERRM;
@@ -387,8 +388,8 @@ $THEN
          against_this_in => 5);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'l_recTEST.annotated_lines',
-         check_this_in   => l_recTEST.annotated_lines,
+         msg_in          => 'l_recTEST.ignored_lines',
+         check_this_in   => l_recTEST.ignored_lines,
          against_this_in => 4);
       wt_assert.eq (
          msg_in          => 'l_recTEST.notexec_lines',
@@ -437,7 +438,7 @@ begin
    if g_rec.profiled_lines is not null
    then
       g_rec.executed_lines  := nvl(g_rec.executed_lines ,0);
-      g_rec.annotated_lines := nvl(g_rec.annotated_lines,0);
+      g_rec.ignored_lines   := nvl(g_rec.ignored_lines,0);
       g_rec.excluded_lines  := nvl(g_rec.excluded_lines ,0);
       g_rec.notexec_lines   := nvl(g_rec.notexec_lines  ,0);
       g_rec.unknown_lines   := nvl(g_rec.unknown_lines  ,0);
@@ -595,8 +596,8 @@ $THEN
          msg_in          => 'l_recTEST.executed_lines',
          check_this_in   => l_recTEST.executed_lines);
       wt_assert.isnull (
-         msg_in          => 'l_recTEST.annotated_lines',
-         check_this_in   => l_recTEST.annotated_lines);
+         msg_in          => 'l_recTEST.ignored_lines',
+         check_this_in   => l_recTEST.ignored_lines);
       wt_assert.isnull (
          msg_in          => 'l_recTEST.excluded_lines',
          check_this_in   => l_recTEST.excluded_lines);
@@ -657,7 +658,7 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       l_recTEST.profiled_lines     := 20;
       l_recTEST.executed_lines     := 8;
-      l_recTEST.annotated_lines    := 6;
+      l_recTEST.ignored_lines      := 6;
       l_recTEST.excluded_lines     := 4;
       l_recTEST.notexec_lines      := 2;
       --l_recTEST.unknown_lines      := null;
@@ -828,8 +829,8 @@ $THEN
          against_this_in => 8);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'l_recTEST.annotated_lines',
-         check_this_in   => l_recTEST.annotated_lines,
+         msg_in          => 'l_recTEST.ignored_lines',
+         check_this_in   => l_recTEST.ignored_lines,
          against_this_in => 6);
       wt_assert.eq (
          msg_in          => 'l_recTEST.excluded_lines',

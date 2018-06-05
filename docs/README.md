@@ -23,7 +23,7 @@ DBMS_OUTPUT format.
   Total Run Time (sec):      2.9
 
   Code Coverage for PACKAGE BODY WTP.WT_ASSERT
-       Annotated Lines:     1103  Total Profiled Lines:     1464
+         Ignored Lines:     1103  Total Profiled Lines:     1464
         Excluded Lines:        6  Total Executed Lines:      309
   Minimum Elapsed usec:        0    Not Executed Lines:        0
   Average Elapsed usec:     3054         Unknown Lines:       46

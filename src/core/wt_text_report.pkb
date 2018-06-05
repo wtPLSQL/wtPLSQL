@@ -38,7 +38,7 @@ end result_summary;
 procedure profile_summary
 is
 begin
-   p('       Annotated Lines: ' || to_char(nvl(g_test_run_stats_rec.annotated_lines   ,0),'9999999') ||
+   p('         Ignored Lines: ' || to_char(nvl(g_test_run_stats_rec.ignored_lines     ,0),'9999999') ||
      '  Total Profiled Lines: ' || to_char(nvl(g_test_run_stats_rec.profiled_lines    ,0),'9999999') );
    p('        Excluded Lines: ' || to_char(nvl(g_test_run_stats_rec.excluded_lines    ,0),'9999999') ||
      '  Total Executed Lines: ' || to_char(nvl(g_test_run_stats_rec.executed_lines    ,0),'9999999') );
@@ -199,7 +199,7 @@ begin
        from  wt_dbout_profiles
        where test_run_id = g_test_runs_rec.id
        and  (   l_show_aux_txt = 'Y'
-             or status not in ('EXEC','ANNO','UNKN','EXCL'))
+             or status not in ('EXEC','IGNR','UNKN','EXCL'))
        order by line  )
    loop
       if not header_shown

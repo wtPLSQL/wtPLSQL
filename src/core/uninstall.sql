@@ -1,4 +1,10 @@
 
+--
+--  Core Un-Install
+--
+--   Run as System
+--
+
 spool uninstall
 
 @common_setup.sql

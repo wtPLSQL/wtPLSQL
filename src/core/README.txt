@@ -7,13 +7,13 @@ FILE                    DESCRIPTION
 downgrades              Folder of downgrade scripts for this release
 upgrades                Folder of upgrade scripts for this release
 common_setup.sql        Common setup script.  Contains values for install/uninstall.
-install.sql             Install script.  Run as SYS or SYSTEM.
+install.sql             Install script.  Run as SYSTEM.
 installO.LST            Example of a successfull install.
 proftab.sql             DBMS_PROFILER tables.  Copied from ?/rdbms/admin/proftab.sql.
 RELEASE_NOTES.txt       Release Notes for this release
 test_all.sql            SQL script to execute all Test Runners.
 test_allO.LST           Example of successful results from all Test Runners.
-uninstall.sql           Uninstall script.  Run as SYS or SYSTEM.
+uninstall.sql           Uninstall script.  Run as SYSTEM.
 uninstallO.LST          Example of a successfull uninstall.
 wt_assert.pkb           WT_ASSERT package body.
 wt_assert.pks           WT_ASSERT package specification.

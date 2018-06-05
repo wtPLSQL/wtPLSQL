@@ -2,6 +2,8 @@
 spool test_all
 
 set serveroutput on size unlimited format wrapped
+set linesize 1000
+set trimspool on
 
 /*
 

@@ -3,19 +3,51 @@ PL/SQL procedure successfully completed.
 
 old:create user &schema_owner. identified by &schema_owner.
    default tablespace users
+   quota unlimited on users
    temporary tablespace temp
 new:create user wtp identified by wtp
    default tablespace users
+   quota unlimited on users
    temporary tablespace temp
 
 User WTP created.
 
-old:grant connect, resource to &schema_owner.
-new:grant connect, resource to wtp
+old:grant create session   to &schema_owner.
+new:grant create session   to wtp
 
 Grant succeeded.
 
-PLSQL_CCFLAGS Before: WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE
+old:grant create type      to &schema_owner.
+new:grant create type      to wtp
+
+Grant succeeded.
+
+old:grant create sequence  to &schema_owner.
+new:grant create sequence  to wtp
+
+Grant succeeded.
+
+old:grant create table     to &schema_owner.
+new:grant create table     to wtp
+
+Grant succeeded.
+
+old:grant create trigger   to &schema_owner.
+new:grant create trigger   to wtp
+
+Grant succeeded.
+
+old:grant create view      to &schema_owner.
+new:grant create view      to wtp
+
+Grant succeeded.
+
+old:grant create procedure to &schema_owner.
+new:grant create procedure to wtp
+
+Grant succeeded.
+
+PLSQL_CCFLAGS Before: 
 
 
 PL/SQL procedure successfully completed.
@@ -23,7 +55,7 @@ PL/SQL procedure successfully completed.
 
 PL/SQL procedure successfully completed.
 
-PLSQL_CCFLAGS After: WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE
+PLSQL_CCFLAGS After: WTPLSQL_ENABLE:TRUE
 
 
 PL/SQL procedure successfully completed.
@@ -48,25 +80,30 @@ new:create or replace public synonym wt_dbout_profiles for wtp.wt_dbout_profiles
 
 Synonym WT_DBOUT_PROFILES created.
 
-old:create or replace public synonym wt_not_executable for &schema_owner..wt_not_executable
-new:create or replace public synonym wt_not_executable for wtp.wt_not_executable
+old:create or replace public synonym wt_version        for &schema_owner..wt_version
+new:create or replace public synonym wt_version        for wtp.wt_version
 
-Synonym WT_NOT_EXECUTABLE created.
+Synonym WT_VERSION created.
 
-old:create or replace public synonym plsql_profiler_runs  for &schema_owner..plsql_profiler_runs
-new:create or replace public synonym plsql_profiler_runs  for wtp.plsql_profiler_runs
+old:create or replace public synonym plsql_profiler_runs      for &schema_owner..plsql_profiler_runs
+new:create or replace public synonym plsql_profiler_runs      for wtp.plsql_profiler_runs
 
 Synonym PLSQL_PROFILER_RUNS created.
 
-old:create or replace public synonym plsql_profiler_units for &schema_owner..plsql_profiler_units
-new:create or replace public synonym plsql_profiler_units for wtp.plsql_profiler_units
+old:create or replace public synonym plsql_profiler_units     for &schema_owner..plsql_profiler_units
+new:create or replace public synonym plsql_profiler_units     for wtp.plsql_profiler_units
 
 Synonym PLSQL_PROFILER_UNITS created.
 
-old:create or replace public synonym plsql_profiler_data  for &schema_owner..plsql_profiler_data
-new:create or replace public synonym plsql_profiler_data  for wtp.plsql_profiler_data
+old:create or replace public synonym plsql_profiler_data      for &schema_owner..plsql_profiler_data
+new:create or replace public synonym plsql_profiler_data      for wtp.plsql_profiler_data
 
 Synonym PLSQL_PROFILER_DATA created.
+
+old:create or replace public synonym plsql_profiler_runnumber for &schema_owner..plsql_profiler_runnumber
+new:create or replace public synonym plsql_profiler_runnumber for wtp.plsql_profiler_runnumber
+
+Synonym PLSQL_PROFILER_RUNNUMBER created.
 
 old:create or replace public synonym wt_assert         for &schema_owner..wt_assert
 new:create or replace public synonym wt_assert         for wtp.wt_assert
@@ -82,6 +119,11 @@ old:create or replace public synonym wt_result         for &schema_owner..wt_res
 new:create or replace public synonym wt_result         for wtp.wt_result
 
 Synonym WT_RESULT created.
+
+old:create or replace public synonym wt_test_run_stat  for &schema_owner..wt_test_run_stat
+new:create or replace public synonym wt_test_run_stat  for wtp.wt_test_run_stat
+
+Synonym WT_TEST_RUN_STAT created.
 
 old:create or replace public synonym wt_text_report    for &schema_owner..wt_text_report
 new:create or replace public synonym wt_text_report    for wtp.wt_text_report
@@ -189,7 +231,34 @@ Grant succeeded.
 Grant succeeded.
 
 
+Grant succeeded.
+
+
+Table WT_VERSION created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+1 row inserted.
+
+
+Commit complete.
+
+
+Grant succeeded.
+
+
 Sequence WT_TEST_RUNS_SEQ created.
+
+
+Grant succeeded.
 
 
 Table WT_TEST_RUNS created.
@@ -282,9 +351,6 @@ Grant succeeded.
 Grant succeeded.
 
 
-Grant succeeded.
-
-
 Table WT_DBOUT_PROFILES created.
 
 
@@ -321,13 +387,103 @@ Grant succeeded.
 Grant succeeded.
 
 
+Table WT_TEST_RUN_STATS created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
 Grant succeeded.
 
 
 Grant succeeded.
 
 
-Table WT_TEST_DATA created.
+Table WT_TESTCASE_STATS created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
 
 
 Comment created.
@@ -354,10 +510,28 @@ Grant succeeded.
 Grant succeeded.
 
 
-Grant succeeded.
+Table WT_SELF_TEST created.
 
 
-Trigger WT_TEST_DATA$TEST compiled
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Trigger WT_SELF_TEST$TEST compiled
 
 
 PL/SQL procedure successfully completed.
@@ -390,6 +564,12 @@ Package WT_PROFILER compiled
 Grant succeeded.
 
 
+Package WT_TEST_RUN_STAT compiled
+
+
+Grant succeeded.
+
+
 Package WT_TEXT_REPORT compiled
 
 
@@ -406,6 +586,9 @@ Package Body WT_ASSERT compiled
 
 
 Package Body WT_PROFILER compiled
+
+
+Package Body WT_TEST_RUN_STAT compiled
 
 
 Package Body WT_TEXT_REPORT compiled

@@ -5,6 +5,11 @@
 --  Compute and Add statistics to V1.1.0 "stats" tables
 --
 
+spool update_all_stats
+set serveroutput on size unlimited format wrapped
+set linesize 1000
+set trimspool on
+
 declare
   test_run_stats_rec    wt_test_run_stats%ROWTYPE;
   l_executable_lines    number;
@@ -149,3 +154,5 @@ begin
   --
 end;
 /
+
+spool off

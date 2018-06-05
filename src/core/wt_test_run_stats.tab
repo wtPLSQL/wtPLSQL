@@ -18,7 +18,7 @@ create table wt_test_run_stats
    ,code_coverage       number
    ,profiled_lines      number
    ,executed_lines      number
-   ,annotated_lines     number
+   ,ignored_lines     number
    ,excluded_lines      number
    ,notexec_lines       number
    ,unknown_lines       number
@@ -46,7 +46,7 @@ comment on column wt_test_run_stats.tot_elapsed_msecs is 'Total (Sum) of elapsed
 comment on column wt_test_run_stats.code_coverage is 'Ratio of executed source lines to valid executable source lines.';
 comment on column wt_test_run_stats.profiled_lines is 'Total number of source lines as counted by DBMS_PROFILER';
 comment on column wt_test_run_stats.executed_lines is 'Number of source lines executed';
-comment on column wt_test_run_stats.annotated_lines is 'Number of source lines annotated as uncountable';
+comment on column wt_test_run_stats.ignored_lines is 'Number of source lines ignored as uncountable';
 comment on column wt_test_run_stats.excluded_lines is 'Number of source lines excluded due to unexplained DBMS_PROFILER metrics';
 comment on column wt_test_run_stats.notexec_lines is 'Number of source lines not executed';
 comment on column wt_test_run_stats.unknown_lines is 'Number of source lines that have unexplained DBMS_PROFILER metrics';

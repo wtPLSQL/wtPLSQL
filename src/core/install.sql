@@ -2,6 +2,8 @@
 --
 --  Core Installation
 --
+--   Run as System
+--
 
 -- Capture output
 spool install
@@ -26,9 +28,16 @@ WHENEVER SQLERROR continue
 
 create user &schema_owner. identified by &schema_owner.
    default tablespace users
+   quota unlimited on users
    temporary tablespace temp;
 
-grant connect, resource to &schema_owner.;
+grant create session   to &schema_owner.;
+grant create type      to &schema_owner.;
+grant create sequence  to &schema_owner.;
+grant create table     to &schema_owner.;
+grant create trigger   to &schema_owner.;
+grant create view      to &schema_owner.;
+grant create procedure to &schema_owner.;
 
 begin
    for buff in (select p.value PLSQL_CCFLAGS
@@ -132,6 +141,7 @@ grant select, delete on plsql_profiler_units to public;
 grant select, delete on plsql_profiler_data to public;
 grant select on plsql_profiler_runnumber to public;
 -- Core Tables
+@wt_version.tab
 @wt_test_runs.tab
 @wt_results.tab
 @wt_dbout_profiles.tab

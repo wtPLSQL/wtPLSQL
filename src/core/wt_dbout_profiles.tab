@@ -15,13 +15,13 @@ create table wt_dbout_profiles
    ,constraint wt_dbout_profiles_pk primary key (test_run_id, line)
    ,constraint wt_dbout_profiles_fk1 foreign key (test_run_id)
        references wt_test_runs (id)
-   ,constraint wt_dbout_profiles_ck1 check (status in ('EXEC','NOTX','EXCL','ANNO','UNKN'))
+   ,constraint wt_dbout_profiles_ck1 check (status in ('EXEC','NOTX','EXCL','IGNR','UNKN'))
    ) pctfree 0;
 
 comment on table wt_dbout_profiles is 'PL/SQL Profiler data for Database Object Under Test (DBOUT).';
 comment on column wt_dbout_profiles.test_run_id is 'Foreign Key for the Test Run, Primary Key part 1.';
 comment on column wt_dbout_profiles.line is 'Source code line number, Primary Key part 2.';
-comment on column wt_dbout_profiles.status is 'Executed/NotExecuted/Excluded/Annotated/Unknown Status from the Profiler';
+comment on column wt_dbout_profiles.status is 'Executed/NotExecuted/Excluded/Ignored/Unknown Status from the Profiler';
 comment on column wt_dbout_profiles.total_occur is 'Number of times this line was executed.';
 comment on column wt_dbout_profiles.total_usecs is 'Total time in microseconds spent executing this line.';
 comment on column wt_dbout_profiles.min_usecs is 'Minimum execution time in microseconds for this line.';
