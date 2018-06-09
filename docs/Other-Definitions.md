@@ -1,30 +1,8 @@
 [Website Home Page](README.md)
 
-# Definitions
+# Other Definitions
 
 ---
-## wtPLSQL
-These are the working definitions for the wtPLSQL project.
-
-**Annotation** - PL/SQL comment used to identify a DBOUT or exclude source code lines from code coverage data.
-
-**Assertion** - A function that performs a single test and records/reports the result.
-
-**Coverage** - An indication of the amount or percentage of source code tested.
-
-**DBOUT** - Database Object Under Test.  The database object that is the target of testing.  White-box testing is oriented toward a specific DBOUT.  Code coverage is also oriented toward a specific DBOUT.
-
-**SUT** - System Under Test. This includes one or more DBOUTs that comprise an application or system.  Continuous Integration (CI) testing is typically done at a system level.
-
-**Setup** - Modifying the database or environment in preparation for a test, testcase, or test runner.
-
-**Teardown** - Cleaning or restoring a database after a test, testcase, or test runner.
-
-**Testcase** - A logical grouping of assertions to run happy path, decision tree, boundary condition, and/or fault insertion tests.  May included one or more setup, teardown, and intermediate setups.
-
-**Test Runner** - A PL/SQL package that exercises a DBOUT and uses assertions to confirm the correct funcionality of the DBOUT. It may have zero or more testcases.  It always contains a call to the WTPLSQL.TEST_RUN procedure.  It may contain DBOUT annotations and/or "exclude source lines" annotations.
-
-***
 ## Oracle Database
 Note: Some Oracle database terms overlap with Object Oriented terms.
 

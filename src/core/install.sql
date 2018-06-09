@@ -7,6 +7,7 @@
 
 -- Capture output
 spool install
+set showmode off
 
 -- Shared Setup Script
 @common_setup.sql
@@ -133,6 +134,7 @@ WHENEVER SQLERROR continue
 --  Note2: Includes "Drop Table" and "Drop Sequence" statements
 --
 @proftab.sql
+@proftab_comments.sql
 --
 create index plsql_profiler_runs_idx1
    on plsql_profiler_runs (run_date);
@@ -189,4 +191,5 @@ grant execute on wt_text_report to public;
 @wt_text_report.pkb
 /
 
+set showmode on
 spool off

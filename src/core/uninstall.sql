@@ -6,6 +6,7 @@
 --
 
 spool uninstall
+set showmode off
 
 @common_setup.sql
 
@@ -42,4 +43,5 @@ begin
 end;
 /
 
+set showmode on
 spool off

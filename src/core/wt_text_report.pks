@@ -19,7 +19,7 @@ as
       ,in_details        in wt_results.details%TYPE
       ,in_testcase       in wt_results.testcase%TYPE
       ,in_message        in wt_results.message%TYPE
-      ,in_elapsed_msecs  in wt_results.elapsed_msecs%TYPE DEFAULT NULL)
+      ,in_interval_msecs in wt_results.interval_msecs%TYPE DEFAULT NULL)
    return varchar2;
 
    procedure ad_hoc_result

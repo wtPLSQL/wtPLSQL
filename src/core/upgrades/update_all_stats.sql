@@ -25,34 +25,34 @@ begin
           ,sum(case status when 'FAIL' then 1 else 0 end)
           ,sum(case status when 'ERR'  then 1 else 0 end)
           ,count(distinct testcase)
-          ,min(elapsed_msecs)
-          ,max(elapsed_msecs)
-          ,sum(elapsed_msecs)
+          ,min(interval_msecs)
+          ,max(interval_msecs)
+          ,sum(interval_msecs)
       into test_run_stats_rec.asserts
           ,test_run_stats_rec.passes
           ,test_run_stats_rec.failures
           ,test_run_stats_rec.errors
           ,test_run_stats_rec.testcases
-          ,test_run_stats_rec.min_elapsed_msecs
-          ,test_run_stats_rec.max_elapsed_msecs
-          ,test_run_stats_rec.tot_elapsed_msecs
+          ,test_run_stats_rec.min_interval_msecs
+          ,test_run_stats_rec.max_interval_msecs
+          ,test_run_stats_rec.tot_interval_msecs
      from  wt_results
      where test_run_id = buff.id;
     --
     if test_run_stats_rec.asserts = 0
     then
       test_run_stats_rec.test_yield := NULL;
-      test_run_stats_rec.avg_elapsed_msecs := NULL;
+      test_run_stats_rec.avg_interval_msecs := NULL;
     else
       test_run_stats_rec.test_yield := round(test_run_stats_rec.passes /
                                              test_run_stats_rec.asserts, 3);
-      test_run_stats_rec.avg_elapsed_msecs := round(test_run_stats_rec.tot_elapsed_msecs /
-                                                    test_run_stats_rec.asserts, 3);
+      test_run_stats_rec.avg_interval_msecs := round(test_run_stats_rec.tot_interval_msecs /
+                                                     test_run_stats_rec.asserts, 3);
     end if;
     --
     select count(*)
           ,sum(case status when 'EXEC' then 1 else 0 end)
-          ,sum(case status when 'ANNO' then 1 else 0 end)
+          ,sum(case status when 'IGNR' then 1 else 0 end)
           ,sum(case status when 'EXCL' then 1 else 0 end)
           ,sum(case status when 'NOTX' then 1 else 0 end)
           ,sum(case status when 'UNKN' then 1 else 0 end)
@@ -61,7 +61,7 @@ begin
           ,sum(case status when 'EXEC' then total_usecs/total_occur else 0 end)
       into test_run_stats_rec.profiled_lines
           ,test_run_stats_rec.executed_lines
-          ,test_run_stats_rec.annotated_lines
+          ,test_run_stats_rec.ignored_lines
           ,test_run_stats_rec.excluded_lines
           ,test_run_stats_rec.notexec_lines
           ,test_run_stats_rec.unknown_lines
@@ -110,20 +110,23 @@ begin
                 group by test_run_id, testcase)
   loop
     --
+    testcase_stats_rec.test_run_id := buff.test_run_id;
+    testcase_stats_rec.testcase    := buff.testcase;
+    --
     select count(*)
           ,sum(case status when 'PASS' then 1 else 0 end)
           ,sum(case status when 'FAIL' then 1 else 0 end)
           ,sum(case status when 'ERR'  then 1 else 0 end)
-          ,min(elapsed_msecs)
-          ,max(elapsed_msecs)
-          ,sum(elapsed_msecs)
+          ,min(interval_msecs)
+          ,max(interval_msecs)
+          ,sum(interval_msecs)
       into testcase_stats_rec.asserts
           ,testcase_stats_rec.passes
           ,testcase_stats_rec.failures
           ,testcase_stats_rec.errors
-          ,testcase_stats_rec.min_elapsed_msecs
-          ,testcase_stats_rec.max_elapsed_msecs
-          ,testcase_stats_rec.tot_elapsed_msecs
+          ,testcase_stats_rec.min_interval_msecs
+          ,testcase_stats_rec.max_interval_msecs
+          ,testcase_stats_rec.tot_interval_msecs
      from  wt_results
      where test_run_id = buff.test_run_id
       and  testcase    = buff.testcase;
@@ -131,12 +134,12 @@ begin
     if testcase_stats_rec.asserts = 0
     then
       testcase_stats_rec.test_yield := NULL;
-      testcase_stats_rec.avg_elapsed_msecs := NULL;
+      testcase_stats_rec.avg_interval_msecs := NULL;
     else
       testcase_stats_rec.test_yield := round(testcase_stats_rec.passes /
                                              testcase_stats_rec.asserts, 3);
-      testcase_stats_rec.avg_elapsed_msecs := round(testcase_stats_rec.tot_elapsed_msecs /
-                                                    testcase_stats_rec.asserts, 3);
+      testcase_stats_rec.avg_interval_msecs := round(testcase_stats_rec.tot_interval_msecs /
+                                                     testcase_stats_rec.asserts, 3);
     end if;
     --
     begin

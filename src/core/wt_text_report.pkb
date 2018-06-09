@@ -21,35 +21,35 @@ end p;
 procedure result_summary
 is
 begin
-   p('       Total Testcases: ' || to_char(nvl(g_test_run_stats_rec.testcases        ,0),'9999999') ||
-     '      Total Assertions: ' || to_char(nvl(g_test_run_stats_rec.asserts          ,0),'9999999') );
-   p('  Minimum Elapsed msec: ' || to_char(nvl(g_test_run_stats_rec.min_elapsed_msecs,0),'9999999') ||
-     '     Failed Assertions: ' || to_char(nvl(g_test_run_stats_rec.failures         ,0),'9999999') );
-   p('  Average Elapsed msec: ' || to_char(nvl(g_test_run_stats_rec.avg_elapsed_msecs,0),'9999999') ||
-     '      Error Assertions: ' || to_char(nvl(g_test_run_stats_rec.errors           ,0),'9999999') );
-   p('  Maximum Elapsed msec: ' || to_char(nvl(g_test_run_stats_rec.max_elapsed_msecs,0),'9999999') ||
-     '            Test Yield: ' || to_char(    g_test_run_stats_rec.test_yield * 100    ,'9990.99') ||
-                                                                                                '%' );
-   p('  Total Run Time (sec): ' || to_char(extract(day from (g_test_runs_rec.end_dtm -
-                                               g_test_runs_rec.start_dtm)*86400*100)/100,'99990.9') );
+   p('        Total Testcases: ' || to_char(nvl(g_test_run_stats_rec.testcases         ,0),'9999999') ||
+     '       Total Assertions: ' || to_char(nvl(g_test_run_stats_rec.asserts           ,0),'9999999') );
+   p('  Minimum Interval msec: ' || to_char(nvl(g_test_run_stats_rec.min_interval_msecs,0),'9999999') ||
+     '      Failed Assertions: ' || to_char(nvl(g_test_run_stats_rec.failures          ,0),'9999999') );
+   p('  Average Interval msec: ' || to_char(nvl(g_test_run_stats_rec.avg_interval_msecs,0),'9999999') ||
+     '       Error Assertions: ' || to_char(nvl(g_test_run_stats_rec.errors            ,0),'9999999') );
+   p('  Maximum Interval msec: ' || to_char(nvl(g_test_run_stats_rec.max_interval_msecs,0),'9999999') ||
+     '             Test Yield: ' || to_char(    g_test_run_stats_rec.test_yield * 100     ,'9990.99') ||
+                                                                                                  '%' );
+   p('   Total Run Time (sec): ' || to_char(extract(day from (g_test_runs_rec.end_dtm -
+                                                g_test_runs_rec.start_dtm)*86400*100)/100 ,'99990.9') );
 end result_summary;
 
 ------------------------------------------------------------
 procedure profile_summary
 is
 begin
-   p('         Ignored Lines: ' || to_char(nvl(g_test_run_stats_rec.ignored_lines     ,0),'9999999') ||
-     '  Total Profiled Lines: ' || to_char(nvl(g_test_run_stats_rec.profiled_lines    ,0),'9999999') );
-   p('        Excluded Lines: ' || to_char(nvl(g_test_run_stats_rec.excluded_lines    ,0),'9999999') ||
-     '  Total Executed Lines: ' || to_char(nvl(g_test_run_stats_rec.executed_lines    ,0),'9999999') );
-   p('  Minimum Elapsed usec: ' || to_char(nvl(g_test_run_stats_rec.min_executed_usecs,0),'9999999') ||
-     '    Not Executed Lines: ' || to_char(nvl(g_test_run_stats_rec.notexec_lines     ,0),'9999999') );
-   p('  Average Elapsed usec: ' || to_char(nvl(g_test_run_stats_rec.avg_executed_usecs,0),'9999999') ||
-     '         Unknown Lines: ' || to_char(nvl(g_test_run_stats_rec.unknown_lines     ,0),'9999999') );
-   p('  Maximum Elapsed usec: ' || to_char(nvl(g_test_run_stats_rec.max_executed_usecs,0),'9999999') ||
-     '         Code Coverage: ' || to_char(    g_test_run_stats_rec.code_coverage * 100  ,'9990.99') ||
-                                                                                                 '%' );
-   p(' Trigger Source Offset: ' || to_char(    g_test_runs_rec.trigger_offset            ,'9999999') );
+   p('          Ignored Lines: ' || to_char(nvl(g_test_run_stats_rec.ignored_lines     ,0),'9999999') ||
+     '   Total Profiled Lines: ' || to_char(nvl(g_test_run_stats_rec.profiled_lines    ,0),'9999999') );
+   p('         Excluded Lines: ' || to_char(nvl(g_test_run_stats_rec.excluded_lines    ,0),'9999999') ||
+     '   Total Executed Lines: ' || to_char(nvl(g_test_run_stats_rec.executed_lines    ,0),'9999999') );
+   p('  Minimum LineExec usec: ' || to_char(nvl(g_test_run_stats_rec.min_executed_usecs,0),'9999999') ||
+     '     Not Executed Lines: ' || to_char(nvl(g_test_run_stats_rec.notexec_lines     ,0),'9999999') );
+   p('  Average LineExec usec: ' || to_char(nvl(g_test_run_stats_rec.avg_executed_usecs,0),'9999999') ||
+     '          Unknown Lines: ' || to_char(nvl(g_test_run_stats_rec.unknown_lines     ,0),'9999999') );
+   p('  Maximum LineExec usec: ' || to_char(nvl(g_test_run_stats_rec.max_executed_usecs,0),'9999999') ||
+     '          Code Coverage: ' || to_char(    g_test_run_stats_rec.code_coverage * 100  ,'9990.99') ||
+                                                                                                  '%' );
+   p('  Trigger Source Offset: ' || to_char(    g_test_runs_rec.trigger_offset            ,'9999999') );
 end profile_summary;
 
 ------------------------------------------------------------
@@ -116,7 +116,7 @@ begin
    header_shown := FALSE;
    for buff in (
       select status
-            ,elapsed_msecs
+            ,interval_msecs
             ,testcase
             ,assertion
             ,details
@@ -137,20 +137,20 @@ begin
              AND l_last_testcase is null )
       then
          p(format_test_result
-                        (in_assertion      => buff.assertion
-                        ,in_status         => buff.status
-                        ,in_details        => buff.details
-                        ,in_testcase       => NULL
-                        ,in_message        => buff.message
-                        ,in_elapsed_msecs  => buff.elapsed_msecs) );
+                        (in_assertion       => buff.assertion
+                        ,in_status          => buff.status
+                        ,in_details         => buff.details
+                        ,in_testcase        => NULL
+                        ,in_message         => buff.message
+                        ,in_interval_msecs  => buff.interval_msecs) );
       else
          p(format_test_result
-                        (in_assertion      => buff.assertion
-                        ,in_status         => buff.status
-                        ,in_details        => buff.details
-                        ,in_testcase       => buff.testcase
-                        ,in_message        => buff.message
-                        ,in_elapsed_msecs  => buff.elapsed_msecs) );
+                        (in_assertion       => buff.assertion
+                        ,in_status          => buff.status
+                        ,in_details         => buff.details
+                        ,in_testcase        => buff.testcase
+                        ,in_message         => buff.message
+                        ,in_interval_msecs  => buff.interval_msecs) );
          l_last_testcase := buff.testcase;
       end if;
    end loop;
@@ -231,12 +231,12 @@ end profile_out;
 
 ------------------------------------------------------------
 function format_test_result
-      (in_assertion      in wt_results.assertion%TYPE
-      ,in_status         in wt_results.status%TYPE
-      ,in_details        in wt_results.details%TYPE
-      ,in_testcase       in wt_results.testcase%TYPE
-      ,in_message        in wt_results.message%TYPE
-      ,in_elapsed_msecs  in wt_results.elapsed_msecs%TYPE DEFAULT NULL)
+      (in_assertion       in wt_results.assertion%TYPE
+      ,in_status          in wt_results.status%TYPE
+      ,in_details         in wt_results.details%TYPE
+      ,in_testcase        in wt_results.testcase%TYPE
+      ,in_message         in wt_results.message%TYPE
+      ,in_interval_msecs  in wt_results.interval_msecs%TYPE DEFAULT NULL)
    return varchar2
 is
    l_out_str  varchar2(32000) := '';
@@ -251,9 +251,9 @@ begin
    else
       l_out_str := l_out_str || '#' || rpad(in_status,4) || '#';
    end if;
-   if in_elapsed_msecs is not null
+   if in_interval_msecs is not null
    then
-      l_out_str := l_out_str || lpad(in_elapsed_msecs,4) || 'ms ';
+      l_out_str := l_out_str || lpad(in_interval_msecs,4) || 'ms ';
    end if;
    if in_message is not null
    then

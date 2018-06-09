@@ -92,12 +92,12 @@ begin
    end case;
    g_rec.test_run_id := in_results_rec.test_run_id;
    g_rec.asserts     := nvl(g_rec.asserts,0) + 1;
-   g_rec.min_elapsed_msecs := least(nvl(g_rec.min_elapsed_msecs,999999999)
-                                   ,in_results_rec.elapsed_msecs);
-   g_rec.max_elapsed_msecs := greatest(nvl(g_rec.max_elapsed_msecs,0)
-                                      ,in_results_rec.elapsed_msecs);
-   g_rec.tot_elapsed_msecs := nvl(g_rec.tot_elapsed_msecs,0) +
-                              in_results_rec.elapsed_msecs;
+   g_rec.min_interval_msecs := least(nvl(g_rec.min_interval_msecs,999999999)
+                                    ,in_results_rec.interval_msecs);
+   g_rec.max_interval_msecs := greatest(nvl(g_rec.max_interval_msecs,0)
+                                       ,in_results_rec.interval_msecs);
+   g_rec.tot_interval_msecs := nvl(g_rec.tot_interval_msecs,0) +
+                               in_results_rec.interval_msecs;
    if in_results_rec.testcase is not null
    then
       tc := in_results_rec.testcase;
@@ -113,12 +113,12 @@ begin
             g_tc_aa(tc).errors := nvl(g_tc_aa(tc).errors,0) + 1;
          -- No need to check "ELSE" because it would have been caught above
       end case;
-      g_tc_aa(tc).min_elapsed_msecs := least(nvl(g_tc_aa(tc).min_elapsed_msecs,999999999)
-                                            ,in_results_rec.elapsed_msecs);
-      g_tc_aa(tc).max_elapsed_msecs := greatest(nvl(g_tc_aa(tc).max_elapsed_msecs,0)
-                                               ,in_results_rec.elapsed_msecs);
-      g_tc_aa(tc).tot_elapsed_msecs := nvl(g_tc_aa(tc).tot_elapsed_msecs,0) +
-                                       in_results_rec.elapsed_msecs;
+      g_tc_aa(tc).min_interval_msecs := least(nvl(g_tc_aa(tc).min_interval_msecs,999999999)
+                                             ,in_results_rec.interval_msecs);
+      g_tc_aa(tc).max_interval_msecs := greatest(nvl(g_tc_aa(tc).max_interval_msecs,0)
+                                                ,in_results_rec.interval_msecs);
+      g_tc_aa(tc).tot_interval_msecs := nvl(g_tc_aa(tc).tot_interval_msecs,0) +
+                                        in_results_rec.interval_msecs;
    end if;
 end add_result;
 
@@ -146,24 +146,24 @@ $THEN
       l_recSAVE   := g_rec;
       g_tc_aa     := l_tc_aaTEST;
       g_rec       := l_recTEST;
-      l_resultTEST.test_run_id   := -10;
-      l_resultTEST.elapsed_msecs := 10;
-      l_resultTEST.status        := 'PASS';
-      l_resultTEST.testcase      := 'TESTCASE1';
+      l_resultTEST.test_run_id    := -10;
+      l_resultTEST.interval_msecs := 10;
+      l_resultTEST.status         := 'PASS';
+      l_resultTEST.testcase       := 'TESTCASE1';
       add_result(l_resultTEST);
       --------------------------------------  WTPLSQL Testing --
-      l_resultTEST.elapsed_msecs := 20;
-      l_resultTEST.status        := 'FAIL';
-      l_resultTEST.testcase      := 'TESTCASE1';
+      l_resultTEST.interval_msecs := 20;
+      l_resultTEST.status         := 'FAIL';
+      l_resultTEST.testcase       := 'TESTCASE1';
       add_result(l_resultTEST);
-      l_resultTEST.elapsed_msecs := 30;
-      l_resultTEST.status        := 'ERR';
-      l_resultTEST.testcase      := 'TESTCASE1';
+      l_resultTEST.interval_msecs := 30;
+      l_resultTEST.status         := 'ERR';
+      l_resultTEST.testcase       := 'TESTCASE1';
       add_result(l_resultTEST);
       --------------------------------------  WTPLSQL Testing --
-      l_resultTEST.elapsed_msecs := 40;
-      l_resultTEST.status        := 'ABC';
-      l_resultTEST.testcase      := 'TESTCASE1';
+      l_resultTEST.interval_msecs := 40;
+      l_resultTEST.status         := 'ABC';
+      l_resultTEST.testcase       := 'TESTCASE1';
       begin
          add_result(l_resultTEST);
          l_sqlerrm := SQLERRM;
@@ -204,17 +204,17 @@ $THEN
          check_this_in   => l_recTEST.errors,
          against_this_in => 1);
       wt_assert.eq (
-         msg_in          => 'l_recTEST.min_elapsed_msecs',
-         check_this_in   => l_recTEST.min_elapsed_msecs,
+         msg_in          => 'l_recTEST.min_interval_msecs',
+         check_this_in   => l_recTEST.min_interval_msecs,
          against_this_in => 10);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'l_recTEST.max_elapsed_msecs',
-         check_this_in   => l_recTEST.max_elapsed_msecs,
+         msg_in          => 'l_recTEST.max_interval_msecs',
+         check_this_in   => l_recTEST.max_interval_msecs,
          against_this_in => 30);
       wt_assert.eq (
-         msg_in          => 'l_recTEST.tot_elapsed_msecs',
-         check_this_in   => l_recTEST.tot_elapsed_msecs,
+         msg_in          => 'l_recTEST.tot_interval_msecs',
+         check_this_in   => l_recTEST.tot_interval_msecs,
          against_this_in => 60);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
@@ -240,17 +240,17 @@ $THEN
          check_this_in   => l_tc_aaTEST('TESTCASE1').errors,
          against_this_in => 1);
       wt_assert.eq (
-         msg_in          => 'l_tc_aaTEST(''TESTCASE1'').min_elapsed_msecs',
-         check_this_in   => l_tc_aaTEST('TESTCASE1').min_elapsed_msecs,
+         msg_in          => 'l_tc_aaTEST(''TESTCASE1'').min_interval_msecs',
+         check_this_in   => l_tc_aaTEST('TESTCASE1').min_interval_msecs,
          against_this_in => 10);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'l_tc_aaTEST(''TESTCASE1'').max_elapsed_msecs',
-         check_this_in   => l_tc_aaTEST('TESTCASE1').max_elapsed_msecs,
+         msg_in          => 'l_tc_aaTEST(''TESTCASE1'').max_interval_msecs',
+         check_this_in   => l_tc_aaTEST('TESTCASE1').max_interval_msecs,
          against_this_in => 30);
       wt_assert.eq (
-         msg_in          => 'l_tc_aaTEST(''TESTCASE1'').tot_elapsed_msecs',
-         check_this_in   => l_tc_aaTEST('TESTCASE1').tot_elapsed_msecs,
+         msg_in          => 'l_tc_aaTEST(''TESTCASE1'').tot_interval_msecs',
+         check_this_in   => l_tc_aaTEST('TESTCASE1').tot_interval_msecs,
          against_this_in => 60);
    end t_add_result;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
@@ -433,7 +433,7 @@ begin
    if g_rec.asserts != 0
    then
       g_rec.test_yield := round(g_rec.passes/g_rec.asserts, 3);
-      g_rec.avg_elapsed_msecs := round(g_rec.tot_elapsed_msecs/g_rec.asserts, 3);
+      g_rec.avg_interval_msecs := round(g_rec.tot_interval_msecs/g_rec.asserts, 3);
    end if;
    if g_rec.profiled_lines is not null
    then
@@ -462,7 +462,7 @@ begin
          then
             g_tc_aa(tc).test_yield := round(g_tc_aa(tc).passes /
                                             g_tc_aa(tc).asserts, 3);
-            g_tc_aa(tc).avg_elapsed_msecs := round(g_tc_aa(tc).tot_elapsed_msecs /
+            g_tc_aa(tc).avg_interval_msecs := round(g_tc_aa(tc).tot_interval_msecs /
                                                    g_tc_aa(tc).asserts, 3);
          end if;
          insert into wt_testcase_stats values g_tc_aa(tc);
@@ -573,18 +573,18 @@ $THEN
          against_this_in => 0);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
-         msg_in          => 'l_recTEST.min_elapsed_msecs',
-         check_this_in   => l_recTEST.min_elapsed_msecs);
+         msg_in          => 'l_recTEST.min_interval_msecs',
+         check_this_in   => l_recTEST.min_interval_msecs);
       wt_assert.isnull (
-         msg_in          => 'l_recTEST.avg_elapsed_msecs',
-         check_this_in   => l_recTEST.avg_elapsed_msecs);
+         msg_in          => 'l_recTEST.avg_interval_msecs',
+         check_this_in   => l_recTEST.avg_interval_msecs);
       wt_assert.isnull (
-         msg_in          => 'l_recTEST.max_elapsed_msecs',
-         check_this_in   => l_recTEST.max_elapsed_msecs);
+         msg_in          => 'l_recTEST.max_interval_msecs',
+         check_this_in   => l_recTEST.max_interval_msecs);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
-         msg_in          => 'l_recTEST.tot_elapsed_msecs',
-         check_this_in   => l_recTEST.tot_elapsed_msecs);
+         msg_in          => 'l_recTEST.tot_interval_msecs',
+         check_this_in   => l_recTEST.tot_interval_msecs);
       wt_assert.isnull (
          msg_in          => 'l_recTEST.code_coverage',
          check_this_in   => l_recTEST.code_coverage);
@@ -632,37 +632,37 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'FINALIZE Happy Path 2';
       l_tc_aaTEST.delete;
-      l_tc_aaTEST(l_tc||'a').test_run_id       := l_test_run_id;
-      l_tc_aaTEST(l_tc||'a').testcase          := l_tc||'a';
-      l_tc_aaTEST(l_tc||'a').asserts           := 3;
-      l_tc_aaTEST(l_tc||'a').passes            := 2;
-      l_tc_aaTEST(l_tc||'a').failures          := 1;
-      --l_tc_aaTEST(l_tc||'a').errors            := null;
-      l_tc_aaTEST(l_tc||'a').tot_elapsed_msecs := 300;
+      l_tc_aaTEST(l_tc||'a').test_run_id        := l_test_run_id;
+      l_tc_aaTEST(l_tc||'a').testcase           := l_tc||'a';
+      l_tc_aaTEST(l_tc||'a').asserts            := 3;
+      l_tc_aaTEST(l_tc||'a').passes             := 2;
+      l_tc_aaTEST(l_tc||'a').failures           := 1;
+      --l_tc_aaTEST(l_tc||'a').errors             := null;
+      l_tc_aaTEST(l_tc||'a').tot_interval_msecs := 300;
       --------------------------------------  WTPLSQL Testing --
-      l_tc_aaTEST(l_tc||'b').test_run_id       := l_test_run_id;
-      l_tc_aaTEST(l_tc||'b').testcase          := l_tc||'b';
-      l_tc_aaTEST(l_tc||'b').asserts           := 3;
-      l_tc_aaTEST(l_tc||'b').passes            := 2;
-      l_tc_aaTEST(l_tc||'b').failures          := 1;
-      --l_tc_aaTEST(l_tc||'b').errors            := null;
-      l_tc_aaTEST(l_tc||'b').tot_elapsed_msecs := 300;
+      l_tc_aaTEST(l_tc||'b').test_run_id        := l_test_run_id;
+      l_tc_aaTEST(l_tc||'b').testcase           := l_tc||'b';
+      l_tc_aaTEST(l_tc||'b').asserts            := 3;
+      l_tc_aaTEST(l_tc||'b').passes             := 2;
+      l_tc_aaTEST(l_tc||'b').failures           := 1;
+      --l_tc_aaTEST(l_tc||'b').errors             := null;
+      l_tc_aaTEST(l_tc||'b').tot_interval_msecs := 300;
       --------------------------------------  WTPLSQL Testing --
       l_recTEST := l_recNULL;
-      l_recTEST.test_run_id        := l_test_run_id;
-      l_recTEST.asserts            := 6;
-      l_recTEST.passes             := 4;
-      l_recTEST.failures           := 2;
-      --l_recTEST.errors             := null;
-      l_recTEST.tot_elapsed_msecs  := 600;
+      l_recTEST.test_run_id         := l_test_run_id;
+      l_recTEST.asserts             := 6;
+      l_recTEST.passes              := 4;
+      l_recTEST.failures            := 2;
+      --l_recTEST.errors              := null;
+      l_recTEST.tot_interval_msecs  := 600;
       --------------------------------------  WTPLSQL Testing --
-      l_recTEST.profiled_lines     := 20;
-      l_recTEST.executed_lines     := 8;
-      l_recTEST.ignored_lines      := 6;
-      l_recTEST.excluded_lines     := 4;
-      l_recTEST.notexec_lines      := 2;
-      --l_recTEST.unknown_lines      := null;
-      l_recTEST.tot_executed_usecs := 2000;
+      l_recTEST.profiled_lines      := 20;
+      l_recTEST.executed_lines      := 8;
+      l_recTEST.ignored_lines       := 6;
+      l_recTEST.excluded_lines      := 4;
+      l_recTEST.notexec_lines       := 2;
+      --l_recTEST.unknown_lines       := null;
+      l_recTEST.tot_executed_usecs  := 2000;
       run_finalize('Run Finalize for Happy Path 2');  -- AUTONOMOUS COMMIT
       --------------------------------------  WTPLSQL Testing --
       begin
@@ -711,8 +711,8 @@ $THEN
          check_this_in   => l_tstat_rec.test_yield,
          against_this_in => 0.667);
       wt_assert.eq (
-         msg_in          => 'l_tstat_rec.avg_elapsed_msecs',
-         check_this_in   => l_tstat_rec.avg_elapsed_msecs,
+         msg_in          => 'l_tstat_rec.avg_interval_msecs',
+         check_this_in   => l_tstat_rec.avg_interval_msecs,
          against_this_in => 100);
       --------------------------------------  WTPLSQL Testing --
       begin
@@ -761,8 +761,8 @@ $THEN
          check_this_in   => l_tstat_rec.test_yield,
          against_this_in => 0.667);
       wt_assert.eq (
-         msg_in          => 'l_tstat_rec.avg_elapsed_msecs',
-         check_this_in   => l_tstat_rec.avg_elapsed_msecs,
+         msg_in          => 'l_tstat_rec.avg_interval_msecs',
+         check_this_in   => l_tstat_rec.avg_interval_msecs,
          against_this_in => 100);
       --------------------------------------  WTPLSQL Testing --
       begin
@@ -811,8 +811,8 @@ $THEN
          against_this_in => 2);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'l_recTEST.avg_elapsed_msecs',
-         check_this_in   => l_recTEST.avg_elapsed_msecs,
+         msg_in          => 'l_recTEST.avg_interval_msecs',
+         check_this_in   => l_recTEST.avg_interval_msecs,
          against_this_in => 100);
       wt_assert.eq (
          msg_in          => 'l_recTEST.code_coverage',

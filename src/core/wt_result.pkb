@@ -73,8 +73,8 @@ $THEN
          check_this_in   => l_results_recTEST.executed_dtm);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
-         msg_in          => 'l_results_recTEST.elapsed_msecs',
-         check_this_in   => l_results_recTEST.elapsed_msecs);
+         msg_in          => 'l_results_recTEST.interval_msecs',
+         check_this_in   => l_results_recTEST.interval_msecs);
       wt_assert.isnull (
          msg_in          => 'l_results_recTEST.assertion',
          check_this_in   => l_results_recTEST.assertion);
@@ -151,10 +151,10 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       -- Can't Test in this block because g_results_rec has test data
       g_results_rec  := l_results_recNULL;
-      g_results_rec.test_run_id   := -99;
-      g_results_rec.result_seq    := 1;
-      g_results_rec.executed_dtm  := systimestamp;
-      g_results_rec.elapsed_msecs := 99;
+      g_results_rec.test_run_id    := -99;
+      g_results_rec.result_seq     := 1;
+      g_results_rec.executed_dtm   := systimestamp;
+      g_results_rec.interval_msecs := 99;
       --------------------------------------  WTPLSQL Testing --
       g_results_rec.assertion     := 'FINALTEST';
       g_results_rec.status        := wt_assert.C_PASS;
@@ -246,9 +246,9 @@ begin
          ,in_message);
       return;
    end if;
-   -- Set the time and elapsed
+   -- Set the time and interval
    l_current_tstamp := systimestamp;
-   g_results_rec.elapsed_msecs := extract(day from (
+   g_results_rec.interval_msecs := extract(day from (
                                   l_current_tstamp - g_results_rec.executed_dtm
                                   ) * 86400 * 1000);
    g_results_rec.executed_dtm  := l_current_tstamp;
@@ -391,8 +391,8 @@ $THEN
          check_this_in   => g_results_nt(l_nt_count).message,
          against_this_in => 't_save_testing Testing Message');
       wt_assert.isnotnull (
-         msg_in          => 'g_results_nt(' || l_nt_count || ').elapsed_msecs',
-         check_this_in   => g_results_nt(l_nt_count).elapsed_msecs);
+         msg_in          => 'g_results_nt(' || l_nt_count || ').interval_msecs',
+         check_this_in   => g_results_nt(l_nt_count).interval_msecs);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull (
          msg_in          => 'g_results_nt(' || l_nt_count || ').executed_dtm',
@@ -439,14 +439,14 @@ $THEN
       l_test_runs_rec.runner_name  := 'Delete Records Test';
       l_test_runs_rec.runner_owner := 'BOGUS';
       insert into wt_test_runs values l_test_runs_rec;
-      l_results_rec.test_run_id   := -99;
+      l_results_rec.test_run_id    := -99;
       --------------------------------------  WTPLSQL Testing --
-      l_results_rec.result_seq    := 1;
-      l_results_rec.executed_dtm  := sysdate;
-      l_results_rec.elapsed_msecs := 99;
-      l_results_rec.assertion     := 'DELRECTEST';
-      l_results_rec.status        := wt_assert.C_PASS;
-      l_results_rec.details       := 'This is a WT_RESULT.DELETE_RECORDS Test';
+      l_results_rec.result_seq     := 1;
+      l_results_rec.executed_dtm   := sysdate;
+      l_results_rec.interval_msecs := 99;
+      l_results_rec.assertion      := 'DELRECTEST';
+      l_results_rec.status         := wt_assert.C_PASS;
+      l_results_rec.details        := 'This is a WT_RESULT.DELETE_RECORDS Test';
       insert into wt_results values l_results_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (
