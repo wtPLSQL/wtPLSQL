@@ -82,7 +82,7 @@ wtPLSQL has a different focus than utPLSQL V3.  More information is available [i
 * [Core Features](Core-Features.md)
 * [About wtPLSQL](About-wtPLSQL.md)
 * [Best Practices](Best-Practices.md)
-* [Definitions](Definitions.md)
+* [Other Definitions](Other-Definitions.md)
 * [utPLSQL V3 Comparison](utPLSQL-V3-Comparison)
 
 ## Contribute

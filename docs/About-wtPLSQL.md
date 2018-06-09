@@ -36,8 +36,10 @@ The wtPLSQL project is an attempt to allow PL/SQL developers to be PL/SQL develo
 
 The wtPLSQL framework includes provisions for the following errors during execution:
 * Un-handled test runner exceptions
-* Storage of a large test result sets
-* Isolation of test runner results during concurrent test runs.
+* Storage errors from too many old test result sets.
+* Isolation of different test runner results during concurrent test runs.
+* Missing or non-existent test runners.
+* Incorrect/incompatable DBMS_PROFILER version
 
 ### Dynamic Testing
 [Testing that takes place when the program itself is run.](https://en.wikipedia.org/wiki/Software_testing#Static_vs._dynamic_testing)
@@ -67,7 +69,7 @@ In the wtPLSQL framework, the DBOUT can be any of the following PL/SQL objects:
 
 [Put Test Code in Same Package](https://utplsql.org/utPLSQL/v2.3.1/samepack.html)
 
-With utPLSQL V1/V2, packages can include an embedded self-test. The required calls can be exposed within the package that is being tested. This is particularly useful for testing package internals like private variables and procedures. These embedded selftests also remove the need to expose private variables and procudures to public calls so they can be tested.
+With utPLSQL V1/V2, packages can include an embedded self-test. The required calls can be exposed within the package that is being tested. This is particularly useful for testing package internals like private variables and procedures. These embedded selftests also remove the need to expose private variables and procedures to public calls so they can be tested.
 
 wtPLSQL continues this capability. However, with wtPLSQL, the addition of an embedded selftest requires only 1 additional procedure call in the package specification (WTPLSQL_RUN).
 
@@ -102,7 +104,7 @@ In the wtPLSQL framework, integration testing of multiple database objects (no m
 
 [A test suite is a set of tests that all share the same fixture.](https://en.wikipedia.org/wiki/XUnit#Test_suites)
 
-Test fixtures and test suites are a part of the xUnit testing framework. At the core, wtPLSQL does not include test fixtures or test suites. If needed, these can be defined and implemented in a variety of ways.
+Test fixtures and test suites are a part of the xUnit testing framework. At the core, wtPLSQL does not include test fixtures or test suites. If needed, these can be easily defined and implemented in a test runner package.
 
 ## Test Driven Development
 With **TDD** (Test Driven Development), [you write a test before you write just enough production code to fulfill that test](http://agiledata.org/essays/tdd.html)
