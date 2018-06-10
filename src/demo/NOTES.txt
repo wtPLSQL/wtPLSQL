@@ -19,18 +19,3 @@ ut_del1 - Test an Entire Package
 Create and Run a Test Suite - Build a Test Suite package.
 ut_betwnstr - 
 Version
-
-
-Add-Ons:
---------
-Where is UTL_FILE?
-ut_setpath - Test a Collection (check ETCC code)
-What about prefixes? - Because the Test Runner is completely user written, the use of prefixes is optional.
-Build Test Packages
-Where is Trace? - Because the Test Runner is in total control of testing and because the Test Runner is completly user written, any desired tracing can be added to the Test Runner as needed.  The simplicity of wtPLSQL execution eliminates the need for wtPLSQL tracing (small and reliable).
-What do I do with all this utConfig stuff?
-What happened to utResult? - It is confusing why database programmers need a package to report test results. All test results from wtPLSQL are easily reported from database tables. There is a default reporting package called WT_TEXT_REPORT that provides simple reports through DBMS_OUTPUT.
-
-utOutput Package not implemented.
-utRecEq Package not implemented.
-Custom Reporter not implemented (custom developed).

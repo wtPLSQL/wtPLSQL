@@ -91,7 +91,7 @@
 <td>No</td>
 <td>null</td>
 <td>3</td>
-<td>Executed/NotExecuted/Excluded/Annotated/Unknown&nbsp;Status&nbsp;from&nbsp;the&nbsp;Profiler</td>
+<td>Executed/NotExecuted/Excluded/Ignored/Unknown&nbsp;Status&nbsp;from&nbsp;the&nbsp;Profiler</td>
 </tr>
 <tr onclick="table_onSelectMasterRow(this, 0, 3)">
 <td>TOTAL_OCCUR</td>
@@ -102,28 +102,28 @@
 <td>Number&nbsp;of&nbsp;times&nbsp;this&nbsp;line&nbsp;was&nbsp;executed.</td>
 </tr>
 <tr onclick="table_onSelectMasterRow(this, 0, 4)">
-<td>TOTAL_TIME</td>
-<td>NUMBER(9,0)</td>
+<td>TOTAL_USECS</td>
+<td>NUMBER</td>
 <td>No</td>
 <td>null</td>
 <td>5</td>
-<td>Total&nbsp;time&nbsp;spent&nbsp;executing&nbsp;this&nbsp;line.</td>
+<td>Total&nbsp;time&nbsp;in&nbsp;microseconds&nbsp;spent&nbsp;executing&nbsp;this&nbsp;line.</td>
 </tr>
 <tr onclick="table_onSelectMasterRow(this, 0, 5)">
-<td>MIN_TIME</td>
-<td>NUMBER(9,0)</td>
+<td>MIN_USECS</td>
+<td>NUMBER</td>
 <td>No</td>
 <td>null</td>
 <td>6</td>
-<td>Minimum&nbsp;execution&nbsp;time&nbsp;for&nbsp;this&nbsp;line.</td>
+<td>Minimum&nbsp;execution&nbsp;time&nbsp;in&nbsp;microseconds&nbsp;for&nbsp;this&nbsp;line.</td>
 </tr>
 <tr onclick="table_onSelectMasterRow(this, 0, 6)">
-<td>MAX_TIME</td>
-<td>NUMBER(9,0)</td>
+<td>MAX_USECS</td>
+<td>NUMBER</td>
 <td>No</td>
 <td>null</td>
 <td>7</td>
-<td>Maximum&nbsp;execution&nbsp;time&nbsp;for&nbsp;this&nbsp;line.</td>
+<td>Maximum&nbsp;execution&nbsp;time&nbsp;in&nbsp;microseconds&nbsp;for&nbsp;this&nbsp;line.</td>
 </tr>
 <tr onclick="table_onSelectMasterRow(this, 0, 7)">
 <td>TEXT</td>
@@ -162,7 +162,7 @@
 <tr onclick="table_onSelectMasterRow(this, 1, 0)" class="currentrow">
 <td class="currentcell">WT_DBOUT_PROFILES_CK1</td>
 <td class="currentcell">Check</td>
-<td class="currentcell">status&nbsp;in&nbsp;('EXEC','NOTX','EXCL','ANNO','UNKN')</td>
+<td class="currentcell">status&nbsp;in&nbsp;('EXEC','NOTX','EXCL','IGNR','UNKN')</td>
 <td class="currentcell">null</td>
 <td class="currentcell">null</td>
 <td class="currentcell">null</td>
@@ -173,7 +173,7 @@
 <td class="currentcell">USER&nbsp;NAME</td>
 <td class="currentcell">null</td>
 <td class="currentcell">null</td>
-<td class="currentcell">14-APR-2018&nbsp;17:27:17</td>
+<td class="currentcell">09-JUN-2018&nbsp;11:00:56</td>
 <td class="currentcell">null</td>
 <td class="currentcell">null</td>
 <td class="currentcell">null</td>
@@ -193,7 +193,7 @@
 <td>USER&nbsp;NAME</td>
 <td>null</td>
 <td>null</td>
-<td>14-APR-2018&nbsp;17:27:17</td>
+<td>09-JUN-2018&nbsp;11:00:56</td>
 <td>null</td>
 <td>null</td>
 <td>null</td>
@@ -213,7 +213,7 @@
 <td>USER&nbsp;NAME</td>
 <td>null</td>
 <td>null</td>
-<td>14-APR-2018&nbsp;17:27:17</td>
+<td>09-JUN-2018&nbsp;11:00:56</td>
 <td>null</td>
 <td>null</td>
 <td>null</td>
@@ -233,7 +233,7 @@
 <td>USER&nbsp;NAME</td>
 <td>null</td>
 <td>null</td>
-<td>14-APR-2018&nbsp;17:27:17</td>
+<td>09-JUN-2018&nbsp;11:00:56</td>
 <td>null</td>
 <td>null</td>
 <td>null</td>
@@ -253,7 +253,7 @@
 <td>USER&nbsp;NAME</td>
 <td>null</td>
 <td>null</td>
-<td>14-APR-2018&nbsp;17:27:17</td>
+<td>09-JUN-2018&nbsp;11:00:56</td>
 <td>null</td>
 <td>null</td>
 <td>null</td>
@@ -273,7 +273,7 @@
 <td>USER&nbsp;NAME</td>
 <td>null</td>
 <td>null</td>
-<td>14-APR-2018&nbsp;17:27:17</td>
+<td>09-JUN-2018&nbsp;11:00:56</td>
 <td>null</td>
 <td>null</td>
 <td>null</td>
@@ -282,7 +282,7 @@
 <tr onclick="table_onSelectMasterRow(this, 1, 6)">
 <td>WT_DBOUT_PROFILES_NN5</td>
 <td>Check</td>
-<td>"TOTAL_TIME"&nbsp;IS&nbsp;NOT&nbsp;NULL</td>
+<td>"TOTAL_USECS"&nbsp;IS&nbsp;NOT&nbsp;NULL</td>
 <td>null</td>
 <td>null</td>
 <td>null</td>
@@ -293,7 +293,7 @@
 <td>USER&nbsp;NAME</td>
 <td>null</td>
 <td>null</td>
-<td>14-APR-2018&nbsp;17:27:17</td>
+<td>09-JUN-2018&nbsp;11:00:56</td>
 <td>null</td>
 <td>null</td>
 <td>null</td>
@@ -302,7 +302,7 @@
 <tr onclick="table_onSelectMasterRow(this, 1, 7)">
 <td>WT_DBOUT_PROFILES_NN6</td>
 <td>Check</td>
-<td>"MIN_TIME"&nbsp;IS&nbsp;NOT&nbsp;NULL</td>
+<td>"MIN_USECS"&nbsp;IS&nbsp;NOT&nbsp;NULL</td>
 <td>null</td>
 <td>null</td>
 <td>null</td>
@@ -313,7 +313,7 @@
 <td>USER&nbsp;NAME</td>
 <td>null</td>
 <td>null</td>
-<td>14-APR-2018&nbsp;17:27:17</td>
+<td>09-JUN-2018&nbsp;11:00:56</td>
 <td>null</td>
 <td>null</td>
 <td>null</td>
@@ -322,7 +322,7 @@
 <tr onclick="table_onSelectMasterRow(this, 1, 8)">
 <td>WT_DBOUT_PROFILES_NN7</td>
 <td>Check</td>
-<td>"MAX_TIME"&nbsp;IS&nbsp;NOT&nbsp;NULL</td>
+<td>"MAX_USECS"&nbsp;IS&nbsp;NOT&nbsp;NULL</td>
 <td>null</td>
 <td>null</td>
 <td>null</td>
@@ -333,7 +333,7 @@
 <td>USER&nbsp;NAME</td>
 <td>null</td>
 <td>null</td>
-<td>14-APR-2018&nbsp;17:27:17</td>
+<td>09-JUN-2018&nbsp;11:00:56</td>
 <td>null</td>
 <td>null</td>
 <td>null</td>
@@ -353,7 +353,7 @@
 <td>USER&nbsp;NAME</td>
 <td>null</td>
 <td>null</td>
-<td>14-APR-2018&nbsp;17:27:17</td>
+<td>09-JUN-2018&nbsp;11:00:56</td>
 <td>null</td>
 <td>null</td>
 <td>null</td>
@@ -373,7 +373,7 @@
 <td>USER&nbsp;NAME</td>
 <td>null</td>
 <td>null</td>
-<td>14-APR-2018&nbsp;17:27:17</td>
+<td>09-JUN-2018&nbsp;11:00:56</td>
 <td>null</td>
 <td>WT_DBOUT_PROFILES_PK</td>
 <td>null</td>
@@ -476,7 +476,7 @@
 <th>COLUMN_POSITION</th>
 </tr>
 <tr onclick="table_onSelectRow(this, 8)" class="currentrow">
-<td class="currentcell">TOTAL_TIME</td>
+<td class="currentcell">TOTAL_USECS</td>
 <td class="currentcell">null</td>
 </tr>
 </table>
@@ -489,7 +489,7 @@
 <th>COLUMN_POSITION</th>
 </tr>
 <tr onclick="table_onSelectRow(this, 9)" class="currentrow">
-<td class="currentcell">MIN_TIME</td>
+<td class="currentcell">MIN_USECS</td>
 <td class="currentcell">null</td>
 </tr>
 </table>
@@ -502,7 +502,7 @@
 <th>COLUMN_POSITION</th>
 </tr>
 <tr onclick="table_onSelectRow(this, 10)" class="currentrow">
-<td class="currentcell">MAX_TIME</td>
+<td class="currentcell">MAX_USECS</td>
 <td class="currentcell">null</td>
 </tr>
 </table>
@@ -559,21 +559,7 @@
 <td class="currentcell">WT_DBOUT_PROFILES</td>
 </tr>
 <tr onclick="table_onSelectMasterRow(this, 13, 1)">
-<td>INSERT</td>
-<td>PUBLIC</td>
-<td>NO</td>
-<td>WTP</td>
-<td>WT_DBOUT_PROFILES</td>
-</tr>
-<tr onclick="table_onSelectMasterRow(this, 13, 2)">
 <td>SELECT</td>
-<td>PUBLIC</td>
-<td>NO</td>
-<td>WTP</td>
-<td>WT_DBOUT_PROFILES</td>
-</tr>
-<tr onclick="table_onSelectMasterRow(this, 13, 3)">
-<td>UPDATE</td>
 <td>PUBLIC</td>
 <td>NO</td>
 <td>WTP</td>
@@ -590,27 +576,27 @@
 </tr>
 <tr>
 <td>NUM_ROWS</td>
-<td>3974</td>
+<td>5494</td>
 </tr>
 <tr>
 <td>BLOCKS</td>
-<td>35</td>
+<td>50</td>
 </tr>
 <tr>
 <td>AVG_ROW_LEN</td>
-<td>58</td>
+<td>60</td>
 </tr>
 <tr>
 <td>SAMPLE_SIZE</td>
-<td>3974</td>
+<td>5494</td>
 </tr>
 <tr>
 <td>LAST_ANALYZED</td>
-<td>20-APR-2018&nbsp;00:10:27</td>
+<td>09-JUN-2018&nbsp;13:46:14</td>
 </tr>
 <tr>
 <td>LAST_ANALYZED_SINCE</td>
-<td>20-APR-2018&nbsp;00:10:27</td>
+<td>09-JUN-2018&nbsp;13:46:14</td>
 </tr>
 </table>
 <br/>
@@ -666,13 +652,29 @@
 </tr>
 <tr onclick="table_onSelectMasterRow(this, 16, 0)" class="currentrow">
 <td class="currentcell">WTP</td>
-<td class="currentcell">WT_PROFILER</td>
-<td class="currentcell">PACKAGE&nbsp;BODY</td>
+<td class="currentcell">WT_TEST_RUN_STAT</td>
+<td class="currentcell">PACKAGE</td>
 <td class="currentcell">WTP</td>
 <td class="currentcell">WT_DBOUT_PROFILES</td>
 <td class="currentcell">TABLE</td>
 </tr>
 <tr onclick="table_onSelectMasterRow(this, 16, 1)">
+<td>WTP</td>
+<td>WT_PROFILER</td>
+<td>PACKAGE&nbsp;BODY</td>
+<td>WTP</td>
+<td>WT_DBOUT_PROFILES</td>
+<td>TABLE</td>
+</tr>
+<tr onclick="table_onSelectMasterRow(this, 16, 2)">
+<td>WTP</td>
+<td>WT_TEST_RUN_STAT</td>
+<td>PACKAGE&nbsp;BODY</td>
+<td>WTP</td>
+<td>WT_DBOUT_PROFILES</td>
+<td>TABLE</td>
+</tr>
+<tr onclick="table_onSelectMasterRow(this, 16, 3)">
 <td>WTP</td>
 <td>WT_TEXT_REPORT</td>
 <td>PACKAGE&nbsp;BODY</td>
@@ -718,22 +720,48 @@
 </table>
 </div>
 </div>
+<div id="Child.0.2.5">
+<div class="childreport"><table id="Table.19" cellpadding="0" cellspacing="0" summary="">
+<tr>
+<th>OWNER</th>
+<th>NAME</th>
+<th>TYPE</th>
+<th>REFERENCED_OWNER</th>
+<th>REFERENCED_NAME</th>
+<th>REFERENCED_TYPE</th>
+</tr>
+</table>
+</div>
+</div>
+<div id="Child.0.3.5">
+<div class="childreport"><table id="Table.20" cellpadding="0" cellspacing="0" summary="">
+<tr>
+<th>OWNER</th>
+<th>NAME</th>
+<th>TYPE</th>
+<th>REFERENCED_OWNER</th>
+<th>REFERENCED_NAME</th>
+<th>REFERENCED_TYPE</th>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="Master.6">
 <div class="masterreport">
-<table id="Table.19" cellpadding="0" cellspacing="0" summary="">
+<table id="Table.21" cellpadding="0" cellspacing="0" summary="">
 <th>NAME</th>
 <th>VALUE</th>
 </tr>
 <tr>
 <td>CREATED</td>
-<td>14-APR-2018&nbsp;17:27:17</td>
+<td>09-JUN-2018&nbsp;11:00:56</td>
 </tr>
 <tr>
 <td>LAST_DDL_TIME</td>
-<td>14-APR-2018&nbsp;17:27:17</td>
+<td>09-JUN-2018&nbsp;11:00:57</td>
 </tr>
 <tr>
 <td>OWNER</td>
@@ -813,11 +841,11 @@
 </tr>
 <tr>
 <td>NUM_ROWS</td>
-<td>3974</td>
+<td>5494</td>
 </tr>
 <tr>
 <td>BLOCKS</td>
-<td>35</td>
+<td>50</td>
 </tr>
 <tr>
 <td>EMPTY_BLOCKS</td>
@@ -833,7 +861,7 @@
 </tr>
 <tr>
 <td>AVG_ROW_LEN</td>
-<td>58</td>
+<td>60</td>
 </tr>
 <tr>
 <td>AVG_SPACE_FREELIST_BLOCKS</td>
@@ -861,11 +889,11 @@
 </tr>
 <tr>
 <td>SAMPLE_SIZE</td>
-<td>3974</td>
+<td>5494</td>
 </tr>
 <tr>
 <td>LAST_ANALYZED</td>
-<td>20-APR-2018&nbsp;00:10:27</td>
+<td>09-JUN-2018&nbsp;13:46:14</td>
 </tr>
 <tr>
 <td>PARTITIONED</td>
@@ -956,7 +984,7 @@
 </div>
 <div id="Master.7">
 <div class="masterreport">
-<table id="Table.20" cellpadding="0" cellspacing="0" summary="">
+<table id="Table.22" cellpadding="0" cellspacing="0" summary="">
 <tr>
 <th>PARTITION_NAME</th>
 <th>LAST_ANALYZED</th>
@@ -982,7 +1010,7 @@
 </div>
 <div id="Master.8">
 <div class="masterreport">
-<table id="Table.21" cellpadding="0" cellspacing="0" summary="">
+<table id="Table.23" cellpadding="0" cellspacing="0" summary="">
 <tr>
 <th>INDEX_OWNER</th>
 <th>INDEX_NAME</th>
@@ -995,7 +1023,7 @@
 <th>JOIN_INDEX</th>
 <th>COLUMNS</th>
 </tr>
-<tr onclick="table_onSelectMasterRow(this, 21, 0)" class="currentrow">
+<tr onclick="table_onSelectMasterRow(this, 23, 0)" class="currentrow">
 <td class="currentcell">WTP</td>
 <td class="currentcell">WT_DBOUT_PROFILES_PK</td>
 <td class="currentcell">UNIQUE</td>
@@ -1020,7 +1048,7 @@
 <br/>
 <div id="ChildReports.8">
 <div id="Child.0.0.8">
-<div class="currentchildreport"><table id="Table.22" cellpadding="0" cellspacing="0" summary="">
+<div class="currentchildreport"><table id="Table.24" cellpadding="0" cellspacing="0" summary="">
 <tr>
 <th>INDEX_OWNER</th>
 <th>INDEX_NAME</th>
@@ -1033,7 +1061,7 @@
 <th>DESCEND</th>
 <th>COLUMN_EXPRESSION</th>
 </tr>
-<tr onclick="table_onSelectRow(this, 22)" class="currentrow">
+<tr onclick="table_onSelectRow(this, 24)" class="currentrow">
 <td class="currentcell">WTP</td>
 <td class="currentcell">WT_DBOUT_PROFILES_PK</td>
 <td class="currentcell">WTP</td>
@@ -1045,7 +1073,7 @@
 <td class="currentcell">ASC</td>
 <td class="currentcell">null</td>
 </tr>
-<tr onclick="table_onSelectRow(this, 22)">
+<tr onclick="table_onSelectRow(this, 24)">
 <td>WTP</td>
 <td>WT_DBOUT_PROFILES_PK</td>
 <td>WTP</td>

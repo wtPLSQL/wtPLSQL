@@ -43,7 +43,7 @@ A simple text based reporting package called "WT_TEXT_REPORT" is included with t
 
 Because all testing with wtPLSQL is for driven by custom PL/SQL packages, a [Best Practices page](Best-Practices.md) has some guidance for creating Test Runner packages.
 
-The [About wtPLQSL page](About-wtPLSQL.md) has more information about the history and testing methodology of wtPLSQL.
+The [About wtPLSQL page](About-wtPLSQL.md) has more information about the history and testing methodology of wtPLSQL.
 
 ## wtPLSQL Definitions
 
@@ -73,6 +73,14 @@ utPLSQL V3 is an excellent choice for unit testing.  It is well supported and in
 
 wtPLSQL has a different focus than utPLSQL V3.  More information is available [in this link](utPLSQL-V3-Comparison).
 
+## How does wtPLSQL compare to utPLSQL V1 or utPLSQL V2?
+
+utPLSQL V2 is an extension of utPLSQL V1. Since utPSQL V2 is being replaced by utPLSQL V3, neither utPLSQL V2 or utPLSQL V1 are good choices for starting a new software testing implementation.
+
+The goal of wtPLSQL has been to implement the basic/core functionality of utPLSQL V2 while preserving the the programming investment in the assertion API (utAssert.eq, utAssert.isnotnull, etc.). The additional functionality of utPLSQL V2 that is not included in the wtPLSQL core will be added through optionally installed modules (also known as add-ons).
+
+More information is available [in this link](utPLSQL-V2-Comparison).
+
 ## Demonstrations and Examples
 
 [Under Construction](demo/README.md)
@@ -84,6 +92,8 @@ wtPLSQL has a different focus than utPLSQL V3.  More information is available [i
 * [Best Practices](Best-Practices.md)
 * [Other Definitions](Other-Definitions.md)
 * [utPLSQL V3 Comparison](utPLSQL-V3-Comparison)
+* [utPLSQL V1/V2 Comparison](utPLSQL-V2-Comparison)
+* [Latest wtPSQL DB Docs](core/DBDocs/index.html)
 
 ## Contribute
 

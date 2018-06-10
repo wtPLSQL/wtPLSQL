@@ -75,7 +75,7 @@
 <td class="currentcell">No</td>
 <td class="currentcell">null</td>
 <td class="currentcell">1</td>
-<td class="currentcell">null</td>
+<td class="currentcell">(Primary&nbsp;key)&nbsp;References&nbsp;plsql_profiler_runs</td>
 </tr>
 <tr onclick="table_onSelectMasterRow(this, 0, 1)">
 <td>UNIT_NUMBER</td>
@@ -83,7 +83,7 @@
 <td>No</td>
 <td>null</td>
 <td>2</td>
-<td>null</td>
+<td>(Primary&nbsp;key)&nbsp;Internally&nbsp;generated&nbsp;library&nbsp;unit&nbsp;#</td>
 </tr>
 <tr onclick="table_onSelectMasterRow(this, 0, 2)">
 <td>UNIT_TYPE</td>
@@ -91,7 +91,7 @@
 <td>Yes</td>
 <td>null</td>
 <td>3</td>
-<td>null</td>
+<td>Library&nbsp;unit&nbsp;type</td>
 </tr>
 <tr onclick="table_onSelectMasterRow(this, 0, 3)">
 <td>UNIT_OWNER</td>
@@ -99,7 +99,7 @@
 <td>Yes</td>
 <td>null</td>
 <td>4</td>
-<td>null</td>
+<td>Library&nbsp;unit&nbsp;owner&nbsp;name</td>
 </tr>
 <tr onclick="table_onSelectMasterRow(this, 0, 4)">
 <td>UNIT_NAME</td>
@@ -107,7 +107,7 @@
 <td>Yes</td>
 <td>null</td>
 <td>5</td>
-<td>null</td>
+<td>Library&nbsp;unit&nbsp;name&nbsp;timestamp&nbsp;on&nbsp;library&nbsp;unit</td>
 </tr>
 <tr onclick="table_onSelectMasterRow(this, 0, 5)">
 <td>UNIT_TIMESTAMP</td>
@@ -115,7 +115,7 @@
 <td>Yes</td>
 <td>null</td>
 <td>6</td>
-<td>null</td>
+<td>In&nbsp;the&nbsp;future&nbsp;will&nbsp;be&nbsp;used&nbsp;to&nbsp;detect&nbsp;changes&nbsp;to&nbsp;unit&nbsp;between&nbsp;runs</td>
 </tr>
 <tr onclick="table_onSelectMasterRow(this, 0, 6)">
 <td>TOTAL_TIME</td>
@@ -123,7 +123,7 @@
 <td>No</td>
 <td>0&nbsp;</td>
 <td>7</td>
-<td>null</td>
+<td>Total&nbsp;time&nbsp;spent&nbsp;in&nbsp;this&nbsp;unit&nbsp;in&nbsp;nanoseconds.&nbsp;The&nbsp;profiler&nbsp;does&nbsp;not&nbsp;set&nbsp;this&nbsp;field,&nbsp;but&nbsp;it&nbsp;is&nbsp;provided&nbsp;for&nbsp;the&nbsp;convenience&nbsp;of&nbsp;analysis&nbsp;tools</td>
 </tr>
 <tr onclick="table_onSelectMasterRow(this, 0, 7)">
 <td>SPARE1</td>
@@ -131,7 +131,7 @@
 <td>Yes</td>
 <td>null</td>
 <td>8</td>
-<td>null</td>
+<td>Unused</td>
 </tr>
 <tr onclick="table_onSelectMasterRow(this, 0, 8)">
 <td>SPARE2</td>
@@ -139,7 +139,7 @@
 <td>Yes</td>
 <td>null</td>
 <td>9</td>
-<td>null</td>
+<td>Unused</td>
 </tr>
 </table>
 </div>
@@ -168,7 +168,7 @@
 <th>VIEW_RELATED</th>
 </tr>
 <tr onclick="table_onSelectMasterRow(this, 1, 0)" class="currentrow">
-<td class="currentcell">SYS_C0019555</td>
+<td class="currentcell">SYS_C0020108</td>
 <td class="currentcell">Check</td>
 <td class="currentcell">"TOTAL_TIME"&nbsp;IS&nbsp;NOT&nbsp;NULL</td>
 <td class="currentcell">null</td>
@@ -181,14 +181,14 @@
 <td class="currentcell">GENERATED&nbsp;NAME</td>
 <td class="currentcell">null</td>
 <td class="currentcell">null</td>
-<td class="currentcell">14-APR-2018&nbsp;17:27:15</td>
+<td class="currentcell">09-JUN-2018&nbsp;11:00:54</td>
 <td class="currentcell">null</td>
 <td class="currentcell">null</td>
 <td class="currentcell">null</td>
 <td class="currentcell">null</td>
 </tr>
 <tr onclick="table_onSelectMasterRow(this, 1, 1)">
-<td>SYS_C0019556</td>
+<td>SYS_C0020109</td>
 <td>Primary_Key</td>
 <td>null</td>
 <td>null</td>
@@ -201,19 +201,19 @@
 <td>GENERATED&nbsp;NAME</td>
 <td>null</td>
 <td>null</td>
-<td>14-APR-2018&nbsp;17:27:15</td>
+<td>09-JUN-2018&nbsp;11:00:54</td>
 <td>null</td>
-<td>SYS_C0019556</td>
+<td>SYS_C0020109</td>
 <td>null</td>
 <td>null</td>
 </tr>
 <tr onclick="table_onSelectMasterRow(this, 1, 2)">
-<td>SYS_C0019557</td>
+<td>SYS_C0020110</td>
 <td>Foreign_Key</td>
 <td>null</td>
 <td>WTP</td>
 <td>PLSQL_PROFILER_RUNS</td>
-<td>SYS_C0019554</td>
+<td>SYS_C0020107</td>
 <td>NO&nbsp;ACTION</td>
 <td>ENABLED</td>
 <td>NOT&nbsp;DEFERRABLE</td>
@@ -221,7 +221,7 @@
 <td>GENERATED&nbsp;NAME</td>
 <td>null</td>
 <td>null</td>
-<td>14-APR-2018&nbsp;17:27:15</td>
+<td>09-JUN-2018&nbsp;11:00:54</td>
 <td>null</td>
 <td>null</td>
 <td>null</td>
@@ -303,13 +303,6 @@
 <td class="currentcell">PLSQL_PROFILER_UNITS</td>
 </tr>
 <tr onclick="table_onSelectMasterRow(this, 5, 1)">
-<td>INSERT</td>
-<td>PUBLIC</td>
-<td>NO</td>
-<td>WTP</td>
-<td>PLSQL_PROFILER_UNITS</td>
-</tr>
-<tr onclick="table_onSelectMasterRow(this, 5, 2)">
 <td>SELECT</td>
 <td>PUBLIC</td>
 <td>NO</td>
@@ -343,11 +336,11 @@
 </tr>
 <tr>
 <td>LAST_ANALYZED</td>
-<td>20-APR-2018&nbsp;00:10:48</td>
+<td>09-JUN-2018&nbsp;13:46:13</td>
 </tr>
 <tr>
 <td>LAST_ANALYZED_SINCE</td>
-<td>20-APR-2018&nbsp;00:10:48</td>
+<td>09-JUN-2018&nbsp;13:46:13</td>
 </tr>
 </table>
 <br/>
@@ -445,11 +438,11 @@
 </tr>
 <tr>
 <td>CREATED</td>
-<td>14-APR-2018&nbsp;17:27:15</td>
+<td>09-JUN-2018&nbsp;11:00:54</td>
 </tr>
 <tr>
 <td>LAST_DDL_TIME</td>
-<td>14-APR-2018&nbsp;17:27:16</td>
+<td>09-JUN-2018&nbsp;11:00:54</td>
 </tr>
 <tr>
 <td>OWNER</td>
@@ -581,7 +574,7 @@
 </tr>
 <tr>
 <td>LAST_ANALYZED</td>
-<td>20-APR-2018&nbsp;00:10:48</td>
+<td>09-JUN-2018&nbsp;13:46:13</td>
 </tr>
 <tr>
 <td>PARTITIONED</td>
@@ -665,7 +658,7 @@
 </tr>
 <tr>
 <td>COMMENTS</td>
-<td>Information&nbsp;about&nbsp;each&nbsp;library&nbsp;unit&nbsp;in&nbsp;a&nbsp;run</td>
+<td>Table&nbsp;of&nbsp;program&nbsp;units&nbsp;for&nbsp;DBMS_PROFILER</td>
 </tr>
 </table>
 </div>
@@ -713,7 +706,7 @@
 </tr>
 <tr onclick="table_onSelectMasterRow(this, 12, 0)" class="currentrow">
 <td class="currentcell">WTP</td>
-<td class="currentcell">SYS_C0019556</td>
+<td class="currentcell">SYS_C0020109</td>
 <td class="currentcell">UNIQUE</td>
 <td class="currentcell">VALID</td>
 <td class="currentcell">NORMAL</td>
@@ -751,7 +744,7 @@
 </tr>
 <tr onclick="table_onSelectRow(this, 13)" class="currentrow">
 <td class="currentcell">WTP</td>
-<td class="currentcell">SYS_C0019556</td>
+<td class="currentcell">SYS_C0020109</td>
 <td class="currentcell">WTP</td>
 <td class="currentcell">PLSQL_PROFILER_UNITS</td>
 <td class="currentcell">RUNID</td>
@@ -763,7 +756,7 @@
 </tr>
 <tr onclick="table_onSelectRow(this, 13)">
 <td>WTP</td>
-<td>SYS_C0019556</td>
+<td>SYS_C0020109</td>
 <td>WTP</td>
 <td>PLSQL_PROFILER_UNITS</td>
 <td>UNIT_NUMBER</td>

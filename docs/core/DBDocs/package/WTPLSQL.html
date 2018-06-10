@@ -82,7 +82,7 @@
 </tr>
 <tr>
 <td>OBJECT_ID</td>
-<td>38721</td>
+<td>40401</td>
 </tr>
 <tr>
 <td>DATA_OBJECT_ID</td>
@@ -94,15 +94,15 @@
 </tr>
 <tr>
 <td>CREATED</td>
-<td>14-APR-2018&nbsp;17:27:18</td>
+<td>09-JUN-2018&nbsp;11:00:59</td>
 </tr>
 <tr>
 <td>LAST_DDL_TIME</td>
-<td>20-APR-2018&nbsp;16:59:18</td>
+<td>09-JUN-2018&nbsp;11:00:59</td>
 </tr>
 <tr>
 <td>TIMESTAMP</td>
-<td>2018-04-20:16:59:18</td>
+<td>2018-06-09:11:00:59</td>
 </tr>
 <tr>
 <td>STATUS</td>
@@ -203,8 +203,13 @@ as
    --   WtPLSQL Self Test Procedures
    --
    -- alter system set PLSQL_CCFLAGS = 
-   --    'WTPLSQL_SELFTEST:TRUE'
+   --    'WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE'
    --    scope=BOTH;
+   --
+   -- begin
+   --    dbms_utility.compile_schema('WTP',TRUE,FALSE);
+   -- end;
+   -- /
    --
    $IF $$WTPLSQL_SELFTEST
    $THEN
