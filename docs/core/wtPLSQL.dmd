@@ -1,8 +1,0 @@
-<?xml version = '1.0' encoding = 'UTF-8'?>
-<OSDM_Design class="oracle.dbtools.crest.model.design.Design" name="wtPLSQL" id="1193CE20-39E8-FA55-6472-2A3F44B6BA9F" version="3.5">
-<createdBy>Duane</createdBy>
-<createdTime>2018-01-21 14:28:25 UTC</createdTime>
-<ownerDesignName>wtPLSQL</ownerDesignName>
-<capitalNames>false</capitalNames>
-<designId>1193CE20-39E8-FA55-6472-2A3F44B6BA9F</designId>
-</OSDM_Design>

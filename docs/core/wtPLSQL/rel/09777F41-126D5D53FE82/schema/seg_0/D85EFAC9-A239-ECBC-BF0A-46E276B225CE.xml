@@ -1,6 +1,0 @@
-<?xml version = '1.0' encoding = 'UTF-8'?>
-<SchemaObject class="oracle.dbtools.crest.model.design.relational.SchemaObject" name="WTP" directorySegmentName="seg_0" id="D85EFAC9-A239-ECBC-BF0A-46E276B225CE">
-<createdBy>Duane</createdBy>
-<createdTime>2018-01-21 14:30:35 UTC</createdTime>
-<ownerDesignName>wtPLSQL</ownerDesignName>
-</SchemaObject>
