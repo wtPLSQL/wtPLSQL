@@ -47,7 +47,7 @@ new:grant create procedure to wtp
 
 Grant succeeded.
 
-PLSQL_CCFLAGS Before: 
+PLSQL_CCFLAGS Before: WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE
 
 
 PL/SQL procedure successfully completed.
@@ -55,7 +55,7 @@ PL/SQL procedure successfully completed.
 
 PL/SQL procedure successfully completed.
 
-PLSQL_CCFLAGS After: WTPLSQL_ENABLE:TRUE
+PLSQL_CCFLAGS After: WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE
 
 
 PL/SQL procedure successfully completed.

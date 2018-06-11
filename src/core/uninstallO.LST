@@ -28,28 +28,28 @@ begin
 	  execute immediate sql_txt;
    end loop;
 end;
-drop public synonym PLSQL_PROFILER_DATA
-drop public synonym PLSQL_PROFILER_RUNNUMBER
-drop public synonym PLSQL_PROFILER_RUNS
-drop public synonym PLSQL_PROFILER_UNITS
-drop public synonym WTPLSQL
-drop public synonym WT_ASSERT
-drop public synonym WT_DBOUT_PROFILES
-drop public synonym WT_PROFILER
-drop public synonym WT_RESULT
-drop public synonym WT_RESULTS
-drop public synonym WT_TEST_RUNS
-drop public synonym WT_TEST_RUNS_SEQ
-drop public synonym WT_TEST_RUN_STAT
-drop public synonym WT_TEXT_REPORT
-drop public synonym WT_VERSION
 drop public synonym WT_WTPLSQL
+drop public synonym WT_VERSION
+drop public synonym WT_TEXT_REPORT
+drop public synonym WT_TEST_RUN_STAT
+drop public synonym WT_TEST_RUNS_SEQ
+drop public synonym WT_TEST_RUNS
+drop public synonym WT_RESULTS
+drop public synonym WT_RESULT
+drop public synonym WT_PROFILER
+drop public synonym WT_DBOUT_PROFILES
+drop public synonym WT_ASSERT
+drop public synonym WTPLSQL
+drop public synonym PLSQL_PROFILER_UNITS
+drop public synonym PLSQL_PROFILER_RUNS
+drop public synonym PLSQL_PROFILER_RUNNUMBER
+drop public synonym PLSQL_PROFILER_DATA
 
 
 PL/SQL procedure successfully completed.
 
 Remove "WTPLSQL_ENABLE" from PLSQL_CCFLAGS
-  *) "WTPLSQL_ENABLE:TRUE"
+  *) "WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE"
 
 
 PL/SQL procedure successfully completed.
