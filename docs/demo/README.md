@@ -1,6 +1,6 @@
 # Demonstrations and Examples
 ---
-Demonstrations and examples assume successful connection to an Oracle database with wtPLSQL installed. [Installation instructions](https://github.com/DDieterich/wtPLSQL/releases) are available on the [Releases web page](https://github.com/DDieterich/wtPLSQL/releases).
+Demonstrations and examples assume successful connection to an [Oracle database](http://www.oracle.com/technetwork/database/database-technologies/express-edition/overview/index.html) with wtPLSQL installed. [wtPLSQL Installation instructions](https://github.com/DDieterich/wtPLSQL/releases) are available on the [wtPLSQL Releases page](https://github.com/DDieterich/wtPLSQL/releases).
 All demonstration and example code is included in the web pages below?
 
 ## Simple Stuff
