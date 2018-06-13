@@ -32,6 +32,9 @@ This is the summary from the WT_ASSERT package self-test.  This is the default D
 
 To view the complete test results from the wtPLSQL self-test, go to the [test_allO.LST](https://github.com/DDieterich/wtPLSQL/blob/master/src/core/test_allO.LST) file in GitHub.
 
+## Demonstrations and Examples
+
+[Under Construction](demo/README.md)
 
 ## What is wtPLSQL?
 
@@ -81,10 +84,6 @@ The goal of wtPLSQL has been to implement the basic/core functionality of utPLSQ
 
 More information is available [in this link](utPLSQL-V2-Comparison).
 
-## Demonstrations and Examples
-
-[Under Construction](demo/README.md)
-
 ### Site Map
 
 * [Core Features](Core-Features.md)
@@ -93,8 +92,8 @@ More information is available [in this link](utPLSQL-V2-Comparison).
 * [Other Definitions](Other-Definitions.md)
 * [utPLSQL V3 Comparison](utPLSQL-V3-Comparison)
 * [utPLSQL V1/V2 Comparison](utPLSQL-V2-Comparison)
-* [ER Diagram PDF](core/ER_Diagrams.pdf)
 * [Latest wtPSQL DB Docs](core/DBDocs/index.html)
+* [ER Diagram PDF](core/ER_Diagrams.pdf)
 * [Call Tree Diagrams PDF](core/Call_Tree_Diagrams.pdf)
 
 ## Contribute
