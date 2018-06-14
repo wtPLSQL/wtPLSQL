@@ -4,12 +4,44 @@ Demonstrations and examples assume successful connection to an [Oracle database]
 All demonstration and example code is included in the web pages below?
 
 ## Simple Stuff
-* [Get wtPLSQL Version](Version.md) (Not Ready)
-* [Ad-Hoc Test](Ad-Hoc-Test.md) (Not Ready)
 
-This example is a good test to ensure wtPLSQL is running properly.
+The simplest check for the wtplsql is to select the "version from dual".
+
+Run this:
+```
+select wtplsql.show_version from dual;
+```
+and get this:
+```
+SHOW_VERSION
+------------
+1.1.0
+```
+
+Another simple test is an ad-hoc assertion. This test requires DBMS_OUTPUT. The results of this test are not recorded.
+
+Run this:
+```
+set serveroutput on size unlimited format word_wrapped
+
+begin
+   wt_assert.eq(msg_in          => 'Ad-Hoc Test'
+               ,check_this_in   =>  1
+               ,against_this_in => '1');
+end;
+/
+```
+And get this:
+```
+PASS Ad-Hoc Test. EQ - Expected "1" and got "1"
+```
+
+This ad-hoc test also demonstrates implicit data type conversion, which allows a wider variety of testing. Many data types are converted to VARCHAR2 before comparison. This ensures most results are captured and reported exactly as they were tested.
+
+The majority of wtPLSQL testing uses a Test Runner. A Test Runner is a PL/SQL package written by the tester. [This page](Test-Runner.md) has an example of a very simple [Test Runner](Test-Runner.md). All the examples below will use Test Runners.
 
 ## Database Object Tests
+More interesting examples actually test database objects. Here is an example test of each database object supported by wtPLSQL.
 * [Package Test](Package-Test.md) (Not Ready)
 * [Procedure Test](Procedure-Test.md) (Not Ready)
 * [Function Test](Function-Test.md) (Not Ready)
