@@ -9,7 +9,7 @@ is
 
    -- See RESET_GLOBALS procedure for default global values
 
-   -- Testcase name for a series of assetions.
+   -- Testcase name for a series of assertions.
    --   Modify as required
    g_testcase         wt_results.testcase%TYPE;
 

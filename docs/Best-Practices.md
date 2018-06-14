@@ -53,5 +53,7 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    --------------------------------------  WTPLSQL Testing --
 ```
 
+**Check and/or set NLS settings before testing.** Many data types are implicitly converted to VARCHAR2 before comparison. The "wtplsql" package includes functions to check and set NLS settings. Note: Modifying these settings always includes a COMMIT.
+
 ---
 [Website Home Page](README.md)

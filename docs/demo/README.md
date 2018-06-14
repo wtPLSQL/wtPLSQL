@@ -1,11 +1,10 @@
 # Demonstrations and Examples
 ---
 Demonstrations and examples assume successful connection to an [Oracle database](http://www.oracle.com/technetwork/database/database-technologies/express-edition/overview/index.html) with wtPLSQL installed. [wtPLSQL Installation instructions](https://github.com/DDieterich/wtPLSQL/releases) are available on the [wtPLSQL Releases page](https://github.com/DDieterich/wtPLSQL/releases).
-All demonstration and example code is included in the web pages below?
 
 ## Simple Stuff
 
-The simplest check for the wtplsql is to select the "version from dual".
+The simplest check for a wtPLSQL installation is to select the "version from dual".
 
 Run this:
 ```
@@ -36,7 +35,7 @@ And get this:
 PASS Ad-Hoc Test. EQ - Expected "1" and got "1"
 ```
 
-This ad-hoc test also demonstrates implicit data type conversion, which allows a wider variety of testing. Many data types are converted to VARCHAR2 before comparison. This ensures most results are captured and reported exactly as they were tested.
+Note: This ad-hoc test also demonstrates implicit data type conversion.
 
 The majority of wtPLSQL testing uses a Test Runner. A Test Runner is a PL/SQL package written by the tester. [This page](Test-Runner.md) has an example of a very simple [Test Runner](Test-Runner.md). All the examples below will use Test Runners.
 

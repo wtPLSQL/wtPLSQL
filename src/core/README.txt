@@ -48,16 +48,3 @@ UnInstall Procedure:
 1) sqlplus SYS/password as SYSDBA @uninstall
 2) exit
 3) Compare uninstall.LST to uninstallO.LST
-
-
-Custom Error Codes:
--------------------
-20001 - WTPLSQL: RUNNER_NAME is NULL
-20002 - WTPLSQL: RUNNER_NAME (name) is not valid
-20003 - WT_ASSERT: User Test Result is FAIL (g_raise_exception is TRUE)
-20004 - WT_PROFILER: in_test_run_id is NULL
-20005 - WT_PROFILER: dbms_profiler.INTERNAL_VERSION_CHECK returned (error)
-20006 - WT_PROFILER: dbms_profiler.START_PROFILER returned (error)
-20009 - WT_RESULT: "in_test_run_id" cannot be NULL
-20010 - WT_TEST_RUN_STAT: Unknown Result status
-20011 - WT_TEST_RUN_STAT: Unknown Profile status
