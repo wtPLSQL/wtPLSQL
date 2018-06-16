@@ -13,7 +13,7 @@ Test results from assertions can be queried from a set of wtPLSQL tables. The ex
 
 The [Simple Stuff](Simple-Stuff.md) page is a confidence builder, excellent for first time users of wtPLSQL.
 
-The [Test Runner](Test-Runner.md) page covers all the basics of creating a Test Runner.  wtPLSQL is all about creating and running Test Runners.
+The [Test Runner](Test-Runner.md) page covers all the basics of creating a Test Runner package.
 
 ## Database Object Tests
 More interesting examples actually test database objects. Here is an example test of each database object supported by wtPLSQL.

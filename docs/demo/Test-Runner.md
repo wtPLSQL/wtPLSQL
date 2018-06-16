@@ -5,16 +5,15 @@
 ---
 Most all wtPLSQL tests are executed with a Test Runner. A Test Runner is a PL/SQL package written by the tester. Below are examples of very simple Test Runners.
 
-Minimal Test Runner Package Spec:
+Run this:
+
 ```
-create or replace package simple_test_runner authid current_user
+create or replace package simple_test_runner authid definer
 as
    procedure wtplsql_run;
 end simple_test_runner;
 /
-```
-Minimal Test Runner Package Body:
-```
+
 create or replace package body simple_test_runner
 as
    procedure wtplsql_run is begin
@@ -25,11 +24,13 @@ as
 end simple_test_runner;
 /
 ```
-This is a minimal test runner.  It is a package that contains the (public) WTPLSQL_RUN procedure and 1 assertion. It does the same assertion as the ad-hoc assertion in the "Simple Test" page. However, the test results are not sent to DBMS_OUTPUT. The test results are saved in the wtPLSQL tables.
+
+SIMPLE_TEST_RUNNER is a minimal test runner.  It is a package that contains the (public) WTPLSQL_RUN procedure and 1 assertion. It does the same assertion as the ad-hoc assertion in the [Simple Test](Simple-Test.md) page. 
 
 ## Execute and Display
 
 To execute the Test Runner, run this:
+
 ```
 begin
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
@@ -37,7 +38,9 @@ end;
 /
 ```
 
-The results for this assertion have been saved in the wtPLSQL tables. Use the default reporting package to display the results.
+There are no test results because the test results were not sent to DBMS_OUTPUT. The test results were saved in the wtPLSQL tables.
+
+To view the results, run this:
 
 ```
 set serveroutput on size unlimited format word_wrapped
@@ -46,22 +49,28 @@ begin
    wt_text_report.dbms_out;
 end;
 /
+```
 
+And get this:
+
+```
     wtPLSQL 1.1.0 - Run ID 12: 15-Jun-2018 01:45:16 PM
 
   Test Results for WTP_DEMO.SIMPLE_TEST_RUNNER
-        Total Testcases:        0       Total Assertions:        1
+       Total Test Cases:        0       Total Assertions:        1
   Minimum Interval msec:       56      Failed Assertions:        0
   Average Interval msec:       56       Error Assertions:        0
   Maximum Interval msec:       56             Test Yield:   100.00%
    Total Run Time (sec):      0.2
 ```
 
-While the results might vary, this is latest test result summary from all Test Runners for the login user.  The report confirms that one assertion was executed for SIMPLE_TEST_RUNNER and it passed.
+This is latest test result summary from all Test Runners for the login user.  The interval time shown here is the elapsed time from starting the Test Runner until the first assertion was executed.  The total run time is the elapsed time from start to finish for the Test Runner.  The report confirms that one assertion was executed for SIMPLE_TEST_RUNNER and it passed.  All tests passed, so the test yield is 100%.
 
 ## WT_TEXT_REPORT Display Levels
 
 This example shows all result details for the SIMPLE_TEST_RUNNER only.
+
+Run this:
 
 ```
 set serveroutput on size unlimited format word_wrapped
@@ -71,11 +80,15 @@ begin
                           ,in_detail_level => 30);
 end;
 /
+```
 
+And get this:
+
+```
     wtPLSQL 1.1.0 - Run ID 12: 15-Jun-2018 01:45:16 PM
 
   Test Results for WTP_DEMO.SIMPLE_TEST_RUNNER
-        Total Testcases:        0       Total Assertions:        1
+       Total Test Cases:        0       Total Assertions:        1
   Minimum Interval msec:       56      Failed Assertions:        0
   Average Interval msec:       56       Error Assertions:        0
   Maximum Interval msec:       56             Test Yield:   100.00%
@@ -86,38 +99,87 @@ end;
  PASS   56ms Ad-Hoc Test. EQ - Expected "1" and got "1"
 ```
 
-A detail level of 30 shows all summary and detail results for a Test Runner.  In this case, the summary is the same and the detailed results of the EQ assertion are shown.  These detail levels are explained in the [Reference Page](../Reference.md).
+This shows the latest test result summary with test results details.  A detail level of 30 shows summary and detailed test results for a Test Runner.  In this case, the summary is the same and the detailed results of the EQ assertion are shown.  These detail levels are explained in the [Reference Page](../Reference.md).
+
+The detailed results shown are the same as the ad-hoc result, with a "56ms" added.  The detailed results from the Test Runner includes the elapsed time between assertions, or elapsed time from Test Runner startup to the first assertion.
 
 ## Test Cases
 
-For wtPLSQL, a test case is a collection of assertions.  Test results can be grouped by test case name. There can be zero or more test cases in a Test Runner.
+For wtPLSQL, a test case is a collection of assertions.  Assertion results can be grouped by test case. There can be zero or more test cases in a Test Runner.
+
+Run this:
 
 ```
 create or replace package body simple_test_runner
 as
    procedure wtplsql_run is begin
-      wt_assert.g_testcase := 'My Test Case';
-      wt_assert.eq(msg_in          => 'Ad-Hoc Test'
+      wt_assert.g_testcase := 'My Test Case A';
+      wt_assert.eq(msg_in          => 'Ad-Hoc Test1'
                   ,check_this_in   =>  1
                   ,against_this_in => '1');
+      wt_assert.eq(msg_in          => 'Ad-Hoc Test2'
+                  ,check_this_in   =>  2
+                  ,against_this_in => '2');
+      wt_assert.g_testcase := 'My Test Case B';
+      wt_assert.eq(msg_in          => 'Ad-Hoc Test1'
+                  ,check_this_in   =>  4
+                  ,against_this_in => ' 4');
+      wt_assert.eq(msg_in          => 'Ad-Hoc Test2'
+                  ,check_this_in   =>  5
+                  ,against_this_in => to_number(' 5'));
    end wtplsql_run;
 end simple_test_runner;
 /
 ```
 
-This modification of the SIMPLE_TEST_RUNNER sets a test case for the assertion.  It is done by modifying a WT_ASSERT package variable.  More on this below.
+Setting a value for WT_ASSERT.G_TESTCASE in the SIMPLE_TEST_RUNNER package sets a test case for all following assertions.  This value can be set multiple times within a Test Runner.  The results summary will show the number of test cases.  The test results details will group assertions by test case.
 
+Run this:
+
+```
+begin
+   wtplsql.test_run('SIMPLE_TEST_RUNNER');
+   wt_text_report.dbms_out(in_runner_name  => 'SIMPLE_TEST_RUNNER'
+                          ,in_detail_level => 30);
+end;
+/
+```
+
+And get this:
+
+```
+    wtPLSQL 1.1.0 - Run ID 43: 16-Jun-2018 07:43:50 AM
+
+  Test Results for WTP_DEMO.SIMPLE_TEST_RUNNER
+       Total Test Cases:        2       Total Assertions:        4
+  Minimum Interval msec:        0      Failed Assertions:        1
+  Average Interval msec:        0       Error Assertions:        0
+  Maximum Interval msec:        1             Test Yield:    75.00%
+   Total Run Time (sec):      0.0
+
+ - WTP_DEMO.SIMPLE_TEST_RUNNER Test Result Details (Test Run ID 43)
+-----------------------------------------------------------
+ ---- Test Case: My Test Case A
+ PASS    1ms Ad-Hoc Test1. EQ - Expected "1" and got "1"
+ PASS    0ms Ad-Hoc Test2. EQ - Expected "2" and got "2"
+ ---- Test Case: My Test Case B
+#FAIL#   0ms Ad-Hoc Test1. EQ - Expected " 4" and got "4"
+ PASS    0ms Ad-Hoc Test2. EQ - Expected "5" and got "5"
+```
+
+The Test Results summary shows 2 test cases were found.  The Test Results Details show the assertion results grouped by test case.  The details also show a failed assertion.  It also shows "Ad-Hoc Test2" in "My Test Case B" passed because the TO_NUMBER was used to remove the space character from " 5".
 
 ## DBOUT Annotation
 
 The Database Object Under Test (DBOUT) annotation is used to determine which database object to profile.  If this annotation identifies accessible source code for a DBOUT, the DBMS_PROFILER package is activated to check code coverage.
+
+Run this:
 
 ```
 create or replace package body simple_test_runner
 as
    --% WTPLSQL SET DBOUT "SIMPLE_TEST_RUNNER:PACKAGE BODY" %--
    procedure wtplsql_run is begin
-      wt_assert.g_testcase := 'My Test Case';
       wt_assert.eq(msg_in          => 'Ad-Hoc Test'
                   ,check_this_in   =>  1
                   ,against_this_in => '1');
@@ -128,17 +190,23 @@ end simple_test_runner;
 
 With the addition of the DBOUT annotation, the profiling information is available for the SIMPLE_TEST_RUNNER package.
 
+Run this:
+
 ```
 begin
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
    wt_text_report.dbms_out(USER,'SIMPLE_TEST_RUNNER');
 end;
 /
+```
 
+And get this:
+
+```
     wtPLSQL 1.1.0 - Run ID 38: 15-Jun-2018 11:03:52 PM
 
   Test Results for WTP_DEMO.SIMPLE_TEST_RUNNER
-        Total Testcases:        1       Total Assertions:        1
+       Total Test Cases:        0       Total Assertions:        1
   Minimum Interval msec:      186      Failed Assertions:        0
   Average Interval msec:      186       Error Assertions:        0
   Maximum Interval msec:      186             Test Yield:   100.00%
@@ -153,13 +221,15 @@ end;
   Trigger Source Offset:        0
 ```
 
-Note the addition of the "Code Coverage" Summary.  DBMS_PROFILER found 4 lines of significance in the source code.  3 of those lines were executed.  1 line is unknown or undefined by DBMS_PROFILER.  Unknown lines consume execution time, but were not executed.  
+This shows the latest test result summary and code coverage summary for the SIMPLE_TEST_RUNNER test runner.  DBMS_PROFILER found 4 lines of significance in the source code.  3 of those lines were executed.  1 line is unknown or undefined by DBMS_PROFILER.  Unknown lines consume execution time, but were not executed.  
 
 ## Ignore Annotation
 
 In the previous example, the SIMPLE_TEST_RUNNER package is both the Test Runner and the Database Object Under Test (DBOUT).  In practice, this is a self testing package.  Because DBMS_OUTPUT includes all the source lines, there is a need to segregate "testing" source lines from "tested" source lines.  The ignore annotation is used to segregate these lines.
 
-The function "add2" represents some code that needs to be tested.  It is also a private function.  Self testing packages can run private functions.
+The function "add2" represents some code that needs to be tested.  It is also a private function.  Self testing packages can test the private functions in the package.
+
+Run this:
 
 ```
 create or replace package body simple_test_runner
@@ -185,17 +255,23 @@ The DBOUT annotation has been moved for convenience.  It can be placed anywhere 
 
 The "begin_ignore" and "end_ignore" annotations have been added to the SIMPLE_TEST_RUNNER package.  The intent of these annotations is to ignore the source lines for the WTPLSQL_RUN procedure for code coverage calculations.
 
+Run this:
+
 ```
 begin
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
    wt_text_report.dbms_out(USER,'SIMPLE_TEST_RUNNER',50);
 end;
 /
+```
 
+And get this:
+
+```
     wtPLSQL 1.1.0 - Run ID 40: 16-Jun-2018 12:38:49 AM
 
   Test Results for WTP_DEMO.SIMPLE_TEST_RUNNER
-        Total Testcases:        1       Total Assertions:        1
+       Total Test Cases:        1       Total Assertions:        1
   Minimum Interval msec:      111      Failed Assertions:        0
   Average Interval msec:      111       Error Assertions:        0
   Maximum Interval msec:      111             Test Yield:   100.00%

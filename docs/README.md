@@ -66,7 +66,7 @@ These are the working definitions for the wtPLSQL project.
 
 **Testcase** - A logical grouping of assertions to run happy path, decision tree, boundary condition, and/or fault insertion tests.  May included one or more setup, teardown, and intermediate setups.
 
-**Test Runner** - A PL/SQL package that exercises a DBOUT and uses assertions to confirm the correct funcionality of the DBOUT. It may have zero or more testcases.  It always contains a call to the WTPLSQL.TEST_RUN procedure.  It may contain DBOUT annotations and/or "exclude source lines" annotations.
+**Test Runner** - A PL/SQL package that exercises a DBOUT and uses assertions to confirm the correct funcionality of the DBOUT. It may have zero or more testcases.  It always contains a call to the WTPLSQL.TEST_RUN procedure.  It may contain DBOUT annotations and "ignore source lines" annotations.
 
 The [Other Definitions page](Other-Definitions.md) includes definitions from many sources to help define the terms used in various software testing methodologies.
 

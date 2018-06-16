@@ -21,7 +21,7 @@ end p;
 procedure result_summary
 is
 begin
-   p('        Total Testcases: ' || to_char(nvl(g_test_run_stats_rec.testcases         ,0),'9999999') ||
+   p('       Total Test Cases: ' || to_char(nvl(g_test_run_stats_rec.testcases         ,0),'9999999') ||
      '       Total Assertions: ' || to_char(nvl(g_test_run_stats_rec.asserts           ,0),'9999999') );
    p('  Minimum Interval msec: ' || to_char(nvl(g_test_run_stats_rec.min_interval_msecs,0),'9999999') ||
      '      Failed Assertions: ' || to_char(nvl(g_test_run_stats_rec.failures          ,0),'9999999') );

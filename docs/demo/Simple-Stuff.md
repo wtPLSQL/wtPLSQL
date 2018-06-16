@@ -1,4 +1,4 @@
-[Website Home Page](README.md)
+[Demos and Examples](README.md)
 
 # Simple Stuff
 
@@ -24,19 +24,25 @@ grant create procedure to wtp_demo;
 The simplest check for a wtPLSQL installation is to select the "version from dual".
 
 Run this:
+
 ```
 select wtplsql.show_version from dual;
 ```
-and get this:
+
+And get this:
+
 ```
 SHOW_VERSION
-------------
+-----------------------------------------------------------
 1.1.0
 ```
+
+This shows the wtPLSQL version as 1.1.0.
 
 Another simple test is an ad-hoc assertion. This test requires DBMS_OUTPUT. The results of this test are not recorded.
 
 Run this:
+
 ```
 set serveroutput on size unlimited format word_wrapped
 
@@ -47,12 +53,20 @@ begin
 end;
 /
 ```
+
 And get this:
+
 ```
 PASS Ad-Hoc Test. EQ - Expected "1" and got "1"
 ```
 
+This indicates:
+ * the assertion passed
+ * the assertion had the message "Ad-Hoc Test"
+ * the assertion name is "EQ"
+ * the assertion details which may include the values tested
+
 Note: This ad-hoc test also demonstrates implicit data type conversion.
 
 ---
-[Website Home Page](README.md)
+[Demos and Examples](README.md)
