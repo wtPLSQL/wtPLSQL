@@ -9,7 +9,7 @@ Use [GitHub "issues"](https://github.com/DDieterich/wtPLSQL/issues) for support.
 
 ## Example wtPLSQL Test Results
 
-This is the summary from the WT_ASSERT package self-test.  This is the default DBMS_OUTPUT format.  Because test results and code coverage is stored in Oracle tables, other report formats a simple to create.
+This is the summary from the WT_ASSERT package self-test.  It was created with the default DBMS_OUTPUT reporting package.  Because test results and code coverage is stored in Oracle tables, other report formats are simple to create.
 
 ```
     wtPLSQL 1.1.0 - Run ID 7: 09-Jun-2018 11:48:42 AM
@@ -30,11 +30,7 @@ This is the summary from the WT_ASSERT package self-test.  This is the default D
   Trigger Source Offset:        0
 ```
 
-To view the complete test results from the wtPLSQL self-test, go to the [test_allO.LST](https://github.com/DDieterich/wtPLSQL/blob/master/src/core/test_allO.LST) file in GitHub.
-
-## Demonstrations and Examples
-
-[Under Construction](demo/README.md)
+To view the complete test results from the wtPLSQL self-test, go to the [test_allO.LST](https://github.com/DDieterich/wtPLSQL/blob/master/src/core/test_allO.LST) file in GitHub.  The [Demonstrations and Examples Page](demo/README.md) has more examples.
 
 ## What is wtPLSQL?
 
@@ -48,27 +44,7 @@ Because all testing with wtPLSQL is for driven by custom PL/SQL packages, a [Bes
 
 The [About wtPLSQL page](About-wtPLSQL.md) has more information about the history and testing methodology of wtPLSQL.
 
-## wtPLSQL Definitions
-
-These are the working definitions for the wtPLSQL project.
-
-**Annotation** - PL/SQL comment used to identify a DBOUT or ignore source code lines from code coverage data.
-
-**Assertion** - A function that performs a single test and records/reports the result.
-
-**Coverage** - An indication of the amount or percentage of source code tested.
-
-**DBOUT** - Database Object Under Test.  The database object that is the target of testing.  White-box testing is oriented toward a specific DBOUT.  Code coverage is also oriented toward a specific DBOUT.
-
-**Setup** - Modifying the database or environment in preparation for an assertion, testcase, or group of either.
-
-**Teardown** - Restoring a database or environment after an assertion, testcase, or group of either.
-
-**Testcase** - A logical grouping of assertions to run happy path, decision tree, boundary condition, and/or fault insertion tests.  May included one or more setup, teardown, and intermediate setups.
-
-**Test Runner** - A PL/SQL package that exercises a DBOUT and uses assertions to confirm the correct funcionality of the DBOUT. It may have zero or more testcases.  It always contains a call to the WTPLSQL.TEST_RUN procedure.  It may contain DBOUT annotations and "ignore source lines" annotations.
-
-The [Other Definitions page](Other-Definitions.md) includes definitions from many sources to help define the terms used in various software testing methodologies.
+The [Definitions page](Definitions.md) includes definitions from many sources to help define the terms used in various software testing methodologies.
 
 ## How does wtPLSQL compare to utPLSQL V3?
 
@@ -84,18 +60,22 @@ The goal of wtPLSQL has been to implement the basic/core functionality of utPLSQ
 
 More information is available [in this link](utPLSQL-V2-Comparison).
 
-### Site Map
+### Site Links
 
-* [Core Features](Core-Features.md)
-* [About wtPLSQL](About-wtPLSQL.md)
-* [Best Practices](Best-Practices.md)
-* [Other Definitions](Other-Definitions.md)
-* [utPLSQL V3 Comparison](utPLSQL-V3-Comparison)
-* [utPLSQL V1/V2 Comparison](utPLSQL-V2-Comparison)
+User Help
+* [Demonstrations and Examples Page](demo/README.md)
 * [Reference](Reference.md)
+* [Best Practices](Best-Practices.md)
 * [Latest wtPSQL DB Docs](core/DBDocs/index.html)
 * [ER Diagram PDF](core/ER_Diagrams.pdf)
 * [Call Tree Diagrams PDF](core/Call_Tree_Diagrams.pdf)
+
+Background
+* [Definitions](Definitions.md)
+* [About wtPLSQL](About-wtPLSQL.md)
+* [Core Features](Core-Features.md)
+* [utPLSQL V3 Comparison](utPLSQL-V3-Comparison)
+* [utPLSQL V1/V2 Comparison](utPLSQL-V2-Comparison)
 
 ## Contribute
 

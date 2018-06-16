@@ -1,6 +1,27 @@
 [Website Home Page](README.md)
 
-# Other Definitions
+# Definitions
+
+---
+## wtPLSQL Definitions
+
+These are the working definitions for the wtPLSQL project.
+
+**Annotation** - PL/SQL comment used to identify a DBOUT or ignore source code lines from code coverage data.
+
+**Assertion** - A function that performs a single test and records/reports the result.
+
+**Coverage** - An indication of the amount or percentage of source code tested.
+
+**DBOUT** - Database Object Under Test.  The database object that is the target of testing.  White-box testing is oriented toward a specific DBOUT.  Code coverage is also oriented toward a specific DBOUT.
+
+**Setup** - Modifying the database or environment in preparation for an assertion, testcase, or group of either.
+
+**Teardown** - Restoring a database or environment after an assertion, testcase, or group of either.
+
+**Testcase** - A logical grouping of assertions to run happy path, decision tree, boundary condition, and/or fault insertion tests.  May included one or more setup, teardown, and intermediate setups.
+
+**Test Runner** - A PL/SQL package that exercises a DBOUT and uses assertions to confirm the correct funcionality of the DBOUT. It may have zero or more testcases.  It always contains a call to the WTPLSQL.TEST_RUN procedure.  It may contain DBOUT annotations and "ignore source lines" annotations.
 
 ---
 ## Oracle Database
@@ -10,7 +31,7 @@ Note: Some Oracle database terms overlap with Object Oriented terms.
 
 **Schema** - Database owner of a database object.
 
-***
+---
 ## XUnit
 These definitions were taken from [Xunit at Wikipedia](https://en.wikipedia.org/wiki/XUnit).  They include minor editing for clarification.
 
@@ -33,7 +54,7 @@ The setup and teardown serve to initialize and clean up test fixtures.
 
 **Assertions** - A function or macro that verifies the behavior (or the state) of the unit under test. Usually an assertion expresses a logical condition that is true for results expected in a correctly running system under test (SUT). Failure of an assertion typically throws an exception, aborting the execution of the current test.
 
-***
+---
 ## JUnit
 These definitions were taken from the [JUnit Team at GitHub](https://github.com/junit-team/junit/wiki)
 
@@ -47,7 +68,7 @@ These definitions were taken from the [JUnit Team at GitHub](https://github.com/
 
 **Test Fixture** - A test fixture is a fixed state of a set of objects used as a baseline for running tests. The purpose of a test fixture is to ensure that there is a well known and fixed environment in which tests are run so that results are repeatable.
 
-***
+---
 ## JUnit XML For Jenkins
 These definitions are based around the JUnit XML for Jenkins requirement.  There is some translating required as the Oracle database is relational, not object oriented.  Additionally, the Jenkins XML specification has some nuances that are not obvious.
 
@@ -63,7 +84,7 @@ These definitions are based around the JUnit XML for Jenkins requirement.  There
 
 **TestSuite** - Collection of TestCases.
 
-***
+---
 ## Java
 These Java definitions are provided for reference
 

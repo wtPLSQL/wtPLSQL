@@ -46,5 +46,10 @@ utOutput in utPLSQL V2 has been replaced by WT_TEXT_REPORT in wtPLSQL. Unlike ut
 ### Custom Reporter
 There is no custom reporter. The definition of the wtPLSQL tables is defined so reporting tools can be used to create custom reports.
 
+### Links
+* [utPLSQL V2.3.1 Website](https://utplsql.org/moving/2016/07/07/version-2-3-1-released.html)
+* [utPLSQL V2.3.1 Documentation](https://utplsql.org/utPLSQL/v2.3.1/)
+
+
 ---
 [Website Home Page](README.md)

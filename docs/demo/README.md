@@ -80,7 +80,7 @@ A test runner package is central to running tests in wtPLSQL.  The [Test Runner]
 
 ## Database Object Tests
 More interesting examples actually test database objects. Here is an example test of each database object supported by wtPLSQL.
-* [Package Test](Package-Test.md) (Not Ready)
+* [Package Test](Package-Test.md)
 * [Procedure Test](Procedure-Test.md) (Not Ready)
 * [Function Test](Function-Test.md) (Not Ready)
 * [Table Constraints Test](Table-Constraints-Test.md) (Not Ready)
