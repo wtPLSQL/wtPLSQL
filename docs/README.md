@@ -44,7 +44,7 @@ Like utPLSQL, wtPLSQL provides a set of assertion tests that can be used to dete
 
 A simple text based reporting package called "WT_TEXT_REPORT" is included with the core installation.  Custom reports are easy to create because the assertion outcomes and interval time between assertions are stored in the Oracle database.  A set of DBDocs and E-R diagrams are provided to assist with any reporting customization.
 
-Because all testing with wtPLSQL is for driven by custom PL/SQL packages, a [Best Practices page](Best-Practices.md) has some guidance for creating Test Runner packages.
+Because all testing with wtPLSQL is for driven by custom PL/SQL packages, a [Best Practices page](Best-Practices.md) has some guidance for creating test runner packages.
 
 The [About wtPLSQL page](About-wtPLSQL.md) has more information about the history and testing methodology of wtPLSQL.
 
