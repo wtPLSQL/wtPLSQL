@@ -39,6 +39,10 @@ grant create table     to &schema_owner.;
 grant create trigger   to &schema_owner.;
 grant create view      to &schema_owner.;
 grant create procedure to &schema_owner.;
+grant select on dba_source to &schema_owner.;
+
+-- This MUST be run by SYS.
+grant select on dba_objects to &schema_owner.;
 
 begin
    for buff in (select p.value PLSQL_CCFLAGS
@@ -138,9 +142,9 @@ WHENEVER SQLERROR continue
 --
 create index plsql_profiler_runs_idx1
    on plsql_profiler_runs (run_date);
-grant select, delete on plsql_profiler_runs to public;
-grant select, delete on plsql_profiler_units to public;
-grant select, delete on plsql_profiler_data to public;
+grant select, insert, delete on plsql_profiler_runs to public;
+grant select, insert, delete on plsql_profiler_units to public;
+grant select, insert, delete on plsql_profiler_data to public;
 grant select on plsql_profiler_runnumber to public;
 -- Core Tables
 @wt_version.tab

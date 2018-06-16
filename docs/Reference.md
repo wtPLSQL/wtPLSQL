@@ -35,5 +35,26 @@ An obvious drawback of this approach is running assertions when NLS settings mus
 * ORA-20009 - WT_RESULT Package: "in_test_run_id" cannot be NULL
 * ORA-20010 - WT_TEST_RUN_STAT Package: Unknown Result status
 * ORA-20011 - WT_TEST_RUN_STAT Package: Unknown Profile status
+
+## WT_TEXT_REPORT Detail Levels
+* **Less than 10 (including null)** - No Detail
+   * Assertion results summary.
+   * Profiled lines summary.
+* **10 to 19** - Minimal Detail
+   * Assertion results summary.
+   * Profiled lines summary.
+   * Failed assertion result details.
+   * Profiled source lines that were "not executed".
+* **20 to 29** - Partial Full Detail
+   * Assertion results summary.
+   * Profiled lines summary.
+   * All assertion result details.
+   * Profiled source lines that were "not executed".
+* **30 or more** - Full Detail
+   * Assertion results summary.
+   * Profiled lines summary.
+   * All assertion result details.
+   * All profiled source lines.
+
 ---
 [Website Home Page](README.md)

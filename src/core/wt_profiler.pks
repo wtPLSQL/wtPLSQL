@@ -1,4 +1,4 @@
-create or replace package wt_profiler authid definer
+create or replace package wt_profiler authid definer --current_user
 as
 
    procedure initialize

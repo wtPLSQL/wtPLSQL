@@ -29,6 +29,26 @@ as
       ,in_testcase       in wt_results.testcase%TYPE
       ,in_message        in wt_results.message%TYPE);
 
+--  "in_detail_level" settings for DBMS_OUT procedure:
+--  * Less than 10 (including null) - No Detail
+--     * Assertion results summary.
+--     * Profiled lines summary.
+--  * 10 to 19 - Minimal Detail
+--     * Assertion results summary.
+--     * Profiled lines summary.
+--     * Failed assertion result details.
+--     * Profiled source lines that were "not executed".
+--  * 20 to 29 - Partial Full Detail
+--     * Assertion results summary.
+--     * Profiled lines summary.
+--     * All assertion result details.
+--     * Profiled source lines that were "not executed".
+--  * 30 or more - Full Detail
+--     * Assertion results summary.
+--     * Profiled lines summary.
+--     * All assertion result details.
+--     * All profiled source lines.
+
    procedure dbms_out
       (in_runner_owner   in  wt_test_runs.runner_owner%TYPE default USER
       ,in_runner_name    in  wt_test_runs.runner_name%TYPE  default null

@@ -448,7 +448,7 @@ is
    -- This cursor is used to catch the first occurance of a DBOUT annotation
    cursor c_annotation is
       select regexp_substr(src.text, C_HEAD_RE||C_MAIN_RE||C_TAIL_RE)  TEXT
-       from  all_source  src
+       from  dba_source  src
        where src.owner = USER
         and  src.name  = in_pkg_name
         and  src.type  = 'PACKAGE BODY'
@@ -458,14 +458,14 @@ is
    -- This cursor is used to confirm the PL/SQL source is readable
    cursor c_readable is
       select *
-       from  all_source  src
+       from  dba_source  src
        where src.owner  = g_rec.dbout_owner
         and  src.name   = g_rec.dbout_name
         and  src.type   = g_rec.dbout_type;
    b_readable  c_readable%ROWTYPE;
    -- These hold the positions of the separators dot (.) and colon (:)
-   l_dot_pos  number;
-   l_cln_pos  number;
+   l_dot_pos   number;
+   l_cln_pos   number;
 begin
    -- Find the first occurance of the DBOUT annotation
    open c_annotation;
@@ -492,33 +492,33 @@ begin
    -- Locate the Owner/Name separator
    l_dot_pos := instr(l_target,'.');
    l_cln_pos := instr(l_target,':');
-   -- Find the matching database object from ALL_OBJECTS
    begin
       select obj.owner
             ,obj.object_name
             ,obj.object_type
-        into g_rec.dbout_owner
+       into  g_rec.dbout_owner
             ,g_rec.dbout_name
             ,g_rec.dbout_type
-       from  all_objects  obj
-                   -- No separators were given, assume USER is the owner.
-       where (   (    l_dot_pos       = 0
+       from  dba_objects  obj
+       where (   ( -- No separators were given, assume USER is the owner.
+                   -- No object type was given. This could throw TOO_MANY_ROWS.
+                      l_dot_pos       = 0
                   and l_cln_pos       = 0
                   and obj.owner       = USER
                   and obj.object_name = l_target  )
-                   -- No object type was given. This could throw TOO_MANY_ROWS.
-              OR (    l_dot_pos      != 0
+              OR ( -- No object type was given. This could throw TOO_MANY_ROWS.
+                      l_dot_pos      != 0
                   and l_cln_pos       = 0
                   and obj.owner       = substr(l_target, 1, l_dot_pos-1)
                   and obj.object_name = substr(l_target, l_dot_pos+1, 512) )
-                   -- No object owner was given, assume USER is the owner.
-              OR (    l_dot_pos       = 0
+              OR ( -- No object owner was given, assume USER is the owner.
+                      l_dot_pos       = 0
                   and l_cln_pos      != 0
                   and obj.owner       = USER
                   and obj.object_name = substr(l_target, 1, l_cln_pos-1)
                   and obj.object_type = substr(l_target, l_cln_pos+1, 512) )
-                   -- All separators were given
-              OR (    l_dot_pos      != 0
+              OR ( -- All separators were given
+                      l_dot_pos      != 0
                   and l_cln_pos      != 0
                   and obj.owner       = substr(l_target, 1, l_dot_pos-1)
                   and obj.object_name = substr(l_target, l_dot_pos+1, l_cln_pos-l_dot_pos-1)
@@ -750,7 +750,7 @@ is
    cursor c_find_begin is
       select line
             ,instr(text,'--%WTPLSQL_begin_ignore_lines%--') col
-       from  all_source
+       from  dba_source
        where owner = g_rec.dbout_owner
         and  name  = g_rec.dbout_name
         and  type  = g_rec.dbout_type
@@ -761,7 +761,7 @@ is
       with q1 as (
       select line
             ,instr(text,'--%WTPLSQL_end_ignore_lines%--') col
-       from  all_source
+       from  dba_source
        where owner = g_rec.dbout_owner
         and  name  = g_rec.dbout_name
         and  type  = g_rec.dbout_type
@@ -789,7 +789,7 @@ begin
       then
          select max(line)
           into  buff_find_end.line
-          from  all_source
+          from  dba_source
           where owner = g_rec.dbout_owner
            and  name  = g_rec.dbout_name
            and  type  = g_rec.dbout_type;
@@ -1076,7 +1076,7 @@ begin
              join plsql_profiler_data  ppd
                   on  ppd.unit_number = ppu.unit_number
                   and ppd.runid       = g_rec.prof_runid
-             join all_source  src
+             join dba_source  src
                   on  src.line  = ppd.line# + g_rec.trigger_offset
                   and src.owner = g_rec.dbout_owner
                   and src.name  = g_rec.dbout_name
@@ -1705,7 +1705,7 @@ begin
       return 0;
    end if;
    for buff in (
-      select line, text from all_source
+      select line, text from dba_source
        where owner = dbout_owner_in
         and  name  = dbout_name_in
         and  type  = 'TRIGGER'
