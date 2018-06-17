@@ -13,7 +13,11 @@ as
    procedure wtplsql_run;
 end simple_test_runner;
 /
+```
 
+Then, run this:
+
+```
 create or replace package body simple_test_runner
 as
    procedure wtplsql_run is begin
@@ -46,7 +50,7 @@ To view the results, run this:
 set serveroutput on size unlimited format word_wrapped
 
 begin
-   wt_text_report.dbms_out;
+   wt_text_report.dbms_out(USER,'SIMPLE_TEST_RUNNER');
 end;
 /
 ```
@@ -64,7 +68,7 @@ And get this:
    Total Run Time (sec):      0.2
 ```
 
-This is latest test result summary from all test runner packages for the login user.  The interval time shown here is the elapsed time from starting the test runner package until the first assertion was executed.  The total run time is the elapsed time from start to finish for the test runner package.  The report confirms that one assertion was executed for SIMPLE_TEST_RUNNER and it passed.  All tests passed, so the test yield is 100%.
+This is the test result summary from the last execution of the SIMPLE_TEST_RUNNER package.  The interval time shown here is the elapsed time from starting the test runner package until the first assertion was executed.  The total run time is the elapsed time from start to finish for the test runner package.  The report confirms that one assertion was executed for SIMPLE_TEST_RUNNER and it passed.  All tests passed, so the test yield is 100%.
 
 ## WT_TEXT_REPORT Display Levels
 

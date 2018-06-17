@@ -4,7 +4,7 @@
 
 ---
 
-A majority of wtPLSQL testing is the test runner packages.  In this example, a test runner package will be created to test the DBMS_OUTPUT package.  For brevity, only PUT_LINE and GET_LINE will be tested.
+A majority of wtPLSQL testing is done with the test runner packages.  In this example, a test runner package will be created to test the DBMS_OUTPUT package.  For brevity, only PUT_LINE and GET_LINE will be tested.
 
 ## Test Runner Package Specification
 

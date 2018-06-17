@@ -50,7 +50,7 @@ The [Definitions page](Definitions.md) includes definitions from many sources to
 
 utPLSQL V3 is an excellent choice for unit testing.  It is well supported and includes extensive functionality.
 
-wtPLSQL has a different focus than utPLSQL V3.  More information is available [in this link](utPLSQL-V3-Comparison).
+wtPLSQL has a different focus than utPLSQL V3.  More information is available [in this link](utPLSQL-V3-Comparison.md).
 
 ## How does wtPLSQL compare to utPLSQL V1 or utPLSQL V2?
 
@@ -58,7 +58,7 @@ utPLSQL V2 is an extension of utPLSQL V1. Since utPSQL V2 is being replaced by u
 
 The goal of wtPLSQL has been to implement the basic/core functionality of utPLSQL V2 while preserving the the programming investment in the assertion API (utAssert.eq, utAssert.isnotnull, etc.). The additional functionality of utPLSQL V2 that is not included in the wtPLSQL core will be added through optionally installed modules (also known as add-ons).
 
-More information is available [in this link](utPLSQL-V2-Comparison).
+More information is available [in this link](utPLSQL-V2-Comparison.md).
 
 ### Site Links
 
@@ -66,7 +66,7 @@ User Help
 * [Demonstrations and Examples Page](demo/README.md)
 * [Reference](Reference.md)
 * [Best Practices](Best-Practices.md)
-* [Latest wtPSQL DB Docs](core/DBDocs/index.html)
+* [DB Docs from SQL*Developer](core/DBDocs/index.html)
 * [ER Diagram PDF](core/ER_Diagrams.pdf)
 * [Call Tree Diagrams PDF](core/Call_Tree_Diagrams.pdf)
 
@@ -74,8 +74,8 @@ Background
 * [Definitions](Definitions.md)
 * [About wtPLSQL](About-wtPLSQL.md)
 * [Core Features](Core-Features.md)
-* [utPLSQL V3 Comparison](utPLSQL-V3-Comparison)
-* [utPLSQL V1/V2 Comparison](utPLSQL-V2-Comparison)
+* [utPLSQL V3 Comparison](utPLSQL-V3-Comparison.md)
+* [utPLSQL V1/V2 Comparison](utPLSQL-V2-Comparison.md)
 
 ## Contribute
 

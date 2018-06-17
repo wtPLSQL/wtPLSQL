@@ -1,0 +1,81 @@
+<p><a href="README.htm">Website Home Page</a></p>
+<h1 id="about-wtplsql">About wtPLSQL</h1>
+<hr />
+<h2 id="history">History</h2>
+<p>Following are some links regarding the history of utPLSQL.</p>
+<p><a href="http://archive.oreilly.com/pub/a/oreilly/oracle/utplsql/">Steven Feuerstein Designed and Developed utPLSQL (V1)</a></p>
+<p><a href="http://stevenfeuersteinonplsql.blogspot.com/2015/03/recommendations-for-unit-testing-plsql.html">Steven Feuerstein's Recommendations for Unit Testing PL/SQL Programs</a></p>
+<p><a href="https://utplsql.org/utPLSQL/v2.3.1/">utPLSQL V2 Documentation</a></p>
+<p><a href="https://utplsql.org/">utPLSQL V3 Website</a></p>
+<h2 id="background">Background</h2>
+<p>Because of his reputation with Oracle's PL/SQL, Steven Feuerstein's utPLSQL has been widely adopted. However, maintenance of the utPLSQL source code became a problem with the latest utPLSQL V2 releases. Inspection of the utPLSQL V2 source code revealed some very complex code pathways. Much of this resulted from the layering of the V1 API on top of the V2 implementation. There is no documentation on how the V1 layering was intended to work. There is no documentation on the overall design of the V2 implementation. There is no documentation on how to use the V2 API. (Kudos to <a href="https://github.com/PaulWalkerUK">@PaulWalkerUK</a> for an amazing job of maintaining the V2 code set.) As a result, most all unit tests written with utPLSQL V2 use the V1 APIs.</p>
+<p>The utPLSQL V3 project was started with a &quot;clean sheet&quot; approach. The project took a distinctly object oriented direction. This is apropos, given that Steven Feuerstein subtitles utPLSQL as &quot;JUnit for PLSQL&quot;. The V3 project has also adopted other aspects of JUnit testing like annotations. It is a clever and useful approach and will be familiar to Java developers. <a href="https://github.com/jgebal">@jgebal</a> was part of the utPLSQL V3 development from the beginning and continues to provide excellent contributions and information for that project.</p>
+<p>Before the &quot;clean sheet&quot; approach was adopted, the V3 team reviewed what has been published as the <a href="https://github.com/DDieterich/utplsql_lite">utPLSQL_Lite project</a>. The utPSQL_Lite project was an effort to create a simplified utPLSQL core with the use of options/add-ons to achieve additional functionality.</p>
+<p>The wtPLSQL project is a continuation of the utPLSQL_Lite project.</p>
+<h2 id="goals">Goals</h2>
+<p>This project focuses on providing a <strong>simple</strong>, yet <strong>robust</strong>, framework for <strong>dynamic</strong>, <strong>white box</strong> testing of <strong>Oracle Database Objects</strong>.</p>
+<h3 id="simple-framework">Simple Framework</h3>
+<p><a href="https://martinfowler.com/bliki/Xunit.html">Kent wants people to control their own environment, so he liked to have each team build the framework themselves</a></p>
+<p>The wtPLSQL project is an attempt to allow PL/SQL developers to be PL/SQL developers. The test runners are entirely user-written in PL/SQL. The framework supplies resources for collecting and reporting information from those test runners. Through its simplified architecture and open source approach, extensions of the functionality are relatively easy.</p>
+<h3 id="robust-framework">Robust Framework</h3>
+<p><a href="https://en.wikipedia.org/wiki/Robustness_(computer_science)">Robustness is the ability of a computer system to cope with errors during execution</a></p>
+<p>The wtPLSQL framework includes provisions for the following errors during execution:</p>
+<ul>
+<li>Un-handled test runner exceptions</li>
+<li>Storage errors from too many old test result sets.</li>
+<li>Isolation of different test runner results during concurrent test runs.</li>
+<li>Missing or non-existent test runners.</li>
+<li>Incorrect/incompatable DBMS_PROFILER version</li>
+</ul>
+<h3 id="dynamic-testing">Dynamic Testing</h3>
+<p><a href="https://en.wikipedia.org/wiki/Software_testing#Static_vs._dynamic_testing">Testing that takes place when the program itself is run.</a></p>
+<p>The wtPLSQL framework supports testing of source code during its execution. That is, the source code is executed during testing. It is not a static code analyzer or a guide for review meetings.</p>
+<h3 id="white-box-testing">White Box Testing</h3>
+<p><a href="https://en.wikipedia.org/wiki/Software_testing#White-box_testing">Tests internal structures or workings of a program</a></p>
+<p>The <a href="https://en.wikipedia.org/wiki/White-box_testing#Overview">essence of white box testing</a> is the careful testing of the application at the source code level to prevent any hidden errors later on. A key measure of completeness for this kind of testing is the <a href="https://en.wikipedia.org/wiki/Code_coverage">code coverage</a> of the test. A complete white box test will achieve 100% code coverage. This does not guarantee all aspects of the code have been tested, but it does ensure that all code pathways have been tested.</p>
+<p>An important part of establishing code coverage is identifying what code is being tested. The wtPLSQL framework uses a DBOUT (DataBase Object Under Test) to identify the code being tested. Upon identifying the DBOUT, the framework can gather and report information regarding code coverage.</p>
+<h3 id="oracle-database-objects">Oracle Database Objects</h3>
+<p><a href="https://docs.oracle.com/database/122/CNCPT/tables-and-table-clusters.htm#GUID-7567BE77-AFC0-446C-832A-FCC1337DEED8">Some of the (database) objects that schemas can contain are Packages, Procedures, Functions, Triggers, and Views.</a></p>
+<p>Many kinds of database objects need to be tested, not just packages. Triggers containing PL/SQL need to be tested. With the addition of <a href="https://docs.oracle.com/en/database/oracle/oracle-database/12.2/sqlrf/SELECT.html#GUID-CFA006CA-6FF1-4972-821E-6996142A51C6__BABJFIDC">inline functions in SQL</a>, views can contain PL/SQL as well. <a href="https://docs.oracle.com/database/122/ADOBJ/object-methods.htm#ADOBJ00202">Oracle Type Bodies</a> also include PL/SQL procedures and functions. All of these database objects can be tested with wtPSQL.</p>
+<p>In the wtPLSQL framework, the DBOUT can be any of the following PL/SQL objects:</p>
+<ul>
+<li>Packages</li>
+<li>Procedures (standalone)</li>
+<li>Functions (standalone)</li>
+<li>Triggers</li>
+<li>Views (Not yet implemented)</li>
+</ul>
+<h3 id="embedded-selftest">Embedded Selftest</h3>
+<p><a href="https://utplsql.org/utPLSQL/v2.3.1/samepack.html">Put Test Code in Same Package</a></p>
+<p>With utPLSQL V1/V2, packages can include an embedded self-test. The required calls can be exposed within the package that is being tested. This is particularly useful for testing package internals like private variables and procedures. These embedded selftests also remove the need to expose private variables and procedures to public calls so they can be tested.</p>
+<p>wtPLSQL continues this capability. However, with wtPLSQL, the addition of an embedded selftest requires only 1 additional procedure call in the package specification (WTPLSQL_RUN).</p>
+<h2 id="unit-testing">Unit Testing</h2>
+<p>As mentioned above, white box testing can occur at various levels of development, including:</p>
+<ul>
+<li><strong>unit testing</strong></li>
+<li>integration testing</li>
+<li>regression testing.</li>
+</ul>
+<p>The wtPLSQL project focuses on white box testing instead of <strong>unit testing</strong> in order to avoid some controversial aspects of unit testing, namely Test Isolation and Test Transience.</p>
+<h3 id="test-isolation">Test Isolation</h3>
+<p>A unit test should <a href="https://en.wikipedia.org/wiki/Unit_testing#Description">usually not go outside of its own class boundary</a></p>
+<p>In OO (object oriented) programming, object data is transient. This is due to the nature of object instantiation. Persistence of object data beyond the instance of an object is banished to non-OO components. Since the unit test movement gained its largest following in OO, the idea of testing persisted object data is, unfortunately, a distraction. This has evolved into the idea that testing a database interface should always involve the use of a <a href="https://en.wikipedia.org/wiki/Test-driven_development#Fakes.2C_mocks_and_integration_tests">fake or mock</a> to <strong>isolate</strong> the unit under test from the influence of these non-OO components.</p>
+<p>Transactional data (ACID compliance) introduces a complexity to the persistence of object data. Attempting to fake this complexity is very difficult. Particularly difficult is the determination of how much functionality to include in the fake, especially when the storage of the data is the main purpose for the system. Focusing on white box testing, instead of unit testing, allows the wtPLSQL framework to test integrated functionality from other system components.</p>
+<h3 id="test-transience">Test Transience</h3>
+<p>A unit test should set up a known good state before the tests and <a href="https://en.wikipedia.org/wiki/XUnit#Test_fixtures">return to the original state after the tests</a></p>
+<p>There are many arguments to be made regarding the idea of a known good state in a database. The only sure way to achieve a known good state is to leave the the database unchanged after a unit test. Ideally, changes made by a test process would be <strong>transient</strong>, that is the process would setup (insert) and tear down (delete) data in the database. However, many Oracle database implementations include additional functionality that can make this difficult.</p>
+<ul>
+<li>Complex data setup</li>
+<li>Additional processing that is unknown or poorly defined</li>
+<li>Built-in auditing</li>
+</ul>
+<p>In the wtPLSQL framework, integration testing of multiple database objects (no mocks or fakes) is allowed (i.e. not bound by the <strong>transience</strong> aspect). Artifacts from multiple test runs can remain in the database after the testing is complete. Additionally, artifacts that remain after testing can help identify other problems in the database.</p>
+<h3 id="test-fixtures-and-test-suites">Test Fixtures and Test Suites</h3>
+<p><a href="https://en.wikipedia.org/wiki/XUnit#Test_fixtures">A test fixture ... is the set of preconditions or state needed to run a test</a></p>
+<p><a href="https://en.wikipedia.org/wiki/XUnit#Test_suites">A test suite is a set of tests that all share the same fixture.</a></p>
+<p>Test fixtures and test suites are a part of the xUnit testing framework. At the core, wtPLSQL does not include test fixtures or test suites. If needed, these can be easily defined and implemented in a test runner package.</p>
+<h2 id="test-driven-development">Test Driven Development</h2>
+<p>With <strong>TDD</strong> (Test Driven Development), <a href="http://agiledata.org/essays/tdd.html">you write a test before you write just enough production code to fulfill that test</a></p>
+<p>The wtPLSQL framework is not intended for Test Driven Development. 100% code coverage is not desirable under the <strong>TDD</strong> approach. Test isolation and test transience are welcomed mechanisms to assist in getting tests to pass quickly in <strong>TDD</strong>. The wtPLSQL framework embraces 100% code coverage and does not require test isolation or test transience.</p>
+<hr />
+<p><a href="README.htm">Website Home Page</a></p>

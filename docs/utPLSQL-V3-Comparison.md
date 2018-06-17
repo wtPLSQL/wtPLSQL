@@ -58,7 +58,7 @@ TDD places no value on 100% code coverage. TDD typically avoids testing sad path
 
 White box testing is centered on 100% code coverage. "Happy path" and "sad path" testing are typically required to achieve 100% code coverage.
 
-Here is more discussion on [Test Driven Development](About-wtPLSQL.html#test-driven-development)
+Here is more discussion on [Test Driven Development](About-wtPLSQL.md#test-driven-development)
 
 ### Links
 * [utPLSQL V3 Website](https://utplsql.org)

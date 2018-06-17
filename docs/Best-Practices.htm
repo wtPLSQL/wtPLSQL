@@ -1,0 +1,50 @@
+<p><a href="README.htm">Website Home Page</a></p>
+<h1 id="best-practices">Best Practices</h1>
+<hr />
+<p>Place the <strong>&quot;WTPLSQL_RUN&quot; procedure at the end of the package body.</strong> This allows the procedure call any procedure/function in the package.</p>
+<p>Place the <strong>&quot;--% WTPLSQL SET DBOUT&quot; annotation next to the WTPLSQL_RUN procedure</strong> definition in the package body.</p>
+<pre><code>   procedure WTPLSQL_RUN  --% WTPLSQL SET DBOUT &quot;MY_PACKAGE&quot; %--
+   is
+</code></pre>
+<p><strong>Separate &quot;setup&quot; and &quot;teardown&quot; steps</strong> into their own Test Cases.**</p>
+<p><strong>Use words consistently in Test Case names.</strong></p>
+<ul>
+<li>Use the word &quot;Setup&quot; in Test Case names perform setup operations.</li>
+<li>Use the word &quot;Teardown&quot; in Test Case names that perform tear-down operations.</li>
+<li>Use the words &quot;Happy Path&quot; in Test Case names that perform &quot;happy path&quot; tests.</li>
+<li>Use the words &quot;Sad Path&quot; in Test Case names that perform &quot;sad path&quot; tests.
+<ul>
+<li>expected failure testing.</li>
+<li>fault insertion testing.</li>
+</ul></li>
+</ul>
+<p><strong>Include tests for boundary conditions</strong></p>
+<ul>
+<li>Largest and smallest values</li>
+<li>Longest and shortest values</li>
+<li>All combinations of default and non-default values</li>
+</ul>
+<p><strong>Create test procedures for each procedure/function</strong> in a DBOUT PACKAGE BODY.</p>
+<ul>
+<li>Call all test procedures from the WTPLSQL_RUN procedure.</li>
+<li>Embed the test procedure just after the procedure/function it tests.</li>
+<li>Use a consistent prefix on all test procedure names, like &quot;t_&quot;.</li>
+</ul>
+<p><strong>Use conditional compilation</strong> select directive &quot;WTPLSQL_ENABLE&quot; in the Oracle database initialization parameter &quot;PLSQL_CCFLAGS&quot; to enable and disable embedded test code in all PACKAGE BODYs.</p>
+<ul>
+<li>&quot;WTPLSQL_ENABLE:TRUE&quot; will enable test code.</li>
+<li>&quot;WTPLSQL_ENABLE:FALSE&quot; will disable test code.</li>
+</ul>
+<p><strong>Use consistent begin and end test code markers</strong> for embedded tests. These examples will setup conditional compiling and annotate lines of code to be excluded from code coverage calculations.</p>
+<pre><code>$IF $$WTPLSQL_ENABLE  -------%WTPLSQL_begin_ignore_lines%-------
+$THEN
+ ...
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+</code></pre>
+<p><strong>Keep embedded test code indented</strong> between the test code markers</p>
+<p><strong>Add WTPLSQL markers every 10 lines or less</strong> in an embedded procedure. This helps identify a long embedded test procedure while scrolling through source code. When in doubt, add more of these.</p>
+<pre><code>   --------------------------------------  WTPLSQL Testing --
+</code></pre>
+<p><strong>Check and/or set NLS settings before testing.</strong> Many data types are implicitly converted to VARCHAR2 before comparison. The &quot;wtplsql&quot; package includes functions to check and set NLS settings. Note: Modifying these settings always includes a COMMIT.</p>
+<hr />
+<p><a href="README.htm">Website Home Page</a></p>

@@ -1,0 +1,50 @@
+<p><a href="README.htm">Website Home Page</a></p>
+<h1 id="utplsql-v2-comparison">utPLSQL V2 Comparison</h1>
+<hr />
+<p>This comparison assumes a familiarity with utPLSQL V1/V2. The differences between wtPLSQL and utPLSQL V2 will be the focus.</p>
+<h3 id="test-transience">Test Transience</h3>
+<p>utPLSQL V2 included a focus on test transience by requiring &quot;setup&quot; and &quot;tear down&quot; procedures in a test package. wtPLSQL has no requirement. wtPLSQL also does not prevent any setup or tear down procedures from a test runner package.</p>
+<h3 id="non-sequenced-testing">Non-Sequenced Testing</h3>
+<p>utPLSQL V2 did not include any specific order of test procedures in a test package. By default, wtPLSQL orders the test procedures because these test procedures will be listed in sequence in the test runner package. (Everything in the test runner package must be called by the &quot;WTPLSQL_RUN&quot; procedure.)</p>
+<h3 id="utl_file-setup">UTL_FILE Setup</h3>
+<p>Much of the utPLSQL V2 functionality was centered on the UTL_FILE package. UTL_FILE was used to</p>
+<ul>
+<li>create empty/skeleton test packages</li>
+<li>save reports in various formats</li>
+<li>read source code to recompile/refresh database packages</li>
+<li>compare files</li>
+</ul>
+<p>The configuration of UTL_FILE was one of the difficult parts of installing utPLSQL V2. Removing UTL_FILE from wtPLSQL core allows for a much simpler installation. Also, much of the functionality performed by UTL_FILE can be done easier with modern reporting and development tools. Comparing Files</p>
+<h3 id="record-comparison">Record Comparison</h3>
+<p>In utPLSQL V2, the &quot;utRecEq&quot; package is used to to generate functions to compare record types. This package has not been included in the wtPSQL core to avoid problems. Generating the functions needed to make the comparison require special database permissions. Separating this package into a separate installation allows these special database permissions to be addressed directly.</p>
+<h3 id="test-procedure-prefixes">Test Procedure Prefixes</h3>
+<p>From the utPLSQL V2 documentation: &quot;The unit test prefix is very important in utPLSQL; the utility uses the prefix to associate source code to be tested with the test package. The prefix also allows utPLSQL to automatically identify the programs within a test package that are to be executed as unit tests.&quot; In wtPLSQL, these prefixes are not required. The lack of these prefixes greatly simplifies the setup of test runners. However, the prefixes can be used with wtPLSQL by building them into test runner packages.</p>
+<h3 id="utplsql-trace">utPLSQL Trace</h3>
+<p>utPLSQL V2 has a trace facility that could be turned on and off. Because the test runner in wtPLSQL is in control of testing and because the test runner is user written, any desired tracing can be added to the test runner as needed. Additionally, the simplicity of wtPLSQL execution eliminates the need for tracing.</p>
+<h3 id="utconfig">utConfig</h3>
+<p>The utConfig package is no longer used in wtPLSQL. There are 29 settings in the utConfig package in utPLSQL V2. The only remaining settings are in the following packages.</p>
+<ul>
+<li>WT_ASSERT Settings
+<ul>
+<li>g_testcase - Name of the current test case</li>
+<li>set_NLS_DATE_FORMAT - Default format for date data type</li>
+<li>set_NLS_TIMESTAMP_FORMAT - Default format for timestamp data type</li>
+<li>set_NLS_TIMESTAMP_TZ_FORMAT - Default format for timestamp with time zone data type</li>
+</ul></li>
+<li>WT_TEXT_REPORT Settings
+<ul>
+<li>g_single_line_output - Remove/replace new line characters in test result output.</li>
+<li>g_date_format - Default format for date data type</li>
+</ul></li>
+</ul>
+<h3 id="utoutput">utOutput</h3>
+<p>utOutput in utPLSQL V2 has been replaced by WT_TEXT_REPORT in wtPLSQL. Unlike utOutput, WT_TEXT_REPORT is not called automatically, if assertions are executed as part of a test runner package. Alternatively, WT_TEST_RPEORT is used to automatically produce output for as-hoc assertions that are executed outside of a test runner package.</p>
+<h3 id="custom-reporter">Custom Reporter</h3>
+<p>There is no custom reporter. The definition of the wtPLSQL tables is defined so reporting tools can be used to create custom reports.</p>
+<h3 id="links">Links</h3>
+<ul>
+<li><a href="https://utplsql.org/moving/2016/07/07/version-2-3-1-released.html">utPLSQL V2.3.1 Website</a></li>
+<li><a href="https://utplsql.org/utPLSQL/v2.3.1/">utPLSQL V2.3.1 Documentation</a></li>
+</ul>
+<hr />
+<p><a href="README.htm">Website Home Page</a></p>

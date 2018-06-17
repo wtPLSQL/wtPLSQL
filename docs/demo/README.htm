@@ -1,0 +1,76 @@
+<p><a href="../README.htm">Website Home Page</a></p>
+<h1 id="demonstrations-and-examples">Demonstrations and Examples</h1>
+<hr />
+<p>Demonstrations and examples assume successful connection to an <a href="http://www.oracle.com/technetwork/database/database-technologies/express-edition/overview/index.html">Oracle database</a> with wtPLSQL installed. <a href="https://github.com/DDieterich/wtPLSQL/releases">wtPLSQL Installation instructions</a> are available on the <a href="https://github.com/DDieterich/wtPLSQL/releases">wtPLSQL Releases page</a>.</p>
+<p>Test results from assertions can be queried from a set of wtPLSQL tables. The examples here will use the default reporting package called WT_TEXT_REPORT. This package displays test results using DBMS_OUTPUT.</p>
+<h2 id="the-basics">The Basics</h2>
+<p>A login, or database session, is required to interact with the Oracle database. The SQL below will create a user that can run these examples. If you already have a database login, this is not necessary.</p>
+<pre><code>create user wtp_demo identified by wtp_demo
+   default tablespace users
+   quota unlimited on users
+   temporary tablespace temp;
+
+grant create session   to wtp_demo;
+grant create type      to wtp_demo;
+grant create sequence  to wtp_demo;
+grant create table     to wtp_demo;
+grant create trigger   to wtp_demo;
+grant create view      to wtp_demo;
+grant create procedure to wtp_demo;
+</code></pre>
+<p>The simplest check for a wtPLSQL installation is to select the &quot;version from dual&quot;.</p>
+<p>Run this:</p>
+<pre><code>select wtplsql.show_version from dual;
+</code></pre>
+<p>And get this:</p>
+<pre><code>SHOW_VERSION
+-----------------------------------------------------------
+1.1.0
+</code></pre>
+<p>This shows the wtPLSQL version as 1.1.0.</p>
+<p>Another simple test is an ad-hoc assertion. This test requires DBMS_OUTPUT. The results of this test are not recorded.</p>
+<p>Run this:</p>
+<pre><code>set serveroutput on size unlimited format word_wrapped
+
+begin
+   wt_assert.eq(msg_in          =&gt; &#39;Ad-Hoc Test&#39;
+               ,check_this_in   =&gt;  1
+               ,against_this_in =&gt; &#39;1&#39;);
+end;
+/
+</code></pre>
+<p>And get this:</p>
+<pre><code>PASS Ad-Hoc Test. EQ - Expected &quot;1&quot; and got &quot;1&quot;
+</code></pre>
+<p>This indicates:</p>
+<ul>
+<li>the assertion passed</li>
+<li>the assertion had the message &quot;Ad-Hoc Test&quot;</li>
+<li>the assertion name is &quot;EQ&quot;</li>
+<li>the assertion details which may include the values tested</li>
+</ul>
+<p>Note: This ad-hoc test also demonstrates implicit data type conversion.</p>
+<h2 id="create-a-test-runner-package">Create a Test Runner Package</h2>
+<p>A test runner package is central to running tests in wtPLSQL. The <a href="Test-Runner.htm">Test Runner</a> page covers all the basics of creating a test runner package.</p>
+<h2 id="database-object-tests">Database Object Tests</h2>
+<p>More interesting examples actually test database objects. Here is an example test of each database object supported by wtPLSQL.</p>
+<ul>
+<li><a href="Package-Test.htm">Package Test</a></li>
+<li><a href="Procedure-Test.htm">Procedure Test</a> (Not Ready)</li>
+<li><a href="Function-Test.htm">Function Test</a> (Not Ready)</li>
+<li><a href="Table-Constraints-Test.htm">Table Constraints Test</a> (Not Ready)</li>
+<li><a href="Table-Trigger-Test.htm">Table Trigger Test</a> (Not Ready)</li>
+<li><a href="Type-Test.htm">Type Test</a> (Not Ready)</li>
+</ul>
+<h2 id="utplsql-23-examples">utPLSQL 2.3 Examples</h2>
+<ul>
+<li><a href="ut_calc_secs_between.htm">ut_calc_secs_between</a> - Test a Simple Procedure (Not Ready)</li>
+<li><a href="ut_truncit.htm">ut_truncit</a> - Test a Table Modification Procedure (Not Ready)</li>
+<li><a href="ut_str.htm">ut_str</a> - Test a Simple Function (Not Ready)</li>
+<li><a href="ut_del1.htm">ut_del1</a> - Test an Entire Package (Not Ready)</li>
+<li><a href="Test-Suite.htm">Create and Run a Test Suite</a> - Build a Test Suite package. (Not Ready)</li>
+<li><a href="ut_betwnstr.htm">ut_betwnstr</a> (Not Ready)</li>
+<li><a href="Version.htm">Version</a> (Not Ready)</li>
+</ul>
+<hr />
+<p><a href="../README.htm">Website Home Page</a></p>

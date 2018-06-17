@@ -1,0 +1,56 @@
+<p><a href="README.htm">Website Home Page</a></p>
+<h1 id="utplsql-v3-comparison">utPLSQL V3 Comparison</h1>
+<hr />
+<p>Under Construction</p>
+<p>Abbreviations:</p>
+<ul>
+<li>&quot;ut3&quot; - utPLSQL V3</li>
+<li>&quot;wt&quot; - wtPLSQL</li>
+</ul>
+<h2 id="the-basics">The Basics</h2>
+<p>&quot;ut3&quot; is a comprehensive project. Its capabilities are a large and diverse. It is supported by many people around the world. If your development environment includes a wide variety of platforms and technologies, this is the best project for you.</p>
+<p>&quot;wt&quot; is an Oracle database focused project. It is built entirely with PL/SQL and Application Express. All testing and reporting is done in the database.</p>
+<h2 id="goals">Goals</h2>
+<p>The &quot;ut3&quot; project <a href="https://github.com/utPLSQL/utPLSQL">&quot;follows industry standards and best patterns of modern Unit Testing frameworks like JUnit and RSpec&quot;</a>.</p>
+<p>The &quot;wt&quot; project avoids &quot;unit testing&quot; by adopting practices for <a href="https://github.com/DDieterich/wtPLSQL/wiki/About-wtPLSQL#white-box-testing">&quot;white box testing&quot;</a>.</p>
+<h2 id="customization">Customization</h2>
+<p>The &quot;ut3&quot; project incorporates a wide variety of technologies and platforms. It also has a large and diverse set of capabilities that will reduce the need for customization.</p>
+<p>The &quot;wt&quot; project is centered on one platform with a very simple implementation. It is easier to customize smaller, simpler systems.</p>
+<h2 id="testing-methodologies">Testing Methodologies</h2>
+<p>There is a longer discussion about unit testing methodologies in the <a href="https://github.com/DDieterich/wtPLSQL/wiki/About-wtPLSQL#unit-testing">About wtPSQL Page</a>.</p>
+<p>Fundamentally, the Oracle database is a relational database. The relational database is based on transaction processing. Data is stored and shared in a precise manner between processes.</p>
+<p>JUnit testing is OO (Object Oriented programming) based. Encapsulation is a core part of OO. Data sharing is done through APIs (Application Programmatic Interfaces), i.e. no fundamental data persistence.</p>
+<p>The principle of &quot;store and share&quot; is the opposite of data encapsulation. As a result, OO testing approaches are inappropriate for relational databases.</p>
+<p>Here are several differences in testing methodologies between relational databases and Object Oriented.</p>
+<h3 id="testing-persistence-of-data">Testing Persistence of Data</h3>
+<ul>
+<li>Object Oriented - Use fakes or mocks to avoid any data persistence.</li>
+<li>Relational Database - Testing of data persistence is fundamental.</li>
+</ul>
+<h3 id="isolation-of-tests">Isolation of Tests</h3>
+<ul>
+<li>Object Oriented - Use fakes or mocks to avoid any &quot;integration&quot; testing.</li>
+<li>Relational Database - Isolating PL/SQL code from database CRUD (Create, Retrieve, Update, Delete) defeats the purpose of most PL/SQL testing.</li>
+</ul>
+<h3 id="test-transience">Test Transience</h3>
+<ul>
+<li>Object Oriented - Return object to original state.</li>
+<li>Relational Database - Integrity constraints on complex persisted data and/or complex data operations make simple test transience more difficult. An alternative is to add new data during each test and/or reset the database to a known test data set before testing.</li>
+</ul>
+<h3 id="non-sequenced-testing">Non-Sequenced Testing</h3>
+<ul>
+<li>Object Oriented - All unit tests should be able to run in any order.</li>
+<li>Relational Database - Testing with integrity constraints on complex persisted data and/or complex data operations can be simpler with test sequencing.</li>
+</ul>
+<h3 id="test-driven-development-tddrspec">Test Driven Development (TDD/RSpec)</h3>
+<p>In the fast-paced development cycle, defining how the software accomplishes the needs of the business is the typical focus. This is also called &quot;happy path&quot; functionality. Conversely, error handling and error recovery (sad path) requirements typically don't accomplish business needs. That is to say, sad path testing focuses on things going badly, not on things going well. Unfortunately, efforts to develop and define sad path requirements are typically avoided.</p>
+<p>TDD places no value on 100% code coverage. TDD typically avoids testing sad path testing during development.</p>
+<p>White box testing is centered on 100% code coverage. &quot;Happy path&quot; and &quot;sad path&quot; testing are typically required to achieve 100% code coverage.</p>
+<p>Here is more discussion on <a href="About-wtPLSQL.htm#test-driven-development">Test Driven Development</a></p>
+<h3 id="links">Links</h3>
+<ul>
+<li><a href="https://utplsql.org">utPLSQL V3 Website</a></li>
+<li><a href="http://utplsql.org/documentation/">utPLSQL V3 Documentation</a></li>
+</ul>
+<hr />
+<p><a href="README.htm">Website Home Page</a></p>
