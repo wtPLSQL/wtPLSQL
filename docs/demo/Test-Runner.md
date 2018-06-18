@@ -29,7 +29,7 @@ end simple_test_runner;
 /
 ```
 
-SIMPLE_TEST_RUNNER is a minimal test runner.  It is a package that contains the (public) WTPLSQL_RUN procedure and 1 assertion. It does the same assertion as the ad-hoc assertion in the [Simple Test](Simple-Test.md) page. 
+SIMPLE_TEST_RUNNER is a minimal test runner.  It is a package that contains the (public) WTPLSQL_RUN procedure and 1 assertion. It does the same assertion as the ad-hoc assertion in the [Demos and Examples](README.md) page. 
 
 ## Execute and Display
 
@@ -103,9 +103,9 @@ And get this:
  PASS   56ms Ad-Hoc Test. EQ - Expected "1" and got "1"
 ```
 
-This shows the latest test result summary with test results details.  A detail level of 30 shows summary and detailed test results for a test runner package.  In this case, the summary is the same and the detailed results of the EQ assertion are shown.  These detail levels are explained in the [Reference Page](../Reference.md).
+This shows the latest test result summary with test results details.  A detail level of 30 shows summary and detailed test results for a test runner package.  In this case, the summary and the detailed results of the EQ assertion are shown.  These detail levels are explained in the [Reference Page](../Reference.md#wt_text_report-detail-levels).
 
-The detailed results shown are the same as the ad-hoc result, with a "56ms" added.  The detailed results from the test runner package includes the elapsed time between assertions, or elapsed time from test runner package startup to the first assertion.
+The detailed results shown are the same as the ad-hoc result, with a "56ms" added.  The 56 in the detailed results shows the elapsed time between assertions, or elapsed time from test runner package startup to the first assertion.
 
 ## Test Cases
 
@@ -192,7 +192,7 @@ end simple_test_runner;
 /
 ```
 
-With the addition of the DBOUT annotation, the profiling information is available for the SIMPLE_TEST_RUNNER package.
+With the addition of the DBOUT annotation, the profiling information is available for the SIMPLE_TEST_RUNNER package.  The DBOUT takes the form of "owner.object_name:object_type".  "owner" will default to "USER".  "object_name" is required.  "object_type" is required if more than one object has that name.  Package bodies will always require the ":PACKAGE BODY" because the package specification is always another database object with the same name.
 
 Run this:
 

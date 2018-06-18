@@ -8,8 +8,9 @@ as
    procedure wtplsql_run;
 end simple_test_runner;
 /
-
-create or replace package body simple_test_runner
+</code></pre>
+<p>Then, run this:</p>
+<pre><code>create or replace package body simple_test_runner
 as
    procedure wtplsql_run is begin
       wt_assert.eq(msg_in          =&gt; &#39;Ad-Hoc Test&#39;
@@ -32,7 +33,7 @@ end;
 <pre><code>set serveroutput on size unlimited format word_wrapped
 
 begin
-   wt_text_report.dbms_out;
+   wt_text_report.dbms_out(USER,&#39;SIMPLE_TEST_RUNNER&#39;);
 end;
 /
 </code></pre>
@@ -46,7 +47,7 @@ end;
   Maximum Interval msec:       56             Test Yield:   100.00%
    Total Run Time (sec):      0.2
 </code></pre>
-<p>This is latest test result summary from all test runner packages for the login user. The interval time shown here is the elapsed time from starting the test runner package until the first assertion was executed. The total run time is the elapsed time from start to finish for the test runner package. The report confirms that one assertion was executed for SIMPLE_TEST_RUNNER and it passed. All tests passed, so the test yield is 100%.</p>
+<p>This is the test result summary from the last execution of the SIMPLE_TEST_RUNNER package. The interval time shown here is the elapsed time from starting the test runner package until the first assertion was executed. The total run time is the elapsed time from start to finish for the test runner package. The report confirms that one assertion was executed for SIMPLE_TEST_RUNNER and it passed. All tests passed, so the test yield is 100%.</p>
 <h2 id="wt_text_report-display-levels">WT_TEXT_REPORT Display Levels</h2>
 <p>This example shows all result details for the SIMPLE_TEST_RUNNER only.</p>
 <p>Run this:</p>
@@ -72,8 +73,8 @@ end;
 -----------------------------------------------------------
  PASS   56ms Ad-Hoc Test. EQ - Expected &quot;1&quot; and got &quot;1&quot;
 </code></pre>
-<p>This shows the latest test result summary with test results details. A detail level of 30 shows summary and detailed test results for a test runner package. In this case, the summary is the same and the detailed results of the EQ assertion are shown. These detail levels are explained in the <a href="../Reference.htm">Reference Page</a>.</p>
-<p>The detailed results shown are the same as the ad-hoc result, with a &quot;56ms&quot; added. The detailed results from the test runner package includes the elapsed time between assertions, or elapsed time from test runner package startup to the first assertion.</p>
+<p>This shows the latest test result summary with test results details. A detail level of 30 shows summary and detailed test results for a test runner package. In this case, the summary and the detailed results of the EQ assertion are shown. These detail levels are explained in the <a href="../Reference.htm#wt_text_report-detail-levels">Reference Page</a>.</p>
+<p>The detailed results shown are the same as the ad-hoc result, with a &quot;56ms&quot; added. The 56 in the detailed results shows the elapsed time between assertions, or elapsed time from test runner package startup to the first assertion.</p>
 <h2 id="test-cases">Test Cases</h2>
 <p>For wtPLSQL, a test case is a collection of assertions. Assertion results can be grouped by test case. There can be zero or more test cases in a test runner package.</p>
 <p>Run this:</p>
@@ -141,7 +142,7 @@ as
 end simple_test_runner;
 /
 </code></pre>
-<p>With the addition of the DBOUT annotation, the profiling information is available for the SIMPLE_TEST_RUNNER package.</p>
+<p>With the addition of the DBOUT annotation, the profiling information is available for the SIMPLE_TEST_RUNNER package. The DBOUT takes the form of &quot;owner.object_name:object_type&quot;. &quot;owner&quot; will default to &quot;USER&quot;. &quot;object_name&quot; is required. &quot;object_type&quot; is required if more than one object has that name. Package bodies will always require the &quot;:PACKAGE BODY&quot; because the package specification is always another database object with the same name.</p>
 <p>Run this:</p>
 <pre><code>begin
    wtplsql.test_run(&#39;SIMPLE_TEST_RUNNER&#39;);
