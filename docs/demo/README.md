@@ -81,20 +81,20 @@ A test runner package is central to running tests in wtPLSQL.  The [Test Runner]
 ## Database Object Tests
 More interesting examples actually test database objects. Here is an example test of each database object supported by wtPLSQL.
 * [Package Test](Package-Test.md)
-* [Procedure Test](Procedure-Test.md) (Not Ready)
-* [Function Test](Function-Test.md) (Not Ready)
-* [Table Constraints Test](Table-Constraints-Test.md) (Not Ready)
-* [Table Trigger Test](Table-Trigger-Test.md) (Not Ready)
-* [Type Test](Type-Test.md) (Not Ready)
+* Procedure Test
+* Function Test
+* Table Constraints Test
+* Table Trigger Test
+* [Type Test](Type-Test.md)
 
 ## utPLSQL 2.3 Examples
-* [ut_calc_secs_between](ut_calc_secs_between.md) - Test a Simple Procedure (Not Ready)
-* [ut_truncit](ut_truncit.md) - Test a Table Modification Procedure (Not Ready)
-* [ut_str](ut_str.md) - Test a Simple Function (Not Ready)
-* [ut_del1](ut_del1.md) - Test an Entire Package (Not Ready)
-* [Create and Run a Test Suite](Test-Suite.md) - Build a Test Suite package. (Not Ready)
-* [ut_betwnstr](ut_betwnstr.md) (Not Ready)
-* [Version](Version.md) (Not Ready)
+* ut_calc_secs_between - Test a Simple Procedure
+* ut_truncit - Test a Table Modification Procedure
+* ut_str - Test a Simple Function
+* ut_del1 - Test an Entire Package
+* Create and Run a Test Suite - Build a Test Suite package.
+* ut_betwnstr
+* Version
 
 ---
 [Website Home Page](../README.md)
