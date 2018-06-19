@@ -84,7 +84,7 @@ More interesting examples actually test database objects. Here is an example tes
 * Procedure Test
 * Function Test
 * Table Constraints Test
-* Table Trigger Test
+* [Table/View Trigger Test](Trigger-Test.md)
 * [Type Test](Type-Test.md)
 
 ## utPLSQL 2.3 Examples
