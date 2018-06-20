@@ -4,13 +4,19 @@
 
 ---
 
-## Table and View Triggers
+## Triggers
 
-What types and kinds?
+The "Database PL/SQL Language Reference" (11.2) groups triggers this way:
+* Simple DML Trigger
+* Compound DML Trigger
+* Instead of DML Trigger
+* System Trigger
 
-Other than tables?
+All of these triggers are testable with wtPLSQL?
 
-## Test a Table Trigger
+For brevity, the simple DML trigger will be used in these examples.
+
+## Test a Table Insert Trigger
 
 Create a Table and Trigger.
 

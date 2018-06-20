@@ -4,13 +4,20 @@
 
 ---
 
-## PL/SQL Types
+## Oracle Database Types
 
-Following are the 4 Oracle Types.  For the purposes of wtPLSQL Examples, only Object Types will be tested, specifically type methods.
-* Collection of Attributes
-* VArray Collection
-* Nested Table Collection
-* Object
+Following are the 4 Oracle database types that are defined and stored in the database.
+* Abstract Data Type (ADT) (including a SQLJ object type)
+* Standalone varying array (varray) type
+* Standalone nested table type
+* Incomplete object type
+
+https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/create_type.htm
+
+In contrast these Oracle database types are not stored in the database.
+* Subtypes
+* Record Types
+* Associative Arrays
 
 ## Test a PL/SQL Object Type
 
