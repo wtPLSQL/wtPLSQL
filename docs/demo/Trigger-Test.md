@@ -14,29 +14,23 @@ The "Database PL/SQL Language Reference" (11.2) [groups triggers](https://docs.o
 * System Trigger
 
 [Simple DML Triggers](https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/create_trigger.htm#BABBJHHG):
-* before delete
-* before insert
-* before update
-* after delete
-* after insert
-* after update
+
+ Before | After
+--------|-------------
+ Delete | Delete
+ Insert | Insert
+ Update | Update
 
 [Compound DML Triggers](https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/create_trigger.htm#BABDFIFA):
-* before delete statement
-* before insert statement
-* before update statement
-* before each row deleted
-* before each row inserted
-* before each row updated
-* instead of each row deleted
-* instead of each row inserted
-* instead of each row updated
-* after each row deleted
-* after each row inserted
-* after each row updated
-* after delete statement
-* after insert statement
-* after update statement
+
+ Before            | Instead of        | After
+-------------------|-------------------|-------------------
+ Each Row Deleted  | Each Row Deleted  | Each Row Deleted
+ Each Row Inserted | Each Row Inserted | Each Row Inserted
+ Each Row Updated  | Each Row Updated  | Each Row Updated
+ Delete Statement  |                   | Delete Statement
+ Insert Statement  |                   | Insert Statement
+ Update Statement  |                   | Update Statement
 
 [Instead of DML Triggers](https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/create_trigger.htm#CIHEIGBE):
 * instead of delete
@@ -44,55 +38,30 @@ The "Database PL/SQL Language Reference" (11.2) [groups triggers](https://docs.o
 * instead of update
 
 [System Triggers](https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/create_trigger.htm#BABHEFGE):
-* before alter statement
-* before analyze statement
-* before associate statistics statement
-* before audit statement
-* before comment statement
-* before create statement
-* before database shutdown
-* before disassociate statistics statement
-* before drop statement
-* before grant statement
-* before noaudit statement
-* before rename statement
-* before revoke statement
-* before truncate statement
-* before user logoff
-* instead of alter statement
-* instead of analyze statement
-* instead of associate statistics statement
-* instead of audit statement
-* instead of comment statement
-* instead of create statement
-* instead of disassociate statistics statement
-* instead of drop statement
-* instead of grant statement
-* instead of noaudit statement
-* instead of rename statement
-* instead of revoke statement
-* instead of truncate statement
-* after alter statement
-* after analyze statement
-* after associate statistics statement
-* after audit statement
-* after comment statement
-* after create statement
-* after database startup
-* after db role change
-* after disassociate statistics statement
-* after drop statement
-* after grant statement
-* after noaudit statement
-* after rename statement
-* after revoke statement
-* after servererror
-* after truncate statement
-* after user logon
-* after user suspend
+
+ Before                  | Instead of              | After
+-------------------------|-------------------------|-------------------------
+ Alter Statement         | Alter Statement         | Alter Statement         
+ Analyze Statement       | Analyze Statement       | Analyze Statement       
+ Associate Statistics    | Associate Statistics    | Associate Statistics    
+ Audit Statement         | Audit Statement         | Audit Statement         
+ Comment Statement       | Comment Statement       | Comment Statement       
+ Create Statement        | Create Statement        | Create Statement        
+ Disassociate Statistics | Disassociate Statistics | Disassociate Statistics 
+ Drop Statement          | Drop Statement          | Drop Statement          
+ Grant Statement         | Grant Statement         | Grant Statement         
+ Noaudit Statement       | Noaudit Statement       | Noaudit Statement       
+ Rename Statement        | Rename Statement        | Rename Statement        
+ Revoke Statement        | Revoke Statement        | Revoke Statement        
+ Truncate Statement      | Truncate Statement      | Truncate Statement      
+ User Logoff             | .                       | User Logon              
+ Database Shutdown       | .                       | Database Startup        
+ .                       | .                       | Servererror             
+ .                       | .                       | User Suspend            
+ .                       | .                       | DB Role Change          
 
 For brevity, an example is provided for only one of these triggers.
-
+Db Role Change          
 ## Table with Insert Trigger
 
 Before a trigger an be created, a table must be created.  The table will have a surrogate key, a natural key, and audit data.
