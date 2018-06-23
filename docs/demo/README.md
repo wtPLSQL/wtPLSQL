@@ -83,8 +83,8 @@ More interesting examples actually test database objects. Here is an example tes
 * [Package Test](Package-Test.md)
 * Procedure Test
 * Function Test
-* Table Constraints Test
-* [Table/View Trigger Test](Trigger-Test.md)
+* [Table Constraints Test](Table-Test.md)
+* [Trigger Test](Trigger-Test.md)
 * [Type Test](Type-Test.md)
 
 ## utPLSQL 2.3 Examples
