@@ -79,23 +79,6 @@ end test_simple_object;
 /
 ```
 
-And run this:
-
-```
-create or replace package body test_simple_object
-as
-   --% WTPLSQL SET DBOUT "SIMPLE_TEST_OBJ_TYPE:TYPE BODY" %--
-   procedure wtplsql_run
-   as
-   begin
-      null;
-   end wtplsql_run;
-end test_simple_object;
-/
-```
-
-## Add Constructor Test Cases
-
 The constructor has 2 basic functions:
 * NULL the the minimum value
 * Set number of observations to zero
@@ -127,7 +110,7 @@ end test_simple_object;
 /
 ```
 
-Check the results of the 
+## Check the Results
 
 Run this:
 

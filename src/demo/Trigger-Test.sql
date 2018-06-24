@@ -1,4 +1,8 @@
 
+drop table trigger_test_tab;
+
+drop sequence trigger_test_seq;
+
 create sequence trigger_test_seq;
 
 create table trigger_test_tab
@@ -24,17 +28,6 @@ end;
 create or replace package trigger_test_pkg authid definer
 as
    procedure wtplsql_run;
-end trigger_test_pkg;
-/
-
-create or replace package body trigger_test_pkg
-as
-   --% WTPLSQL SET DBOUT "TRIGGER_TEST_BIR:TRIGGER" %--
-   procedure wtplsql_run
-   as
-   begin
-      null;
-   end wtplsql_run;
 end trigger_test_pkg;
 /
 

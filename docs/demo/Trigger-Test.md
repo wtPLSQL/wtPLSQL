@@ -5,7 +5,7 @@
 ---
 
 ## Triggers
-There are many kinds of triggers.  All of them use PL/SQL to define actions taken when the the trigger is activated.
+There are many kinds of triggers.  All of them use PL/SQL to define actions taken when the trigger is activated.
 
 The "Database PL/SQL Language Reference" (11.2) [groups triggers](https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/create_trigger.htm#BABBJHHG) this way:
 * Simple DML Trigger
@@ -15,11 +15,11 @@ The "Database PL/SQL Language Reference" (11.2) [groups triggers](https://docs.o
 
 [Simple DML Triggers](https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/create_trigger.htm#BABBJHHG):
 
- Before | After
---------|-------------
- Delete | Delete
- Insert | Insert
- Update | Update
+ Before        | After
+---------------|--------------
+ Before Delete | After Delete
+ Before Insert | After Insert
+ Before Update | After Update
 
 [Compound DML Triggers](https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/create_trigger.htm#BABDFIFA):
 
@@ -33,9 +33,12 @@ The "Database PL/SQL Language Reference" (11.2) [groups triggers](https://docs.o
  Update Statement  |                   | Update Statement
 
 [Instead of DML Triggers](https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/create_trigger.htm#CIHEIGBE):
-* instead of delete
-* instead of insert
-* instead of update
+
+ Instead of        |
+-------------------|
+ Instead of Delete |
+ Instead of Insert |
+ Instead of Update |
 
 [System Triggers](https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/create_trigger.htm#BABHEFGE):
 
@@ -114,23 +117,6 @@ end trigger_test_pkg;
 /
 ```
 
-And run this:
-
-```
-create or replace package body trigger_test_pkg
-as
-   --% WTPLSQL SET DBOUT "TRIGGER_TEST_BIR:TRIGGER" %--
-   procedure wtplsql_run
-   as
-   begin
-      null;
-   end wtplsql_run;
-end trigger_test_pkg;
-/
-```
-
-## Add a Trigger Test Case
-
 The trigger being tested is a table DML trigger. Testing of a table trigger like this requires a modification of the data in the table.  The consequences of leaving this modified data after the test must be considered.  In this test, the data modification will not be preserved. 
 
 This test case will only test a happy path.
@@ -171,7 +157,7 @@ end trigger_test_pkg;
 /
 ```
 
-Check the results of the 
+## Check the results
 
 Run this:
 
@@ -224,6 +210,8 @@ Source               TotTime MinTime   MaxTime
 ```
 
 This is report level 30, the most detailed level of reporting.  Starting from the top, we find the test runner executed 1 test case and 3 assertions.  All tests passed for a 100% yield.  The code coverage for the trigger shows 5 profiles, 4 executed, and a code coverage of 100%.  Notice the trigger offset of 3 which aligns the source code with the profiled lines.
+
+This is not a complete test.  More test cases are needed to confirm various values are handled correctly when inserted.
 
 ---
 [Demos and Examples](README.md)

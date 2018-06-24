@@ -1,5 +1,6 @@
-create or replace package wt_assert authid definer
+create or replace package wt_assert authid current_user
 is
+   -- AUTHID CURRENT_USER is required for dynamic PL/SQL execution.
 
    ASSERT_FAILURE_EXCEPTION  exception;
    PRAGMA EXCEPTION_INIT(ASSERT_FAILURE_EXCEPTION, -20003);

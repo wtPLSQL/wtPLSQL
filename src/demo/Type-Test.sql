@@ -44,17 +44,6 @@ end test_simple_object;
 create or replace package body test_simple_object
 as
    --% WTPLSQL SET DBOUT "SIMPLE_TEST_OBJ_TYPE:TYPE BODY" %--
-   procedure wtplsql_run
-   as
-   begin
-      null;
-   end wtplsql_run;
-end test_simple_object;
-/
-
-create or replace package body test_simple_object
-as
-   --% WTPLSQL SET DBOUT "SIMPLE_TEST_OBJ_TYPE:TYPE BODY" %--
    procedure t_constructor
    is
       simple_test_obj  simple_test_obj_type;
