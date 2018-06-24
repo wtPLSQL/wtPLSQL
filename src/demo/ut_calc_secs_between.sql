@@ -62,3 +62,12 @@ END wtplsql_run;
 
 END ut_calc_secs_between;
 /
+
+set serveroutput on size unlimited format word_wrapped
+
+begin
+   wtplsql.test_run('UT_CALC_SECS_BETWEEN');
+   wt_text_report.dbms_out(in_runner_name  => 'UT_CALC_SECS_BETWEEN'
+                          ,in_detail_level => 30);
+end;
+/

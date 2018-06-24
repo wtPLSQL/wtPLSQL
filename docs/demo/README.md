@@ -79,22 +79,19 @@ Note: This ad-hoc test also demonstrates implicit data type conversion.
 A test runner package is central to running tests in wtPLSQL.  The [Test Runner](Test-Runner.md) page covers all the basics of creating a test runner package.
 
 ## Database Object Tests
-More interesting examples actually test database objects. Here is an example test of each database object supported by wtPLSQL.
+More interesting examples actually test database objects. Here are some examples.
 * [Package Test](Package-Test.md)
-* Procedure Test
-* Function Test
 * [Table Constraints Test](Table-Test.md)
 * [Trigger Test](Trigger-Test.md)
 * [Type Test](Type-Test.md)
 
 ## utPLSQL 2.3 Examples
-* ut_calc_secs_between - Test a Simple Procedure
-* ut_truncit - Test a Table Modification Procedure
-* ut_str - Test a Simple Function
-* ut_del1 - Test an Entire Package
-* Create and Run a Test Suite - Build a Test Suite package.
-* ut_betwnstr
-* Version
+wtPLSQL was built with the utPLSQL "ut_assert" API.  These examples were created from the original utPLSQL 2.3 examples without modifying the "ut_assert" calls
+
+* [ut_betwnstr](https://utplsql.org/utPLSQL/v2.3.1/fourstep.html) - Choose a program to test
+* [ut_calc_secs_between](https://utplsql.org/utPLSQL/v2.3.1/testproc.html) - Test a Simple Procedure
+* [ut_truncit](https://utplsql.org/utPLSQL/v2.3.1/testproc.html) - Test a Table Modification Procedure
+* [ut_str](https://utplsql.org/utPLSQL/v2.3.1/testfunc.html) - Test a Simple Function
 
 ---
 [Website Home Page](../README.md)

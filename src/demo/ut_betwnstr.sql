@@ -81,3 +81,12 @@ end wtplsql_run;
    
 end ut_betwnstr;
 /
+
+set serveroutput on size unlimited format word_wrapped
+
+begin
+   wtplsql.test_run('UT_BETWNSTR');
+   wt_text_report.dbms_out(in_runner_name  => 'UT_BETWNSTR'
+                          ,in_detail_level => 30);
+end;
+/
