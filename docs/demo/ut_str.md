@@ -6,7 +6,7 @@
 
 ## Original Example
 
-The [original "ut_str" example](https://utplsql.org/utPLSQL/v2.3.1/testfunc.html) is in the utPLSQL documentation.  The PL/SQL source for the package that will be tested is somewhat elusive.  It is not on the website, but in the "examples" source in a files called "str.pks" and "str.pkb".  This example is the unique case of a self-testing package in utPLSQL.  Since it is a self-testing package, all the source is included in this web page.
+The [original "ut_str" example](https://utplsql.org/utPLSQL/v2.3.1/testfunc.html) is in the utPLSQL documentation.  The PL/SQL source for the package to be tested is somewhat elusive.  It is not on the website, but in the "examples" source in a files called "str.pks" and "str.pkb".  This example is the unique case of a self-testing package in utPLSQL, which is also discussed in the [Put Test Code in Same Package](https://utplsql.org/utPLSQL/v2.3.1/samepack.html) web page.  Since it is a self-testing package, all the source is included in this web page.
 
 ## Test Package Conversion
 
