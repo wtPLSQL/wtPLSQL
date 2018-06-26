@@ -88,10 +88,10 @@ More interesting examples actually test database objects. Here are some examples
 ## utPLSQL 2.3 Examples
 wtPLSQL was built with the utPLSQL "ut_assert" API.  These examples were created from the original utPLSQL 2.3 examples without modifying the "ut_assert" calls
 
-* [ut_betwnstr](https://utplsql.org/utPLSQL/v2.3.1/fourstep.html) - Choose a program to test
-* [ut_calc_secs_between](https://utplsql.org/utPLSQL/v2.3.1/testproc.html) - Test a Simple Procedure
-* [ut_truncit](https://utplsql.org/utPLSQL/v2.3.1/testproc.html) - Test a Table Modification Procedure
-* [ut_str](https://utplsql.org/utPLSQL/v2.3.1/testfunc.html) - Test a Simple Function
+* [ut_betwnstr](ut_betwnstr.md) - Choose a program to test
+* [ut_calc_secs_between](ut_calc_secs_between.md) - Test a Simple Procedure
+* [ut_truncit](ut_truncit.md) - Test a Table Modification Procedure
+* [ut_str](ut_str.md) - Test a Simple Function
 
 ---
 [Website Home Page](../README.md)

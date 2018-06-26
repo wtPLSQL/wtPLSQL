@@ -15,50 +15,71 @@ END;
 
 CREATE OR REPLACE PACKAGE ut_calc_secs_between
 IS
+   PROCEDURE ut_setup;
+   PROCEDURE ut_teardown;
+
    -- For each program to test...
+   PROCEDURE ut_CALC_SECS_BETWEEN;
    PROCEDURE wtplsql_run;
 END ut_calc_secs_between;
 /
 
 CREATE OR REPLACE PACKAGE BODY ut_calc_secs_between
 IS
+   PROCEDURE ut_setup
+   IS
+   BEGIN
+      NULL;
+   END;
 
-   --% WTPLSQL SET DBOUT "CALC_SECS_BETWEEN:PROCEDURE" %--
+   PROCEDURE ut_teardown
+   IS
+   BEGIN
+      NULL;
+   END;
 
    -- For each program to test...
-PROCEDURE wtplsql_run
-IS
-   secs PLS_INTEGER;
-BEGIN
-   CALC_SECS_BETWEEN (
-         DATE1 => SYSDATE
-         ,
-         DATE2 => SYSDATE
-         ,
-         SECS => secs
-    );
+   PROCEDURE ut_CALC_SECS_BETWEEN 
+   IS
+      secs PLS_INTEGER;
+   BEGIN
+      CALC_SECS_BETWEEN (
+            DATE1 => SYSDATE
+            ,
+            DATE2 => SYSDATE
+            ,
+            SECS => secs
+       );
+   
+      utAssert.eq (
+         'Same dates',
+         secs, 
+         0
+         );
+         
+      CALC_SECS_BETWEEN (
+            DATE1 => SYSDATE
+            ,
+            DATE2 => SYSDATE+1
+            ,
+            SECS => secs
+       );
+   
+      utAssert.eq (
+         'Exactly one day',
+         secs, 
+         24 * 60 * 60
+         );
+         
+   END ut_CALC_SECS_BETWEEN;
 
-   utAssert.eq (
-      'Same dates',
-      secs, 
-      0
-      );
-      
-   CALC_SECS_BETWEEN (
-         DATE1 => SYSDATE
-         ,
-         DATE2 => SYSDATE+1
-         ,
-         SECS => secs
-    );
-
-   utAssert.eq (
-      'Exactly one day',
-      secs, 
-      24 * 60 * 60
-      );
-      
-END wtplsql_run;
+   --% WTPLSQL SET DBOUT "CALC_SECS_BETWEEN:PROCEDURE" %--
+   PROCEDURE wtPLSQL_run IS
+   BEGIN
+      ut_setup;
+      ut_CALC_SECS_BETWEEN;
+      ut_teardown;
+   END wtPLSQL_run;
 
 END ut_calc_secs_between;
 /

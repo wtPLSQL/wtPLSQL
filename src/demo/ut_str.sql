@@ -16,6 +16,12 @@ IS
    )
       RETURN VARCHAR2;
 
+   PROCEDURE ut_setup;
+
+   PROCEDURE ut_teardown;
+
+   -- For each program to test...
+   PROCEDURE ut_betwn;
    PROCEDURE wtplsql_run;
 END str;
 /
@@ -75,6 +81,18 @@ IS
 
    --%WTPLSQL_begin_ignore_lines%--
 
+   PROCEDURE ut_setup
+   IS
+   BEGIN
+      NULL;
+   END;
+
+   PROCEDURE ut_teardown
+   IS
+   BEGIN
+      NULL;
+   END;
+
    -- For each program to test...
    PROCEDURE ut_betwn
    IS
@@ -98,9 +116,11 @@ IS
    --% WTPLSQL SET DBOUT "STR:PACKAGE BODY" %--
    PROCEDURE wtplsql_run IS
    BEGIN
+      ut_setup;
       ut_betwn;
+      ut_teardown;
    END wtplsql_run;
-   
+
 END str;
 /
 
