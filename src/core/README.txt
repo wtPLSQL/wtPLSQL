@@ -10,6 +10,7 @@ common_setup.sql        Common setup script.  Contains values for install/uninst
 install.sql             Install script.  Run as SYSTEM.
 installO.LST            Example of a successfull install.
 proftab.sql             DBMS_PROFILER tables.  Copied from ?/rdbms/admin/proftab.sql.
+proftab_comments.sql    Table/column comments on DBMS_PROFILER tables.
 RELEASE_NOTES.txt       Release Notes for this release
 test_all.sql            SQL script to execute all Test Runners.
 test_allO.LST           Example of successful results from all Test Runners.

@@ -8,3 +8,8 @@ New Features:
  -) Exceptions from "query" assertions are now handled.
  -) Streamlined WT_TEXT_REPORT output.
  -) Added WT_TEST_RUN_STATS and WT_TESTCASE_STATS summary tables.
+ -) Added comments to DBMS_PROFILER tables.
+ -) Changed ANNO annotation to IGNR in WT_DBOUT_PROFILES table.
+ -) Added units to time columns in WT_DBOUT_PROFILES table.
+ -) Improved robustness of WT_PROFILER package.
+ -) Corrected problems with wtPLSQL non-owner testing.
