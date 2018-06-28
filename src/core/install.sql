@@ -18,7 +18,7 @@ begin
    if USER not in ('SYS','SYSTEM')
    then
       raise_application_error (-20000,
-        'Not logged in as SYS or SYSTEM');
+        'Not logged in as SYS');
    end if;
 end;
 /
@@ -93,27 +93,19 @@ end;
 
 -- Public Synonyms
 
-create or replace public synonym wt_test_runs_seq  for &schema_owner..wt_test_runs_seq;
+create or replace public synonym wt_version            for &schema_owner..wt_version;
+create or replace public synonym wt_test_runs          for &schema_owner..wt_test_runs;
+create or replace public synonym wt_results            for &schema_owner..wt_results;
+create or replace public synonym wt_dbout_profiles     for &schema_owner..wt_dbout_profiles;
+create or replace public synonym wt_test_run_stats.tab for &schema_owner..wt_test_run_stats.tab;
+create or replace public synonym wt_testcase_stats.tab for &schema_owner..wt_testcase_stats.tab;
+create or replace public synonym wt_self_test.tab      for &schema_owner..wt_self_test.tab;
 
-create or replace public synonym wt_test_runs      for &schema_owner..wt_test_runs;
-create or replace public synonym wt_results        for &schema_owner..wt_results;
-create or replace public synonym wt_dbout_profiles for &schema_owner..wt_dbout_profiles;
-create or replace public synonym wt_version        for &schema_owner..wt_version;
-
-create or replace public synonym plsql_profiler_runs      for &schema_owner..plsql_profiler_runs;
-create or replace public synonym plsql_profiler_units     for &schema_owner..plsql_profiler_units;
-create or replace public synonym plsql_profiler_data      for &schema_owner..plsql_profiler_data;
-create or replace public synonym plsql_profiler_runnumber for &schema_owner..plsql_profiler_runnumber;
-
---create or replace public synonym ut_assert         for &schema_owner..wt_assert;
-create or replace public synonym wt_assert         for &schema_owner..wt_assert;
-create or replace public synonym wt_profiler       for &schema_owner..wt_profiler;
-create or replace public synonym wt_result         for &schema_owner..wt_result;
-create or replace public synonym wt_test_run_stat  for &schema_owner..wt_test_run_stat;
-create or replace public synonym wt_text_report    for &schema_owner..wt_text_report;
-create or replace public synonym wt_wtplsql        for &schema_owner..wtplsql;
-create or replace public synonym wtplsql           for &schema_owner..wtplsql;
-
+create or replace public synonym ut_assert      for &schema_owner..wt_assert;
+create or replace public synonym wt_assert      for &schema_owner..wt_assert;
+create or replace public synonym wt_text_report for &schema_owner..wt_text_report;
+create or replace public synonym wt_wtplsql     for &schema_owner..wtplsql;
+create or replace public synonym wtplsql        for &schema_owner..wtplsql;
 
 
 WHENEVER SQLERROR exit SQL.SQLCODE
@@ -142,10 +134,7 @@ WHENEVER SQLERROR continue
 --
 create index plsql_profiler_runs_idx1
    on plsql_profiler_runs (run_date);
-grant select, insert, delete on plsql_profiler_runs to public;
-grant select, insert, delete on plsql_profiler_units to public;
-grant select, insert, delete on plsql_profiler_data to public;
-grant select on plsql_profiler_runnumber to public;
+
 -- Core Tables
 @wt_version.tab
 @wt_test_runs.tab
@@ -156,29 +145,21 @@ grant select on plsql_profiler_runnumber to public;
 @wt_self_test.tab
 
 -- Package Specifications
-
 @wtplsql.pks
 /
-grant execute on wtplsql to public;
-
 @wt_result.pks
 /
-grant execute on wt_result to public;
-
 @wt_assert.pks
 /
-grant execute on wt_assert to public;
-
 @wt_profiler.pks
 /
-grant execute on wt_profiler to public;
-
 @wt_test_run_stat.pks
 /
-grant execute on wt_profiler to public;
-
 @wt_text_report.pks
 /
+
+grant execute on wtplsql to public;
+grant execute on wt_assert to public;
 grant execute on wt_text_report to public;
 
 -- Package Bodies

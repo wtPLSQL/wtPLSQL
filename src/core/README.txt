@@ -37,6 +37,9 @@ wtplsql.pkb             WTPLSQL package body.
 wtplsql.pks             WTPLSQL package specification.
 
 
+NOTE: "install.sql" creates PUBLIC SYNONYMS.
+
+
 Install Procedure:
 ------------------
 1) sqlplus SYS/password as SYSDBA @install
