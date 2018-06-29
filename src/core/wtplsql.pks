@@ -1,5 +1,6 @@
 create or replace package wtplsql authid current_user
 as
+   -- AUTHID CURRENT_USER is required for dynamic PL/SQL execution.
 
    function show_version
       return varchar2;

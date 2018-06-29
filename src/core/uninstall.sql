@@ -7,12 +7,11 @@
 
 spool uninstall
 set showmode off
+set serveroutput on size unlimited format truncated
 
 @common_setup.sql
 
 drop user &schema_owner. cascade;
-
-set serveroutput on size unlimited format truncated
 
 -- Public Synonyms
 declare

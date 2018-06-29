@@ -9,8 +9,6 @@ create table table_test_tab
   ,constraint table_test_tab_ck1 check (name = upper(name))
   );
 
-grant all on table_test_tab to wtp;
-
 create or replace package table_test_pkg authid definer
 as
    procedure wtplsql_run;

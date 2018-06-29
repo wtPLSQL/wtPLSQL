@@ -1,3 +1,4 @@
+old: showmode BOTH
 
 PL/SQL procedure successfully completed.
 
@@ -47,6 +48,16 @@ new:grant create procedure to wtp
 
 Grant succeeded.
 
+old:grant select on dba_source to &schema_owner.
+new:grant select on dba_source to wtp
+
+Grant succeeded.
+
+old:grant select on dba_objects to &schema_owner.
+new:grant select on dba_objects to wtp
+
+Grant succeeded.
+
 PLSQL_CCFLAGS Before: WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE
 
 
@@ -59,6 +70,11 @@ PLSQL_CCFLAGS After: WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE
 
 
 PL/SQL procedure successfully completed.
+
+old:create or replace public synonym wt_version        for &schema_owner..wt_version
+new:create or replace public synonym wt_version        for wtp.wt_version
+
+Synonym WT_VERSION created.
 
 old:create or replace public synonym wt_test_runs_seq  for &schema_owner..wt_test_runs_seq
 new:create or replace public synonym wt_test_runs_seq  for wtp.wt_test_runs_seq
@@ -80,63 +96,43 @@ new:create or replace public synonym wt_dbout_profiles for wtp.wt_dbout_profiles
 
 Synonym WT_DBOUT_PROFILES created.
 
-old:create or replace public synonym wt_version        for &schema_owner..wt_version
-new:create or replace public synonym wt_version        for wtp.wt_version
+old:create or replace public synonym wt_test_run_stats for &schema_owner..wt_test_run_stats
+new:create or replace public synonym wt_test_run_stats for wtp.wt_test_run_stats
 
-Synonym WT_VERSION created.
+Synonym WT_TEST_RUN_STATS created.
 
-old:create or replace public synonym plsql_profiler_runs      for &schema_owner..plsql_profiler_runs
-new:create or replace public synonym plsql_profiler_runs      for wtp.plsql_profiler_runs
+old:create or replace public synonym wt_testcase_stats for &schema_owner..wt_testcase_stats
+new:create or replace public synonym wt_testcase_stats for wtp.wt_testcase_stats
 
-Synonym PLSQL_PROFILER_RUNS created.
+Synonym WT_TESTCASE_STATS created.
 
-old:create or replace public synonym plsql_profiler_units     for &schema_owner..plsql_profiler_units
-new:create or replace public synonym plsql_profiler_units     for wtp.plsql_profiler_units
+old:create or replace public synonym wt_self_test      for &schema_owner..wt_self_test
+new:create or replace public synonym wt_self_test      for wtp.wt_self_test
 
-Synonym PLSQL_PROFILER_UNITS created.
+Synonym WT_SELF_TEST created.
 
-old:create or replace public synonym plsql_profiler_data      for &schema_owner..plsql_profiler_data
-new:create or replace public synonym plsql_profiler_data      for wtp.plsql_profiler_data
+old:create or replace public synonym utassert       for &schema_owner..wt_assert
+new:create or replace public synonym utassert       for wtp.wt_assert
 
-Synonym PLSQL_PROFILER_DATA created.
+Synonym UTASSERT created.
 
-old:create or replace public synonym plsql_profiler_runnumber for &schema_owner..plsql_profiler_runnumber
-new:create or replace public synonym plsql_profiler_runnumber for wtp.plsql_profiler_runnumber
-
-Synonym PLSQL_PROFILER_RUNNUMBER created.
-
-old:create or replace public synonym wt_assert         for &schema_owner..wt_assert
-new:create or replace public synonym wt_assert         for wtp.wt_assert
+old:create or replace public synonym wt_assert      for &schema_owner..wt_assert
+new:create or replace public synonym wt_assert      for wtp.wt_assert
 
 Synonym WT_ASSERT created.
 
-old:create or replace public synonym wt_profiler       for &schema_owner..wt_profiler
-new:create or replace public synonym wt_profiler       for wtp.wt_profiler
-
-Synonym WT_PROFILER created.
-
-old:create or replace public synonym wt_result         for &schema_owner..wt_result
-new:create or replace public synonym wt_result         for wtp.wt_result
-
-Synonym WT_RESULT created.
-
-old:create or replace public synonym wt_test_run_stat  for &schema_owner..wt_test_run_stat
-new:create or replace public synonym wt_test_run_stat  for wtp.wt_test_run_stat
-
-Synonym WT_TEST_RUN_STAT created.
-
-old:create or replace public synonym wt_text_report    for &schema_owner..wt_text_report
-new:create or replace public synonym wt_text_report    for wtp.wt_text_report
+old:create or replace public synonym wt_text_report for &schema_owner..wt_text_report
+new:create or replace public synonym wt_text_report for wtp.wt_text_report
 
 Synonym WT_TEXT_REPORT created.
 
-old:create or replace public synonym wt_wtplsql        for &schema_owner..wtplsql
-new:create or replace public synonym wt_wtplsql        for wtp.wtplsql
+old:create or replace public synonym wt_wtplsql     for &schema_owner..wtplsql
+new:create or replace public synonym wt_wtplsql     for wtp.wtplsql
 
 Synonym WT_WTPLSQL created.
 
-old:create or replace public synonym wtplsql           for &schema_owner..wtplsql
-new:create or replace public synonym wtplsql           for wtp.wtplsql
+old:create or replace public synonym wtplsql        for &schema_owner..wtplsql
+new:create or replace public synonym wtplsql        for wtp.wtplsql
 
 Synonym WTPLSQL created.
 
@@ -219,19 +215,103 @@ Comment created.
 Sequence PLSQL_PROFILER_RUNNUMBER created.
 
 
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
 Index PLSQL_PROFILER_RUNS_IDX1 created.
-
-
-Grant succeeded.
-
-
-Grant succeeded.
-
-
-Grant succeeded.
-
-
-Grant succeeded.
 
 
 Table WT_VERSION created.
@@ -543,34 +623,25 @@ Commit complete.
 Package WTPLSQL compiled
 
 
-Grant succeeded.
-
-
 Package WT_RESULT compiled
-
-
-Grant succeeded.
 
 
 Package WT_ASSERT compiled
 
 
-Grant succeeded.
-
-
 Package WT_PROFILER compiled
-
-
-Grant succeeded.
 
 
 Package WT_TEST_RUN_STAT compiled
 
 
+Package WT_TEXT_REPORT compiled
+
+
 Grant succeeded.
 
 
-Package WT_TEXT_REPORT compiled
+Grant succeeded.
 
 
 Grant succeeded.
@@ -593,3 +664,4 @@ Package Body WT_TEST_RUN_STAT compiled
 
 Package Body WT_TEXT_REPORT compiled
 
+new: showmode BOTH

@@ -6,7 +6,8 @@
 --
 
 -- Capture output
-spool install
+spool upgrade
+set serveroutput on size unlimited format truncated
 set showmode off
 
 -- Shared Setup Script
@@ -47,7 +48,9 @@ drop public synonym plsql_profiler_data;
 drop public synonym wt_profiler;
 drop public synonym wt_result;
 
+create or replace public synonym utassert          for &schema_owner..wt_assert;
 create or replace public synonym wt_version        for &schema_owner..wt_version;
+create or replace public synonym wt_test_runs_seq  for &schema_owner..wt_test_runs_seq;
 create or replace public synonym wt_test_run_stats for &schema_owner..wt_test_run_stats;
 create or replace public synonym wt_testcase_stats for &schema_owner..wt_testcase_stats;
 create or replace public synonym wt_self_test      for &schema_owner..wt_self_test;
@@ -56,6 +59,7 @@ WHENEVER SQLERROR exit SQL.SQLCODE
 
 -- Connect as SCHEMA_OWNER
 connect &schema_owner./&schema_owner.
+set serveroutput on size unlimited format truncated
 
 begin
    if USER != upper('&schema_owner')

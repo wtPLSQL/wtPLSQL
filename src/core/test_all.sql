@@ -1,6 +1,5 @@
 
 spool test_all
-
 set serveroutput on size unlimited format wrapped
 set linesize 1000
 set trimspool on
@@ -30,7 +29,7 @@ end;
 
 begin
    wtplsql.test_all;
-   wt_text_report.dbms_out(in_detail_level => 30);
+   wt_text_report.dbms_out;
 end;
 /
 

@@ -8,6 +8,7 @@
 -- Capture output
 spool install
 set showmode off
+set serveroutput on size unlimited format truncated
 
 -- Shared Setup Script
 @common_setup.sql
@@ -93,15 +94,16 @@ end;
 
 -- Public Synonyms
 
-create or replace public synonym wt_version            for &schema_owner..wt_version;
-create or replace public synonym wt_test_runs          for &schema_owner..wt_test_runs;
-create or replace public synonym wt_results            for &schema_owner..wt_results;
-create or replace public synonym wt_dbout_profiles     for &schema_owner..wt_dbout_profiles;
-create or replace public synonym wt_test_run_stats.tab for &schema_owner..wt_test_run_stats.tab;
-create or replace public synonym wt_testcase_stats.tab for &schema_owner..wt_testcase_stats.tab;
-create or replace public synonym wt_self_test.tab      for &schema_owner..wt_self_test.tab;
+create or replace public synonym wt_version        for &schema_owner..wt_version;
+create or replace public synonym wt_test_runs_seq  for &schema_owner..wt_test_runs_seq;
+create or replace public synonym wt_test_runs      for &schema_owner..wt_test_runs;
+create or replace public synonym wt_results        for &schema_owner..wt_results;
+create or replace public synonym wt_dbout_profiles for &schema_owner..wt_dbout_profiles;
+create or replace public synonym wt_test_run_stats for &schema_owner..wt_test_run_stats;
+create or replace public synonym wt_testcase_stats for &schema_owner..wt_testcase_stats;
+create or replace public synonym wt_self_test      for &schema_owner..wt_self_test;
 
-create or replace public synonym ut_assert      for &schema_owner..wt_assert;
+create or replace public synonym utassert       for &schema_owner..wt_assert;
 create or replace public synonym wt_assert      for &schema_owner..wt_assert;
 create or replace public synonym wt_text_report for &schema_owner..wt_text_report;
 create or replace public synonym wt_wtplsql     for &schema_owner..wtplsql;
@@ -112,6 +114,7 @@ WHENEVER SQLERROR exit SQL.SQLCODE
 
 -- Connect as SCHEMA_OWNER
 connect &schema_owner./&schema_owner.
+set serveroutput on size unlimited format truncated
 
 begin
    if USER != upper('&schema_owner')

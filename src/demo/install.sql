@@ -9,6 +9,7 @@
 
 -- Capture output
 spool install
+set serveroutput on size unlimited format truncated
 
 -- Shared Setup Script
 @common_setup.sql
@@ -32,6 +33,7 @@ WHENEVER SQLERROR continue
 
 create user &schema_owner. identified by &schema_owner.
    default tablespace users
+   quota 1M on users
    temporary tablespace temp;
 
 grant create session   to &schema_owner.;
@@ -58,6 +60,7 @@ WHENEVER SQLERROR exit SQL.SQLCODE
 ----------------------------------------
 
 connect &schema_owner./&schema_owner.
+set serveroutput on size unlimited format truncated
 
 begin
    if USER != upper('&schema_owner')
@@ -80,8 +83,6 @@ begin
                ,against_this_in => '1');
 end;
 /
-
-create synonym utassert for wtp.wt_assert;
 
 ----------------------------------------
 -- Test Installation

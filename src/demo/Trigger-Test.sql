@@ -69,5 +69,3 @@ begin
    wt_text_report.dbms_out(USER,'TRIGGER_TEST_PKG',30);
 end;
 /
-
-select * from user_source where name = 'TRIGGER_TEST_BIR';
