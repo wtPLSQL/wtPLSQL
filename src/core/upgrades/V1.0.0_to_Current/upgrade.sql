@@ -28,7 +28,7 @@ WHENEVER SQLERROR continue
 
 revoke connect, resource from &schema_owner.;
 
-grant quota unlimited      to &schema_owner.;
+alter user &schema_owner. quota unlimited on USERS;
 grant create session       to &schema_owner.;
 grant create type          to &schema_owner.;
 grant create sequence      to &schema_owner.;
@@ -80,12 +80,19 @@ drop table wt_test_data;
 revoke select, insert, delete on plsql_profiler_runs from public;
 revoke select, insert, delete on plsql_profiler_units from public;
 revoke select, insert, delete on plsql_profiler_data from public;
-revoke insert on wt_test_runs from public;
 revoke insert on wt_results from public;
 revoke insert on wt_dbout_profiles from public;
 revoke update on wt_dbout_profiles from public;
 
+-- Note: This table was included with the V1.0 source
+--   but was omitted from the V1.0 installation script.
 @../../wt_version.tab
+delete from wt_version where action = 'INSTALL' and text = '1.0';
+insert into wt_version (install_dtm, action, text)
+   values (sysdate, 'INSTALL', '1.0');
+insert into wt_version (install_dtm, action, text)
+   values (sysdate, 'UPGRADE', '1.1.0');
+
 @../../wt_testcase_stats.tab
 @../../wt_test_run_stats.tab
 @../../wt_self_test.tab
@@ -101,10 +108,10 @@ comment on column wt_results.interval_msecs is 'Interval time in milliseonds sin
 alter table wt_dbout_profiles rename column total_time to total_usecs;
 alter table wt_dbout_profiles rename column min_time to min_usecs;
 alter table wt_dbout_profiles rename column max_time to max_usecs;
-comment on column wt_dbout_profiles.status is 'Executed/NotExecuted/Excluded/Annotated/Unknown Status from the Profiler';
-comment on column wt_dbout_profiles.total_time is 'Total time spent executing this line.';
-comment on column wt_dbout_profiles.min_time is 'Minimum execution time for this line.';
-comment on column wt_dbout_profiles.max_time is 'Maximum execution time for this line.';
+comment on column wt_dbout_profiles.status is 'Executed/NotExecuted/Excluded/Ignored/Unknown Status from the Profiler';
+comment on column wt_dbout_profiles.total_usecs is 'Total time in microseconds spent executing this line.';
+comment on column wt_dbout_profiles.min_usecs is 'Minimum execution time in microseconds for this line.';
+comment on column wt_dbout_profiles.max_usecs is 'Maximum execution time in microseconds for this line.';
 alter table wt_dbout_profiles drop constraint wt_dbout_profiles_ck1;
 update wt_dbout_profiles set status = 'IGNR' where status = 'ANNO';
 alter table wt_dbout_profiles add constraint wt_dbout_profiles_ck1 check (status in ('EXEC','NOTX','EXCL','IGNR','UNKN'));

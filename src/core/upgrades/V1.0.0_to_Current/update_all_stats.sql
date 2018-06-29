@@ -5,7 +5,6 @@
 --  Compute and Add statistics to V1.1.0 "stats" tables
 --
 
-spool update_all_stats
 set serveroutput on size unlimited format wrapped
 set linesize 1000
 set trimspool on
@@ -157,5 +156,3 @@ begin
   --
 end;
 /
-
-spool off

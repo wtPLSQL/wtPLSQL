@@ -93,18 +93,18 @@ Package Body TEST_DBMS_OUTPUT compiled
 Package Body TEST_DBMS_OUTPUT compiled
 
 
-    wtPLSQL 1.1.0 - Run ID 20: 29-Jun-2018 12:24:28 AM
+    wtPLSQL 1.1.0 - Run ID 29: 29-Jun-2018 01:04:14 PM
 
   Test Results for WTP_DEMO.TEST_DBMS_OUTPUT
        Total Test Cases:        0       Total Assertions:        1
-  Minimum Interval msec:        2      Failed Assertions:        0
-  Average Interval msec:        2       Error Assertions:        0
-  Maximum Interval msec:        2             Test Yield:   100.00%
-   Total Run Time (sec):      0.0
+  Minimum Interval msec:       10      Failed Assertions:        0
+  Average Interval msec:       10       Error Assertions:        0
+  Maximum Interval msec:       10             Test Yield:   100.00%
+   Total Run Time (sec):      0.1
 
- - WTP_DEMO.TEST_DBMS_OUTPUT Test Result Details (Test Run ID 20)
+ - WTP_DEMO.TEST_DBMS_OUTPUT Test Result Details (Test Run ID 29)
 -----------------------------------------------------------
- PASS    2ms Test 1. EQ - Expected "Test 1" and got "Test 1"
+ PASS   10ms Test 1. EQ - Expected "Test 1" and got "Test 1"
 
 
 
@@ -119,7 +119,7 @@ Test 1
 PL/SQL procedure successfully completed.
 
 
-    wtPLSQL 1.1.0 - Run ID 21: 29-Jun-2018 12:24:28 AM
+    wtPLSQL 1.1.0 - Run ID 30: 29-Jun-2018 01:04:15 PM
 
   Test Results for WTP_DEMO.TEST_DBMS_OUTPUT
        Total Test Cases:        0       Total Assertions:        0
@@ -149,7 +149,7 @@ This should be preserved.
 PL/SQL procedure successfully completed.
 
 
-    wtPLSQL 1.1.0 - Run ID 22: 29-Jun-2018 12:24:28 AM
+    wtPLSQL 1.1.0 - Run ID 31: 29-Jun-2018 01:04:15 PM
 
   Test Results for WTP_DEMO.TEST_DBMS_OUTPUT
        Total Test Cases:        0       Total Assertions:        0
@@ -191,20 +191,20 @@ Package TABLE_TEST_PKG compiled
 Package Body TABLE_TEST_PKG compiled
 
 
-    wtPLSQL 1.1.0 - Run ID 23: 29-Jun-2018 12:24:29 AM
+    wtPLSQL 1.1.0 - Run ID 32: 29-Jun-2018 01:04:15 PM
 
   Test Results for WTP_DEMO.TABLE_TEST_PKG
        Total Test Cases:        1       Total Assertions:        2
-  Minimum Interval msec:        1      Failed Assertions:        0
-  Average Interval msec:        3       Error Assertions:        0
-  Maximum Interval msec:        5             Test Yield:   100.00%
+  Minimum Interval msec:        2      Failed Assertions:        0
+  Average Interval msec:        5       Error Assertions:        0
+  Maximum Interval msec:        8             Test Yield:   100.00%
    Total Run Time (sec):      0.0
 
- - WTP_DEMO.TABLE_TEST_PKG Test Result Details (Test Run ID 23)
+ - WTP_DEMO.TABLE_TEST_PKG Test Result Details (Test Run ID 32)
 -----------------------------------------------------------
  ---- Test Case: Happy Path 1
- PASS    5ms Successful Insert. RAISES/THROWS - No exception was expected. Exception raised was "". Exception raised by: "insert into table_test_tab (id, name) values (1, 'TEST1')".
- PASS    1ms Confirm l_rec.name. EQ - Expected "TEST1" and got "TEST1"
+ PASS    8ms Successful Insert. RAISES/THROWS - No exception was expected. Exception raised was "". Exception raised by: "insert into table_test_tab (id, name) values (1, 'TEST1')".
+ PASS    2ms Confirm l_rec.name. EQ - Expected "TEST1" and got "TEST1"
 
 
 
@@ -221,13 +221,13 @@ Package Body SIMPLE_TEST_RUNNER compiled
 PL/SQL procedure successfully completed.
 
 
-    wtPLSQL 1.1.0 - Run ID 24: 29-Jun-2018 12:24:29 AM
+    wtPLSQL 1.1.0 - Run ID 33: 29-Jun-2018 01:04:16 PM
 
   Test Results for WTP_DEMO.SIMPLE_TEST_RUNNER
        Total Test Cases:        0       Total Assertions:        1
-  Minimum Interval msec:        2      Failed Assertions:        0
-  Average Interval msec:        2       Error Assertions:        0
-  Maximum Interval msec:        2             Test Yield:   100.00%
+  Minimum Interval msec:        4      Failed Assertions:        0
+  Average Interval msec:        4       Error Assertions:        0
+  Maximum Interval msec:        4             Test Yield:   100.00%
    Total Run Time (sec):      0.0
 
 
@@ -235,18 +235,18 @@ PL/SQL procedure successfully completed.
 PL/SQL procedure successfully completed.
 
 
-    wtPLSQL 1.1.0 - Run ID 24: 29-Jun-2018 12:24:29 AM
+    wtPLSQL 1.1.0 - Run ID 33: 29-Jun-2018 01:04:16 PM
 
   Test Results for WTP_DEMO.SIMPLE_TEST_RUNNER
        Total Test Cases:        0       Total Assertions:        1
-  Minimum Interval msec:        2      Failed Assertions:        0
-  Average Interval msec:        2       Error Assertions:        0
-  Maximum Interval msec:        2             Test Yield:   100.00%
+  Minimum Interval msec:        4      Failed Assertions:        0
+  Average Interval msec:        4       Error Assertions:        0
+  Maximum Interval msec:        4             Test Yield:   100.00%
    Total Run Time (sec):      0.0
 
- - WTP_DEMO.SIMPLE_TEST_RUNNER Test Result Details (Test Run ID 24)
+ - WTP_DEMO.SIMPLE_TEST_RUNNER Test Result Details (Test Run ID 33)
 -----------------------------------------------------------
- PASS    2ms Ad-Hoc Test. EQ - Expected "1" and got "1"
+ PASS    4ms Ad-Hoc Test. EQ - Expected "1" and got "1"
 
 
 
@@ -256,7 +256,7 @@ PL/SQL procedure successfully completed.
 Package Body SIMPLE_TEST_RUNNER compiled
 
 
-    wtPLSQL 1.1.0 - Run ID 25: 29-Jun-2018 12:24:29 AM
+    wtPLSQL 1.1.0 - Run ID 34: 29-Jun-2018 01:04:16 PM
 
   Test Results for WTP_DEMO.SIMPLE_TEST_RUNNER
        Total Test Cases:        2       Total Assertions:        4
@@ -265,7 +265,7 @@ Package Body SIMPLE_TEST_RUNNER compiled
   Maximum Interval msec:        1             Test Yield:    75.00%
    Total Run Time (sec):      0.0
 
- - WTP_DEMO.SIMPLE_TEST_RUNNER Test Result Details (Test Run ID 25)
+ - WTP_DEMO.SIMPLE_TEST_RUNNER Test Result Details (Test Run ID 34)
 -----------------------------------------------------------
  ---- Test Case: My Test Case A
  PASS    1ms Ad-Hoc Test1. EQ - Expected "1" and got "1"
@@ -282,21 +282,21 @@ PL/SQL procedure successfully completed.
 Package Body SIMPLE_TEST_RUNNER compiled
 
 
-    wtPLSQL 1.1.0 - Run ID 26: 29-Jun-2018 12:24:30 AM
+    wtPLSQL 1.1.0 - Run ID 35: 29-Jun-2018 01:04:16 PM
 
   Test Results for WTP_DEMO.SIMPLE_TEST_RUNNER
        Total Test Cases:        0       Total Assertions:        1
-  Minimum Interval msec:      252      Failed Assertions:        0
-  Average Interval msec:      252       Error Assertions:        0
-  Maximum Interval msec:      252             Test Yield:   100.00%
-   Total Run Time (sec):      0.3
+  Minimum Interval msec:      230      Failed Assertions:        0
+  Average Interval msec:      230       Error Assertions:        0
+  Maximum Interval msec:      230             Test Yield:   100.00%
+   Total Run Time (sec):      0.2
 
   Code Coverage for PACKAGE BODY WTP_DEMO.SIMPLE_TEST_RUNNER
           Ignored Lines:        0   Total Profiled Lines:        3
          Excluded Lines:        0   Total Executed Lines:        2
   Minimum LineExec usec:        0     Not Executed Lines:        0
-  Average LineExec usec:       15          Unknown Lines:        1
-  Maximum LineExec usec:       29          Code Coverage:   100.00%
+  Average LineExec usec:       21          Unknown Lines:        1
+  Maximum LineExec usec:       41          Code Coverage:   100.00%
   Trigger Source Offset:        0
 
 
@@ -307,14 +307,14 @@ PL/SQL procedure successfully completed.
 Package Body SIMPLE_TEST_RUNNER compiled
 
 
-    wtPLSQL 1.1.0 - Run ID 27: 29-Jun-2018 12:24:30 AM
+    wtPLSQL 1.1.0 - Run ID 36: 29-Jun-2018 01:04:17 PM
 
   Test Results for WTP_DEMO.SIMPLE_TEST_RUNNER
        Total Test Cases:        1       Total Assertions:        1
-  Minimum Interval msec:      528      Failed Assertions:        0
-  Average Interval msec:      528       Error Assertions:        0
-  Maximum Interval msec:      528             Test Yield:   100.00%
-   Total Run Time (sec):      0.6
+  Minimum Interval msec:      285      Failed Assertions:        0
+  Average Interval msec:      285       Error Assertions:        0
+  Maximum Interval msec:      285             Test Yield:   100.00%
+   Total Run Time (sec):      0.3
 
   Code Coverage for PACKAGE BODY WTP_DEMO.SIMPLE_TEST_RUNNER
           Ignored Lines:        4   Total Profiled Lines:        8
@@ -324,23 +324,23 @@ Package Body SIMPLE_TEST_RUNNER compiled
   Maximum LineExec usec:        2          Code Coverage:   100.00%
   Trigger Source Offset:        0
 
- - WTP_DEMO.SIMPLE_TEST_RUNNER Test Result Details (Test Run ID 27)
+ - WTP_DEMO.SIMPLE_TEST_RUNNER Test Result Details (Test Run ID 36)
 -----------------------------------------------------------
  ---- Test Case: My Test Case
- PASS  528ms Ad-Hoc Test. EQ - Expected "5" and got "5"
+ PASS  285ms Ad-Hoc Test. EQ - Expected "5" and got "5"
 
- - WTP_DEMO.SIMPLE_TEST_RUNNER PACKAGE BODY Code Coverage Details (Test Run ID 27)
+ - WTP_DEMO.SIMPLE_TEST_RUNNER PACKAGE BODY Code Coverage Details (Test Run ID 36)
 Source               TotTime MinTime   MaxTime     
   Line Stat Occurs    (usec)  (usec)    (usec) Text
 ------ ---- ------ --------- ------- --------- ------------
      4 UNKN      0         1       1         1    function add2 (in_val1 number, in_val2 number) return number is
      7 EXEC      1         2       2         2       l_result := in_val1 + in_val2;
      8 EXEC      1         0       0         0       return l_result;
-     9 EXEC      1         1       1         1    end add2;
+     9 EXEC      1         2       2         2    end add2;
     10 IGNR      0         3       3         3    procedure wtplsql_run is begin --%WTPLSQL_begin_ignore_lines%--
-    11 IGNR      2        28       1        27       wt_assert.g_testcase := 'My Test Case';
-    12 IGNR      1        10       1         9       wt_assert.eq(msg_in          => 'Ad-Hoc Test'
-    15 IGNR      1         3       3         3    end wtplsql_run;    --%WTPLSQL_end_ignore_lines%--
+    11 IGNR      2        45       2        43       wt_assert.g_testcase := 'My Test Case';
+    12 IGNR      1       105       1       104       wt_assert.eq(msg_in          => 'Ad-Hoc Test'
+    15 IGNR      1         1       1         1    end wtplsql_run;    --%WTPLSQL_end_ignore_lines%--
 
 
 
@@ -383,39 +383,39 @@ Package TRIGGER_TEST_PKG compiled
 Package Body TRIGGER_TEST_PKG compiled
 
 
-    wtPLSQL 1.1.0 - Run ID 28: 29-Jun-2018 12:24:31 AM
+    wtPLSQL 1.1.0 - Run ID 37: 29-Jun-2018 01:04:18 PM
 
   Test Results for WTP_DEMO.TRIGGER_TEST_PKG
        Total Test Cases:        1       Total Assertions:        3
   Minimum Interval msec:        0      Failed Assertions:        0
-  Average Interval msec:       42       Error Assertions:        0
-  Maximum Interval msec:      123             Test Yield:   100.00%
-   Total Run Time (sec):      0.1
+  Average Interval msec:      196       Error Assertions:        0
+  Maximum Interval msec:      585             Test Yield:   100.00%
+   Total Run Time (sec):      0.6
 
   Code Coverage for TRIGGER WTP_DEMO.TRIGGER_TEST_BIR
           Ignored Lines:        0   Total Profiled Lines:        5
          Excluded Lines:        0   Total Executed Lines:        4
   Minimum LineExec usec:        2     Not Executed Lines:        0
-  Average LineExec usec:      433          Unknown Lines:        1
-  Maximum LineExec usec:     1710          Code Coverage:   100.00%
+  Average LineExec usec:     1355          Unknown Lines:        1
+  Maximum LineExec usec:     5387          Code Coverage:   100.00%
   Trigger Source Offset:        3
 
- - WTP_DEMO.TRIGGER_TEST_PKG Test Result Details (Test Run ID 28)
+ - WTP_DEMO.TRIGGER_TEST_PKG Test Result Details (Test Run ID 37)
 -----------------------------------------------------------
  ---- Test Case: Constructor Happy Path 1
- PASS  123ms l_rec.id. ISNOTNULL - Expected NOT NULL and got "1"
- PASS    2ms l_rec.name. EQ - Expected "Test1" and got "Test1"
+ PASS  585ms l_rec.id. ISNOTNULL - Expected NOT NULL and got "1"
+ PASS    4ms l_rec.name. EQ - Expected "Test1" and got "Test1"
  PASS    0ms l_rec.created_dtm. ISNOTNULL - Expected NOT NULL and got "29-JUN-18"
 
- - WTP_DEMO.TRIGGER_TEST_BIR TRIGGER Code Coverage Details (Test Run ID 28)
+ - WTP_DEMO.TRIGGER_TEST_BIR TRIGGER Code Coverage Details (Test Run ID 37)
 Source               TotTime MinTime   MaxTime     
   Line Stat Occurs    (usec)  (usec)    (usec) Text
 ------ ---- ------ --------- ------- --------- ------------
-     4 UNKN      0         2       2         2 begin
-     5 EXEC      1         2       2         2   if :new.id is null
-     7 EXEC      1      1710    1710      1710      :new.id := trigger_test_seq.nextval;
-     9 EXEC      1        17       2        15   :new.created_dtm := sysdate;
-    10 EXEC      1         2       2         2 end;
+     4 UNKN      0         5       5         5 begin
+     5 EXEC      1         5       5         5   if :new.id is null
+     7 EXEC      1      5387    5387      5387      :new.id := trigger_test_seq.nextval;
+     9 EXEC      1        25       2        23   :new.created_dtm := sysdate;
+    10 EXEC      1         3       3         3 end;
 
 
 
@@ -435,38 +435,38 @@ Package TEST_SIMPLE_OBJECT compiled
 Package Body TEST_SIMPLE_OBJECT compiled
 
 
-    wtPLSQL 1.1.0 - Run ID 29: 29-Jun-2018 12:24:32 AM
+    wtPLSQL 1.1.0 - Run ID 38: 29-Jun-2018 01:04:19 PM
 
   Test Results for WTP_DEMO.TEST_SIMPLE_OBJECT
        Total Test Cases:        1       Total Assertions:        2
   Minimum Interval msec:        0      Failed Assertions:        0
-  Average Interval msec:       70       Error Assertions:        0
-  Maximum Interval msec:      139             Test Yield:   100.00%
-   Total Run Time (sec):      0.1
+  Average Interval msec:      202       Error Assertions:        0
+  Maximum Interval msec:      404             Test Yield:   100.00%
+   Total Run Time (sec):      0.4
 
   Code Coverage for TYPE BODY WTP_DEMO.SIMPLE_TEST_OBJ_TYPE
           Ignored Lines:        0   Total Profiled Lines:       10
          Excluded Lines:        1   Total Executed Lines:        4
-  Minimum LineExec usec:        0     Not Executed Lines:        4
+  Minimum LineExec usec:        1     Not Executed Lines:        4
   Average LineExec usec:        1          Unknown Lines:        1
-  Maximum LineExec usec:        3          Code Coverage:    50.00%
+  Maximum LineExec usec:        4          Code Coverage:    50.00%
   Trigger Source Offset:        0
 
- - WTP_DEMO.TEST_SIMPLE_OBJECT Test Result Details (Test Run ID 29)
+ - WTP_DEMO.TEST_SIMPLE_OBJECT Test Result Details (Test Run ID 38)
 -----------------------------------------------------------
  ---- Test Case: Constructor Happy Path 1
- PASS  139ms Object MINIMUM_VALUE. ISNULL - Expected NULL and got ""
+ PASS  404ms Object MINIMUM_VALUE. ISNULL - Expected NULL and got ""
  PASS    0ms Object OBSERVATIONS. EQ - Expected "0" and got "0"
 
- - WTP_DEMO.SIMPLE_TEST_OBJ_TYPE TYPE BODY Code Coverage Details (Test Run ID 29)
+ - WTP_DEMO.SIMPLE_TEST_OBJ_TYPE TYPE BODY Code Coverage Details (Test Run ID 38)
 Source               TotTime MinTime   MaxTime     
   Line Stat Occurs    (usec)  (usec)    (usec) Text
 ------ ---- ------ --------- ------- --------- ------------
-     2 UNKN      0         1       1         1     CONSTRUCTOR FUNCTION simple_test_obj_type
-     7 EXEC      1         0       0         0        minimum_value  := null;
-     8 EXEC      1         0       0         0        observations   := 0;
+     2 UNKN      0         3       3         3     CONSTRUCTOR FUNCTION simple_test_obj_type
+     7 EXEC      1         1       1         1        minimum_value  := null;
+     8 EXEC      1         1       1         1        observations   := 0;
      9 EXEC      1         3       3         3        return;
-    10 EXEC      1         3       3         3     end simple_test_obj_type;
+    10 EXEC      1         4       4         4     end simple_test_obj_type;
     11#NOTX#     0         0       0         0     member procedure add_observation
     16#NOTX#     0         0       0         0        If minimum_value is null then minimum_value := in_observation;
     17#NOTX#     0         0       0         0        else minimum_value := least(minimum_value, in_observation);
@@ -488,38 +488,38 @@ Package UT_BETWNSTR compiled
 Package Body UT_BETWNSTR compiled
 
 
-    wtPLSQL 1.1.0 - Run ID 30: 29-Jun-2018 12:24:32 AM
+    wtPLSQL 1.1.0 - Run ID 39: 29-Jun-2018 01:04:20 PM
 
   Test Results for WTP_DEMO.UT_BETWNSTR
        Total Test Cases:        0       Total Assertions:        5
   Minimum Interval msec:        0      Failed Assertions:        0
-  Average Interval msec:       21       Error Assertions:        0
-  Maximum Interval msec:      106             Test Yield:   100.00%
-   Total Run Time (sec):      0.1
+  Average Interval msec:       54       Error Assertions:        0
+  Maximum Interval msec:      272             Test Yield:   100.00%
+   Total Run Time (sec):      0.3
 
   Code Coverage for FUNCTION WTP_DEMO.BETWNSTR
           Ignored Lines:        0   Total Profiled Lines:        3
          Excluded Lines:        0   Total Executed Lines:        2
-  Minimum LineExec usec:        0     Not Executed Lines:        0
-  Average LineExec usec:        2          Unknown Lines:        1
-  Maximum LineExec usec:       13          Code Coverage:   100.00%
+  Minimum LineExec usec:        1     Not Executed Lines:        0
+  Average LineExec usec:        3          Unknown Lines:        1
+  Maximum LineExec usec:       20          Code Coverage:   100.00%
   Trigger Source Offset:        0
 
- - WTP_DEMO.UT_BETWNSTR Test Result Details (Test Run ID 30)
+ - WTP_DEMO.UT_BETWNSTR Test Result Details (Test Run ID 39)
 -----------------------------------------------------------
- PASS  106ms Typical valid usage. EQ - Expected "cde" and got "cde"
- PASS    1ms NULL start. ISNULL - Expected NULL and got ""
+ PASS  272ms Typical valid usage. EQ - Expected "cde" and got "cde"
+ PASS    0ms NULL start. ISNULL - Expected NULL and got ""
  PASS    0ms NULL end. ISNULL - Expected NULL and got ""
  PASS    0ms End smaller than start. ISNULL - Expected NULL and got ""
  PASS    0ms End larger than string length. EQ - Expected "cdefg" and got "cdefg"
 
- - WTP_DEMO.BETWNSTR FUNCTION Code Coverage Details (Test Run ID 30)
+ - WTP_DEMO.BETWNSTR FUNCTION Code Coverage Details (Test Run ID 39)
 Source               TotTime MinTime   MaxTime     
   Line Stat Occurs    (usec)  (usec)    (usec) Text
 ------ ---- ------ --------- ------- --------- ------------
-     1 UNKN      0         5       1         2 FUNCTION betwnStr (
-     9 EXEC      5        19       1        13    RETURN (
-    16 EXEC      5         0       0         0 END;
+     1 UNKN      0         9       1         3 FUNCTION betwnStr (
+     9 EXEC      5        31       1        20    RETURN (
+    16 EXEC      5         1       1         1 END;
 
 
 
@@ -536,35 +536,35 @@ Package UT_CALC_SECS_BETWEEN compiled
 Package Body UT_CALC_SECS_BETWEEN compiled
 
 
-    wtPLSQL 1.1.0 - Run ID 31: 29-Jun-2018 12:24:32 AM
+    wtPLSQL 1.1.0 - Run ID 40: 29-Jun-2018 01:04:20 PM
 
   Test Results for WTP_DEMO.UT_CALC_SECS_BETWEEN
        Total Test Cases:        0       Total Assertions:        2
-  Minimum Interval msec:        1      Failed Assertions:        0
-  Average Interval msec:       54       Error Assertions:        0
-  Maximum Interval msec:      107             Test Yield:   100.00%
-   Total Run Time (sec):      0.1
+  Minimum Interval msec:        0      Failed Assertions:        0
+  Average Interval msec:      137       Error Assertions:        0
+  Maximum Interval msec:      274             Test Yield:   100.00%
+   Total Run Time (sec):      0.3
 
   Code Coverage for PROCEDURE WTP_DEMO.CALC_SECS_BETWEEN
           Ignored Lines:        0   Total Profiled Lines:        3
          Excluded Lines:        0   Total Executed Lines:        2
   Minimum LineExec usec:        0     Not Executed Lines:        0
-  Average LineExec usec:        2          Unknown Lines:        1
-  Maximum LineExec usec:        7          Code Coverage:   100.00%
+  Average LineExec usec:        3          Unknown Lines:        1
+  Maximum LineExec usec:        9          Code Coverage:   100.00%
   Trigger Source Offset:        0
 
- - WTP_DEMO.UT_CALC_SECS_BETWEEN Test Result Details (Test Run ID 31)
+ - WTP_DEMO.UT_CALC_SECS_BETWEEN Test Result Details (Test Run ID 40)
 -----------------------------------------------------------
- PASS  107ms Same dates. EQ - Expected "0" and got "0"
- PASS    1ms Exactly one day. EQ - Expected "86400" and got "86400"
+ PASS  274ms Same dates. EQ - Expected "0" and got "0"
+ PASS    0ms Exactly one day. EQ - Expected "86400" and got "86400"
 
- - WTP_DEMO.CALC_SECS_BETWEEN PROCEDURE Code Coverage Details (Test Run ID 31)
+ - WTP_DEMO.CALC_SECS_BETWEEN PROCEDURE Code Coverage Details (Test Run ID 40)
 Source               TotTime MinTime   MaxTime     
   Line Stat Occurs    (usec)  (usec)    (usec) Text
 ------ ---- ------ --------- ------- --------- ------------
-     1 UNKN      0         1       0         1 PROCEDURE calc_secs_between (
-    10 EXEC      2         9       2         7    secs := (date2 - date1) * 24 * 60 * 60;
-    11 EXEC      2         0       0         0 END;
+     1 UNKN      0         3       1         2 PROCEDURE calc_secs_between (
+    10 EXEC      2        12       3         9    secs := (date2 - date1) * 24 * 60 * 60;
+    11 EXEC      2         1       0         1 END;
 
 
 
@@ -578,38 +578,38 @@ Package STR compiled
 Package Body STR compiled
 
 
-    wtPLSQL 1.1.0 - Run ID 32: 29-Jun-2018 12:24:32 AM
+    wtPLSQL 1.1.0 - Run ID 41: 29-Jun-2018 01:04:21 PM
 
   Test Results for WTP_DEMO.STR
        Total Test Cases:        0       Total Assertions:        3
   Minimum Interval msec:        0      Failed Assertions:        0
-  Average Interval msec:       34       Error Assertions:        0
-  Maximum Interval msec:      103             Test Yield:   100.00%
-   Total Run Time (sec):      0.1
+  Average Interval msec:      102       Error Assertions:        0
+  Maximum Interval msec:      305             Test Yield:   100.00%
+   Total Run Time (sec):      0.3
 
   Code Coverage for PACKAGE BODY WTP_DEMO.STR
           Ignored Lines:       14   Total Profiled Lines:       25
          Excluded Lines:        1   Total Executed Lines:        4
   Minimum LineExec usec:        0     Not Executed Lines:        5
-  Average LineExec usec:        0          Unknown Lines:        1
-  Maximum LineExec usec:        6          Code Coverage:    44.40%
+  Average LineExec usec:        1          Unknown Lines:        1
+  Maximum LineExec usec:        9          Code Coverage:    44.40%
   Trigger Source Offset:        0
 
- - WTP_DEMO.STR Test Result Details (Test Run ID 32)
+ - WTP_DEMO.STR Test Result Details (Test Run ID 41)
 -----------------------------------------------------------
- PASS  103ms Typical Valid Usage. EQ - Expected "is is" and got "is is"
- PASS    0ms Test Negative Start. EQ - Expected "ing" and got "ing"
+ PASS  305ms Typical Valid Usage. EQ - Expected "is is" and got "is is"
+ PASS    1ms Test Negative Start. EQ - Expected "ing" and got "ing"
  PASS    0ms Start bigger than end. ISNULL - Expected NULL and got ""
 
- - WTP_DEMO.STR PACKAGE BODY Code Coverage Details (Test Run ID 32)
+ - WTP_DEMO.STR PACKAGE BODY Code Coverage Details (Test Run ID 41)
 Source               TotTime MinTime   MaxTime     
   Line Stat Occurs    (usec)  (usec)    (usec) Text
 ------ ---- ------ --------- ------- --------- ------------
-     3 UNKN      0         1       0         1    FUNCTION betwn (
-    10 EXEC      3         2       1         1       l_start   PLS_INTEGER := start_in;
-    12 EXEC      3         0       0         0       IF l_start = 0
+     3 UNKN      0         4       1         2    FUNCTION betwn (
+    10 EXEC      3         2       0         1       l_start   PLS_INTEGER := start_in;
+    12 EXEC      3         1       0         1       IF l_start = 0
     14#NOTX#     0         0       0         0          l_start := 1;
-    17 EXEC      3         8       0         6       RETURN (SUBSTR (
+    17 EXEC      3        12       1         9       RETURN (SUBSTR (
     25 EXEC      3         0       0         0    END;
     27 EXCL      0         0       0         0    FUNCTION betwn2 (
     36#NOTX#     0         0       0         0       IF end_in < 0
@@ -617,17 +617,17 @@ Source               TotTime MinTime   MaxTime
     40#NOTX#     0         0       0         0          RETURN (SUBSTR (
     51#NOTX#     0         0       0         0    END;
     55 IGNR      0         1       1         1    PROCEDURE ut_setup
-    58 IGNR      1         1       1         1       NULL;
-    61 IGNR      0         1       1         1    PROCEDURE ut_teardown
+    58 IGNR      1         2       2         2       NULL;
+    61 IGNR      0         0       0         0    PROCEDURE ut_teardown
     64 IGNR      1         0       0         0       NULL;
-    68 IGNR      0         2       2         2    PROCEDURE ut_betwn
-    71 IGNR      1        20      20        20       utassert.eq (
+    68 IGNR      0         5       5         5    PROCEDURE ut_betwn
+    71 IGNR      1        37       1        36       utassert.eq (
     76 IGNR      1         2       1         1       utassert.eq (
-    81 IGNR      1         1       1         1       utassert.isnull (
+    81 IGNR      1         3       1         2       utassert.isnull (
     85 IGNR      1         0       0         0    END;
-    88 IGNR      0         1       1         1    PROCEDURE wtplsql_run IS
-    90 IGNR      1         0       0         0       ut_setup;
-    91 IGNR      1         0       0         0       ut_betwn;
+    88 IGNR      0         2       2         2    PROCEDURE wtplsql_run IS
+    90 IGNR      1         1       1         1       ut_setup;
+    91 IGNR      1         1       1         1       ut_betwn;
     92 IGNR      1         0       0         0       ut_teardown;
 Source               TotTime MinTime   MaxTime     
   Line Stat Occurs    (usec)  (usec)    (usec) Text
@@ -652,33 +652,33 @@ Package UT_TRUNCIT compiled
 Package Body UT_TRUNCIT compiled
 
 
-    wtPLSQL 1.1.0 - Run ID 33: 29-Jun-2018 12:24:33 AM
+    wtPLSQL 1.1.0 - Run ID 42: 29-Jun-2018 01:04:22 PM
 
   Test Results for WTP_DEMO.UT_TRUNCIT
        Total Test Cases:        0       Total Assertions:        1
-  Minimum Interval msec:      267      Failed Assertions:        0
-  Average Interval msec:      267       Error Assertions:        0
-  Maximum Interval msec:      267             Test Yield:   100.00%
-   Total Run Time (sec):      0.3
+  Minimum Interval msec:      363      Failed Assertions:        0
+  Average Interval msec:      363       Error Assertions:        0
+  Maximum Interval msec:      363             Test Yield:   100.00%
+   Total Run Time (sec):      0.4
 
   Code Coverage for PROCEDURE WTP_DEMO.TRUNCIT
           Ignored Lines:        0   Total Profiled Lines:        3
          Excluded Lines:        0   Total Executed Lines:        2
   Minimum LineExec usec:        3     Not Executed Lines:        0
-  Average LineExec usec:     4189          Unknown Lines:        1
-  Maximum LineExec usec:     8372          Code Coverage:   100.00%
+  Average LineExec usec:     7432          Unknown Lines:        1
+  Maximum LineExec usec:    14854          Code Coverage:   100.00%
   Trigger Source Offset:        0
 
- - WTP_DEMO.UT_TRUNCIT Test Result Details (Test Run ID 33)
+ - WTP_DEMO.UT_TRUNCIT Test Result Details (Test Run ID 42)
 -----------------------------------------------------------
- PASS  267ms Test of TRUNCIT. EQ - Expected "0" and got "0"
+ PASS  363ms Test of TRUNCIT. EQ - Expected "0" and got "0"
 
- - WTP_DEMO.TRUNCIT PROCEDURE Code Coverage Details (Test Run ID 33)
+ - WTP_DEMO.TRUNCIT PROCEDURE Code Coverage Details (Test Run ID 42)
 Source               TotTime MinTime   MaxTime     
   Line Stat Occurs    (usec)  (usec)    (usec) Text
 ------ ---- ------ --------- ------- --------- ------------
-     1 UNKN      0         3       3         3 PROCEDURE truncit (
-     7 EXEC      1      8375       3      8372    EXECUTE IMMEDIATE 'truncate table ' || NVL (sch, USER) || '.' || tab;
+     1 UNKN      0         5       5         5 PROCEDURE truncit (
+     7 EXEC      1     14861       7     14854    EXECUTE IMMEDIATE 'truncate table ' || NVL (sch, USER) || '.' || tab;
      8 EXEC      1         3       3         3 END;
 
 

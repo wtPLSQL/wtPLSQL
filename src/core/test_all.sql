@@ -29,7 +29,7 @@ end;
 
 begin
    wtplsql.test_all;
-   wt_text_report.dbms_out;
+   wt_text_report.dbms_out(in_detail_level => 30);
 end;
 /
 
