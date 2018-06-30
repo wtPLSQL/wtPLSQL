@@ -87,11 +87,12 @@ revoke update on wt_dbout_profiles from public;
 -- Note: This table was included with the V1.0 source
 --   but was omitted from the V1.0 installation script.
 @../../wt_version.tab
-delete from wt_version where action = 'INSTALL' and text = '1.0';
+delete from wt_version where action = 'INSTALL';
 insert into wt_version (install_dtm, action, text)
    values (sysdate, 'INSTALL', '1.0');
 insert into wt_version (install_dtm, action, text)
    values (sysdate, 'UPGRADE', '1.1.0');
+select * from wt_version;
 
 @../../wt_testcase_stats.tab
 @../../wt_test_run_stats.tab

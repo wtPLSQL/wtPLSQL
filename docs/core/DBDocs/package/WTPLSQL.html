@@ -46,7 +46,7 @@
 <div id="Master.0">
 <div class="currentmasterreport">
 <TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
-<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE><HR><P></P><HR><P></P><A NAME="method_summary"></A><TABLE WIDTH="100%" CELLSPACING="0" CELLPADDING="3" BORDER="1"><TR CLASS="TableHeadingColor"><TD COLSPAN="2"><FONT SIZE="+2"><B>Method Summary</B></FONT></TD><TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#delete_runs">delete_runs</A></B>( in_test_run_id in number ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE><HR><P> AUTHID CURRENT_USER is required for dynamic PL/SQL execution.</P><HR><P></P><A NAME="method_summary"></A><TABLE WIDTH="100%" CELLSPACING="0" CELLPADDING="3" BORDER="1"><TR CLASS="TableHeadingColor"><TD COLSPAN="2"><FONT SIZE="+2"><B>Method Summary</B></FONT></TD><TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#delete_runs">delete_runs</A></B>( in_test_run_id in number ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
 <TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#delete_runs">delete_runs</A></B>( in_runner_owner in varchar2 , in_runner_name in varchar2 ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
 <TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#show_version">show_version</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
 <TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#test_all">test_all</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
@@ -82,7 +82,7 @@
 </tr>
 <tr>
 <td>OBJECT_ID</td>
-<td>40401</td>
+<td>41925</td>
 </tr>
 <tr>
 <td>DATA_OBJECT_ID</td>
@@ -94,15 +94,15 @@
 </tr>
 <tr>
 <td>CREATED</td>
-<td>09-JUN-2018&nbsp;11:00:59</td>
+<td>29-JUN-2018&nbsp;15:09:14</td>
 </tr>
 <tr>
 <td>LAST_DDL_TIME</td>
-<td>09-JUN-2018&nbsp;11:00:59</td>
+<td>29-JUN-2018&nbsp;15:21:16</td>
 </tr>
 <tr>
 <td>TIMESTAMP</td>
-<td>2018-06-09:11:00:59</td>
+<td>2018-06-29:15:21:15</td>
 </tr>
 <tr>
 <td>STATUS</td>
@@ -184,6 +184,7 @@
 <pre>
 package wtplsql authid current_user
 as
+   -- AUTHID CURRENT_USER is required for dynamic PL/SQL execution.
 
    function show_version
       return varchar2;

@@ -82,7 +82,7 @@ as
       l_status  number := null;
    begin
       dbms_output.put_line(c_test1);
-      raise_application_error(20000, &#39;Fault insertion exception&#39;);
+      raise_application_error(-20000, &#39;Fault insertion exception&#39;);
       dbms_output.get_line(l_buffer,l_status);
       wt_assert.eq(&#39;Test 1&#39;,l_buffer,c_test1);
    end test_put_get_line;

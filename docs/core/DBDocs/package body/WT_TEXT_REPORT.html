@@ -69,7 +69,7 @@
 </tr>
 <tr>
 <td>OBJECT_ID</td>
-<td>40412</td>
+<td>41934</td>
 </tr>
 <tr>
 <td>DATA_OBJECT_ID</td>
@@ -81,15 +81,15 @@
 </tr>
 <tr>
 <td>CREATED</td>
-<td>09-JUN-2018&nbsp;11:01:02</td>
+<td>29-JUN-2018&nbsp;15:09:17</td>
 </tr>
 <tr>
 <td>LAST_DDL_TIME</td>
-<td>09-JUN-2018&nbsp;11:48:35</td>
+<td>29-JUN-2018&nbsp;15:21:18</td>
 </tr>
 <tr>
 <td>TIMESTAMP</td>
-<td>2018-06-09:11:48:35</td>
+<td>2018-06-29:15:21:18</td>
 </tr>
 <tr>
 <td>STATUS</td>
@@ -192,7 +192,7 @@ end p;
 procedure result_summary
 is
 begin
-   p('        Total Testcases: ' || to_char(nvl(g_test_run_stats_rec.testcases         ,0),'9999999') ||
+   p('       Total Test Cases: ' || to_char(nvl(g_test_run_stats_rec.testcases         ,0),'9999999') ||
      '       Total Assertions: ' || to_char(nvl(g_test_run_stats_rec.asserts           ,0),'9999999') );
    p('  Minimum Interval msec: ' || to_char(nvl(g_test_run_stats_rec.min_interval_msecs,0),'9999999') ||
      '      Failed Assertions: ' || to_char(nvl(g_test_run_stats_rec.failures          ,0),'9999999') );

@@ -6,6 +6,7 @@ FILE                    DESCRIPTION
 ----------------------  -----------------------
 update_all_stats.sql    Populate the new STATS tables
 upgrade.sql             Main upgrade script
+upgradeO.LST            Example of successful results from Demo Installation
 
 
 Install Procedure:

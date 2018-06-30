@@ -1,0 +1,109 @@
+<p><a href="README.htm">Demos and Examples</a></p>
+<h1 id="utplsql-23-ut_truncit-example">utPLSQL 2.3 ut_truncit Example</h1>
+<hr />
+<h2 id="original-example">Original Example</h2>
+<p>The <a href="https://utplsql.org/utPLSQL/v2.3.1/testproc.html">original &quot;ut_truncit&quot; example</a> is in the utPLSQL documentation. The PL/SQL source for the function that will be tested is in the &quot;Test Success by Analyzing Impact&quot; section. There is an additional function &quot;tabcount&quot; that is also needed. The PL/SQL source for the package specification and body of the utPLSQL test package are in the same section.</p>
+<h2 id="test-package-conversion">Test Package Conversion</h2>
+<p>Conversion of this test package into a test runner package requires the addition of the &quot;wtPLSQL_run&quot; procedure in the package specification.</p>
+<p>Run this:</p>
+<pre><code>CREATE OR REPLACE PACKAGE ut_truncit
+IS
+   PROCEDURE ut_setup;
+   PROCEDURE ut_teardown;
+
+   -- For each program to test...
+   PROCEDURE ut_TRUNCIT;
+   PROCEDURE wtplsql_run;
+END ut_truncit;
+/
+</code></pre>
+<p>Likewise, the package body needs the wtPLSQL_run procedure.</p>
+<p>Run this:</p>
+<pre><code>/*file ut_truncit.pkb */
+CREATE OR REPLACE PACKAGE BODY ut_truncit
+IS
+   PROCEDURE ut_setup
+   IS
+   BEGIN
+      EXECUTE IMMEDIATE 
+         &#39;CREATE TABLE temp_emp AS SELECT * FROM DUAL&#39;;
+   END;
+   
+   PROCEDURE ut_teardown
+   IS
+   BEGIN
+      EXECUTE IMMEDIATE 
+         &#39;DROP TABLE temp_emp&#39;;
+   END;
+
+   -- For each program to test...
+   PROCEDURE ut_TRUNCIT IS
+   BEGIN
+      TRUNCIT (
+            TAB =&gt; &#39;temp_emp&#39;
+            ,
+            SCH =&gt; USER
+       );
+
+      utAssert.eq (
+         &#39;Test of TRUNCIT&#39;,
+         tabcount (USER, &#39;temp_emp&#39;),
+         0
+         );
+   END ut_TRUNCIT;
+
+   --% WTPLSQL SET DBOUT &quot;TRUNCIT:PROCEDURE&quot; %--
+
+   PROCEDURE wtplsql_run IS
+   BEGIN
+      ut_setup;
+      ut_TRUNCIT;
+      ut_teardown;
+   END wtplsql_run;
+END ut_truncit;
+/
+</code></pre>
+<p>The SET DBOUT annotation was also added to gather code coverage data.</p>
+<h2 id="check-the-results">Check the Results</h2>
+<p>Run this:</p>
+<pre><code>set serveroutput on size unlimited format word_wrapped
+
+begin
+   wtplsql.test_run(&#39;UT_TRUNCIT&#39;);
+   wt_text_report.dbms_out(in_runner_name  =&gt; &#39;UT_TRUNCIT&#39;
+                          ,in_detail_level =&gt; 30);
+end;
+/
+</code></pre>
+<p>And Get This:</p>
+<pre><code>    wtPLSQL 1.1.0 - Run ID 81: 25-Jun-2018 09:48:39 PM
+
+  Test Results for WTP_DEMO.UT_TRUNCIT
+       Total Test Cases:        0       Total Assertions:        1
+  Minimum Interval msec:      331      Failed Assertions:        0
+  Average Interval msec:      331       Error Assertions:        0
+  Maximum Interval msec:      331             Test Yield:   100.00%
+   Total Run Time (sec):      0.4
+
+  Code Coverage for PROCEDURE WTP_DEMO.TRUNCIT
+          Ignored Lines:        0   Total Profiled Lines:        3
+         Excluded Lines:        0   Total Executed Lines:        2
+  Minimum LineExec usec:        2     Not Executed Lines:        0
+  Average LineExec usec:    15714          Unknown Lines:        1
+  Maximum LineExec usec:    31423          Code Coverage:   100.00%
+  Trigger Source Offset:        0
+
+ - WTP_DEMO.UT_TRUNCIT Test Result Details (Test Run ID 81)
+-----------------------------------------------------------
+ PASS  331ms Test of TRUNCIT. EQ - Expected &quot;0&quot; and got &quot;0&quot;
+
+ - WTP_DEMO.TRUNCIT PROCEDURE Code Coverage Details (Test Run ID 81)
+Source               TotTime MinTime   MaxTime     
+  Line Stat Occurs    (usec)  (usec)    (usec) Text
+------ ---- ------ --------- ------- --------- ------------
+     1 UNKN      0         3       3         3 PROCEDURE truncit (
+     7 EXEC      1     31426       3     31423    EXECUTE IMMEDIATE &#39;truncate table &#39; || NVL (sch, USER) || &#39;.&#39; || tab;
+     8 EXEC      1         2       2         2 END;
+</code></pre>
+<hr />
+<p><a href="README.htm">Demos and Examples</a></p>

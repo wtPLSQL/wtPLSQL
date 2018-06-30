@@ -1,0 +1,133 @@
+<p><a href="README.htm">Demos and Examples</a></p>
+<h1 id="utplsql-23-ut_betwnstr-example">utPLSQL 2.3 ut_betwnstr Example</h1>
+<hr />
+<h2 id="original-example">Original Example</h2>
+<p>The <a href="https://utplsql.org/utPLSQL/v2.3.1/fourstep.html">original &quot;ut_betwnstr&quot; example</a> is in the utPLSQL documentation. The PL/SQL source for the function that will be tested is in Step 2. The PL/SQL source for the package specification and body of the utPLSQL test package are in Step 3.</p>
+<h2 id="test-package-conversion">Test Package Conversion</h2>
+<p>Conversion of this test package into a test runner package requires the addition of the &quot;wtPLSQL_run&quot; procedure in the package specification.</p>
+<p>Run this:</p>
+<pre><code>CREATE OR REPLACE PACKAGE ut_betwnstr
+IS
+   PROCEDURE ut_setup;
+   PROCEDURE ut_teardown;
+   
+   PROCEDURE ut_betwnstr;
+   PROCEDURE wtplsql_run;
+END ut_betwnstr;
+/
+</code></pre>
+<p>Likewise, the package body needs the wtPLSQL_run procedure.</p>
+<p>Run this:</p>
+<pre><code>CREATE OR REPLACE PACKAGE BODY ut_betwnstr
+IS
+   PROCEDURE ut_setup IS
+   BEGIN
+      NULL;
+   END;
+   
+   PROCEDURE ut_teardown
+   IS
+   BEGIN
+      NULL;
+   END;
+
+   PROCEDURE ut_betwnstr IS
+   BEGIN
+      utAssert.eq (
+         &#39;Typical valid usage&#39;,
+         BETWNSTR(
+            STRING_IN =&gt; &#39;abcdefg&#39;,
+            START_IN =&gt; 3,
+            END_IN =&gt; 5
+         ),
+         &#39;cde&#39;
+      );
+
+      utAssert.isnull (
+         &#39;NULL start&#39;,
+         BETWNSTR(
+            STRING_IN =&gt; &#39;abcdefg&#39;,
+            START_IN =&gt; NULL,
+            END_IN =&gt; 5
+         )
+      );
+      
+      utAssert.isnull (
+         &#39;NULL end&#39;,
+         BETWNSTR(
+            STRING_IN =&gt; &#39;abcdefg&#39;,
+            START_IN =&gt; 2,
+            END_IN =&gt; NULL
+         )
+      );
+      
+      utAssert.isnull (
+         &#39;End smaller than start&#39;,
+         BETWNSTR(
+            STRING_IN =&gt; &#39;abcdefg&#39;,
+            START_IN =&gt; 5,
+            END_IN =&gt; 2
+         )
+      );
+      
+      utAssert.eq (
+         &#39;End larger than string length&#39;,
+         BETWNSTR(
+            STRING_IN =&gt; &#39;abcdefg&#39;,
+            START_IN =&gt; 3,
+            END_IN =&gt; 200
+         ),
+         &#39;cdefg&#39;
+      );
+
+   END ut_BETWNSTR;
+
+   --% WTPLSQL SET DBOUT &quot;BETWNSTR:FUNCTION&quot; %--
+   PROCEDURE wtPLSQL_run IS
+   BEGIN
+      ut_setup;
+      ut_betwnstr;
+      ut_teardown;
+   END wtPLSQL_run;
+   
+END ut_betwnstr;
+/
+</code></pre>
+<p>It is not necessary to keep the ut_setup and ut_teardown procedures. These were kept to indicate how to incorporate those procedures into a test runner package. The SET DBOUT annotation was also added to gather code coverage data.</p>
+<h2 id="check-the-results">Check the Results</h2>
+<p>Run this:</p>
+<pre><code>set serveroutput on size unlimited format word_wrapped
+
+begin
+   wtplsql.test_run(&#39;UT_BETWNSTR&#39;);
+   wt_text_report.dbms_out(USER,&#39;UT_BETWNSTR&#39;,30);
+end;
+/
+</code></pre>
+<p>And Get This:</p>
+<pre><code>  Code Coverage for FUNCTION WTP_DEMO.BETWNSTR
+          Ignored Lines:        0   Total Profiled Lines:        3
+         Excluded Lines:        0   Total Executed Lines:        2
+  Minimum LineExec usec:        0     Not Executed Lines:        0
+  Average LineExec usec:        2          Unknown Lines:        1
+  Maximum LineExec usec:       12          Code Coverage:   100.00%
+  Trigger Source Offset:        0
+
+ - WTP_DEMO.UT_BETWNSTR Test Result Details (Test Run ID 78)
+-----------------------------------------------------------
+ PASS  155ms Typical valid usage. EQ - Expected &quot;cde&quot; and got &quot;cde&quot;
+ PASS    0ms NULL start. ISNULL - Expected NULL and got &quot;&quot;
+ PASS    0ms NULL end. ISNULL - Expected NULL and got &quot;&quot;
+ PASS    0ms End smaller than start. ISNULL - Expected NULL and got &quot;&quot;
+ PASS    0ms End larger than string length. EQ - Expected &quot;cdefg&quot; and got &quot;cdefg&quot;
+
+ - WTP_DEMO.BETWNSTR FUNCTION Code Coverage Details (Test Run ID 78)
+Source               TotTime MinTime   MaxTime     
+  Line Stat Occurs    (usec)  (usec)    (usec) Text
+------ ---- ------ --------- ------- --------- ------------
+     1 UNKN      0         5       1         2 function betwnstr
+     8 EXEC      5        19       1        12    return (
+    15 EXEC      5         1       0         1 end;
+</code></pre>
+<hr />
+<p><a href="README.htm">Demos and Examples</a></p>

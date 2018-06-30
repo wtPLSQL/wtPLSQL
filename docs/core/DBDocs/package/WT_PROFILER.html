@@ -46,7 +46,7 @@
 <div id="Master.0">
 <div class="currentmasterreport">
 <TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
-<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE><HR><P></P><HR><P></P><A NAME="method_summary"></A><TABLE WIDTH="100%" CELLSPACING="0" CELLPADDING="3" BORDER="1"><TR CLASS="TableHeadingColor"><TD COLSPAN="2"><FONT SIZE="+2"><B>Method Summary</B></FONT></TD><TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#calc_pct_coverage">calc_pct_coverage</A></B>( in_test_run_id in number ) return number ; </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE><HR><P>current_user</P><HR><P></P><A NAME="method_summary"></A><TABLE WIDTH="100%" CELLSPACING="0" CELLPADDING="3" BORDER="1"><TR CLASS="TableHeadingColor"><TD COLSPAN="2"><FONT SIZE="+2"><B>Method Summary</B></FONT></TD><TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#calc_pct_coverage">calc_pct_coverage</A></B>( in_test_run_id in number ) return number ; </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
 <TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#delete_records">delete_records</A></B>( in_test_run_id in number ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
 <TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#finalize">finalize</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
 <TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#initialize">initialize</A></B>( in_test_run_id in number , in_runner_name in varchar2 , out_dbout_owner out varchar2 , out_dbout_name out varchar2 , out_dbout_type out varchar2 , out_trigger_offset out number , out_profiler_runid out number , out_error_message out varchar2 ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
@@ -82,7 +82,7 @@
 </tr>
 <tr>
 <td>OBJECT_ID</td>
-<td>40404</td>
+<td>41928</td>
 </tr>
 <tr>
 <td>DATA_OBJECT_ID</td>
@@ -94,15 +94,15 @@
 </tr>
 <tr>
 <td>CREATED</td>
-<td>09-JUN-2018&nbsp;11:00:59</td>
+<td>29-JUN-2018&nbsp;15:09:15</td>
 </tr>
 <tr>
 <td>LAST_DDL_TIME</td>
-<td>09-JUN-2018&nbsp;11:00:59</td>
+<td>29-JUN-2018&nbsp;15:21:15</td>
 </tr>
 <tr>
 <td>TIMESTAMP</td>
-<td>2018-06-09:11:00:59</td>
+<td>2018-06-29:15:21:15</td>
 </tr>
 <tr>
 <td>STATUS</td>
@@ -182,7 +182,7 @@
 <div id="Master.5">
 <div class="masterreport">
 <pre>
-package wt_profiler authid definer
+package wt_profiler authid definer --current_user
 as
 
    procedure initialize

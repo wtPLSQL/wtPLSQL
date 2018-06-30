@@ -1,0 +1,91 @@
+<p><a href="README.htm">Demos and Examples</a></p>
+<h1 id="test-table-constraints">Test Table Constraints</h1>
+<hr />
+<p>The syntax diagram in Oracle's &quot;Database SQL Language Reference&quot; (11.2) gives the list of <a href="https://docs.oracle.com/cd/E11882_01/server.112/e41084/clauses002.htm#CJAEDFIB">constraints</a> this way:</p>
+<ul>
+<li>Not Null</li>
+<li>Unique (Key)</li>
+<li>Primary Key</li>
+<li>References (Foreign Key)</li>
+<li>Check</li>
+</ul>
+<p>Typical unit testing (or white box testing) does not include the testing of constraints. In large part, these constraints are assumed to work without testing. Confirmation of continued function of these constraints is a reason to test them.</p>
+<h2 id="table-with-constraints">Table with Constraints</h2>
+<p>A table with constraints is needed for testing. This table has several constraints</p>
+<p>Run this:</p>
+<pre><code>create table table_test_tab
+  (id     number        constraint table_test_tab_nn1 not null
+  ,name   varchar2(10)  constraint table_test_tab_nn2 not null
+  ,constraint table_test_tab_pk primary key (id)
+  ,constraint table_test_tab_uk1 unique (name)
+  ,constraint table_test_tab_ck1 check (name = upper(name))
+  );
+</code></pre>
+<p>For brevity, the check constraint will be the only constraint tested.</p>
+<h2 id="test-runner">Test Runner</h2>
+<p>Create a simple test runner.</p>
+<p>Run this:</p>
+<pre><code>create or replace package table_test_pkg authid definer
+as
+   procedure wtplsql_run;
+end table_test_pkg;
+/
+</code></pre>
+<p>The constraint being tested ensures the name is in upper case. Testing of the constraint requires a modification of the data in the table. The consequences of leaving this modified data after the test must be considered. In this test, the data modification will not be preserved.</p>
+<p>This test case will only test a happy path.</p>
+<p>Run this:</p>
+<pre><code>create or replace package body table_test_pkg
+as
+   procedure t_happy_path_1
+   is
+      l_rec  table_test_tab%ROWTYPE; 
+   begin
+      wt_assert.g_testcase := &#39;Happy Path 1&#39;;
+      wt_assert.raises (
+         msg_in         =&gt; &#39;Successful Insert&#39;,
+         check_call_in  =&gt; &#39;insert into table_test_tab (id, name) values (1, &#39;&#39;TEST1&#39;&#39;)&#39;,
+         against_exc_in =&gt; &#39;&#39;);
+      select * into l_rec from table_test_tab where id = 1;
+      wt_assert.eq (
+         msg_in          =&gt; &#39;Confirm l_rec.name&#39;,
+         check_this_in   =&gt; l_rec.name,
+         against_this_in =&gt; &#39;TEST1&#39;);
+      rollback;
+   end t_happy_path_1;
+   procedure wtplsql_run is
+   begin
+      t_happy_path_1;
+   end wtplsql_run;
+end table_test_pkg;
+/
+</code></pre>
+<h2 id="check-the-results">Check the results</h2>
+<p>Run this:</p>
+<pre><code>set serveroutput on size unlimited format word_wrapped
+
+begin
+   wtplsql.test_run(&#39;TRIGGER_TEST_PKG&#39;);
+   wt_text_report.dbms_out(USER,&#39;TRIGGER_TEST_PKG&#39;,30);
+end;
+/
+</code></pre>
+<p>And Get This:</p>
+<pre><code>    wtPLSQL 1.1.0 - Run ID 70: 23-Jun-2018 07:30:47 PM
+
+  Test Results for WTP_DEMO.TABLE_TEST_PKG
+       Total Test Cases:        1       Total Assertions:        2
+  Minimum Interval msec:        0      Failed Assertions:        0
+  Average Interval msec:      443       Error Assertions:        0
+  Maximum Interval msec:      886             Test Yield:   100.00%
+   Total Run Time (sec):      0.9
+
+ - WTP_DEMO.TABLE_TEST_PKG Test Result Details (Test Run ID 70)
+-----------------------------------------------------------
+ ---- Test Case: Happy Path 1
+ PASS  886ms Successful Insert. RAISES/THROWS - No exception was expected. Exception raised was &quot;&quot;. Exception raised by: &quot;insert into table_test_tab (id, name) values (1, &#39;TEST1&#39;)&quot;.
+ PASS    0ms Confirm l_rec.name. EQ - Expected &quot;TEST1&quot; and got &quot;TEST1&quot;
+</code></pre>
+<p>This is report level 30, the most detailed level of reporting. Starting from the top, we find the test runner executed 1 test case and 2 assertions. All tests passed for a 100% yield. There is no code coverage for the constraints.</p>
+<p>This is not a complete test. More test cases are needed to confirm other constraints and sad path .</p>
+<hr />
+<p><a href="README.htm">Demos and Examples</a></p>

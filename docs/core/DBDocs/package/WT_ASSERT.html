@@ -46,7 +46,7 @@
 <div id="Master.0">
 <div class="currentmasterreport">
 <TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
-<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE><HR><P></P><HR><P></P><A NAME="method_summary"></A><TABLE WIDTH="100%" CELLSPACING="0" CELLPADDING="3" BORDER="1"><TR CLASS="TableHeadingColor"><TD COLSPAN="2"><FONT SIZE="+2"><B>Method Summary</B></FONT></TD><TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#eq">eq</A></B>( msg_in in varchar2 , check_this_in in varchar2 , against_this_in in varchar2 , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE><HR><P> AUTHID CURRENT_USER is required for dynamic PL/SQL execution.</P><HR><P></P><A NAME="method_summary"></A><TABLE WIDTH="100%" CELLSPACING="0" CELLPADDING="3" BORDER="1"><TR CLASS="TableHeadingColor"><TD COLSPAN="2"><FONT SIZE="+2"><B>Method Summary</B></FONT></TD><TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#eq">eq</A></B>( msg_in in varchar2 , check_this_in in varchar2 , against_this_in in varchar2 , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
 <TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#eq">eq</A></B>( msg_in in varchar2 , check_this_in in boolean , against_this_in in boolean , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
 <TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#eq">eq</A></B>( msg_in in varchar2 , check_this_in in XMLTYPE , against_this_in in XMLTYPE , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
 <TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#eq">eq</A></B>( msg_in in varchar2 , check_this_in in CLOB , against_this_in in CLOB , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Not Used, utPLSQL V1 API</TD></TR>
@@ -152,7 +152,7 @@
 </tr>
 <tr>
 <td>OBJECT_ID</td>
-<td>40403</td>
+<td>41927</td>
 </tr>
 <tr>
 <td>DATA_OBJECT_ID</td>
@@ -164,15 +164,15 @@
 </tr>
 <tr>
 <td>CREATED</td>
-<td>09-JUN-2018&nbsp;11:00:59</td>
+<td>29-JUN-2018&nbsp;15:09:15</td>
 </tr>
 <tr>
 <td>LAST_DDL_TIME</td>
-<td>09-JUN-2018&nbsp;11:00:59</td>
+<td>29-JUN-2018&nbsp;15:21:16</td>
 </tr>
 <tr>
 <td>TIMESTAMP</td>
-<td>2018-06-09:11:00:59</td>
+<td>2018-06-29:15:21:15</td>
 </tr>
 <tr>
 <td>STATUS</td>
@@ -252,8 +252,9 @@
 <div id="Master.5">
 <div class="masterreport">
 <pre>
-package wt_assert authid definer
+package wt_assert authid current_user
 is
+   -- AUTHID CURRENT_USER is required for dynamic PL/SQL execution.
 
    ASSERT_FAILURE_EXCEPTION  exception;
    PRAGMA EXCEPTION_INIT(ASSERT_FAILURE_EXCEPTION, -20003);
@@ -263,7 +264,7 @@ is
 
    -- See RESET_GLOBALS procedure for default global values
 
-   -- Testcase name for a series of assetions.
+   -- Testcase name for a series of assertions.
    --   Modify as required
    g_testcase         wt_results.testcase%TYPE;
 
