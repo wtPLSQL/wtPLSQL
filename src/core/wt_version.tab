@@ -14,7 +14,7 @@ comment on column wt_version.install_dtm is 'Date/Time the version that was inst
 comment on column wt_version.text is 'Name of the version that was installed/upgraded';
 
 insert into wt_version (install_dtm, action, text)
-   values (sysdate, 'INSTALL', '1.1.0');
+   values (sysdate, 'INSTALL', '1.2.0');
 
 commit;
 
