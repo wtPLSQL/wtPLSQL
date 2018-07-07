@@ -1,0 +1,14 @@
+
+wtPLSQL 1.2.0 Release Notes:
+
+New Features:
+-------------
+ -) Modified indexes on WT_TEST_RUNS
+ -) Modified indexes on WT_RESULTS
+ -) Added APEX GUI Add-on.
+ -) Added reporting views.
+
+Detailed Changes:
+-----------------
+View Changes:
+   view_all_stats.vw

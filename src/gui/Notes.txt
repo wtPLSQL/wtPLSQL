@@ -1,0 +1,193 @@
+
+Test Case Names include the Test Runner Name.
+  (No Global Test Cases)
+DBOUTs are not global either.
+  (DBOUTs must be connected to a Test Runner)
+  (Cannot aggregate source lines across multiple Test Runs) 
+
+3 - Tabs: Home, Run Test, Test Runner, Test Case
+
+* Home Page
+   * Page Template Body 1
+      * Control HTML: Region Sequence 11 Column 1
+         * P1_OWNER: Test Runner Owner (LOV from Search TEST RUNS, Can be NULL, default USER)
+         * P1_UPDATE_BUTTON: (Button, displayed only if owner = USER)
+         * P1_NUM_RUNNERS: Test Runners (Read Only)
+         * P1_NUM_DBOUTS: DBOUT Profiles (Read Only)
+         * P1_NUM_CASES: Test Cases (Read Only)
+      * Test Runners Status Summary: Chart Region Sequence 12 Column 2
+         * PASS/FAIL/ERR
+         * Pie Chart
+      * DBOUT Profiles Status Summary: Chart Region Sequence 13 Column 3
+         * EXCL/EXEC/UNKN/NOTX
+         * Pie Chart
+      * Top Test Case Failures: Chart Region Sequence 21 Column 1
+         * Top (Latest) Test Runner Failure %
+         * Column Chart
+         * Links to Test Cases Page
+      * Top Test Runner Failures: Chart Region Sequence 22 Column 2
+         * Top (Latest) Test Runner Failure %
+         * Column Chart
+         * Links to Test Cases Page
+      * Top DBOUT NotExec Lines: Chart Region Sequence 23 Column 3
+         * Top (Latest) DBOUT Lines Not-Executed %
+         * Column Chart
+         * Links to Test Runner Page
+      * Top Test Runner Age: Chart Region Sequence 31 Column 1
+         * Oldest Test Runner Test Run Days
+         * Column Chart
+         * Links to Test Runner Page
+      * Top Test Runner Durations: Chart Region Sequence 32 Column 2
+         * Top (Latest) Test Runner Long Duration Minutes
+         * Column Chart
+         * Links to Test Runner Page
+      * Top DBOUT LineExec Times: Chart Region Sequence 33 Column 3
+         * Top (Latest) DBOUT Long LineExec Seconds
+         * Column Chart
+         * Links to Test Runner Page
+   * Page Template Body 2
+      * P1_RUNNER_JOBS: Report Region Sequence 50 Column 1
+         * List of Jobs from ALL_SCHEDULED_JOBS
+           (For OWNER or OWNERS from WT_TEST_RUNS)
+         * Status
+         * Job Start Date/Time
+         * Job Duration
+         * Job Name
+         * List Latest Test Runs
+         * Link to Stop Job
+      * P1_RUNNER_ERRORS: Report Region Sequence 51 Column 1
+         * Test Runners with Errors
+         * Test Run ID
+         * Test Runner
+         * DBOUT Profiled
+         * Test Run Date/Time
+         * Test Runner Error
+         * Links to Run Test Page, if owner = USER
+         * Links to Test Runner Page
+* Run Test Page
+   (Current Schema)
+   * Page Template Body 2
+         * HTML Region Sequence 10 Column 1
+         * Test Runner (Search-able LOV from Search for WTPLSQL_RUN)
+         * Execute (Button, then Go to Home Page)
+           (DBMS_SCHEDULER.CREATE_JOB)
+            * Job Name - wtPLSQL USER.TEST_RUNNER
+            * Job Type - PLSQL_BLOCK
+            * Job Action - begin wtplsql.test_run('TEST_RUNNER'); end;
+            * Enabled - TRUE
+            * Auto Drop - TRUE
+      * Report Region Sequence 20 Column 1
+         * List of Jobs from USER_SCHEDULER_JOBS
+         * Status
+         * Job Start Date/Time
+         * Job Duration
+         * Job Name
+         * Order by Job Name
+         * Link to Stop Job (If OWNER = USER)
+
+
+* Test Runner Page
+  (Single Test Run ID)
+
+  * Page Template Body 1
+   
+      * Control
+         * HTML Region Sequence 11 Column 1 (Column Span)
+
+         * Test Run ID Tree
+         * Test Run ID (Read Only)
+         * Test Runner "OWNER.NAME" (Read Only) (Run Link)
+
+         * Total Number of Test Cases (Read Only)
+         * Run Date/Time (Read Only)
+         * DBOUT Name "OWNER.NAME(TYPE)" (Read Only, Can be NULL)
+
+         * Go To Run ID (Pop-Up LOV)
+         * Show Trend Charts (LOV, Boolean, Default: Y)
+         * Delete Test Runner (Button with Confirmation, displayed only if OWNER = USER)
+
+      * Test Runner Status
+         * Chart Region Sequence 12 Column 2
+         * Pie Chart
+         * PASS/FAIL/ERR
+
+      * DBOUT Profile Status
+         * Chart Region Sequence 22 Column 2
+         * Pie Chart
+         * EXCL/EXEC/UNKN/NOTX
+
+   * Page Template Body 2
+
+      * Test Runner Status Trend
+         * Chart Region Sequence 21 Column 1
+         * Line Chart (Stacked using SQL)
+         * PASS/FAIL/ERR
+         * Display if Show Trend Charts
+         * Links to Other Test Run IDs, Same Page
+
+      * DBOUT Profile Status Trend
+         * Chart Region Sequence 22 Column 2
+         * Line Chart (Stacked using SQL)
+         * EXCL/EXEC/UNKN/NOTX
+         * Display if Show Trend Charts
+         * Links to Other Test Run IDs, Same Page
+
+      * Top Test Case Failures
+         * Chart Region Sequence 23 Column 3
+         * Column Chart
+         * Display if Show Trend Charts
+         * Links to Test Cases
+
+      * Test Runner Duration Trend (Minutes)
+         * Chart Region Sequence 31 Column 1
+         * Line Chart
+         * Display if Show Trend Charts
+         * Links to Other Test Run IDs, Same Page
+
+      * Maximum LineExec Trend
+         * Chart Region Sequence 32 Column 1
+         * Column Chart
+         * Display if Show Trend Charts
+         * Links to Other Test Run IDs, Same Page
+
+      * Top Test Case Long Duration Minutes
+         * Chart Region Sequence 33 Column 3
+         * Column Chart
+         * Display if Show Trend Charts
+         * Links to Test Cases
+
+   * Page Template Body 3
+      * HTML Region Sequence 10 Column 1
+         * Test Results Details
+         * Links to Test Cases
+      * HTML Region Sequence 20 Column 1
+         * Code Coverage Details (Optional, HTML Text)
+
+* Test Case Page
+  (Single Test Run ID, Single Test Case)
+   * Page Template Body 1
+      * HTML Region Sequence 11 Column 1
+         * Test Run ID (Read Only)
+         * Test Runner OWNER (Read Only)
+         * Test Runner (Read Only)
+         * Run Date/Time (Read Only)
+         * Test Case (Read Only)
+         * Set Test Case (LOV, existing for Test Run ID)
+         * Update (back to same page) (Button or after update trigger)
+         * Go To Test Runner Page (Button)
+         * Go To Run Test Page (Button, Displayed only if Owner is USER)
+      * Chart Region Sequence 12 Column 2
+         * PASS/FAIL/ERR Pie Chart
+      * Chart Region Sequence 21 Column 1
+         * PASS/FAIL/ERR Trend
+         * Bar Vertical Chart
+         * Links to Other Test Run Date/Time
+      * Chart Region Sequence 22 Column 2
+         * Duration Trend
+         * Bar Horizontal Chart
+         * Links to Other Test Run Date/Time
+   * Page Template Body 2
+      * HTML Region Sequence 10 Column 1
+         * Test Case Results Summary
+      * HTML Region Sequence 20 Column 1
+         * Test Case Results Details

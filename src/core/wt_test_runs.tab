@@ -21,13 +21,13 @@ create table wt_test_runs
    ,end_dtm        timestamp
    ,error_message  varchar2(4000)
    ,constraint wt_test_runs_pk primary key (id)
-   ,constraint wt_test_runs_nk1 unique (start_dtm, runner_name, runner_owner)
+   ,constraint wt_test_runs_nk1 unique (runner_name, runner_owner, start_dtm)
    ,constraint wt_test_runs_fk1 foreign key (profiler_runid)
        references plsql_profiler_runs (runid) disable
    ) pctfree 0;
 
-create index wt_test_runs_idx1
-  on wt_test_runs (start_dtm);
+create index wt_test_runs_ix1
+   on wt_test_runs(start_dtm, dbout_name);
 
 comment on table wt_test_runs is 'Test Run data for each execution of the WTPLSQL_RUN procedure.';
 comment on column wt_test_runs.id  is 'Primary (Surrogate) Key for each Test Run';

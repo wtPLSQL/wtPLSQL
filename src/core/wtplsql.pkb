@@ -32,9 +32,8 @@ begin
    end if;
    --  Check for Valid Runner Name
    select count(*) into l_package_check
-    from  all_arguments
-    where owner         = USER
-     and  object_name   = 'WTPLSQL_RUN'
+    from  user_arguments
+    where object_name   = 'WTPLSQL_RUN'
      and  package_name  = g_test_runs_rec.runner_name
      and  argument_name is null
      and  position      = 1

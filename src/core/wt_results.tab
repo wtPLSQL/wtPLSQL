@@ -19,6 +19,9 @@ create table wt_results
    ,constraint wt_results_ck1 check (status in ('PASS','FAIL'))
    ) pctfree 0;
 
+create index wt_results_ix1
+   on wt_results(testcase, test_run_id);
+
 comment on table wt_results is 'Results data from Test Runs.';
 comment on column wt_results.test_run_id is 'Foreign Key for the Test Run, Primary Key part 1.';
 comment on column wt_results.result_seq is 'Sequence number for this Result, Primary Key part 2.';
