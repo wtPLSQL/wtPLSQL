@@ -13,7 +13,7 @@ prompt  APPLICATION 700 - wtPLSQL Core GUI
 -- Application Export:
 --   Application:     700
 --   Name:            wtPLSQL Core GUI
---   Date and Time:   00:54 Sunday July 8, 2018
+--   Date and Time:   01:15 Wednesday July 11, 2018
 --   Exported By:     WTP
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -26,13 +26,13 @@ prompt  APPLICATION 700 - wtPLSQL Core GUI
  
 -- Application Statistics:
 --   Pages:                    6
---     Items:                 36
+--     Items:                 48
 --     Computations:           0
 --     Validations:            0
---     Processes:             12
---     Regions:               35
+--     Processes:             15
+--     Regions:               41
 --     Buttons:                3
---     Dynamic Actions:        2
+--     Dynamic Actions:        4
 --   Shared Components
 --     Breadcrumbs:            1
 --        Entries              2
@@ -146,7 +146,7 @@ wwv_flow_api.create_flow(
   p_default_region_template=> 4840201642414912 + wwv_flow_api.g_id_offset,
   p_error_template=> 4837131094414910 + wwv_flow_api.g_id_offset,
   p_page_protection_enabled_y_n=> 'Y',
-  p_checksum_salt_last_reset => '20180708005437',
+  p_checksum_salt_last_reset => '20180711011532',
   p_max_session_length_sec=> 28800,
   p_home_link=> 'f?p=&APP_ID.:1:&SESSION.',
   p_flow_language=> 'en',
@@ -192,7 +192,7 @@ wwv_flow_api.create_flow(
   p_default_listr_template => 4839116402414912 + wwv_flow_api.g_id_offset,
   p_default_irr_template => 4839831975414912 + wwv_flow_api.g_id_offset,
   p_last_updated_by => 'WTP',
-  p_last_upd_yyyymmddhh24miss=> '20180708005437',
+  p_last_upd_yyyymmddhh24miss=> '20180711011532',
   p_required_roles=> wwv_flow_utilities.string_to_table2(''));
  
  
@@ -347,15 +347,15 @@ wwv_flow_api.create_tab (
   p_tab_parent_tabset=>'',
   p_tab_comment  => '');
  
---application/shared_components/navigation/tabs/standard/t_test_case
+--application/shared_components/navigation/tabs/standard/t_test_cases
 wwv_flow_api.create_tab (
-  p_id=> 4848601687414926 + wwv_flow_api.g_id_offset,
+  p_id=> 4977229177323155 + wwv_flow_api.g_id_offset,
   p_flow_id=> wwv_flow.g_flow_id,
   p_tab_set=> 'TS1',
   p_tab_sequence=> 40,
-  p_tab_name=> 'T_TEST_CASE',
+  p_tab_name=> 'T_TEST CASES',
   p_tab_text => 'Test Case',
-  p_tab_step => 4,
+  p_tab_step => 6,
   p_tab_also_current_for_pages => '',
   p_tab_parent_tabset=>'',
   p_tab_comment  => '');
@@ -654,7 +654,7 @@ wwv_flow_api.create_page (
  ,p_help_text => 
 'No help is available for this page.'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180707153059'
+ ,p_last_upd_yyyymmddhh24miss => '20180709201830'
   );
 null;
  
@@ -859,35 +859,32 @@ a1:=a1||'er = ms.runner_owner'||chr(10)||
 '            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-' having sum(res.passes) > 0'||chr(10)||
 'union all'||chr(10)||
 'select NULL               LINK'||chr(10)||
 '      ,''FAIL''             LABEL'||chr(10)||
 '      ,sum(res.failures)  VALUE'||chr(10)||
 ' from  q_max_start  ms'||chr(10)||
 '       join wt_test_runs  run'||chr(10)||
-'            on ';
+'            on  run.runner_owner = ms.runne';
 
-a1:=a1||' run.runner_owner = ms.runner_owner'||chr(10)||
+a1:=a1||'r_owner'||chr(10)||
 '            and run.runner_name  = ms.runner_name'||chr(10)||
 '            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-' having sum(res.failures) > 0'||chr(10)||
 'union all'||chr(10)||
 'select NULL             LINK'||chr(10)||
 '      ,''ERR''            LABEL'||chr(10)||
 '      ,sum(res.errors)  VALUE'||chr(10)||
 ' from  q_max_start  ms'||chr(10)||
 '       join wt_test_runs  run'||chr(10)||
-'    ';
+'            on  run.runner_owner = ms.runner_owner'||chr(10)||
+'           ';
 
-a1:=a1||'        on  run.runner_owner = ms.runner_owner'||chr(10)||
-'            and run.runner_name  = ms.runner_name'||chr(10)||
+a1:=a1||' and run.runner_name  = ms.runner_name'||chr(10)||
 '            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-' having sum(res.errors) > 0'||chr(10)||
 ')'||chr(10)||
 'select link, label, value'||chr(10)||
 ' from  q1'||chr(10)||
@@ -1080,49 +1077,45 @@ a1:=a1||'n.runner_owner = ms.runner_owner'||chr(10)||
 '            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-' having sum(excluded_lines) > 0'||chr(10)||
 'union all'||chr(10)||
 'select NULL                 LINK'||chr(10)||
 '      ,''EXEC''               LABEL'||chr(10)||
 '      ,sum(executed_lines)  VALUE'||chr(10)||
 ' from  q_max_start  ms'||chr(10)||
-'       join wt_test_run';
+'       join wt_test_runs  run'||chr(10)||
+'            on  run.runne';
 
-a1:=a1||'s  run'||chr(10)||
-'            on  run.runner_owner = ms.runner_owner'||chr(10)||
+a1:=a1||'r_owner = ms.runner_owner'||chr(10)||
 '            and run.runner_name  = ms.runner_name'||chr(10)||
 '            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-' having sum(executed_lines) > 0'||chr(10)||
 'union all'||chr(10)||
 'select NULL                LINK'||chr(10)||
 '      ,''NOTX''              LABEL'||chr(10)||
 '      ,sum(notexec_lines)  VALUE'||chr(10)||
 ' from  q_max_start  ms'||chr(10)||
-' ';
+'       join wt_test_runs  run'||chr(10)||
+'            on  run.runner_owner = ';
 
-a1:=a1||'      join wt_test_runs  run'||chr(10)||
-'            on  run.runner_owner = ms.runner_owner'||chr(10)||
+a1:=a1||'ms.runner_owner'||chr(10)||
 '            and run.runner_name  = ms.runner_name'||chr(10)||
 '            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-' having sum(notexec_lines) > 0'||chr(10)||
 'union all'||chr(10)||
 'select NULL                LINK'||chr(10)||
 '      ,''UNKN''              LABEL'||chr(10)||
 '      ,sum(unknown_lines)  VALUE'||chr(10)||
-' fr';
-
-a1:=a1||'om  q_max_start  ms'||chr(10)||
+' from  q_max_start  ms'||chr(10)||
 '       join wt_test_runs  run'||chr(10)||
-'            on  run.runner_owner = ms.runner_owner'||chr(10)||
+'            on  run.runner_owner = ms.runner_';
+
+a1:=a1||'owner'||chr(10)||
 '            and run.runner_name  = ms.runner_name'||chr(10)||
 '            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-' having sum(unknown_lines) > 0'||chr(10)||
 ')'||chr(10)||
 'select link, label, value'||chr(10)||
 ' from  q1'||chr(10)||
@@ -3246,7 +3239,7 @@ wwv_flow_api.create_page (
  ,p_help_text => 
 'No help is available for this page.'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180707124750'
+ ,p_last_upd_yyyymmddhh24miss => '20180709015509'
   );
 null;
  
@@ -3878,8 +3871,9 @@ wwv_flow_api.create_page_item(
   p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
   p_prompt=>'Test Runner:',
   p_source=>'select min(package_name)'||chr(10)||
-' from  user_arguments'||chr(10)||
-' where object_name   = ''WTPLSQL_RUN'''||chr(10)||
+' from  dba_arguments'||chr(10)||
+' where owner         = :APP_USER'||chr(10)||
+'  and  object_name   = ''WTPLSQL_RUN'''||chr(10)||
 '  and  argument_name is null'||chr(10)||
 '  and  position      = 1'||chr(10)||
 '  and  sequence      = 0',
@@ -3887,8 +3881,9 @@ wwv_flow_api.create_page_item(
   p_display_as=> 'NATIVE_POPUP_LOV',
   p_lov=> 'select package_name   DISPLAY'||chr(10)||
 '      ,package_name   RETURN'||chr(10)||
-' from  user_arguments'||chr(10)||
-' where object_name   = ''WTPLSQL_RUN'''||chr(10)||
+' from  dba_arguments'||chr(10)||
+' where owner         = :APP_USER'||chr(10)||
+'  and  object_name   = ''WTPLSQL_RUN'''||chr(10)||
 '  and  argument_name is null'||chr(10)||
 '  and  position      = 1'||chr(10)||
 '  and  sequence      = 0'||chr(10)||
@@ -4389,7 +4384,7 @@ wwv_flow_api.create_page (
  ,p_help_text => 
 'No help is available for this page.'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180708005014'
+ ,p_last_upd_yyyymmddhh24miss => '20180710223827'
   );
 null;
  
@@ -4670,18 +4665,16 @@ a1:=a1||'with q1 as ('||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
 ' where id = :P3_TEST_RUN_ID'||chr(10)||
-' having sum(res.passes) > 0'||chr(10)||
 'union all'||chr(10)||
 'select NULL               LINK'||chr(10)||
 '      ,''FAIL''             LABEL'||chr(10)||
 '      ,sum(res.failures)  VALUE'||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
-'       join';
+'       join wt_test_run_stats  res'||chr(10)||
+'    ';
 
-a1:=a1||' wt_test_run_stats  res'||chr(10)||
-'            on  res.test_run_id = run.id'||chr(10)||
+a1:=a1||'        on  res.test_run_id = run.id'||chr(10)||
 ' where id = :P3_TEST_RUN_ID'||chr(10)||
-' having sum(res.failures) > 0'||chr(10)||
 'union all'||chr(10)||
 'select NULL             LINK'||chr(10)||
 '      ,''ERR''            LABEL'||chr(10)||
@@ -4690,11 +4683,8 @@ a1:=a1||' wt_test_run_stats  res'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
 ' where id = :P3_TEST_RUN_ID'||chr(10)||
-' having sum(res.errors) > 0'||chr(10)||
 ')'||chr(10)||
-'select link, label,';
-
-a1:=a1||' value'||chr(10)||
+'select link, label, value'||chr(10)||
 ' from  q1'||chr(10)||
 ' order by label desc';
 
@@ -4707,11 +4697,11 @@ wwv_flow_api.create_flash_chart5_series(
   p_series_query              => a1,
   p_series_type               =>'',
   p_series_query_type         =>'SQL_QUERY',
-  p_series_query_parse_opt    =>'',
+  p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
   p_series_query_row_count_max=>15,
   p_action_link               =>'',
-  p_show_action_link          =>'',
+  p_show_action_link          =>'N',
   p_action_link_checksum_type =>'');
 end;
 /
@@ -4870,18 +4860,16 @@ a1:=a1||'with q1 as ('||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
 ' where id = :P3_TEST_RUN_ID'||chr(10)||
-' having sum(excluded_lines) > 0'||chr(10)||
 'union all'||chr(10)||
 'select NULL                 LINK'||chr(10)||
 '      ,''EXEC''               LABEL'||chr(10)||
 '      ,sum(executed_lines)  VALUE'||chr(10)||
-' from  wt_test';
+' from  wt_test_runs  run'||chr(10)||
+'       join wt_test_r';
 
-a1:=a1||'_runs  run'||chr(10)||
-'       join wt_test_run_stats  res'||chr(10)||
+a1:=a1||'un_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
 ' where id = :P3_TEST_RUN_ID'||chr(10)||
-' having sum(executed_lines) > 0'||chr(10)||
 'union all'||chr(10)||
 'select NULL                LINK'||chr(10)||
 '      ,''NOTX''              LABEL'||chr(10)||
@@ -4890,18 +4878,16 @@ a1:=a1||'_runs  run'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
 ' where id = :P3_TEST_RUN_ID'||chr(10)||
-' having sum(note';
-
-a1:=a1||'xec_lines) > 0'||chr(10)||
 'union all'||chr(10)||
 'select NULL                LINK'||chr(10)||
 '      ,''UNKN''              LABEL'||chr(10)||
-'      ,sum(unknown_lines)  VALUE'||chr(10)||
+'     ';
+
+a1:=a1||' ,sum(unknown_lines)  VALUE'||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
 ' where id = :P3_TEST_RUN_ID'||chr(10)||
-' having sum(unknown_lines) > 0'||chr(10)||
 ')'||chr(10)||
 'select link, label, value'||chr(10)||
 ' from  q1'||chr(10)||
@@ -7416,7 +7402,7 @@ wwv_flow_api.create_page_item(
   p_data_type=> 'VARCHAR',
   p_is_required=> false,
   p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 11,
+  p_item_sequence=> 12,
   p_item_plug_id => 4848108018414926+wwv_flow_api.g_id_offset,
   p_use_cache_before_default=> 'YES',
   p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
@@ -7429,6 +7415,7 @@ wwv_flow_api.create_page_item(
 '       to_char(start_dtm,''YYYY/MM/DD HH24:MI:SS'')    DISPLAY'||chr(10)||
 '      ,id                                            RETURN'||chr(10)||
 ' from  wt_test_runs'||chr(10)||
+' where id != :P3_TEST_RUN_ID'||chr(10)||
 ' order by id desc',
   p_lov_display_null=> 'NO',
   p_lov_translated=> 'N',
@@ -7467,7 +7454,7 @@ wwv_flow_api.create_page_item(
   p_data_type=> 'VARCHAR',
   p_is_required=> true,
   p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 12,
+  p_item_sequence=> 13,
   p_item_plug_id => 4848108018414926+wwv_flow_api.g_id_offset,
   p_use_cache_before_default=> 'YES',
   p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
@@ -7556,7 +7543,7 @@ wwv_flow_api.create_page_item(
   p_data_type=> 'VARCHAR',
   p_is_required=> false,
   p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 13,
+  p_item_sequence=> 14,
   p_item_plug_id => 4848108018414926+wwv_flow_api.g_id_offset,
   p_use_cache_before_default=> 'YES',
   p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
@@ -7833,6 +7820,47 @@ wwv_flow_api.create_page_item(
 end;
 /
 
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>4993326896795754 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 3,
+  p_name=>'P3_TRIGGER_OFFSET',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 11,
+  p_item_plug_id => 4848108018414926+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_prompt=>'Trigger Offset:',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_DISPLAY_ONLY',
+  p_lov_display_null=> 'NO',
+  p_lov_translated=> 'N',
+  p_cSize=> 30,
+  p_cMaxlength=> 4000,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'YES',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'RIGHT',
+  p_field_alignment=> 'LEFT-CENTER',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_attribute_01 => 'N',
+  p_attribute_02 => 'VALUE',
+  p_attribute_04 => 'Y',
+  p_item_comment => '');
+ 
+ 
+end;
+/
+
  
 begin
  
@@ -7975,11 +8003,12 @@ p:=p||'ner'||chr(10)||
 '               ,dbout_owner'||chr(10)||
 '               ,dbout_name'||chr(10)||
 '               ,dbout_type'||chr(10)||
+'               ,trigger_offset'||chr(10)||
 '               ,error_message'||chr(10)||
-'          from  wt_test_runs'||chr(10)||
-'   ';
+' ';
 
-p:=p||'       where id = :P3_TEST_RUN_ID )'||chr(10)||
+p:=p||'         from  wt_test_runs'||chr(10)||
+'          where id = :P3_TEST_RUN_ID )'||chr(10)||
 '      loop'||chr(10)||
 '         --'||chr(10)||
 '         :P3_RUNNER_OWNER   := buff.runner_owner;'||chr(10)||
@@ -7988,36 +8017,37 @@ p:=p||'       where id = :P3_TEST_RUN_ID )'||chr(10)||
 '         :P3_TEST_DURATION  := buff.duration;'||chr(10)||
 '         :P3_DBOUT_OWNER    := buff.dbout_owner;'||chr(10)||
 '         :P3_DBOUT_NAME     := buff.dbout_name;'||chr(10)||
-'         :P3_DBOUT_TYPE     := buff.dbout_type;'||chr(10)||
-'    ';
+'         :P3_DBOUT_TY';
 
-p:=p||'     :P3_TEST_RUN_ERROR := buff.error_message;'||chr(10)||
+p:=p||'PE     := buff.dbout_type;'||chr(10)||
+'         :P3_TRIGGER_OFFSET := buff.trigger_offset;'||chr(10)||
+'         :P3_TEST_RUN_ERROR := buff.error_message;'||chr(10)||
 '         --'||chr(10)||
 '         if buff.runner_owner = :APP_USER'||chr(10)||
 '         then'||chr(10)||
 '            page                 := ''2'';'||chr(10)||
 '            item_names           := ''P'' || page || ''_TEST_RUNNER'';'||chr(10)||
 '            item_values          := buff.runner_name;'||chr(10)||
-'            :P3_RUNNER_NAME_DISP := ''<a href="f?p='' || :APP_ID               ||'||chr(10)||
-'                                           ';
+'            :P3_RUNNER_NAME_DISP := ''<a ';
 
-p:=p||'     '':'' || page                  ||'||chr(10)||
+p:=p||'href="f?p='' || :APP_ID               ||'||chr(10)||
+'                                                '':'' || page                  ||'||chr(10)||
 '                                                '':'' || :APP_SESSION          ||'||chr(10)||
 '                                                '':'' || :REQUEST              ||'||chr(10)||
 '                                                '':'' || :DEBUG                ||'||chr(10)||
-'                                                '':'' || clear_cache           ||'||chr(10)||
-'                                           ';
+'                                        ';
 
-p:=p||'     '':'' || item_names            ||'||chr(10)||
+p:=p||'        '':'' || clear_cache           ||'||chr(10)||
+'                                                '':'' || item_names            ||'||chr(10)||
 '                                                '':'' || item_values           ||'||chr(10)||
 '                                                '':'' || V(''PRINTER_FRIENDLY'') ||'||chr(10)||
 '                                               ''">'' || buff.runner_name      ||'||chr(10)||
-'                              ''</a> (Click to Run)'' ;'||chr(10)||
+'                              ''</a> (Cli';
+
+p:=p||'ck to Run)'' ;'||chr(10)||
 '         else'||chr(10)||
 '            :P3_RUNNER_NAME_DISP := buff.runner_name;'||chr(10)||
-' ';
-
-p:=p||'        end if;'||chr(10)||
+'         end if;'||chr(10)||
 '         --'||chr(10)||
 '      end loop;'||chr(10)||
 '      --'||chr(10)||
@@ -8134,98 +8164,6 @@ begin
  
 ---------------------------------------
 -- ...updatable report columns for page 3
---
- 
-begin
- 
-null;
-end;
-null;
- 
-end;
-/
-
- 
---application/pages/page_00004
-prompt  ...PAGE 4: Test Case
---
- 
-begin
- 
-wwv_flow_api.create_page (
-  p_flow_id => wwv_flow.g_flow_id
- ,p_id => 4
- ,p_tab_set => 'TS1'
- ,p_name => 'Test Case'
- ,p_step_title => 'Test Case'
- ,p_allow_duplicate_submissions => 'Y'
- ,p_step_sub_title => 'Test Case'
- ,p_step_sub_title_type => 'TEXT_WITH_SUBSTITUTIONS'
- ,p_first_item => 'AUTO_FIRST_ITEM'
- ,p_include_apex_css_js_yn => 'Y'
- ,p_autocomplete_on_off => 'ON'
- ,p_page_is_public_y_n => 'N'
- ,p_protection_level => 'N'
- ,p_cache_page_yn => 'N'
- ,p_cache_timeout_seconds => 21600
- ,p_cache_by_user_yn => 'N'
- ,p_help_text => 
-'No help is available for this page.'
- ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180706095947'
-  );
-null;
- 
-end;
-/
-
-declare
-  s varchar2(32767) := null;
-  l_clob clob;
-  l_length number := 1;
-begin
-s := null;
-wwv_flow_api.create_page_plug (
-  p_id=> 4848709383414926 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_page_id=> 4,
-  p_plug_name=> 'Test Case',
-  p_region_name=>'',
-  p_plug_template=> 4840201642414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 10,
-  p_plug_display_column=> 1,
-  p_plug_display_point=> 'AFTER_SHOW_ITEMS',
-  p_plug_source=> s,
-  p_plug_source_type=> 'STATIC_TEXT',
-  p_plug_query_row_template=> 1,
-  p_plug_query_headings_type=> 'COLON_DELMITED_LIST',
-  p_plug_query_row_count_max => 500,
-  p_plug_display_condition_type => '',
-  p_plug_caching=> 'NOT_CACHED',
-  p_plug_comment=> '');
-end;
-/
- 
-begin
- 
-null;
- 
-end;
-/
-
- 
-begin
- 
-null;
- 
-end;
-/
-
- 
-begin
- 
----------------------------------------
--- ...updatable report columns for page 4
 --
  
 begin
@@ -8542,6 +8480,2201 @@ begin
  
 ---------------------------------------
 -- ...updatable report columns for page 5
+--
+ 
+begin
+ 
+null;
+end;
+null;
+ 
+end;
+/
+
+ 
+--application/pages/page_00006
+prompt  ...PAGE 6: Test Cases
+--
+ 
+begin
+ 
+wwv_flow_api.create_page (
+  p_flow_id => wwv_flow.g_flow_id
+ ,p_id => 6
+ ,p_tab_set => 'TS1'
+ ,p_name => 'Test Cases'
+ ,p_step_title => 'Test Cases'
+ ,p_allow_duplicate_submissions => 'Y'
+ ,p_step_sub_title => 'Test Cases'
+ ,p_step_sub_title_type => 'TEXT_WITH_SUBSTITUTIONS'
+ ,p_first_item => 'AUTO_FIRST_ITEM'
+ ,p_include_apex_css_js_yn => 'Y'
+ ,p_autocomplete_on_off => 'ON'
+ ,p_step_template => 4837222651414910 + wwv_flow_api.g_id_offset
+ ,p_page_is_public_y_n => 'N'
+ ,p_protection_level => 'N'
+ ,p_cache_page_yn => 'N'
+ ,p_help_text => 
+'No help is available for this page.'
+ ,p_last_updated_by => 'WTP'
+ ,p_last_upd_yyyymmddhh24miss => '20180711005907'
+  );
+null;
+ 
+end;
+/
+
+declare
+  s varchar2(32767) := null;
+  l_clob clob;
+  l_length number := 1;
+begin
+s := null;
+wwv_flow_api.create_page_plug (
+  p_id=> 4978906587323161 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 6,
+  p_plug_name=> 'Test Case',
+  p_region_name=>'',
+  p_plug_template=> 4839831975414912+ wwv_flow_api.g_id_offset,
+  p_plug_display_sequence=> 11,
+  p_plug_display_column=> 1,
+  p_plug_display_point=> 'BEFORE_BOX_BODY',
+  p_plug_source=> s,
+  p_plug_source_type=> 'STATIC_TEXT',
+  p_translate_title=> 'Y',
+  p_plug_query_row_template=> 1,
+  p_plug_query_headings_type=> 'COLON_DELMITED_LIST',
+  p_plug_query_row_count_max => 500,
+  p_plug_display_condition_type => '',
+  p_plug_customized=>'0',
+  p_plug_caching=> 'NOT_CACHED',
+  p_plug_comment=> '');
+end;
+/
+declare
+  s varchar2(32767) := null;
+  l_clob clob;
+  l_length number := 1;
+begin
+s:=s||'select result_seq       SEQ'||chr(10)||
+'      ,executed_dtm     EXECUTED_DATE_TIME'||chr(10)||
+'      ,interval_msecs   MSECS'||chr(10)||
+'      ,assertion'||chr(10)||
+'      ,status'||chr(10)||
+'      ,details'||chr(10)||
+'      ,testcase'||chr(10)||
+'      ,message'||chr(10)||
+' from  wt_results'||chr(10)||
+' where test_run_id = :P6_TEST_RUN_ID'||chr(10)||
+'  and  testcase    = :P6_TESTCASE_NAME';
+
+wwv_flow_api.create_page_plug (
+  p_id=> 4982202570323168 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 6,
+  p_plug_name=> 'Test Case Results Details',
+  p_region_name=>'',
+  p_plug_template=> 4839831975414912+ wwv_flow_api.g_id_offset,
+  p_plug_display_sequence=> 20,
+  p_plug_display_column=> 1,
+  p_plug_display_point=> 'AFTER_SHOW_ITEMS',
+  p_plug_source=> s,
+  p_plug_source_type=> 'DYNAMIC_QUERY',
+  p_translate_title=> 'Y',
+  p_plug_display_error_message=> '#SQLERRM#',
+  p_plug_query_row_template=> 1,
+  p_plug_query_headings_type=> 'COLON_DELMITED_LIST',
+  p_plug_query_show_nulls_as => ' - ',
+  p_plug_display_condition_type => '',
+  p_pagination_display_position=>'BOTTOM_RIGHT',
+  p_plug_customized=>'0',
+  p_plug_caching=> 'NOT_CACHED',
+  p_plug_comment=> '');
+end;
+/
+declare
+ a1 varchar2(32767) := null;
+begin
+a1:=a1||'select result_seq       SEQ'||chr(10)||
+'      ,executed_dtm     EXECUTED_DATE_TIME'||chr(10)||
+'      ,interval_msecs   MSECS'||chr(10)||
+'      ,assertion'||chr(10)||
+'      ,status'||chr(10)||
+'      ,details'||chr(10)||
+'      ,testcase'||chr(10)||
+'      ,message'||chr(10)||
+' from  wt_results'||chr(10)||
+' where test_run_id = :P6_TEST_RUN_ID'||chr(10)||
+'  and  testcase    = :P6_TESTCASE_NAME';
+
+wwv_flow_api.create_worksheet(
+  p_id=> 4982411530323169+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 6,
+  p_region_id=> 4982202570323168+wwv_flow_api.g_id_offset,
+  p_name=> 'Test Runner Results Details',
+  p_folder_id=> null, 
+  p_alias=> '',
+  p_report_id_item=> '',
+  p_max_row_count=> '10000',
+  p_max_row_count_message=> 'This query returns more than #MAX_ROW_COUNT# rows, please filter your data to ensure complete results.',
+  p_no_data_found_message=> 'No data found.',
+  p_max_rows_per_page=>'',
+  p_search_button_label=>'',
+  p_page_items_to_submit=>'',
+  p_sort_asc_image=>'',
+  p_sort_asc_image_attr=>'',
+  p_sort_desc_image=>'',
+  p_sort_desc_image_attr=>'',
+  p_sql_query => a1,
+  p_status=>'AVAILABLE_FOR_OWNER',
+  p_allow_report_saving=>'Y',
+  p_allow_save_rpt_public=>'N',
+  p_allow_report_categories=>'N',
+  p_show_nulls_as=>'-',
+  p_pagination_display_pos=>'BOTTOM_RIGHT',
+  p_show_finder_drop_down=>'Y',
+  p_show_display_row_count=>'N',
+  p_show_search_bar=>'Y',
+  p_show_search_textbox=>'Y',
+  p_show_actions_menu=>'Y',
+  p_report_list_mode=>'TABS',
+  p_show_detail_link=>'N',
+  p_show_select_columns=>'Y',
+  p_show_rows_per_page=>'Y',
+  p_show_filter=>'Y',
+  p_show_sort=>'Y',
+  p_show_control_break=>'Y',
+  p_show_highlight=>'Y',
+  p_show_computation=>'Y',
+  p_show_aggregate=>'Y',
+  p_show_chart=>'Y',
+  p_show_group_by=>'Y',
+  p_show_notify=>'N',
+  p_show_calendar=>'N',
+  p_show_flashback=>'Y',
+  p_show_reset=>'Y',
+  p_show_download=>'Y',
+  p_show_help=>'Y',
+  p_download_formats=>'CSV:HTML:EMAIL',
+  p_allow_exclude_null_values=>'N',
+  p_allow_hide_extra_columns=>'N',
+  p_icon_view_enabled_yn=>'N',
+  p_icon_view_columns_per_row=>1,
+  p_detail_view_enabled_yn=>'N',
+  p_owner=>'WTP');
+end;
+/
+begin
+wwv_flow_api.create_worksheet_column(
+  p_id => 4983029951323173+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 6,
+  p_worksheet_id => 4982411530323169+wwv_flow_api.g_id_offset,
+  p_db_column_name         =>'SEQ',
+  p_display_order          =>1,
+  p_group_id               =>null+wwv_flow_api.g_id_offset,
+  p_column_identifier      =>'J',
+  p_column_label           =>'Seq',
+  p_report_label           =>'Seq',
+  p_sync_form_label        =>'Y',
+  p_display_in_default_rpt =>'Y',
+  p_is_sortable            =>'Y',
+  p_allow_sorting          =>'Y',
+  p_allow_filtering        =>'Y',
+  p_allow_highlighting     =>'Y',
+  p_allow_ctrl_breaks      =>'Y',
+  p_allow_aggregations     =>'Y',
+  p_allow_computations     =>'Y',
+  p_allow_charting         =>'Y',
+  p_allow_group_by         =>'Y',
+  p_allow_hide             =>'Y',
+  p_others_may_edit        =>'Y',
+  p_others_may_view        =>'Y',
+  p_column_type            =>'NUMBER',
+  p_display_as             =>'TEXT',
+  p_display_text_as        =>'ESCAPE_SC',
+  p_heading_alignment      =>'CENTER',
+  p_column_alignment       =>'RIGHT',
+  p_tz_dependent           =>'N',
+  p_rpt_distinct_lov       =>'Y',
+  p_rpt_show_filter_lov    =>'D',
+  p_rpt_filter_date_ranges =>'ALL',
+  p_help_text              =>'');
+end;
+/
+begin
+wwv_flow_api.create_worksheet_column(
+  p_id => 4983107465323173+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 6,
+  p_worksheet_id => 4982411530323169+wwv_flow_api.g_id_offset,
+  p_db_column_name         =>'EXECUTED_DATE_TIME',
+  p_display_order          =>2,
+  p_group_id               =>null+wwv_flow_api.g_id_offset,
+  p_column_identifier      =>'K',
+  p_column_label           =>'Executed Date/Time',
+  p_report_label           =>'Executed Date/Time',
+  p_sync_form_label        =>'Y',
+  p_display_in_default_rpt =>'Y',
+  p_is_sortable            =>'Y',
+  p_allow_sorting          =>'Y',
+  p_allow_filtering        =>'Y',
+  p_allow_highlighting     =>'Y',
+  p_allow_ctrl_breaks      =>'Y',
+  p_allow_aggregations     =>'Y',
+  p_allow_computations     =>'Y',
+  p_allow_charting         =>'Y',
+  p_allow_group_by         =>'Y',
+  p_allow_hide             =>'Y',
+  p_others_may_edit        =>'Y',
+  p_others_may_view        =>'Y',
+  p_column_type            =>'DATE',
+  p_display_as             =>'TEXT',
+  p_display_text_as        =>'ESCAPE_SC',
+  p_heading_alignment      =>'CENTER',
+  p_column_alignment       =>'LEFT',
+  p_tz_dependent           =>'N',
+  p_rpt_distinct_lov       =>'Y',
+  p_rpt_show_filter_lov    =>'D',
+  p_rpt_filter_date_ranges =>'ALL',
+  p_help_text              =>'');
+end;
+/
+begin
+wwv_flow_api.create_worksheet_column(
+  p_id => 4983222398323174+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 6,
+  p_worksheet_id => 4982411530323169+wwv_flow_api.g_id_offset,
+  p_db_column_name         =>'MSECS',
+  p_display_order          =>3,
+  p_group_id               =>null+wwv_flow_api.g_id_offset,
+  p_column_identifier      =>'L',
+  p_column_label           =>'Msecs',
+  p_report_label           =>'Msecs',
+  p_sync_form_label        =>'Y',
+  p_display_in_default_rpt =>'Y',
+  p_is_sortable            =>'Y',
+  p_allow_sorting          =>'Y',
+  p_allow_filtering        =>'Y',
+  p_allow_highlighting     =>'Y',
+  p_allow_ctrl_breaks      =>'Y',
+  p_allow_aggregations     =>'Y',
+  p_allow_computations     =>'Y',
+  p_allow_charting         =>'Y',
+  p_allow_group_by         =>'Y',
+  p_allow_hide             =>'Y',
+  p_others_may_edit        =>'Y',
+  p_others_may_view        =>'Y',
+  p_column_type            =>'NUMBER',
+  p_display_as             =>'TEXT',
+  p_display_text_as        =>'ESCAPE_SC',
+  p_heading_alignment      =>'CENTER',
+  p_column_alignment       =>'RIGHT',
+  p_tz_dependent           =>'N',
+  p_rpt_distinct_lov       =>'Y',
+  p_rpt_show_filter_lov    =>'D',
+  p_rpt_filter_date_ranges =>'ALL',
+  p_help_text              =>'');
+end;
+/
+begin
+wwv_flow_api.create_worksheet_column(
+  p_id => 4982519401323172+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 6,
+  p_worksheet_id => 4982411530323169+wwv_flow_api.g_id_offset,
+  p_db_column_name         =>'ASSERTION',
+  p_display_order          =>4,
+  p_group_id               =>null+wwv_flow_api.g_id_offset,
+  p_column_identifier      =>'E',
+  p_column_label           =>'Assertion',
+  p_report_label           =>'Assertion',
+  p_sync_form_label        =>'Y',
+  p_display_in_default_rpt =>'Y',
+  p_is_sortable            =>'Y',
+  p_allow_sorting          =>'Y',
+  p_allow_filtering        =>'Y',
+  p_allow_highlighting     =>'Y',
+  p_allow_ctrl_breaks      =>'Y',
+  p_allow_aggregations     =>'Y',
+  p_allow_computations     =>'Y',
+  p_allow_charting         =>'Y',
+  p_allow_group_by         =>'Y',
+  p_allow_hide             =>'Y',
+  p_others_may_edit        =>'Y',
+  p_others_may_view        =>'Y',
+  p_column_type            =>'STRING',
+  p_display_as             =>'TEXT',
+  p_display_text_as        =>'ESCAPE_SC',
+  p_heading_alignment      =>'CENTER',
+  p_column_alignment       =>'LEFT',
+  p_tz_dependent           =>'N',
+  p_rpt_distinct_lov       =>'Y',
+  p_rpt_show_filter_lov    =>'D',
+  p_rpt_filter_date_ranges =>'ALL',
+  p_help_text              =>'');
+end;
+/
+begin
+wwv_flow_api.create_worksheet_column(
+  p_id => 4982626816323173+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 6,
+  p_worksheet_id => 4982411530323169+wwv_flow_api.g_id_offset,
+  p_db_column_name         =>'STATUS',
+  p_display_order          =>5,
+  p_group_id               =>null+wwv_flow_api.g_id_offset,
+  p_column_identifier      =>'F',
+  p_column_label           =>'Status',
+  p_report_label           =>'Status',
+  p_sync_form_label        =>'Y',
+  p_display_in_default_rpt =>'Y',
+  p_is_sortable            =>'Y',
+  p_allow_sorting          =>'Y',
+  p_allow_filtering        =>'Y',
+  p_allow_highlighting     =>'Y',
+  p_allow_ctrl_breaks      =>'Y',
+  p_allow_aggregations     =>'Y',
+  p_allow_computations     =>'Y',
+  p_allow_charting         =>'Y',
+  p_allow_group_by         =>'Y',
+  p_allow_hide             =>'Y',
+  p_others_may_edit        =>'Y',
+  p_others_may_view        =>'Y',
+  p_column_type            =>'STRING',
+  p_display_as             =>'TEXT',
+  p_display_text_as        =>'ESCAPE_SC',
+  p_heading_alignment      =>'CENTER',
+  p_column_alignment       =>'LEFT',
+  p_tz_dependent           =>'N',
+  p_rpt_distinct_lov       =>'Y',
+  p_rpt_show_filter_lov    =>'D',
+  p_rpt_filter_date_ranges =>'ALL',
+  p_help_text              =>'');
+end;
+/
+begin
+wwv_flow_api.create_worksheet_column(
+  p_id => 4982730180323173+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 6,
+  p_worksheet_id => 4982411530323169+wwv_flow_api.g_id_offset,
+  p_db_column_name         =>'DETAILS',
+  p_display_order          =>6,
+  p_group_id               =>null+wwv_flow_api.g_id_offset,
+  p_column_identifier      =>'G',
+  p_column_label           =>'Details',
+  p_report_label           =>'Details',
+  p_sync_form_label        =>'Y',
+  p_display_in_default_rpt =>'Y',
+  p_is_sortable            =>'Y',
+  p_allow_sorting          =>'Y',
+  p_allow_filtering        =>'Y',
+  p_allow_highlighting     =>'Y',
+  p_allow_ctrl_breaks      =>'Y',
+  p_allow_aggregations     =>'Y',
+  p_allow_computations     =>'Y',
+  p_allow_charting         =>'Y',
+  p_allow_group_by         =>'Y',
+  p_allow_hide             =>'Y',
+  p_others_may_edit        =>'Y',
+  p_others_may_view        =>'Y',
+  p_column_type            =>'STRING',
+  p_display_as             =>'TEXT',
+  p_display_text_as        =>'ESCAPE_SC',
+  p_heading_alignment      =>'CENTER',
+  p_column_alignment       =>'LEFT',
+  p_tz_dependent           =>'N',
+  p_rpt_distinct_lov       =>'Y',
+  p_rpt_show_filter_lov    =>'D',
+  p_rpt_filter_date_ranges =>'ALL',
+  p_help_text              =>'');
+end;
+/
+begin
+wwv_flow_api.create_worksheet_column(
+  p_id => 4982829265323173+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 6,
+  p_worksheet_id => 4982411530323169+wwv_flow_api.g_id_offset,
+  p_db_column_name         =>'TESTCASE',
+  p_display_order          =>7,
+  p_group_id               =>null+wwv_flow_api.g_id_offset,
+  p_column_identifier      =>'H',
+  p_column_label           =>'Testcase',
+  p_report_label           =>'Testcase',
+  p_sync_form_label        =>'Y',
+  p_display_in_default_rpt =>'Y',
+  p_is_sortable            =>'Y',
+  p_allow_sorting          =>'Y',
+  p_allow_filtering        =>'Y',
+  p_allow_highlighting     =>'Y',
+  p_allow_ctrl_breaks      =>'Y',
+  p_allow_aggregations     =>'Y',
+  p_allow_computations     =>'Y',
+  p_allow_charting         =>'Y',
+  p_allow_group_by         =>'Y',
+  p_allow_hide             =>'Y',
+  p_others_may_edit        =>'Y',
+  p_others_may_view        =>'Y',
+  p_column_type            =>'STRING',
+  p_display_as             =>'TEXT',
+  p_display_text_as        =>'ESCAPE_SC',
+  p_heading_alignment      =>'CENTER',
+  p_column_alignment       =>'LEFT',
+  p_tz_dependent           =>'N',
+  p_rpt_distinct_lov       =>'Y',
+  p_rpt_show_filter_lov    =>'D',
+  p_rpt_filter_date_ranges =>'ALL',
+  p_help_text              =>'');
+end;
+/
+begin
+wwv_flow_api.create_worksheet_column(
+  p_id => 4982913874323173+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 6,
+  p_worksheet_id => 4982411530323169+wwv_flow_api.g_id_offset,
+  p_db_column_name         =>'MESSAGE',
+  p_display_order          =>8,
+  p_group_id               =>null+wwv_flow_api.g_id_offset,
+  p_column_identifier      =>'I',
+  p_column_label           =>'Message',
+  p_report_label           =>'Message',
+  p_sync_form_label        =>'Y',
+  p_display_in_default_rpt =>'Y',
+  p_is_sortable            =>'Y',
+  p_allow_sorting          =>'Y',
+  p_allow_filtering        =>'Y',
+  p_allow_highlighting     =>'Y',
+  p_allow_ctrl_breaks      =>'Y',
+  p_allow_aggregations     =>'Y',
+  p_allow_computations     =>'Y',
+  p_allow_charting         =>'Y',
+  p_allow_group_by         =>'Y',
+  p_allow_hide             =>'Y',
+  p_others_may_edit        =>'Y',
+  p_others_may_view        =>'Y',
+  p_column_type            =>'STRING',
+  p_display_as             =>'TEXT',
+  p_display_text_as        =>'ESCAPE_SC',
+  p_heading_alignment      =>'CENTER',
+  p_column_alignment       =>'LEFT',
+  p_tz_dependent           =>'N',
+  p_rpt_distinct_lov       =>'Y',
+  p_rpt_show_filter_lov    =>'D',
+  p_rpt_filter_date_ranges =>'ALL',
+  p_help_text              =>'');
+end;
+/
+declare
+    rc1 varchar2(32767) := null;
+begin
+rc1:=rc1||'SEQ:MSECS:STATUS:TESTCASE:ASSERTION:MESSAGE:DETAILS';
+
+wwv_flow_api.create_worksheet_rpt(
+  p_id => 4983313754323174+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 6,
+  p_worksheet_id => 4982411530323169+wwv_flow_api.g_id_offset,
+  p_session_id  => null,
+  p_base_report_id  => null+wwv_flow_api.g_id_offset,
+  p_application_user => 'APXWS_DEFAULT',
+  p_report_seq              =>10,
+  p_report_alias            =>'49834',
+  p_status                  =>'PUBLIC',
+  p_category_id             =>null+wwv_flow_api.g_id_offset,
+  p_is_default              =>'Y',
+  p_display_rows            =>100000,
+  p_report_columns          =>rc1,
+  p_sort_column_1           =>'SEQ',
+  p_sort_direction_1        =>'ASC',
+  p_flashback_enabled       =>'N',
+  p_calendar_display_column =>'');
+end;
+/
+begin
+wwv_flow_api.create_worksheet_condition(
+  p_id => 4983615236323175+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 6,
+  p_worksheet_id => 4982411530323169+wwv_flow_api.g_id_offset,
+  p_report_id => 4983313754323174+wwv_flow_api.g_id_offset,
+  p_name                    =>'Highlight Errors',
+  p_condition_type          =>'HIGHLIGHT',
+  p_allow_delete            =>'Y',
+  p_column_name             =>'STATUS',
+  p_operator                =>'=',
+  p_expr                    =>'ERR',
+  p_condition_sql           =>' (case when ("STATUS" = #APXWS_EXPR#) then #APXWS_HL_ID# end) ',
+  p_condition_display       =>'#APXWS_COL_NAME# = ''ERR''  ',
+  p_enabled                 =>'Y',
+  p_highlight_sequence      =>10,
+  p_row_bg_color            =>'#FF5588',
+  p_column_format           =>'');
+end;
+/
+begin
+wwv_flow_api.create_worksheet_condition(
+  p_id => 4983707104323175+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 6,
+  p_worksheet_id => 4982411530323169+wwv_flow_api.g_id_offset,
+  p_report_id => 4983313754323174+wwv_flow_api.g_id_offset,
+  p_name                    =>'Highlight Failures',
+  p_condition_type          =>'HIGHLIGHT',
+  p_allow_delete            =>'Y',
+  p_column_name             =>'STATUS',
+  p_operator                =>'=',
+  p_expr                    =>'FAIL',
+  p_condition_sql           =>' (case when ("STATUS" = #APXWS_EXPR#) then #APXWS_HL_ID# end) ',
+  p_condition_display       =>'#APXWS_COL_NAME# = ''FAIL''  ',
+  p_enabled                 =>'Y',
+  p_highlight_sequence      =>10,
+  p_row_bg_color            =>'#FFFF99',
+  p_column_format           =>'');
+end;
+/
+begin
+wwv_flow_api.create_worksheet_condition(
+  p_id => 4983512775323175+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 6,
+  p_worksheet_id => 4982411530323169+wwv_flow_api.g_id_offset,
+  p_report_id => 4983313754323174+wwv_flow_api.g_id_offset,
+  p_condition_type          =>'FILTER',
+  p_allow_delete            =>'Y',
+  p_column_name             =>'STATUS',
+  p_operator                =>'!=',
+  p_expr                    =>'PASS',
+  p_condition_sql           =>'"STATUS" != #APXWS_EXPR#',
+  p_condition_display       =>'#APXWS_COL_NAME# != ''PASS''  ',
+  p_enabled                 =>'Y',
+  p_column_format           =>'');
+end;
+/
+declare
+  s varchar2(32767) := null;
+  l_clob clob;
+  l_length number := 1;
+begin
+s:=s||'begin'||chr(10)||
+'   if :P6_TEST_RUN_ERROR is NOT NULL'||chr(10)||
+'   then'||chr(10)||
+'      htp.p(''<font color=##ff0000><b>Test Runner Error Message:</b></font> '' ||'||chr(10)||
+'            :P6_TEST_RUN_ERROR || ''<br>'');'||chr(10)||
+'   end if;'||chr(10)||
+'   htp.p(''<br>'');'||chr(10)||
+'   htp.p(''<br>'');'||chr(10)||
+'   htp.p(''<br>'');'||chr(10)||
+'   htp.p(''<b>Test Results Details Search:</b><br>'');'||chr(10)||
+'end;'||chr(10)||
+'';
+
+wwv_flow_api.create_page_plug (
+  p_id=> 4983829548323176 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 6,
+  p_plug_name=> 'Test Run Error Message',
+  p_region_name=>'',
+  p_plug_template=> 4839831975414912+ wwv_flow_api.g_id_offset,
+  p_plug_display_sequence=> 10,
+  p_plug_display_column=> 1,
+  p_plug_display_point=> 'AFTER_SHOW_ITEMS',
+  p_plug_source=> s,
+  p_plug_source_type=> 'PLSQL_PROCEDURE',
+  p_translate_title=> 'Y',
+  p_plug_display_error_message=> '#SQLERRM#',
+  p_plug_query_row_template=> 1,
+  p_plug_query_headings_type=> 'QUERY_COLUMNS',
+  p_plug_query_num_rows => 15,
+  p_plug_query_num_rows_type => 'NEXT_PREVIOUS_LINKS',
+  p_plug_query_row_count_max => 500,
+  p_plug_query_show_nulls_as => ' - ',
+  p_plug_display_condition_type => '',
+  p_pagination_display_position=>'BOTTOM_RIGHT',
+  p_plug_customized=>'0',
+  p_plug_caching=> 'NOT_CACHED',
+  p_plug_comment=> '');
+end;
+/
+declare
+  s varchar2(32767) := null;
+  l_clob clob;
+  l_length number := 1;
+begin
+s:=s||'select case when connect_by_isleaf = 1 then 0'||chr(10)||
+'            when level = 1             then 1'||chr(10)||
+'            else                           -1'||chr(10)||
+'       end as status, '||chr(10)||
+'       level, '||chr(10)||
+'       "TEXT" as title, '||chr(10)||
+'       null as icon, '||chr(10)||
+'       "ID" as value, '||chr(10)||
+'       null as tooltip, '||chr(10)||
+'       ''f?p=&APP_ID.:3:''||:APP_SESSION||''::::P6_TEST_RUN_ID:''||"ID" as link '||chr(10)||
+'from "#OWNER#"."WT_TEST_RUNS_TREE"'||chr(10)||
+'start with "PAREN';
+
+s:=s||'T_ID" is null'||chr(10)||
+'connect by prior "ID" = "PARENT_ID"';
+
+wwv_flow_api.create_page_plug (
+  p_id=> 4986317798323180 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 6,
+  p_plug_name=> 'Test Case Tree',
+  p_region_name=>'',
+  p_plug_template=> 4840201642414912+ wwv_flow_api.g_id_offset,
+  p_plug_display_sequence=> 10,
+  p_plug_display_column=> 1,
+  p_plug_display_point=> 'REGION_POSITION_02',
+  p_plug_source=> s,
+  p_plug_source_type=> 'JSTREE',
+  p_translate_title=> 'Y',
+  p_plug_display_error_message=> '#SQLERRM#',
+  p_plug_query_row_template=> 1,
+  p_plug_query_headings_type=> 'COLON_DELMITED_LIST',
+  p_plug_query_row_count_max => 500,
+  p_plug_display_condition_type => '',
+  p_plug_customized=>'0',
+  p_plug_caching=> 'NOT_CACHED',
+  p_plug_comment=> '');
+end;
+/
+declare
+ a1 varchar2(32767) := null;
+begin
+a1:=a1||'with q_main as ('||chr(10)||
+'select to_char(id)          ID'||chr(10)||
+'      ,to_char(parent_id)   PARENT_ID'||chr(10)||
+'      ,text'||chr(10)||
+'      ,''GUI_TREE''           SOURCE'||chr(10)||
+'-- from  #OWNER#.wt_test_runs_gui_tree'||chr(10)||
+' from  wt_test_runs_gui_tree'||chr(10)||
+'union all'||chr(10)||
+'select tc.testcase              ID'||chr(10)||
+'      ,to_char(tc.test_run_id)  PARENT_ID'||chr(10)||
+'      ,tc.testcase              TEXT'||chr(10)||
+'      ,''TESTCASES''              SOURCE'||chr(10)||
+' from wt_testcase_stats  tc'||chr(10)||
+'      jo';
+
+a1:=a1||'in wt_test_runs  tr'||chr(10)||
+'           on  tr.id = tc.test_run_id'||chr(10)||
+')'||chr(10)||
+'--select * from q_main;'||chr(10)||
+'select case when connect_by_isleaf = 1 then 0'||chr(10)||
+'            when level = 1             then 1'||chr(10)||
+'            else                           -1'||chr(10)||
+'       end                                           STATUS'||chr(10)||
+'      ,level'||chr(10)||
+'      ,text'||chr(10)||
+'      ,null                                          ICON'||chr(10)||
+'      ,id                          ';
+
+a1:=a1||'                  VALUE'||chr(10)||
+'      ,text                                          TOOLTIP'||chr(10)||
+'      ,case when SOURCE = ''TESTCASES'' then'||chr(10)||
+'       ''f?p=&APP_ID.:6:''||:APP_SESSION||''::::P6_TEST_RUN_ID,P6_TESTCASE_NAME:''||"PARENT_ID"||'',''||"ID"'||chr(10)||
+'       else NULL end                                 LINK'||chr(10)||
+' from  q_main'||chr(10)||
+' start with parent_id is null'||chr(10)||
+' connect by prior "ID" = parent_id;';
+
+wwv_flow_api.create_jstree(
+  p_id => 4986504998323181+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id => 6,
+  p_region_id => 4986317798323180+wwv_flow_api.g_id_offset,
+  p_tree_template     =>'classic',
+  p_tree_source             =>'',
+  p_tree_query             =>a1,
+  p_tree_node_title   =>'TEXT',
+  p_tree_node_value   =>'ID',
+  p_tree_node_icon   =>'',
+  p_tree_node_link   =>'',
+  p_tree_node_hints   =>'ID',
+  p_tree_start_item   =>'PARENT_ID',
+  p_tree_start_value   =>'',
+  p_tree_button_option   =>'',
+  p_show_node_link   =>'',
+  p_node_link_checksum_type   =>null,
+  p_tree_comment          =>'',
+  p_show_hints          =>'DB',
+  p_tree_has_focus          =>'N',
+  p_tree_hint_text          =>'',
+  p_tree_click_action          =>'S',
+  p_selected_node          =>'P3_TEST_RUN_ID');
+end;
+/
+declare
+  s varchar2(32767) := null;
+  l_clob clob;
+  l_length number := 1;
+begin
+s:=s||'<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"'||chr(10)||
+'    codebase="#HOST_PROTOCOL#://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0"'||chr(10)||
+'    width="#WIDTH#"'||chr(10)||
+'    height="#HEIGHT#"'||chr(10)||
+'    id="#CHART_NAME#"'||chr(10)||
+'    align="top">'||chr(10)||
+'<param name="movie" value="#IMAGE_PREFIX#flashchart/anychart_5/swf/#CHART_TYPE#.swf?XMLFile=#HOST#apex_util.flash?p=&APP_ID.:&FLOW_PAGE_ID.:&APP_SES';
+
+s:=s||'SION.:FLOW_FLASH_CHART5_R#REGION_ID#">'||chr(10)||
+'<param name="quality" value="high">'||chr(10)||
+'<param name="allowScriptAccess" value="sameDomain">'||chr(10)||
+'<param name="allowNetworking" value="all">'||chr(10)||
+'<param name="scale" value="noscale">'||chr(10)||
+'<param name="wmode" value="transparent">'||chr(10)||
+'<param name="FlashVars" value="initText=#FLASH_INIT#&xmlLoadingText=#FLASH_LOADING#&resourcesLoadingText=#FLASH_RESOURCES#&noDataText=#FLASH_NO_DATA#&wa';
+
+s:=s||'itingForDataText=#FLASH_WAITING#&templatesLoadingText=#FLASH_TEMPLATES#">'||chr(10)||
+''||chr(10)||
+'<embed src="#IMAGE_PREFIX#flashchart/anychart_5/swf/#CHART_TYPE#.swf?XMLFile=#HOST#apex_util.flash?p=&APP_ID.:&FLOW_PAGE_ID.:&APP_SESSION.:FLOW_FLASH_CHART5_R#REGION_ID#"'||chr(10)||
+'       quality="high"'||chr(10)||
+'       width="#WIDTH#"'||chr(10)||
+'       height="#HEIGHT#"'||chr(10)||
+'       name="#CHART_NAME#"'||chr(10)||
+'       scale="noscale"'||chr(10)||
+'       align=""'||chr(10)||
+'       allowScript';
+
+s:=s||'Access="sameDomain" '||chr(10)||
+'       allowNetworking="all"'||chr(10)||
+'       type="application/x-shockwave-flash"'||chr(10)||
+'       pluginspage="#HOST_PROTOCOL#://www.macromedia.com/go/getflashplayer"'||chr(10)||
+'       wmode="transparent"'||chr(10)||
+'       FlashVars="initText=#FLASH_INIT#&xmlLoadingText=#FLASH_LOADING#&resourcesLoadingText=#FLASH_RESOURCES#&noDataText=#FLASH_NO_DATA#&waitingForDataText=#FLASH_WAITING#&templatesLoadingText=#FLASH_TEM';
+
+s:=s||'PLATES#">'||chr(10)||
+'</embed>'||chr(10)||
+'</object>'||chr(10)||
+'#CHART_REFRESH#';
+
+wwv_flow_api.create_page_plug (
+  p_id=> 4987121729323182 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 6,
+  p_plug_name=> 'Test Case Status',
+  p_region_name=>'',
+  p_plug_template=> 4839217975414912+ wwv_flow_api.g_id_offset,
+  p_plug_display_sequence=> 12,
+  p_plug_display_column=> 2,
+  p_plug_display_point=> 'BEFORE_BOX_BODY',
+  p_plug_source=> s,
+  p_plug_source_type=> 'FLASH_CHART5',
+  p_translate_title=> 'Y',
+  p_plug_display_error_message=> '#SQLERRM#',
+  p_plug_query_row_template=> 1,
+  p_plug_query_headings_type=> 'COLON_DELMITED_LIST',
+  p_plug_query_row_count_max => 500,
+  p_plug_display_condition_type => '',
+  p_plug_customized=>'0',
+  p_plug_caching=> 'NOT_CACHED',
+  p_plug_comment=> '');
+end;
+/
+declare
+ a1 varchar2(32767) := null;
+begin
+a1 := null;
+wwv_flow_api.create_flash_chart5(
+  p_id => 4987320221323183+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id => 6,
+  p_region_id => 4987121729323182+wwv_flow_api.g_id_offset,
+  p_default_chart_type     =>'2DPie',
+  p_chart_title            =>'',
+  p_chart_name             =>'chart_4927915384997301',
+  p_chart_width            =>300,
+  p_chart_height           =>200,
+  p_chart_animation        =>'N',
+  p_display_attr           =>':H:::::Left::V:Y:None:::N:::Default',
+  p_dial_tick_attr         =>':::::::::::',
+  p_gantt_attr             =>'Y:Rhomb:Rhomb:Full:Rhomb:Rhomb:Full:Rhomb:Rhomb:Full:30:15:5:Y:I:N:S:E',
+  p_map_attr               =>'Orthographic:RegionBounds:REGION_NAME',
+  p_map_source             =>'%',
+  p_margins                =>':::',
+  p_omit_label_interval    => null,
+  p_bgtype                 =>'Trans',
+  p_bgcolor1               =>'',
+  p_bgcolor2               =>'',
+  p_gradient_rotation      =>null,
+  p_grid_bgtype            =>'',
+  p_grid_bgcolor1          =>'',
+  p_grid_bgcolor2          =>'',
+  p_grid_gradient_rotation =>null,
+  p_color_scheme           =>'0',
+  p_custom_colors          =>'#99FF99,#FFFF99,#FF6699',
+  p_map_undef_color_scheme =>'',
+  p_map_undef_custom_colors =>'',
+  p_x_axis_title           =>'',
+  p_x_axis_min             =>null,
+  p_x_axis_max             =>null,
+  p_x_axis_decimal_place   =>null,
+  p_x_axis_prefix          =>'',
+  p_x_axis_postfix         =>'',
+  p_x_axis_label_rotation  =>'',
+  p_x_axis_label_font      =>'::',
+  p_x_axis_major_interval  =>null,
+  p_x_axis_minor_interval  =>null,
+  p_y_axis_title           =>'',
+  p_y_axis_min             =>null,
+  p_y_axis_max             =>null,
+  p_y_axis_decimal_place   =>null,
+  p_y_axis_prefix          =>'',
+  p_y_axis_postfix         =>'',
+  p_y_axis_label_rotation  =>'',
+  p_y_axis_label_font      =>'::',
+  p_y_axis_major_interval  =>null,
+  p_y_axis_minor_interval  =>null,
+  p_async_update           =>'N',
+  p_async_time             =>null,
+  p_legend_title           =>'',
+  p_legend_title_font      =>'',
+  p_names_font             => null,
+  p_names_rotation         => null,
+  p_values_font            =>'Arial:10:#000000',
+  p_values_rotation        =>null,
+  p_values_prefix          =>'',
+  p_values_postfix         =>'',
+  p_hints_font             =>'Tahoma:10:#000000',
+  p_legend_font            =>'Arial:10:#000000',
+  p_grid_labels_font       =>'',
+  p_chart_title_font       =>'Tahoma:14:#000000',
+  p_x_axis_title_font      =>'Tahoma:14:',
+  p_x_axis_title_rotation  =>'',
+  p_y_axis_title_font      =>'Tahoma:14:',
+  p_y_axis_title_rotation  =>'',
+  p_gauge_labels_font      =>'Tahoma:10:',
+  p_use_chart_xml          =>'N',
+  p_chart_xml              => a1);
+end;
+/
+declare
+ a1 varchar2(32767) := null;
+begin
+a1:=a1||'with q1 as ('||chr(10)||
+'select NULL             LINK'||chr(10)||
+'      ,''PASS''           LABEL'||chr(10)||
+'      ,sum(res.passes)  VALUE'||chr(10)||
+' from  wt_test_runs  run'||chr(10)||
+'       join wt_testcase_stats  res'||chr(10)||
+'            on  res.test_run_id = run.id'||chr(10)||
+'            and res.testcase = :P6_TESTCASE_NAME'||chr(10)||
+' where id = :P6_TEST_RUN_ID'||chr(10)||
+'union all'||chr(10)||
+'select NULL               LINK'||chr(10)||
+'      ,''FAIL''             LABEL'||chr(10)||
+'      ,sum(res.failures)  VALUE'||chr(10)||
+' from  wt_test_';
+
+a1:=a1||'runs  run'||chr(10)||
+'       join wt_testcase_stats  res'||chr(10)||
+'            on  res.test_run_id = run.id'||chr(10)||
+'            and res.testcase = :P6_TESTCASE_NAME'||chr(10)||
+' where id = :P6_TEST_RUN_ID'||chr(10)||
+'union all'||chr(10)||
+'select NULL             LINK'||chr(10)||
+'      ,''ERR''            LABEL'||chr(10)||
+'      ,sum(res.errors)  VALUE'||chr(10)||
+' from  wt_test_runs  run'||chr(10)||
+'       join wt_testcase_stats  res'||chr(10)||
+'            on  res.test_run_id = run.id'||chr(10)||
+'            and res.testcase = :P6_TE';
+
+a1:=a1||'STCASE_NAME'||chr(10)||
+' where id = :P6_TEST_RUN_ID'||chr(10)||
+')'||chr(10)||
+'select link, label, value'||chr(10)||
+' from  q1'||chr(10)||
+' order by label desc';
+
+wwv_flow_api.create_flash_chart5_series(
+  p_id => 4987425886323183+wwv_flow_api.g_id_offset,
+  p_chart_id => 4987320221323183+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_series_seq                =>10,
+  p_series_name               =>'Series 1',
+  p_series_query              => a1,
+  p_series_type               =>'',
+  p_series_query_type         =>'SQL_QUERY',
+  p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
+  p_series_query_no_data_found=>'No data found.',
+  p_series_query_row_count_max=>15,
+  p_action_link               =>'',
+  p_show_action_link          =>'N',
+  p_action_link_checksum_type =>'');
+end;
+/
+declare
+  s varchar2(32767) := null;
+  l_clob clob;
+  l_length number := 1;
+begin
+s:=s||'<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"'||chr(10)||
+'    codebase="#HOST_PROTOCOL#://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0"'||chr(10)||
+'    width="#WIDTH#"'||chr(10)||
+'    height="#HEIGHT#"'||chr(10)||
+'    id="#CHART_NAME#"'||chr(10)||
+'    align="top">'||chr(10)||
+'<param name="movie" value="#IMAGE_PREFIX#flashchart/anychart_5/swf/#CHART_TYPE#.swf?XMLFile=#HOST#apex_util.flash?p=&APP_ID.:&FLOW_PAGE_ID.:&APP_SES';
+
+s:=s||'SION.:FLOW_FLASH_CHART5_R#REGION_ID#">'||chr(10)||
+'<param name="quality" value="high">'||chr(10)||
+'<param name="allowScriptAccess" value="sameDomain">'||chr(10)||
+'<param name="allowNetworking" value="all">'||chr(10)||
+'<param name="scale" value="noscale">'||chr(10)||
+'<param name="wmode" value="transparent">'||chr(10)||
+'<param name="FlashVars" value="initText=#FLASH_INIT#&xmlLoadingText=#FLASH_LOADING#&resourcesLoadingText=#FLASH_RESOURCES#&noDataText=#FLASH_NO_DATA#&wa';
+
+s:=s||'itingForDataText=#FLASH_WAITING#&templatesLoadingText=#FLASH_TEMPLATES#">'||chr(10)||
+''||chr(10)||
+'<embed src="#IMAGE_PREFIX#flashchart/anychart_5/swf/#CHART_TYPE#.swf?XMLFile=#HOST#apex_util.flash?p=&APP_ID.:&FLOW_PAGE_ID.:&APP_SESSION.:FLOW_FLASH_CHART5_R#REGION_ID#"'||chr(10)||
+'       quality="high"'||chr(10)||
+'       width="#WIDTH#"'||chr(10)||
+'       height="#HEIGHT#"'||chr(10)||
+'       name="#CHART_NAME#"'||chr(10)||
+'       scale="noscale"'||chr(10)||
+'       align=""'||chr(10)||
+'       allowScript';
+
+s:=s||'Access="sameDomain" '||chr(10)||
+'       allowNetworking="all"'||chr(10)||
+'       type="application/x-shockwave-flash"'||chr(10)||
+'       pluginspage="#HOST_PROTOCOL#://www.macromedia.com/go/getflashplayer"'||chr(10)||
+'       wmode="transparent"'||chr(10)||
+'       FlashVars="initText=#FLASH_INIT#&xmlLoadingText=#FLASH_LOADING#&resourcesLoadingText=#FLASH_RESOURCES#&noDataText=#FLASH_NO_DATA#&waitingForDataText=#FLASH_WAITING#&templatesLoadingText=#FLASH_TEM';
+
+s:=s||'PLATES#">'||chr(10)||
+'</embed>'||chr(10)||
+'</object>'||chr(10)||
+'#CHART_REFRESH#';
+
+wwv_flow_api.create_page_plug (
+  p_id=> 4987511974323183 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 6,
+  p_plug_name=> 'Test Case Status Trend',
+  p_region_name=>'',
+  p_plug_template=> 4839217975414912+ wwv_flow_api.g_id_offset,
+  p_plug_display_sequence=> 21,
+  p_plug_display_column=> 1,
+  p_plug_display_point=> 'BEFORE_SHOW_ITEMS',
+  p_plug_source=> s,
+  p_plug_source_type=> 'FLASH_CHART5',
+  p_translate_title=> 'Y',
+  p_plug_display_error_message=> '#SQLERRM#',
+  p_plug_query_row_template=> 1,
+  p_plug_query_headings_type=> 'COLON_DELMITED_LIST',
+  p_plug_query_row_count_max => 500,
+  p_plug_display_condition_type => 'PLSQL_EXPRESSION',
+  p_plug_display_when_condition => ':P6_SHOW_TREND=''Y''',
+  p_plug_display_when_cond2=>'Y',
+  p_plug_customized=>'0',
+  p_plug_caching=> 'NOT_CACHED',
+  p_plug_comment=> '');
+end;
+/
+declare
+ a1 varchar2(32767) := null;
+begin
+a1 := null;
+wwv_flow_api.create_flash_chart5(
+  p_id => 4987702388323183+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id => 6,
+  p_region_id => 4987511974323183+wwv_flow_api.g_id_offset,
+  p_default_chart_type     =>'Stacked2DColumn',
+  p_chart_title            =>'',
+  p_chart_name             =>'chart_4932831378476124',
+  p_chart_width            =>300,
+  p_chart_height           =>200,
+  p_chart_animation        =>'N',
+  p_display_attr           =>':H::V:Y:N:Left::V:Y:Circle:::N:::Default',
+  p_dial_tick_attr         =>':::::::::::',
+  p_gantt_attr             =>'Y:Rhomb:Rhomb:Full:Rhomb:Rhomb:Full:Rhomb:Rhomb:Full:30:15:5:Y:I:N:S:E',
+  p_map_attr               =>'Orthographic:RegionBounds:REGION_NAME',
+  p_map_source             =>'%',
+  p_margins                =>':::',
+  p_omit_label_interval    => null,
+  p_bgtype                 =>'Trans',
+  p_bgcolor1               =>'',
+  p_bgcolor2               =>'',
+  p_gradient_rotation      =>null,
+  p_grid_bgtype            =>'',
+  p_grid_bgcolor1          =>'',
+  p_grid_bgcolor2          =>'',
+  p_grid_gradient_rotation =>null,
+  p_color_scheme           =>'0',
+  p_custom_colors          =>'#99FF99,#FFFF99,#FF6699',
+  p_map_undef_color_scheme =>'',
+  p_map_undef_custom_colors =>'',
+  p_x_axis_title           =>'',
+  p_x_axis_min             =>null,
+  p_x_axis_max             =>null,
+  p_x_axis_decimal_place   =>null,
+  p_x_axis_prefix          =>'',
+  p_x_axis_postfix         =>'',
+  p_x_axis_label_rotation  =>'',
+  p_x_axis_label_font      =>'Tahoma:10:#000000',
+  p_x_axis_major_interval  =>null,
+  p_x_axis_minor_interval  =>null,
+  p_y_axis_title           =>'',
+  p_y_axis_min             =>null,
+  p_y_axis_max             =>null,
+  p_y_axis_decimal_place   =>null,
+  p_y_axis_prefix          =>'',
+  p_y_axis_postfix         =>'',
+  p_y_axis_label_rotation  =>'',
+  p_y_axis_label_font      =>'Tahoma:10:#000000',
+  p_y_axis_major_interval  =>null,
+  p_y_axis_minor_interval  =>null,
+  p_async_update           =>'N',
+  p_async_time             =>null,
+  p_legend_title           =>'',
+  p_legend_title_font      =>'',
+  p_names_font             => null,
+  p_names_rotation         => null,
+  p_values_font            =>'Arial:10:#000000',
+  p_values_rotation        =>null,
+  p_values_prefix          =>'',
+  p_values_postfix         =>'',
+  p_hints_font             =>'Tahoma:10:#000000',
+  p_legend_font            =>'Arial:10:#000000',
+  p_grid_labels_font       =>'',
+  p_chart_title_font       =>'Tahoma:14:#000000',
+  p_x_axis_title_font      =>'Tahoma:14:#000000',
+  p_x_axis_title_rotation  =>'',
+  p_y_axis_title_font      =>'Tahoma:14:#000000',
+  p_y_axis_title_rotation  =>'',
+  p_gauge_labels_font      =>'Tahoma:10:',
+  p_use_chart_xml          =>'N',
+  p_chart_xml              => a1);
+end;
+/
+declare
+ a1 varchar2(32767) := null;
+begin
+a1:=a1||'select NULL                 LINK'||chr(10)||
+'      ,''ID: '' || run.id ||'||chr(10)||
+'       '' - ''  || testcase   LABEL'||chr(10)||
+'      ,res.passes           PASS'||chr(10)||
+' from  wt_test_runs  run'||chr(10)||
+'       join wt_testcase_stats  res'||chr(10)||
+'            on  res.test_run_id = run.id'||chr(10)||
+'            and res.testcase = :P6_TESTCASE_NAME'||chr(10)||
+' where run.runner_owner = :P6_RUNNER_OWNER'||chr(10)||
+'  and  run.runner_name  = :P6_RUNNER_NAME'||chr(10)||
+' order by run.id';
+
+wwv_flow_api.create_flash_chart5_series(
+  p_id => 4988016280323183+wwv_flow_api.g_id_offset,
+  p_chart_id => 4987702388323183+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_series_seq                =>10,
+  p_series_name               =>'Pass',
+  p_series_query              => a1,
+  p_series_type               =>'Bar',
+  p_series_query_type         =>'SQL_QUERY',
+  p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
+  p_series_query_no_data_found=>'No data found.',
+  p_series_query_row_count_max=>15,
+  p_action_link               =>'',
+  p_show_action_link          =>'N',
+  p_action_link_checksum_type =>'');
+end;
+/
+declare
+ a1 varchar2(32767) := null;
+begin
+a1:=a1||'select NULL                 LINK'||chr(10)||
+'      ,''ID: '' || run.id ||'||chr(10)||
+'       '' - ''  || testcase   LABEL'||chr(10)||
+'      ,res.failures         FAIL'||chr(10)||
+' from  wt_test_runs  run'||chr(10)||
+'       join wt_testcase_stats  res'||chr(10)||
+'            on  res.test_run_id = run.id'||chr(10)||
+'            and res.testcase = :P6_TESTCASE_NAME'||chr(10)||
+' where run.runner_owner = :P6_RUNNER_OWNER'||chr(10)||
+'  and  run.runner_name  = :P6_RUNNER_NAME'||chr(10)||
+' order by run.id';
+
+wwv_flow_api.create_flash_chart5_series(
+  p_id => 4987805822323183+wwv_flow_api.g_id_offset,
+  p_chart_id => 4987702388323183+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_series_seq                =>20,
+  p_series_name               =>'Fail',
+  p_series_query              => a1,
+  p_series_type               =>'Bar',
+  p_series_query_type         =>'SQL_QUERY',
+  p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
+  p_series_query_no_data_found=>'',
+  p_series_query_row_count_max=>15,
+  p_action_link               =>'',
+  p_show_action_link          =>'N',
+  p_action_link_checksum_type =>'');
+end;
+/
+declare
+ a1 varchar2(32767) := null;
+begin
+a1:=a1||'select NULL                 LINK'||chr(10)||
+'      ,''ID: '' || run.id ||'||chr(10)||
+'       '' - ''  || testcase   LABEL'||chr(10)||
+'      ,res.errors           ERR'||chr(10)||
+' from  wt_test_runs  run'||chr(10)||
+'       join wt_testcase_stats  res'||chr(10)||
+'            on  res.test_run_id = run.id'||chr(10)||
+'            and res.testcase = :P6_TESTCASE_NAME'||chr(10)||
+' where run.runner_owner = :P6_RUNNER_OWNER'||chr(10)||
+'  and  run.runner_name  = :P6_RUNNER_NAME'||chr(10)||
+' order by run.id';
+
+wwv_flow_api.create_flash_chart5_series(
+  p_id => 4987900146323183+wwv_flow_api.g_id_offset,
+  p_chart_id => 4987702388323183+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_series_seq                =>30,
+  p_series_name               =>'Error',
+  p_series_query              => a1,
+  p_series_type               =>'Bar',
+  p_series_query_type         =>'SQL_QUERY',
+  p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
+  p_series_query_no_data_found=>'',
+  p_series_query_row_count_max=>15,
+  p_action_link               =>'',
+  p_show_action_link          =>'N',
+  p_action_link_checksum_type =>'');
+end;
+/
+declare
+  s varchar2(32767) := null;
+  l_clob clob;
+  l_length number := 1;
+begin
+s:=s||'<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"'||chr(10)||
+'    codebase="#HOST_PROTOCOL#://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0"'||chr(10)||
+'    width="#WIDTH#"'||chr(10)||
+'    height="#HEIGHT#"'||chr(10)||
+'    id="#CHART_NAME#"'||chr(10)||
+'    align="top">'||chr(10)||
+'<param name="movie" value="#IMAGE_PREFIX#flashchart/anychart_5/swf/#CHART_TYPE#.swf?XMLFile=#HOST#apex_util.flash?p=&APP_ID.:&FLOW_PAGE_ID.:&APP_SES';
+
+s:=s||'SION.:FLOW_FLASH_CHART5_R#REGION_ID#">'||chr(10)||
+'<param name="quality" value="high">'||chr(10)||
+'<param name="allowScriptAccess" value="sameDomain">'||chr(10)||
+'<param name="allowNetworking" value="all">'||chr(10)||
+'<param name="scale" value="noscale">'||chr(10)||
+'<param name="wmode" value="transparent">'||chr(10)||
+'<param name="FlashVars" value="initText=#FLASH_INIT#&xmlLoadingText=#FLASH_LOADING#&resourcesLoadingText=#FLASH_RESOURCES#&noDataText=#FLASH_NO_DATA#&wa';
+
+s:=s||'itingForDataText=#FLASH_WAITING#&templatesLoadingText=#FLASH_TEMPLATES#">'||chr(10)||
+''||chr(10)||
+'<embed src="#IMAGE_PREFIX#flashchart/anychart_5/swf/#CHART_TYPE#.swf?XMLFile=#HOST#apex_util.flash?p=&APP_ID.:&FLOW_PAGE_ID.:&APP_SESSION.:FLOW_FLASH_CHART5_R#REGION_ID#"'||chr(10)||
+'       quality="high"'||chr(10)||
+'       width="#WIDTH#"'||chr(10)||
+'       height="#HEIGHT#"'||chr(10)||
+'       name="#CHART_NAME#"'||chr(10)||
+'       scale="noscale"'||chr(10)||
+'       align=""'||chr(10)||
+'       allowScript';
+
+s:=s||'Access="sameDomain" '||chr(10)||
+'       allowNetworking="all"'||chr(10)||
+'       type="application/x-shockwave-flash"'||chr(10)||
+'       pluginspage="#HOST_PROTOCOL#://www.macromedia.com/go/getflashplayer"'||chr(10)||
+'       wmode="transparent"'||chr(10)||
+'       FlashVars="initText=#FLASH_INIT#&xmlLoadingText=#FLASH_LOADING#&resourcesLoadingText=#FLASH_RESOURCES#&noDataText=#FLASH_NO_DATA#&waitingForDataText=#FLASH_WAITING#&templatesLoadingText=#FLASH_TEM';
+
+s:=s||'PLATES#">'||chr(10)||
+'</embed>'||chr(10)||
+'</object>'||chr(10)||
+'#CHART_REFRESH#';
+
+wwv_flow_api.create_page_plug (
+  p_id=> 4988130280323184 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 6,
+  p_plug_name=> 'Test Case Duration Trend',
+  p_region_name=>'',
+  p_plug_template=> 4839217975414912+ wwv_flow_api.g_id_offset,
+  p_plug_display_sequence=> 22,
+  p_plug_display_column=> 2,
+  p_plug_display_point=> 'BEFORE_SHOW_ITEMS',
+  p_plug_source=> s,
+  p_plug_source_type=> 'FLASH_CHART5',
+  p_translate_title=> 'Y',
+  p_plug_display_error_message=> '#SQLERRM#',
+  p_plug_query_row_template=> 1,
+  p_plug_query_headings_type=> 'COLON_DELMITED_LIST',
+  p_plug_query_row_count_max => 500,
+  p_plug_display_condition_type => 'PLSQL_EXPRESSION',
+  p_plug_display_when_condition => ':P6_SHOW_TREND=''Y''',
+  p_plug_customized=>'0',
+  p_plug_caching=> 'NOT_CACHED',
+  p_plug_comment=> '');
+end;
+/
+declare
+ a1 varchar2(32767) := null;
+begin
+a1 := null;
+wwv_flow_api.create_flash_chart5(
+  p_id => 4988311601323184+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id => 6,
+  p_region_id => 4988130280323184+wwv_flow_api.g_id_offset,
+  p_default_chart_type     =>'2DColumn',
+  p_chart_title            =>'',
+  p_chart_name             =>'chart_4946607806544261',
+  p_chart_width            =>300,
+  p_chart_height           =>200,
+  p_chart_animation        =>'N',
+  p_display_attr           =>':H::V:Y:N:N::V:Y:None:::N:::Default',
+  p_dial_tick_attr         =>':::::::::::',
+  p_gantt_attr             =>'Y:Rhomb:Rhomb:Full:Rhomb:Rhomb:Full:Rhomb:Rhomb:Full:30:15:5:Y:I:N:S:E',
+  p_map_attr               =>'Orthographic:RegionBounds:REGION_NAME',
+  p_map_source             =>'',
+  p_margins                =>':::',
+  p_omit_label_interval    => null,
+  p_bgtype                 =>'Trans',
+  p_bgcolor1               =>'',
+  p_bgcolor2               =>'',
+  p_gradient_rotation      =>null,
+  p_grid_bgtype            =>'',
+  p_grid_bgcolor1          =>'',
+  p_grid_bgcolor2          =>'',
+  p_grid_gradient_rotation =>null,
+  p_color_scheme           =>'6',
+  p_custom_colors          =>'',
+  p_map_undef_color_scheme =>'',
+  p_map_undef_custom_colors =>'',
+  p_x_axis_title           =>'',
+  p_x_axis_min             =>null,
+  p_x_axis_max             =>null,
+  p_x_axis_decimal_place   =>null,
+  p_x_axis_prefix          =>'',
+  p_x_axis_postfix         =>'',
+  p_x_axis_label_rotation  =>'',
+  p_x_axis_label_font      =>'Tahoma:10:#000000',
+  p_x_axis_major_interval  =>null,
+  p_x_axis_minor_interval  =>null,
+  p_y_axis_title           =>'Milliseconds',
+  p_y_axis_min             =>null,
+  p_y_axis_max             =>null,
+  p_y_axis_decimal_place   =>null,
+  p_y_axis_prefix          =>'',
+  p_y_axis_postfix         =>'',
+  p_y_axis_label_rotation  =>'',
+  p_y_axis_label_font      =>'Tahoma:10:#000000',
+  p_y_axis_major_interval  =>null,
+  p_y_axis_minor_interval  =>null,
+  p_async_update           =>'N',
+  p_async_time             =>null,
+  p_legend_title           =>'',
+  p_legend_title_font      =>'',
+  p_names_font             => null,
+  p_names_rotation         => null,
+  p_values_font            =>'Arial:10:#000000',
+  p_values_rotation        =>null,
+  p_values_prefix          =>'',
+  p_values_postfix         =>'',
+  p_hints_font             =>'Tahoma:10:#000000',
+  p_legend_font            =>'Arial:10:#000000',
+  p_grid_labels_font       =>'',
+  p_chart_title_font       =>'Tahoma:14:#000000',
+  p_x_axis_title_font      =>'Tahoma:14:#000000',
+  p_x_axis_title_rotation  =>'',
+  p_y_axis_title_font      =>'Tahoma:14:#000000',
+  p_y_axis_title_rotation  =>'',
+  p_gauge_labels_font      =>'Tahoma:10:',
+  p_use_chart_xml          =>'N',
+  p_chart_xml              => a1);
+end;
+/
+declare
+ a1 varchar2(32767) := null;
+begin
+a1:=a1||'select NULL              LINK'||chr(10)||
+'      ,''ID: '' || run.id ||'||chr(10)||
+'       '' - ''  || testcase   LABEL'||chr(10)||
+'      ,res.tot_interval_msecs'||chr(10)||
+'                         MILLISECONDS'||chr(10)||
+' from  wt_test_runs  run'||chr(10)||
+'       join wt_testcase_stats  res'||chr(10)||
+'            on  res.test_run_id = run.id'||chr(10)||
+'            and res.testcase = :P6_TESTCASE_NAME'||chr(10)||
+' where run.runner_owner = :P6_RUNNER_OWNER'||chr(10)||
+'  and  run.runner_name  = :P6_RUNNER_NAME'||chr(10)||
+' order';
+
+a1:=a1||' by id';
+
+wwv_flow_api.create_flash_chart5_series(
+  p_id => 4988419037323184+wwv_flow_api.g_id_offset,
+  p_chart_id => 4988311601323184+wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_series_seq                =>10,
+  p_series_name               =>'Series 1',
+  p_series_query              => a1,
+  p_series_type               =>'Bar',
+  p_series_query_type         =>'SQL_QUERY',
+  p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
+  p_series_query_no_data_found=>'No data found.',
+  p_series_query_row_count_max=>15,
+  p_action_link               =>'',
+  p_show_action_link          =>'N',
+  p_action_link_checksum_type =>'');
+end;
+/
+ 
+begin
+ 
+null;
+ 
+end;
+/
+
+ 
+begin
+ 
+wwv_flow_api.create_page_branch(
+  p_id=>4990208512323191 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 6,
+  p_branch_action=> 'f?p=&APP_ID.:6:&SESSION.::&DEBUG.:::&success_msg=#SUCCESS_MSG#',
+  p_branch_point=> 'AFTER_PROCESSING',
+  p_branch_type=> 'REDIRECT_URL',
+  p_branch_sequence=> 99,
+  p_save_state_before_branch_yn=>'Y',
+  p_branch_comment=> '');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>4979526173323164 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 6,
+  p_name=>'P6_GOTO_RUN_ID',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 8,
+  p_item_plug_id => 4978906587323161+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_prompt=>'Go To Run ID:',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_POPUP_LOV',
+  p_lov=> 'select id            || '': '' ||'||chr(10)||
+'       runner_owner  || ''.'' ||'||chr(10)||
+'       runner_name   || '', '' ||'||chr(10)||
+'       to_char(start_dtm,''YYYY/MM/DD HH24:MI:SS'')    DISPLAY'||chr(10)||
+'      ,id                                            RETURN'||chr(10)||
+' from  wt_test_runs tr'||chr(10)||
+' where id != :P6_TEST_RUN_ID'||chr(10)||
+'  and  exists (select ''x'' from wt_testcase_stats tc'||chr(10)||
+'                where tc.test_run_id = tr.id )'||chr(10)||
+' order by id desc',
+  p_lov_display_null=> 'NO',
+  p_lov_translated=> 'N',
+  p_cSize=> 10,
+  p_cMaxlength=> 4000,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'YES',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'RIGHT',
+  p_field_alignment=> 'LEFT-CENTER',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'NO',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_attribute_01 => 'NOT_ENTERABLE',
+  p_attribute_02 => 'NO_FETCH',
+  p_show_quick_picks=>'N',
+  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>4979721568323165 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 6,
+  p_name=>'P6_SHOW_TREND',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> true,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 10,
+  p_item_plug_id => 4978906587323161+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_prompt=>'Show Trend:',
+  p_source=>'N',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_RADIOGROUP',
+  p_named_lov=> 'Y_OR_N',
+  p_lov=> '.'||to_char(4923728354614299 + wwv_flow_api.g_id_offset)||'.',
+  p_lov_display_null=> 'NO',
+  p_lov_translated=> 'N',
+  p_cSize=> 30,
+  p_cMaxlength=> 4000,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'YES',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'RIGHT',
+  p_field_alignment=> 'LEFT-CENTER',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'YES',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_attribute_01 => '2',
+  p_attribute_02 => 'SUBMIT',
+  p_attribute_03 => 'Y',
+  p_show_quick_picks=>'N',
+  p_item_comment => '');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>4979902815323165 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 6,
+  p_name=>'P6_RUNNER_NAME',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 4,
+  p_item_plug_id => 4978906587323161+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_HIDDEN',
+  p_lov_display_null=> 'NO',
+  p_lov_translated=> 'N',
+  p_cSize=> 30,
+  p_cMaxlength=> 4000,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'NO',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'LEFT',
+  p_field_alignment=> 'LEFT',
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'YES',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_attribute_01 => 'N',
+  p_show_quick_picks=>'N',
+  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>4980303495323165 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 6,
+  p_name=>'P6_TOTAL_ELAPSED',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 7,
+  p_item_plug_id => 4978906587323161+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_prompt=>'Elapsed (msecs):',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_DISPLAY_ONLY',
+  p_lov_display_null=> 'NO',
+  p_lov_translated=> 'N',
+  p_cSize=> 30,
+  p_cMaxlength=> 4000,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'YES',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'RIGHT',
+  p_field_alignment=> 'LEFT-CENTER',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'YES',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_attribute_01 => 'N',
+  p_attribute_02 => 'VALUE',
+  p_attribute_04 => 'N',
+  p_show_quick_picks=>'N',
+  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>4980909283323166 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 6,
+  p_name=>'P6_TEST_RUN_ID',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 1,
+  p_item_plug_id => 4978906587323161+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_prompt=>'Test Run ID:',
+  p_source_type=> 'STATIC',
+  p_source_post_computation => 'to_number(:P6_TEST_RUN_ID)',
+  p_display_as=> 'NATIVE_DISPLAY_ONLY',
+  p_lov_display_null=> 'NO',
+  p_lov_translated=> 'N',
+  p_cSize=> 30,
+  p_cMaxlength=> 4000,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'YES',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'RIGHT',
+  p_field_alignment=> 'LEFT-CENTER',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'YES',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_attribute_01 => 'Y',
+  p_attribute_02 => 'VALUE',
+  p_attribute_04 => 'Y',
+  p_show_quick_picks=>'N',
+  p_item_comment => '');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+h := null;
+h:=h||'This item is initialized by the "Initialize Items" process.';
+
+wwv_flow_api.create_page_item(
+  p_id=>4981107070323166 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 6,
+  p_name=>'P6_RUNNER_OWNER',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 2,
+  p_item_plug_id => 4978906587323161+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_prompt=>'Runner Owner:',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_DISPLAY_ONLY',
+  p_lov_display_null=> 'NO',
+  p_lov_translated=> 'N',
+  p_cSize=> 30,
+  p_cMaxlength=> 4000,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'YES',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'RIGHT',
+  p_field_alignment=> 'LEFT-CENTER',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'YES',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_help_text=> h,
+  p_attribute_01 => 'N',
+  p_attribute_02 => 'VALUE',
+  p_attribute_04 => 'N',
+  p_show_quick_picks=>'N',
+  p_item_comment => '');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>4981616597323167 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 6,
+  p_name=>'P6_START_DTM',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 6,
+  p_item_plug_id => 4978906587323161+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_prompt=>'Start Date/Time:',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_DISPLAY_ONLY',
+  p_lov_display_null=> 'NO',
+  p_lov_translated=> 'N',
+  p_cSize=> 30,
+  p_cMaxlength=> 4000,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'YES',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'RIGHT',
+  p_field_alignment=> 'LEFT-CENTER',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'YES',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_attribute_01 => 'N',
+  p_attribute_02 => 'VALUE',
+  p_attribute_04 => 'N',
+  p_show_quick_picks=>'N',
+  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>4981808770323167 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 6,
+  p_name=>'P6_RUNNER_NAME_DISP',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 3,
+  p_item_plug_id => 4978906587323161+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_prompt=>'Runner Name:',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_DISPLAY_ONLY',
+  p_lov_display_null=> 'NO',
+  p_lov_translated=> 'N',
+  p_cSize=> 30,
+  p_cMaxlength=> 4000,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'YES',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'RIGHT',
+  p_field_alignment=> 'LEFT-CENTER',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'YES',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'N',
+  p_attribute_01 => 'N',
+  p_attribute_02 => 'VALUE',
+  p_attribute_04 => 'N',
+  p_show_quick_picks=>'N',
+  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>4984013419323176 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 6,
+  p_name=>'P6_TEST_RUN_ERROR',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 99,
+  p_item_plug_id => 4983829548323176+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_HIDDEN',
+  p_lov_display_null=> 'NO',
+  p_lov_translated=> 'N',
+  p_cSize=> 30,
+  p_cMaxlength=> 4000,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'NO',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'LEFT',
+  p_field_alignment=> 'LEFT',
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'YES',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_attribute_01 => 'N',
+  p_show_quick_picks=>'N',
+  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>4995211406848083 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 6,
+  p_name=>'P6_TESTCASE_NAME',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 5,
+  p_item_plug_id => 4978906587323161+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_prompt=>'Test Case Name:',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_DISPLAY_ONLY',
+  p_lov_display_null=> 'NO',
+  p_lov_translated=> 'N',
+  p_cSize=> 30,
+  p_cMaxlength=> 4000,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'YES',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'RIGHT',
+  p_field_alignment=> 'LEFT-CENTER',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_attribute_01 => 'N',
+  p_attribute_02 => 'VALUE',
+  p_attribute_04 => 'Y',
+  p_item_comment => '');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>4995404957855714 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 6,
+  p_name=>'P6_GO_TO_TCASE',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 9,
+  p_item_plug_id => 4978906587323161+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_prompt=>'Go To Test Case:',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_POPUP_LOV',
+  p_lov=> 'select testcase    DISPLAY'||chr(10)||
+'      ,testcase    RETURN'||chr(10)||
+' from  wt_testcase_stats'||chr(10)||
+' where test_run_id = :P6_TEST_RUN_ID'||chr(10)||
+'  and  testcase   != :P6_TESTCASE_NAME'||chr(10)||
+' order by testcase',
+  p_lov_display_null=> 'NO',
+  p_lov_translated=> 'N',
+  p_cSize=> 10,
+  p_cMaxlength=> 4000,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'YES',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'RIGHT',
+  p_field_alignment=> 'LEFT-CENTER',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'NO',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_attribute_01 => 'NOT_ENTERABLE',
+  p_attribute_02 => 'NO_FETCH',
+  p_show_quick_picks=>'N',
+  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
+ 
+ 
+end;
+/
+
+ 
+begin
+ 
+wwv_flow_api.create_page_da_event (
+  p_id => 4989710358323189 + wwv_flow_api.g_id_offset
+ ,p_flow_id => wwv_flow.g_flow_id
+ ,p_page_id => 6
+ ,p_name => 'Submit After Test Run LOV Change'
+ ,p_event_sequence => 10
+ ,p_triggering_element_type => 'ITEM'
+ ,p_triggering_element => 'P6_GOTO_RUN_ID'
+ ,p_bind_type => 'bind'
+ ,p_bind_event_type => 'change'
+  );
+wwv_flow_api.create_page_da_action (
+  p_id => 4998326694508289 + wwv_flow_api.g_id_offset
+ ,p_flow_id => wwv_flow.g_flow_id
+ ,p_page_id => 6
+ ,p_event_id => 4989710358323189 + wwv_flow_api.g_id_offset
+ ,p_event_result => 'TRUE'
+ ,p_action_sequence => 10
+ ,p_execute_on_page_init => 'N'
+ ,p_action => 'NATIVE_CLEAR'
+ ,p_affected_elements_type => 'ITEM'
+ ,p_affected_elements => 'P6_TESTCASE_NAME'
+ ,p_stop_execution_on_error => 'Y'
+ );
+wwv_flow_api.create_page_da_action (
+  p_id => 4990017349323191 + wwv_flow_api.g_id_offset
+ ,p_flow_id => wwv_flow.g_flow_id
+ ,p_page_id => 6
+ ,p_event_id => 4989710358323189 + wwv_flow_api.g_id_offset
+ ,p_event_result => 'TRUE'
+ ,p_action_sequence => 20
+ ,p_execute_on_page_init => 'N'
+ ,p_action => 'NATIVE_SUBMIT_PAGE'
+ ,p_attribute_01 => 'REFRESH'
+ ,p_stop_execution_on_error => 'Y'
+ );
+null;
+ 
+end;
+/
+
+ 
+begin
+ 
+wwv_flow_api.create_page_da_event (
+  p_id => 4997805569502165 + wwv_flow_api.g_id_offset
+ ,p_flow_id => wwv_flow.g_flow_id
+ ,p_page_id => 6
+ ,p_name => 'Submit After Test Case LOV Change'
+ ,p_event_sequence => 20
+ ,p_triggering_element_type => 'ITEM'
+ ,p_triggering_element => 'P6_GO_TO_TCASE'
+ ,p_bind_type => 'bind'
+ ,p_bind_event_type => 'change'
+  );
+wwv_flow_api.create_page_da_action (
+  p_id => 4998111776502171 + wwv_flow_api.g_id_offset
+ ,p_flow_id => wwv_flow.g_flow_id
+ ,p_page_id => 6
+ ,p_event_id => 4997805569502165 + wwv_flow_api.g_id_offset
+ ,p_event_result => 'TRUE'
+ ,p_action_sequence => 10
+ ,p_execute_on_page_init => 'N'
+ ,p_action => 'NATIVE_SUBMIT_PAGE'
+ ,p_attribute_01 => 'REFRESH'
+ ,p_stop_execution_on_error => 'Y'
+ );
+null;
+ 
+end;
+/
+
+ 
+begin
+ 
+declare
+  p varchar2(32767) := null;
+  l_clob clob;
+  l_length number := 1;
+begin
+p:=p||'reset_pagination';
+
+wwv_flow_api.create_page_process(
+  p_id     => 4989314029323189 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id => 6,
+  p_process_sequence=> 10,
+  p_process_point=> 'AFTER_SUBMIT',
+  p_process_type=> 'RESET_PAGINATION',
+  p_process_name=> 'Reset Pagination',
+  p_process_sql_clob => p, 
+  p_process_error_message=> 'Unable to reset pagination.',
+  p_process_when=>'GO,P6_SEARCH,RESET',
+  p_process_when_type=>'REQUEST_IN_CONDITION',
+  p_process_success_message=> '',
+  p_process_is_stateful_y_n=>'N',
+  p_process_comment=>'');
+end;
+null;
+ 
+end;
+/
+
+ 
+begin
+ 
+declare
+  p varchar2(32767) := null;
+  l_clob clob;
+  l_length number := 1;
+begin
+p:=p||'P6_SEARCH,P6_ROWS';
+
+wwv_flow_api.create_page_process(
+  p_id     => 4989512951323189 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id => 6,
+  p_process_sequence=> 20,
+  p_process_point=> 'AFTER_SUBMIT',
+  p_process_type=> 'CLEAR_CACHE_FOR_ITEMS',
+  p_process_name=> 'Reset report search',
+  p_process_sql_clob => p, 
+  p_process_error_message=> 'Unable to clear cache.',
+  p_process_when_button_id=>4985222849323178 + wwv_flow_api.g_id_offset,
+  p_process_success_message=> '',
+  p_process_is_stateful_y_n=>'N',
+  p_process_comment=>'');
+end;
+null;
+ 
+end;
+/
+
+ 
+begin
+ 
+declare
+  p varchar2(32767) := null;
+  l_clob clob;
+  l_length number := 1;
+begin
+p:=p||'declare'||chr(10)||
+'   --'||chr(10)||
+'   page          varchar2(5);      -- Destination Page'||chr(10)||
+'   clear_cache   varchar2(4000);   -- Comma Delimited Names'||chr(10)||
+'   item_names    varchar2(4000);   -- Comma Delimited Names'||chr(10)||
+'   item_values   varchar2(4000);   -- Comma Delimited Values'||chr(10)||
+'   --'||chr(10)||
+'   procedure find_test_run_id is begin'||chr(10)||
+'      select max(id) into :P6_TEST_RUN_ID'||chr(10)||
+'       from wt_test_runs tr'||chr(10)||
+'       where runner_owner = :APP_US';
+
+p:=p||'ER'||chr(10)||
+'        and  exists (select ''x'' from wt_testcase_stats tc'||chr(10)||
+'                      where tc.test_run_id = tr.id'||chr(10)||
+'                    );'||chr(10)||
+'      if :P6_TEST_RUN_ID is NULL'||chr(10)||
+'      then'||chr(10)||
+'         select max(id) into :P6_TEST_RUN_ID'||chr(10)||
+'          from  wt_test_runs tr'||chr(10)||
+'          where exists (select ''x'' from wt_testcase_stats tc'||chr(10)||
+'                         where tc.test_run_id = tr.id'||chr(10)||
+'                       );'||chr(10)||
+'   ';
+
+p:=p||'   end if;'||chr(10)||
+'   end find_test_run_id;'||chr(10)||
+'   --'||chr(10)||
+'   procedure process_test_run_id is begin'||chr(10)||
+'      for buff in ('||chr(10)||
+'         select tr.runner_owner'||chr(10)||
+'               ,tr.runner_name'||chr(10)||
+'               ,to_char(start_dtm,''YYYY/MM/DD HH24:MI:SS'')     START_DTM'||chr(10)||
+'               ,error_message'||chr(10)||
+'          from  wt_test_runs  tr'||chr(10)||
+'          where id = :P6_TEST_RUN_ID )  -- Primary Key, Only 1 row in loop'||chr(10)||
+'      loop'||chr(10)||
+'         :P';
+
+p:=p||'6_RUNNER_OWNER   := buff.runner_owner;'||chr(10)||
+'         :P6_RUNNER_NAME    := buff.runner_name;'||chr(10)||
+'         :P6_START_DTM      := buff.start_dtm;'||chr(10)||
+'         :P6_TEST_RUN_ERROR := buff.error_message;'||chr(10)||
+'         if buff.runner_owner = :APP_USER'||chr(10)||
+'         then'||chr(10)||
+'            page                 := ''2'';'||chr(10)||
+'            item_names           := ''P'' || page || ''_TEST_RUNNER'';'||chr(10)||
+'            item_values          := buff.runner_na';
+
+p:=p||'me;'||chr(10)||
+'            :P6_RUNNER_NAME_DISP := ''<a href="f?p='' || :APP_ID               ||'||chr(10)||
+'                                                '':'' || page                  ||'||chr(10)||
+'                                                '':'' || :APP_SESSION          ||'||chr(10)||
+'                                                '':'' || :REQUEST              ||'||chr(10)||
+'                                                '':'' || :DEBUG               ';
+
+p:=p||' ||'||chr(10)||
+'                                                '':'' || clear_cache           ||'||chr(10)||
+'                                                '':'' || item_names            ||'||chr(10)||
+'                                                '':'' || item_values           ||'||chr(10)||
+'                                                '':'' || V(''PRINTER_FRIENDLY'') ||'||chr(10)||
+'                                               ''">'' || buff.runner_name     ';
+
+p:=p||' ||'||chr(10)||
+'                              ''</a> (Click to Run)'' ;'||chr(10)||
+'         else'||chr(10)||
+'            :P6_RUNNER_NAME_DISP := buff.runner_name;'||chr(10)||
+'         end if;'||chr(10)||
+'      end loop;'||chr(10)||
+'   end process_test_run_id;'||chr(10)||
+'   --'||chr(10)||
+'   function check_testcase_name return boolean is begin'||chr(10)||
+'      for buff in (select ''x'' from wt_testcase_stats'||chr(10)||
+'                    where test_run_id = :P6_TEST_RUN_ID'||chr(10)||
+'                     and  testcase    = :P';
+
+p:=p||'6_TESTCASE_NAME )'||chr(10)||
+'                   -- Primary Key, Only returns 1 row'||chr(10)||
+'      loop'||chr(10)||
+'         return TRUE;'||chr(10)||
+'      end loop;'||chr(10)||
+'      return FALSE;'||chr(10)||
+'   end check_testcase_name;'||chr(10)||
+'   --'||chr(10)||
+'   procedure find_testcase_name is begin'||chr(10)||
+'      select min(testcase)'||chr(10)||
+'       into  :P6_TESTCASE_NAME'||chr(10)||
+'       from  wt_testcase_stats'||chr(10)||
+'       where test_run_id = :P6_TEST_RUN_ID;'||chr(10)||
+'   end find_testcase_name;'||chr(10)||
+'   --'||chr(10)||
+'   procedure proce';
+
+p:=p||'ss_testcase_name is begin'||chr(10)||
+'      select max(tot_interval_msecs)    -- Need Group Function for NULL'||chr(10)||
+'        into :P6_TOTAL_ELAPSED'||chr(10)||
+'       from  wt_testcase_stats'||chr(10)||
+'       where test_run_id = :P6_TEST_RUN_ID'||chr(10)||
+'        and  testcase    = :P6_TESTCASE_NAME;'||chr(10)||
+'   end process_testcase_name;'||chr(10)||
+'   --'||chr(10)||
+'begin'||chr(10)||
+'   -- :P6_TEST_RUN_ID := 1;'||chr(10)||
+'   --'||chr(10)||
+'   if :P6_GOTO_TCASE is NOT NULL'||chr(10)||
+'   then'||chr(10)||
+'      -- The LOV was triggered, so';
+
+p:=p||' set Test Case and go.'||chr(10)||
+'      :P6_TESTCASE_NAME := :P6_GOTO_TCASE;'||chr(10)||
+'      :P6_GOTO_TCASE    := NULL;'||chr(10)||
+'      :P6_GOTO_RUN_ID   := NULL;'||chr(10)||
+'      process_testcase_name;'||chr(10)||
+'      return;                              -- Done!'||chr(10)||
+'   end if;'||chr(10)||
+'   --'||chr(10)||
+'   if :P6_GOTO_RUN_ID is NOT NULL'||chr(10)||
+'   then'||chr(10)||
+'      -- The LOV was triggered, Set Test Run.'||chr(10)||
+'      :P6_TEST_RUN_ID := :P6_GOTO_RUN_ID;'||chr(10)||
+'      :P6_GOTO_RUN_ID := NULL;'||chr(10)||
+'   else'||chr(10)||
+' ';
+
+p:=p||'     if :P6_TEST_RUN_ID is NULL'||chr(10)||
+'      then'||chr(10)||
+'         -- Must have a Test Run ID'||chr(10)||
+'         find_test_run_id;'||chr(10)||
+'      end if;'||chr(10)||
+'   end if;'||chr(10)||
+'   -- Set (or Reset) the Test Run ID dependents'||chr(10)||
+'   process_test_run_id;'||chr(10)||
+'   --'||chr(10)||
+'   if not check_testcase_name'||chr(10)||
+'   then'||chr(10)||
+'      -- Must set a Test Case'||chr(10)||
+'      find_testcase_name;'||chr(10)||
+'   end if;'||chr(10)||
+'   -- Set (or Reset) the Test Case dependents.'||chr(10)||
+'   process_testcase_name;'||chr(10)||
+'   --'||chr(10)||
+'end;';
+
+wwv_flow_api.create_page_process(
+  p_id     => 4989127437323187 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id => 6,
+  p_process_sequence=> 10,
+  p_process_point=> 'BEFORE_HEADER',
+  p_process_type=> 'PLSQL',
+  p_process_name=> 'Initialize Items',
+  p_process_sql_clob => p, 
+  p_process_error_message=> '',
+  p_process_success_message=> '',
+  p_process_is_stateful_y_n=>'N',
+  p_process_comment=>'');
+end;
+null;
+ 
+end;
+/
+
+ 
+begin
+ 
+---------------------------------------
+-- ...updatable report columns for page 6
 --
  
 begin

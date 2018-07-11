@@ -3,7 +3,7 @@
 --  Test Runs Table Installation
 --
 
-create sequence wt_test_runs_seq;
+create sequence wt_test_runs_seq order;
 
 grant select on wt_test_runs_seq to public;
 

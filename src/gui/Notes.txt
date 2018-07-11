@@ -173,11 +173,12 @@ Fix PLSQL Jobs
 
 Fix all the Links
 
-Remove Test Cage Page and Implement as an Interactive Report Filter
+Need a DBOUT Search Page
 
 * Test Case Page
   (Single Test Run ID, Single Test Case)
    * Page Template Body 1
+
       * HTML Region Sequence 11 Column 1
          * Test Run ID (Read Only)
          * Test Runner OWNER (Read Only)
@@ -190,6 +191,7 @@ Remove Test Cage Page and Implement as an Interactive Report Filter
          * Go To Run Test Page (Button, Displayed only if Owner is USER)
       * Chart Region Sequence 12 Column 2
          * PASS/FAIL/ERR Pie Chart
+
       * Chart Region Sequence 21 Column 1
          * PASS/FAIL/ERR Trend
          * Bar Vertical Chart
@@ -198,8 +200,7 @@ Remove Test Cage Page and Implement as an Interactive Report Filter
          * Duration Trend
          * Bar Horizontal Chart
          * Links to Other Test Run Date/Time
+
    * Page Template Body 2
-      * HTML Region Sequence 10 Column 1
-         * Test Case Results Summary
       * HTML Region Sequence 20 Column 1
          * Test Case Results Details
