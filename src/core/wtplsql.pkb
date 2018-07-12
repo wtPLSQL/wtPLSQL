@@ -286,7 +286,9 @@ begin
    g_test_runs_rec               := l_test_runs_rec_NULL;
    g_test_runs_rec.id            := wt_test_runs_seq.nextval;
    g_test_runs_rec.start_dtm     := systimestamp;
-   g_test_runs_rec.runner_owner  := USER;
+   --g_test_runs_rec.runner_owner  := USER;
+   --g_test_runs_rec.runner_owner  := sys_context('userenv', 'current_schema');
+   select username into g_test_runs_rec.runner_owner from user_users;
    g_test_runs_rec.runner_name   := in_package_name;
    g_test_runs_rec.error_message := '';
    check_runner;

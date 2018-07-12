@@ -166,14 +166,10 @@ DBOUTs are not global either.
 
 
 
-Fix PLSQL Jobs
- -) Convert to DBMS_SCHEDULER.
- -) Create Credentials for All User.
- -) Schedule Jobs with APP_USER credentials.
-
-Fix all the Links
 
 Need a DBOUT Search Page
+
+Fix all the Links
 
 * Test Case Page
   (Single Test Run ID, Single Test Case)
