@@ -454,7 +454,7 @@ $THEN
       select count(*)
        into  l_num_recs
        from  wt_test_runs
-       where runner_owner = USER
+       where runner_owner = g_test_runs_rec.runner_owner
         and  runner_name  = g_test_runs_rec.runner_name;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull (
@@ -483,7 +483,7 @@ $THEN
       wt_assert.eqqueryvalue (
          msg_in           => 'Confirm number of records',
          check_query_in   => 'select count(*) from wt_test_runs' ||
-                             ' where runner_owner = ''' || USER ||
+                             ' where runner_owner = ''' || g_test_runs_rec.runner_owner ||
                            ''' and runner_name = ''' || g_test_runs_rec.runner_name ||
                            '''',
          against_value_in => l_num_recs);
@@ -493,23 +493,23 @@ $THEN
          insert into wt_test_runs
                (id, start_dtm, runner_owner, runner_name)
             values
-               (0-i, sysdate-7000-i, USER, g_test_runs_rec.runner_name);
+               (0-i, sysdate-7000-i, g_test_runs_rec.runner_owner, g_test_runs_rec.runner_name);
       end loop;
       commit;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (
          msg_in           => 'Check Added ' || C_KEEP_NUM_RECS || ' records',
          check_query_in   => 'select count(*) from wt_test_runs' ||
-                             ' where runner_owner = ''' || USER ||
+                             ' where runner_owner = ''' || g_test_runs_rec.runner_owner ||
                            ''' and runner_name = ''' || g_test_runs_rec.runner_name ||
                            '''',
          against_value_in => l_num_recs + C_KEEP_NUM_RECS);
-      delete_runs(USER, g_test_runs_rec.runner_name);
+      delete_runs(g_test_runs_rec.runner_owner, g_test_runs_rec.runner_name);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (
          msg_in           => 'Check number of records reduced',
          check_query_in   => 'select count(*) from wt_test_runs' ||
-                             ' where runner_owner = ''' || USER ||
+                             ' where runner_owner = ''' || g_test_runs_rec.runner_owner ||
                            ''' and runner_name = ''' || g_test_runs_rec.runner_name ||
                            '''',
          against_value_in => C_KEEP_NUM_RECS);
@@ -520,7 +520,7 @@ $THEN
       wt_assert.eqqueryvalue (
          msg_in           => 'Confirm original number of records',
          check_query_in   => 'select count(*) from wt_test_runs' ||
-                             ' where runner_owner = ''' || USER ||
+                             ' where runner_owner = ''' || g_test_runs_rec.runner_owner ||
                            ''' and runner_name = ''' || g_test_runs_rec.runner_name ||
                            '''',
          against_value_in => l_num_recs);
