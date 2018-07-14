@@ -17,8 +17,9 @@ as
    g_ignr_aa   ignr_aa_type;
 
    $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
-      g_skip_insert  boolean := FALSE;
-      g_skip_add     boolean := FALSE;
+      g_current_user  varchar2(30);
+      g_skip_insert   boolean := FALSE;
+      g_skip_add      boolean := FALSE;
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 ----------------------
@@ -65,7 +66,7 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       wt_assert.objexists (
          msg_in        => in_pname || ' ' || in_ptype,
-         obj_owner_in  => g_test_runs_rec.runner_owner,
+         obj_owner_in  => g_current_user,
          obj_name_in   => upper(in_pname),
          obj_type_in   => upper(in_ptype));
    end tl_compile_db_object;
@@ -85,7 +86,7 @@ $THEN
          ,against_exc_in => '');
       wt_assert.objnotexists (
          msg_in        => in_pname || ' ' || in_ptype,
-         obj_owner_in  => g_test_runs_rec.runner_owner,
+         obj_owner_in  => g_current_user,
          obj_name_in   => upper(in_pname),
          obj_type_in   => upper(in_ptype));
    end tl_drop_db_object;
@@ -186,7 +187,7 @@ $THEN
       l_sql_txt := 'insert into wt_test_runs' ||
                    ' (id, start_dtm, runner_owner, runner_name)' ||
                    ' values (' || in_test_run_id || ', sysdate, ''' ||
-                                  g_test_runs_rec.runner_owner, ''', ''' ||
+                                  g_current_user || ''', ''' ||
                                   in_runner_name || ''')';
       wt_assert.raises (
          msg_in         => 'Insert wt_test_runs (' || in_test_run_id || ')',
@@ -449,9 +450,8 @@ is
    -- This cursor is used to catch the first occurance of a DBOUT annotation
    cursor c_annotation is
       select regexp_substr(src.text, C_HEAD_RE||C_MAIN_RE||C_TAIL_RE)  TEXT
-       from  dba_source  src
-       where src.owner = g_test_runs_rec.runner_owner
-        and  src.name  = in_pkg_name
+       from  user_source  src
+       where src.name  = in_pkg_name
         and  src.type  = 'PACKAGE BODY'
         and  regexp_like(src.text, C_HEAD_RE||C_MAIN_RE||C_TAIL_RE)
        order by src.line;
@@ -494,37 +494,46 @@ begin
    l_dot_pos := instr(l_target,'.');
    l_cln_pos := instr(l_target,':');
    begin
+      with q_main as (
+      select u.username               OWNER
+            ,obj.object_name
+            ,obj.object_type
+       from  user_objects  obj
+       cross join user_users  u
+       where ( -- No separators were given, assume USER is the owner.
+               -- No object type was given. This could throw TOO_MANY_ROWS.
+                  l_dot_pos       = 0
+              and l_cln_pos       = 0
+              and obj.object_name = l_target  )
+         OR  ( -- No object owner was given, assume USER is the owner.
+                  l_dot_pos       = 0
+              and l_cln_pos      != 0
+              and obj.object_name = substr(l_target, 1, l_cln_pos-1)
+              and obj.object_type = substr(l_target, l_cln_pos+1, 512) )
+      UNION ALL
       select obj.owner
             ,obj.object_name
             ,obj.object_type
+       from  dba_objects  obj
+       where ( -- No object type was given. This could throw TOO_MANY_ROWS.
+                  l_dot_pos      != 0
+              and l_cln_pos       = 0
+              and obj.owner       = substr(l_target, 1, l_dot_pos-1)
+              and obj.object_name = substr(l_target, l_dot_pos+1, 512) )
+         OR  ( -- All separators were given
+                  l_dot_pos      != 0
+              and l_cln_pos      != 0
+              and obj.owner       = substr(l_target, 1, l_dot_pos-1)
+              and obj.object_name = substr(l_target, l_dot_pos+1, l_cln_pos-l_dot_pos-1)
+              and obj.object_type = substr(l_target, l_cln_pos+1, 512) )
+      )
+      select owner
+            ,object_name
+            ,object_type
        into  g_rec.dbout_owner
             ,g_rec.dbout_name
             ,g_rec.dbout_type
-       from  dba_objects  obj
-       where (   ( -- No separators were given, assume USER is the owner.
-                   -- No object type was given. This could throw TOO_MANY_ROWS.
-                      l_dot_pos       = 0
-                  and l_cln_pos       = 0
-                  and obj.owner       = g_test_runs_rec.runner_owner
-                  and obj.object_name = l_target  )
-              OR ( -- No object type was given. This could throw TOO_MANY_ROWS.
-                      l_dot_pos      != 0
-                  and l_cln_pos       = 0
-                  and obj.owner       = substr(l_target, 1, l_dot_pos-1)
-                  and obj.object_name = substr(l_target, l_dot_pos+1, 512) )
-              OR ( -- No object owner was given, assume USER is the owner.
-                      l_dot_pos       = 0
-                  and l_cln_pos      != 0
-                  and obj.owner       = g_test_runs_rec.runner_owner
-                  and obj.object_name = substr(l_target, 1, l_cln_pos-1)
-                  and obj.object_type = substr(l_target, l_cln_pos+1, 512) )
-              OR ( -- All separators were given
-                      l_dot_pos      != 0
-                  and l_cln_pos      != 0
-                  and obj.owner       = substr(l_target, 1, l_dot_pos-1)
-                  and obj.object_name = substr(l_target, l_dot_pos+1, l_cln_pos-l_dot_pos-1)
-                  and obj.object_type = substr(l_target, l_cln_pos+1, 512) )
-             );
+       from  q_main;
    exception
       when NO_DATA_FOUND
       then
@@ -618,7 +627,7 @@ $THEN
       wt_assert.eq
          (msg_in          => 'l_recTEST.dbout_owner'
          ,check_this_in   => l_recTEST.dbout_owner
-         ,against_this_in => g_test_runs_rec.runner_owner);
+         ,against_this_in => g_current_user);
       wt_assert.eq
          (msg_in          => 'l_recTEST.dbout_name'
          ,check_this_in   => l_recTEST.dbout_name
@@ -637,7 +646,7 @@ $THEN
          (in_ptype   => 'package body'
          ,in_pname   => l_pname
          ,in_source  => 
-            '  --% WTPLSQL SET DBOUT "' || g_test_runs_rec.runner_owner ||
+            '  --% WTPLSQL SET DBOUT "' || g_current_user ||
                                     '.' || l_pname ||
                                     ':PACKAGE BODY" %--' || CHR(10) ||
             'begin'                                      || CHR(10) ||
@@ -647,7 +656,7 @@ $THEN
       wt_assert.eq
          (msg_in          => 'l_recTEST.dbout_owner'
          ,check_this_in   => l_recTEST.dbout_owner
-         ,against_this_in => g_test_runs_rec.runner_owner;
+         ,against_this_in => g_current_user);
       wt_assert.eq
          (msg_in          => 'l_recTEST.dbout_name'
          ,check_this_in   => l_recTEST.dbout_name
@@ -692,7 +701,7 @@ $THEN
          (in_ptype   => 'package body'
          ,in_pname   => l_pname
          ,in_source  => 
-            '  --% WTPLSQL SET DBOUT "' || g_test_runs_rec.runner_owner ||
+            '  --% WTPLSQL SET DBOUT "' || g_current_user ||
                                     '.' || l_pname || '" %--'  || CHR(10) ||
             'begin'                                            || CHR(10) ||
             '  l_junk := 1;'                                   );
@@ -701,7 +710,7 @@ $THEN
       wt_assert.eq
          (msg_in          => 'l_recTEST.dbout_owner'
          ,check_this_in   => l_recTEST.dbout_owner
-         ,against_this_in => g_test_runs_rec.runner_owner);
+         ,against_this_in => g_current_user);
       wt_assert.eq
          (msg_in          => 'l_recTEST.dbout_name'
          ,check_this_in   => l_recTEST.dbout_name
@@ -818,7 +827,7 @@ $THEN
          l_recSAVE  := g_rec;
          l_ignrSAVE := g_ignr_aa;
          g_ignr_aa.delete;
-         g_rec.dbout_owner    := g_test_runs_rec.runner_owner;
+         g_rec.dbout_owner    := g_current_user;
          g_rec.dbout_name     := l_pname;
          g_rec.dbout_type     := 'PACKAGE BODY';
          g_rec.trigger_offset := 0;
@@ -1190,7 +1199,7 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       units_rec.runid        := c_test_run_id;
       units_rec.unit_number  := 1;
-      units_rec.unit_owner   := g_test_runs_rec.runner_owner;
+      units_rec.unit_owner   := g_current_user;
       units_rec.unit_name    := l_pname;
       units_rec.unit_type    := 'PACKAGE BODY';
       units_rec.total_time   := 0;
@@ -1238,7 +1247,7 @@ $THEN
       wt_assert.g_testcase := 'Insert DBOUT Profile Happy Path';
       l_recSAVE := g_rec;
       g_rec.test_run_id     := c_test_run_id;
-      g_rec.dbout_owner     := g_test_runs_rec.runner_owner;
+      g_rec.dbout_owner     := g_current_user;
       g_rec.dbout_name      := l_pname;
       g_rec.dbout_type      := 'PACKAGE BODY';
       g_rec.prof_runid      := c_test_run_id;
@@ -1476,7 +1485,7 @@ $THEN
       wt_assert.eq (
          msg_in          => 'OUT dbout_owner',
          check_this_in   => l_recOUT.dbout_owner,
-         against_this_in => g_test_runs_rec.runner_owner);
+         against_this_in => g_current_user);
       wt_assert.eq (
          msg_in          => 'OUT dbout_name',
          check_this_in   => l_recOUT.dbout_name,
@@ -1501,7 +1510,7 @@ $THEN
       wt_assert.eq (
          msg_in          => 'l_recTEST.dbout_owner',
          check_this_in   => l_recTEST.dbout_owner,
-         against_this_in => g_test_runs_rec.runner_owner);
+         against_this_in => g_current_user);
       wt_assert.eq (
          msg_in          => 'l_recTEST.dbout_name',
          check_this_in   => l_recTEST.dbout_name,
@@ -1739,14 +1748,14 @@ $THEN
       wt_assert.g_testcase := 'Trigger Offset Happy Path';
       wt_assert.eq (
          msg_in          => 'Trigger Test',
-         check_this_in   => trigger_offset (dbout_owner_in => g_test_runs_rec.runner_owner
+         check_this_in   => trigger_offset (dbout_owner_in => g_current_user
                                            ,dbout_name_in  => 'WT_SELF_TEST$TEST'
                                            ,dbout_type_in  => 'TRIGGER'),
          against_this_in => 3);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in          => 'Package Test',
-         check_this_in   => trigger_offset (dbout_owner_in => g_test_runs_rec.runner_owner
+         check_this_in   => trigger_offset (dbout_owner_in => g_current_user
                                            ,dbout_name_in  => 'WT_PROFILER'
                                            ,dbout_type_in  => 'PACKAGE BODY'),
          against_this_in => 0);
@@ -1974,6 +1983,7 @@ $THEN
    procedure WTPLSQL_RUN  --% WTPLSQL SET DBOUT "WT_PROFILER:PACKAGE BODY" %--
    is
    begin
+      select username into g_current_user from user_users;
       t_get_error_msg;
       t_delete_profiler_recs;
       t_find_dbout;

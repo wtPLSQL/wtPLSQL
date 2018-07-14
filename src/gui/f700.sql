@@ -13,7 +13,7 @@ prompt  APPLICATION 700 - wtPLSQL Core GUI
 -- Application Export:
 --   Application:     700
 --   Name:            wtPLSQL Core GUI
---   Date and Time:   00:18 Thursday July 12, 2018
+--   Date and Time:   02:14 Saturday July 14, 2018
 --   Exported By:     WTP
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -26,7 +26,7 @@ prompt  APPLICATION 700 - wtPLSQL Core GUI
  
 -- Application Statistics:
 --   Pages:                    6
---     Items:                 50
+--     Items:                 53
 --     Computations:           0
 --     Validations:            0
 --     Processes:             15
@@ -146,7 +146,7 @@ wwv_flow_api.create_flow(
   p_default_region_template=> 4840201642414912 + wwv_flow_api.g_id_offset,
   p_error_template=> 4837131094414910 + wwv_flow_api.g_id_offset,
   p_page_protection_enabled_y_n=> 'Y',
-  p_checksum_salt_last_reset => '20180712001818',
+  p_checksum_salt_last_reset => '20180714021456',
   p_max_session_length_sec=> 28800,
   p_home_link=> 'f?p=&APP_ID.:1:&SESSION.',
   p_flow_language=> 'en',
@@ -192,7 +192,7 @@ wwv_flow_api.create_flow(
   p_default_listr_template => 4839116402414912 + wwv_flow_api.g_id_offset,
   p_default_irr_template => 4839831975414912 + wwv_flow_api.g_id_offset,
   p_last_updated_by => 'WTP',
-  p_last_upd_yyyymmddhh24miss=> '20180712001818',
+  p_last_upd_yyyymmddhh24miss=> '20180714021456',
   p_required_roles=> wwv_flow_utilities.string_to_table2(''));
  
  
@@ -3241,7 +3241,7 @@ wwv_flow_api.create_page (
  ,p_help_text => 
 'No help is available for this page.'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180711231222'
+ ,p_last_upd_yyyymmddhh24miss => '20180712214133'
   );
 null;
  
@@ -4221,6 +4221,146 @@ wwv_flow_api.create_page_item(
   p_field_alignment=> 'LEFT',
   p_is_persistent=> 'Y',
   p_attribute_01 => 'N',
+  p_item_comment => '');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>5012425937902708 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 2,
+  p_name=>'P2_USER',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 109,
+  p_item_plug_id => 4847515458414925+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_prompt=>'User: ',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_DISPLAY_ONLY',
+  p_lov_display_null=> 'NO',
+  p_lov_translated=> 'N',
+  p_cSize=> 30,
+  p_cMaxlength=> 4000,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'YES',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'RIGHT',
+  p_field_alignment=> 'LEFT-CENTER',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'YES',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_attribute_01 => 'N',
+  p_attribute_02 => 'PLSQL',
+  p_attribute_03 => 'htp.p(USER);',
+  p_show_quick_picks=>'N',
+  p_item_comment => '');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>5012705898925298 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 2,
+  p_name=>'P2_SYS_CONTEXT',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 119,
+  p_item_plug_id => 4847515458414925+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_prompt=>'Sys Context:',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_DISPLAY_ONLY',
+  p_lov_display_null=> 'NO',
+  p_lov_translated=> 'N',
+  p_cSize=> 30,
+  p_cMaxlength=> 4000,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'YES',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'RIGHT',
+  p_field_alignment=> 'LEFT-CENTER',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'YES',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_attribute_01 => 'N',
+  p_attribute_02 => 'PLSQL',
+  p_attribute_03 => 'htp.p(sys_context(''userenv'', ''current_schema''));',
+  p_show_quick_picks=>'N',
+  p_item_comment => '');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>5012915856947106 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 2,
+  p_name=>'P2_USERNAME',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 129,
+  p_item_plug_id => 4847515458414925+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_prompt=>'User Users: ',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_DISPLAY_ONLY',
+  p_lov_display_null=> 'NO',
+  p_lov_translated=> 'N',
+  p_cSize=> 30,
+  p_cMaxlength=> 4000,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'YES',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'RIGHT',
+  p_field_alignment=> 'LEFT-CENTER',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'YES',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_attribute_01 => 'N',
+  p_attribute_02 => 'PLSQL',
+  p_attribute_03 => 'begin'||chr(10)||
+'   for buff in (select username from user_users)'||chr(10)||
+'   loop'||chr(10)||
+'      htp.p(buff.username);'||chr(10)||
+'   end loop;'||chr(10)||
+'end;',
+  p_show_quick_picks=>'N',
   p_item_comment => '');
  
  
