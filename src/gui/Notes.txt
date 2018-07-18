@@ -164,11 +164,6 @@ DBOUTs are not global either.
          * Code Coverage Details (Optional, HTML Text)
 
 
-
-Convert to DBMS_Scheduler
-
-Need a DBOUT Search Page
-
 Fix all the Links
 
 * Test Case Page
