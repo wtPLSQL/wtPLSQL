@@ -166,6 +166,26 @@ DBOUTs are not global either.
 
 Fix all the Links
 
+1 - DASHBOARD
+2 - RUNTEST
+3 - TESTRUNNER
+4 - DBOUTPROFILE
+5 - ABOUT
+6 - TESTCASES
+
+select 'f?p=' || :APP_ID               ||
+          ':' || '6'                   ||     -- Page
+          ':' || :APP_SESSION          ||
+          ':' || :REQUEST              ||
+          ':' || :DEBUG                ||
+          ':' || 'N'                   ||     -- CLear Cache
+          ':' || 'P6_TEST_RUN_ID'      || ',' ||
+                 'P6_TESTCASE_NAME'    ||     -- Item Names
+          ':' || test_run_id           || ',' ||
+                 testcase              ||     -- Item Values
+          ':' || V('PRINTER_FRIENDLY')
+                       LINK
+
 * Test Case Page
   (Single Test Run ID, Single Test Case)
    * Page Template Body 1
