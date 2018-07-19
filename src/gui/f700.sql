@@ -13,7 +13,7 @@ prompt  APPLICATION 700 - wtPLSQL Core GUI
 -- Application Export:
 --   Application:     700
 --   Name:            wtPLSQL Core GUI
---   Date and Time:   07:42 Wednesday July 18, 2018
+--   Date and Time:   23:35 Wednesday July 18, 2018
 --   Exported By:     WTP
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -26,7 +26,7 @@ prompt  APPLICATION 700 - wtPLSQL Core GUI
  
 -- Application Statistics:
 --   Pages:                    7
---     Items:                 51
+--     Items:                 52
 --     Computations:           0
 --     Validations:            0
 --     Processes:             15
@@ -146,9 +146,9 @@ wwv_flow_api.create_flow(
   p_default_region_template=> 4840201642414912 + wwv_flow_api.g_id_offset,
   p_error_template=> 4837131094414910 + wwv_flow_api.g_id_offset,
   p_page_protection_enabled_y_n=> 'Y',
-  p_checksum_salt_last_reset => '20180718074206',
+  p_checksum_salt_last_reset => '20180718233538',
   p_max_session_length_sec=> 28800,
-  p_home_link=> 'f?p=&APP_ID.:1:&SESSION.',
+  p_home_link=> 'f?p=&APP_ID.:3:&SESSION.',
   p_flow_language=> 'en',
   p_flow_language_derived_from=> 'FLOW_PRIMARY_LANGUAGE',
   p_allow_feedback_yn=> 'N',
@@ -192,7 +192,7 @@ wwv_flow_api.create_flow(
   p_default_listr_template => 4839116402414912 + wwv_flow_api.g_id_offset,
   p_default_irr_template => 4839831975414912 + wwv_flow_api.g_id_offset,
   p_last_updated_by => 'WTP',
-  p_last_upd_yyyymmddhh24miss=> '20180718074206',
+  p_last_upd_yyyymmddhh24miss=> '20180718233538',
   p_required_roles=> wwv_flow_utilities.string_to_table2(''));
  
  
@@ -668,7 +668,7 @@ wwv_flow_api.create_page (
  ,p_help_text => 
 'No help is available for this page.'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180718073923'
+ ,p_last_upd_yyyymmddhh24miss => '20180718220708'
   );
 null;
  
@@ -1310,14 +1310,15 @@ a1:=a1||'with q_max_start as ('||chr(10)||
 ' group by runner_owner'||chr(10)||
 '      ,runner_name'||chr(10)||
 '), q_top_failures as ('||chr(10)||
-'select ms.runner_owner || ''.'' ||'||chr(10)||
+'select res.test_run_id'||chr(10)||
+'      ,ms.runner_owner || ''.'' ||'||chr(10)||
 '       ms.runner_name               RUNNER'||chr(10)||
 '      ,res.failures'||chr(10)||
 ' from  q_max_start  ms'||chr(10)||
-'       join wt_test_runs  run'||chr(10)||
-'           ';
+'       join wt_tes';
 
-a1:=a1||' on  run.runner_owner = ms.runner_owner'||chr(10)||
+a1:=a1||'t_runs  run'||chr(10)||
+'            on  run.runner_owner = ms.runner_owner'||chr(10)||
 '            and run.runner_name  = ms.runner_name'||chr(10)||
 '            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
@@ -1326,13 +1327,13 @@ a1:=a1||' on  run.runner_owner = ms.runner_owner'||chr(10)||
 ' order by failures desc, RUNNER'||chr(10)||
 ')'||chr(10)||
 '--select * from q_max_start;'||chr(10)||
-'select NULL       LINK'||chr(10)||
-'      ,runner     LABEL'||chr(10)||
-'      ,failures   VALUE'||chr(10)||
-' from  q_top_failures'||chr(10)||
-' w';
+'select test_run_id      LINK'||chr(10)||
+'      ,runner           LABEL'||chr(10)||
+'      ,failur';
 
-a1:=a1||'here rownum <= 10';
+a1:=a1||'es         VALUE'||chr(10)||
+' from  q_top_failures'||chr(10)||
+' where rownum <= 10';
 
 wwv_flow_api.create_flash_chart5_series(
   p_id => 4858000738336332+wwv_flow_api.g_id_offset,
@@ -1346,8 +1347,8 @@ wwv_flow_api.create_flash_chart5_series(
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
   p_series_query_row_count_max=>15,
-  p_action_link               =>'',
-  p_show_action_link          =>'N',
+  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
+  p_show_action_link          =>'C',
   p_action_link_checksum_type =>'');
 end;
 /
@@ -1509,12 +1510,13 @@ a1:=a1||'with q_max_start as ('||chr(10)||
 ' group by runner_owner'||chr(10)||
 '      ,runner_name'||chr(10)||
 '), q_top_duration as ('||chr(10)||
-'select ms.runner_owner || ''.'' ||'||chr(10)||
+'select run.id                           TEST_RUN_ID'||chr(10)||
+'      ,ms.runner_owner || ''.'' ||'||chr(10)||
 '       ms.runner_name                   RUNNER'||chr(10)||
-'      ,extract(day from (run.end_dtm -'||chr(10)||
-'                         run.start_dtm)*8';
+'      ,extract(day from (run';
 
-a1:=a1||'6400*100)/100'||chr(10)||
+a1:=a1||'.end_dtm -'||chr(10)||
+'                         run.start_dtm)*86400*100)/100'||chr(10)||
 '                                        DURATION_SECS'||chr(10)||
 ' from  q_max_start  ms'||chr(10)||
 '       join wt_test_runs  run'||chr(10)||
@@ -1522,13 +1524,13 @@ a1:=a1||'6400*100)/100'||chr(10)||
 '            and run.runner_name  = ms.runner_name'||chr(10)||
 '            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
 ' where extract(day from (run.end_dtm -'||chr(10)||
-'                         run.start_dtm)*86400*100)/100 > 0'||chr(10)||
-' order by duration_secs desc';
+'                         run.start_';
 
-a1:=a1||', RUNNER'||chr(10)||
+a1:=a1||'dtm)*86400*100)/100 > 0'||chr(10)||
+' order by duration_secs desc, RUNNER'||chr(10)||
 ')'||chr(10)||
 '--select * from q_max_start;'||chr(10)||
-'select NULL           LINK'||chr(10)||
+'select test_run_id    LINK'||chr(10)||
 '      ,runner         LABEL'||chr(10)||
 '      ,duration_secs  VALUE'||chr(10)||
 ' from  q_top_duration'||chr(10)||
@@ -1546,8 +1548,8 @@ wwv_flow_api.create_flash_chart5_series(
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
   p_series_query_row_count_max=>15,
-  p_action_link               =>'',
-  p_show_action_link          =>'N',
+  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
+  p_show_action_link          =>'C',
   p_action_link_checksum_type =>'');
 end;
 /
@@ -1709,12 +1711,13 @@ a1:=a1||'with q_max_start as ('||chr(10)||
 ' group by runner_owner'||chr(10)||
 '      ,runner_name'||chr(10)||
 '), q_top_duration as ('||chr(10)||
-'select ms.runner_owner || ''.'' ||'||chr(10)||
+'select run.id                             TEST_RUN_ID'||chr(10)||
+'      ,ms.runner_owner || ''.'' ||'||chr(10)||
 '       ms.runner_name                     RUNNER'||chr(10)||
-'      ,extract(day from (sysdate - run.start_dtm)*10)/10'||chr(10)||
-'                     ';
+'      ,extract(day from ';
 
-a1:=a1||'                     AGE_DAYS'||chr(10)||
+a1:=a1||'(sysdate - run.start_dtm)*10)/10'||chr(10)||
+'                                          AGE_DAYS'||chr(10)||
 ' from  q_max_start  ms'||chr(10)||
 '       join wt_test_runs  run'||chr(10)||
 '            on  run.runner_owner = ms.runner_owner'||chr(10)||
@@ -1722,12 +1725,12 @@ a1:=a1||'                     AGE_DAYS'||chr(10)||
 '            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
 ' where run.start_dtm is not null'||chr(10)||
 '  and  extract(day from (sysdate - run.start_dtm)*10)/10 > 0'||chr(10)||
-' order by AGE_DAYS desc, RUNNER'||chr(10)||
+' order by AGE_DA';
+
+a1:=a1||'YS desc, RUNNER'||chr(10)||
 ')'||chr(10)||
 '--select * from q_max_start;'||chr(10)||
-'select ';
-
-a1:=a1||'NULL         LINK'||chr(10)||
+'select test_run_id  LINK'||chr(10)||
 '      ,runner       LABEL'||chr(10)||
 '      ,age_days     VALUE'||chr(10)||
 ' from  q_top_duration'||chr(10)||
@@ -1745,8 +1748,8 @@ wwv_flow_api.create_flash_chart5_series(
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
   p_series_query_row_count_max=>15,
-  p_action_link               =>'',
-  p_show_action_link          =>'N',
+  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
+  p_show_action_link          =>'C',
   p_action_link_checksum_type =>'');
 end;
 /
@@ -1908,14 +1911,15 @@ a1:=a1||'with q_max_start as ('||chr(10)||
 ' group by runner_owner'||chr(10)||
 '      ,runner_name'||chr(10)||
 '), q_top_notexec as ('||chr(10)||
-'select run.dbout_owner || ''.'' ||'||chr(10)||
+'select res.test_run_id'||chr(10)||
+'      ,run.dbout_owner || ''.'' ||'||chr(10)||
 '       run.dbout_name  || ''('' ||'||chr(10)||
 '       run.dbout_type  || '')''       DBOUT'||chr(10)||
 '      ,res.notexec_lines'||chr(10)||
-' from  q_max_start  ms'||chr(10)||
-'     ';
+' from';
 
-a1:=a1||'  join wt_test_runs  run'||chr(10)||
+a1:=a1||'  q_max_start  ms'||chr(10)||
+'       join wt_test_runs  run'||chr(10)||
 '            on  run.runner_owner = ms.runner_owner'||chr(10)||
 '            and run.runner_name  = ms.runner_name'||chr(10)||
 '            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
@@ -1925,10 +1929,10 @@ a1:=a1||'  join wt_test_runs  run'||chr(10)||
 '  and  res.notexec_lines > 0'||chr(10)||
 ' order by notexec_lines desc, DBOUT'||chr(10)||
 ')'||chr(10)||
-'--select * from q_max_start;'||chr(10)||
-'select NULL     ';
+'--select * from q_max_';
 
-a1:=a1||'        LINK'||chr(10)||
+a1:=a1||'start;'||chr(10)||
+'select test_run_id      LINK'||chr(10)||
 '      ,dbout            LABEL'||chr(10)||
 '      ,notexec_lines    VALUE'||chr(10)||
 ' from  q_top_notexec'||chr(10)||
@@ -1946,8 +1950,8 @@ wwv_flow_api.create_flash_chart5_series(
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
   p_series_query_row_count_max=>15,
-  p_action_link               =>'',
-  p_show_action_link          =>'N',
+  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
+  p_show_action_link          =>'C',
   p_action_link_checksum_type =>'');
 end;
 /
@@ -2324,12 +2328,13 @@ a1:=a1||'with q_max_start as ('||chr(10)||
 ' group by runner_owner'||chr(10)||
 '      ,runner_name'||chr(10)||
 '), q_top_duration as ('||chr(10)||
-'select run.dbout_owner || ''.'' ||'||chr(10)||
+'select res.test_run_id'||chr(10)||
+'      ,run.dbout_owner || ''.'' ||'||chr(10)||
 '       run.dbout_name  || ''('' ||'||chr(10)||
 '       run.dbout_type  || '')''           DBOUT'||chr(10)||
-'      ,res.max_executed_usecs/1000      MAX_MSEC';
+'      ,res.max_executed_u';
 
-a1:=a1||'S'||chr(10)||
+a1:=a1||'secs/1000      MAX_MSECS'||chr(10)||
 ' from  q_max_start  ms'||chr(10)||
 '       join wt_test_runs  run'||chr(10)||
 '            on  run.runner_owner = ms.runner_owner'||chr(10)||
@@ -2340,10 +2345,10 @@ a1:=a1||'S'||chr(10)||
 ' where res.max_executed_usecs > 0'||chr(10)||
 ' order by MAX_MSECS desc, DBOUT'||chr(10)||
 ')'||chr(10)||
-'--select * from q_max_start;'||chr(10)||
-'select NULL       ';
+'--select * from q_max_st';
 
-a1:=a1||'  LINK'||chr(10)||
+a1:=a1||'art;'||chr(10)||
+'select test_run_id  LINK'||chr(10)||
 '      ,dbout        LABEL'||chr(10)||
 '      ,max_msecs    VALUE'||chr(10)||
 ' from  q_top_duration'||chr(10)||
@@ -2361,8 +2366,8 @@ wwv_flow_api.create_flash_chart5_series(
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
   p_series_query_row_count_max=>15,
-  p_action_link               =>'',
-  p_show_action_link          =>'N',
+  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
+  p_show_action_link          =>'C',
   p_action_link_checksum_type =>'');
 end;
 /
@@ -2773,6 +2778,8 @@ wwv_flow_api.create_report_columns (
   p_column_alias=> 'ID',
   p_column_display_sequence=> 1,
   p_column_heading=> 'Test Run ID',
+  p_column_link=>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#ID#',
+  p_column_linktext=>'#ID#',
   p_column_alignment=>'LEFT',
   p_heading_alignment=>'RIGHT',
   p_default_sort_column_sequence=>1,
@@ -2781,8 +2788,11 @@ wwv_flow_api.create_report_columns (
   p_sum_column=> 'N',
   p_hidden_column=> 'N',
   p_display_as=>'ESCAPE_SC',
+  p_lov_show_nulls=> 'NO',
   p_is_required=> false,
   p_pk_col_source=> s,
+  p_lov_display_extra=> 'YES',
+  p_include_in_export=> 'Y',
   p_print_col_width=> '20',
   p_column_comment=>'');
 end;
@@ -3304,7 +3314,7 @@ wwv_flow_api.create_page (
  ,p_help_text => 
 'No help is available for this page.'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180717215617'
+ ,p_last_upd_yyyymmddhh24miss => '20180718225301'
   );
 null;
  
@@ -3947,7 +3957,7 @@ wwv_flow_api.create_page_item(
   p_data_type=> 'VARCHAR',
   p_is_required=> true,
   p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 2,
+  p_item_sequence=> 1,
   p_item_plug_id => 4847515458414925+wwv_flow_api.g_id_offset,
   p_use_cache_before_default=> 'YES',
   p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
@@ -4007,7 +4017,7 @@ wwv_flow_api.create_page_item(
   p_data_type=> 'VARCHAR',
   p_is_required=> false,
   p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 3,
+  p_item_sequence=> 2,
   p_item_plug_id => 4847515458414925+wwv_flow_api.g_id_offset,
   p_use_cache_before_default=> 'NO',
   p_item_default=> 'RUN_TEST',
@@ -4294,7 +4304,7 @@ wwv_flow_api.create_page_item(
   p_data_type=> 'VARCHAR',
   p_is_required=> false,
   p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 6,
+  p_item_sequence=> 4,
   p_item_plug_id => 4847515458414925+wwv_flow_api.g_id_offset,
   p_use_cache_before_default=> 'YES',
   p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
@@ -4370,6 +4380,72 @@ wwv_flow_api.create_page_item(
   p_attribute_02 => 'PLSQL',
   p_attribute_03 => 'begin'||chr(10)||
 '   htp.p(:APP_USER);'||chr(10)||
+'end;',
+  p_show_quick_picks=>'N',
+  p_item_comment => '');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>5073001504097405 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 2,
+  p_name=>'P2_LAST_RUN_ID',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 3,
+  p_item_plug_id => 4847515458414925+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_prompt=>'Last Run ID:',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_DISPLAY_ONLY',
+  p_lov_display_null=> 'NO',
+  p_lov_translated=> 'N',
+  p_cSize=> 30,
+  p_cMaxlength=> 4000,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'YES',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'RIGHT',
+  p_field_alignment=> 'LEFT-CENTER',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'YES',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_attribute_01 => 'N',
+  p_attribute_02 => 'PLSQL',
+  p_attribute_03 => 'declare'||chr(10)||
+'   max_id   number;'||chr(10)||
+'begin'||chr(10)||
+'   -- Group Function never returns NO_DATA_FOUND'||chr(10)||
+'   select max(id) into max_id'||chr(10)||
+'    from  wt_test_runs'||chr(10)||
+'    where runner_owner = :APP_USER'||chr(10)||
+'     and  runner_name  = :P2_TEST_RUNNER;'||chr(10)||
+'   if max_id is not null'||chr(10)||
+'   then'||chr(10)||
+'      htp.p(''<a href="f?p='' || :APP_ID               ||'||chr(10)||
+'                        '':'' || ''3''                   ||     -- Page'||chr(10)||
+'                        '':'' || :APP_SESSION          ||'||chr(10)||
+'                        '':'' || :REQUEST              ||'||chr(10)||
+'                        '':'' || :DEBUG                ||'||chr(10)||
+'                        '':'' || ''N''                   ||     -- CLear Cache'||chr(10)||
+'                        '':'' || ''P3_TEST_RUN_ID''      ||     -- Item Names'||chr(10)||
+'                        '':'' || max_id                ||     -- Item Values'||chr(10)||
+'                        '':'' || V(''PRINTER_FRIENDLY'') ||'||chr(10)||
+'                       ''">'' || max_id || '' (Click to View)'' || ''</a>'');'||chr(10)||
+'   end if;'||chr(10)||
 'end;',
   p_show_quick_picks=>'N',
   p_item_comment => '');
@@ -4559,7 +4635,7 @@ wwv_flow_api.create_page (
  ,p_help_text => 
 'No help is available for this page.'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180718065549'
+ ,p_last_upd_yyyymmddhh24miss => '20180718231703'
   );
 null;
  
@@ -6974,7 +7050,7 @@ s:=s||'select line'||chr(10)||
 
 s:=s||'es'||chr(10)||
 ' where test_run_id = :P3_TEST_RUN_ID'||chr(10)||
-'  and  status != ''IGNR'''||chr(10)||
+' -- and  status != ''IGNR'''||chr(10)||
 '  and  (   instr(upper("STATUS"),upper(nvl(:P3_SEARCH,"STATUS"))) > 0'||chr(10)||
 '        OR instr(upper("TEXT"),upper(nvl(:P3_SEARCH,"TEXT"))) > 0    )'||chr(10)||
 '';
@@ -7006,13 +7082,49 @@ wwv_flow_api.create_report_region (
   p_query_break_cols=> '0',
   p_query_no_data_found=> 'no data found',
   p_query_num_rows_item=> 'P3_ROWS',
-  p_query_num_rows_type=> '0',
-  p_pagination_display_position=> 'BOTTOM_RIGHT',
-  p_csv_output=> 'N',
+  p_query_num_rows_type=> 'COMPUTED_BUT_NOT_DISPLAYED',
+  p_pagination_display_position=> 'BOTTOM_LEFT',
+  p_csv_output=> 'Y',
+  p_csv_output_link_text=> 'CVS Link Label',
+  p_prn_output=> 'N',
+  p_prn_format=> 'PDF',
+  p_prn_output_show_link=> 'Y',
+  p_prn_output_link_text=> 'Print',
+  p_prn_content_disposition=> 'ATTACHMENT',
+  p_prn_document_header=> 'APEX',
+  p_prn_units=> 'INCHES',
+  p_prn_paper_size=> 'LETTER',
+  p_prn_width_units=> 'PERCENTAGE',
+  p_prn_width=> 11,
+  p_prn_height=> 8.5,
+  p_prn_orientation=> 'HORIZONTAL',
+  p_prn_page_header_font_color=> '#000000',
+  p_prn_page_header_font_family=> 'Helvetica',
+  p_prn_page_header_font_weight=> 'normal',
+  p_prn_page_header_font_size=> '12',
+  p_prn_page_footer_font_color=> '#000000',
+  p_prn_page_footer_font_family=> 'Helvetica',
+  p_prn_page_footer_font_weight=> 'normal',
+  p_prn_page_footer_font_size=> '12',
+  p_prn_header_bg_color=> '#9bafde',
+  p_prn_header_font_color=> '#ffffff',
+  p_prn_header_font_family=> 'Helvetica',
+  p_prn_header_font_weight=> 'normal',
+  p_prn_header_font_size=> '10',
+  p_prn_body_bg_color=> '#efefef',
+  p_prn_body_font_color=> '#000000',
+  p_prn_body_font_family=> 'Helvetica',
+  p_prn_body_font_weight=> 'normal',
+  p_prn_body_font_size=> '10',
+  p_prn_border_width=> .5,
+  p_prn_page_header_alignment=> 'CENTER',
+  p_prn_page_footer_alignment=> 'CENTER',
   p_query_asc_image=> 'apex/builder/dup.gif',
   p_query_asc_image_attr=> 'width="16" height="16" alt="" ',
   p_query_desc_image=> 'apex/builder/ddown.gif',
   p_query_desc_image_attr=> 'width="16" height="16" alt="" ',
+  p_plug_query_exp_separator=> ',',
+  p_plug_query_exp_enclosed_by=> '"',
   p_plug_query_strip_html=> 'Y',
   p_comment=>'');
 end;
@@ -7039,6 +7151,8 @@ wwv_flow_api.create_report_columns (
   p_display_as=>'ESCAPE_SC',
   p_is_required=> false,
   p_pk_col_source=> s,
+  p_include_in_export=> 'Y',
+  p_print_col_width=> '14',
   p_column_comment=>'');
 end;
 /
@@ -7064,6 +7178,8 @@ wwv_flow_api.create_report_columns (
   p_display_as=>'ESCAPE_SC',
   p_is_required=> false,
   p_pk_col_source=> s,
+  p_include_in_export=> 'Y',
+  p_print_col_width=> '14',
   p_column_comment=>'');
 end;
 /
@@ -7089,6 +7205,8 @@ wwv_flow_api.create_report_columns (
   p_display_as=>'ESCAPE_SC',
   p_is_required=> false,
   p_pk_col_source=> s,
+  p_include_in_export=> 'Y',
+  p_print_col_width=> '14',
   p_column_comment=>'');
 end;
 /
@@ -7114,6 +7232,8 @@ wwv_flow_api.create_report_columns (
   p_display_as=>'ESCAPE_SC',
   p_is_required=> false,
   p_pk_col_source=> s,
+  p_include_in_export=> 'Y',
+  p_print_col_width=> '14',
   p_column_comment=>'');
 end;
 /
@@ -7139,6 +7259,8 @@ wwv_flow_api.create_report_columns (
   p_display_as=>'ESCAPE_SC',
   p_is_required=> false,
   p_pk_col_source=> s,
+  p_include_in_export=> 'Y',
+  p_print_col_width=> '14',
   p_column_comment=>'');
 end;
 /
@@ -7164,6 +7286,8 @@ wwv_flow_api.create_report_columns (
   p_display_as=>'ESCAPE_SC',
   p_is_required=> false,
   p_pk_col_source=> s,
+  p_include_in_export=> 'Y',
+  p_print_col_width=> '14',
   p_column_comment=>'');
 end;
 /
@@ -7192,6 +7316,7 @@ wwv_flow_api.create_report_columns (
   p_pk_col_source=> s,
   p_lov_display_extra=> 'YES',
   p_include_in_export=> 'Y',
+  p_print_col_width=> '14',
   p_column_comment=>'');
 end;
 /
@@ -7330,7 +7455,7 @@ wwv_flow_api.create_page_item(
   p_protection_level => 'N',
   p_escape_on_http_output => 'Y',
   p_help_text=> h,
-  p_attribute_01 => 'N',
+  p_attribute_01 => 'Y',
   p_attribute_02 => 'VALUE',
   p_attribute_04 => 'N',
   p_show_quick_picks=>'N',
@@ -8309,9 +8434,9 @@ p:=p||'        '':'' || clear_cache           ||'||chr(10)||
 '                                                '':'' || item_values           ||'||chr(10)||
 '                                                '':'' || V(''PRINTER_FRIENDLY'') ||'||chr(10)||
 '                                               ''">'' || buff.runner_name      ||'||chr(10)||
-'                              ''</a> (Cli';
+'                              '' (Click t';
 
-p:=p||'ck to Run)'' ;'||chr(10)||
+p:=p||'o Run)</a>'' ;'||chr(10)||
 '         else'||chr(10)||
 '            :P3_RUNNER_NAME_DISP := buff.runner_name;'||chr(10)||
 '         end if;'||chr(10)||
@@ -12177,7 +12302,7 @@ wwv_flow_api.create_page (
  ,p_page_is_public_y_n => 'N'
  ,p_cache_page_yn => 'N'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180706000357'
+ ,p_last_upd_yyyymmddhh24miss => '20180718215436'
   );
 null;
  
@@ -17372,9 +17497,9 @@ wwv_flow_api.create_row_template (
   p_row_template1=> c1,
   p_row_template_condition1=> '''#STATUS#''=''NOTX''',
   p_row_template2=> c2,
-  p_row_template_condition2=> '''#STATUS#''=''UNKN''',
+  p_row_template_condition2=> '''#STATUS#''=''UNKN'' or ''#STATUS#''=''EXCL''',
   p_row_template3=> c3,
-  p_row_template_condition3=> '''#STATUS#''=''EXCL''',
+  p_row_template_condition3=> '''#STATUS#''=''IGNR''',
   p_row_template4=> c4,
   p_row_template_condition4=> '',
   p_row_template_before_rows=>'<table cellpadding="0" border="0" cellspacing="0" summary="" #REPORT_ATTRIBUTES# id="report_#REGION_STATIC_ID#">#TOP_PAGINATION#<tr>'||chr(10)||
