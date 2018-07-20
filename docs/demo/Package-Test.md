@@ -79,20 +79,7 @@ end;
 
 And get this:
 
-```
-    wtPLSQL 1.1.0 - Run ID 44: 16-Jun-2018 03:45:33 PM
-
-  Test Results for WTP_DEMO.TEST_DBMS_OUTPUT
-       Total Test Cases:        0       Total Assertions:        1
-  Minimum Interval msec:        4      Failed Assertions:        0
-  Average Interval msec:        4       Error Assertions:        0
-  Maximum Interval msec:        4             Test Yield:   100.00%
-   Total Run Time (sec):      0.0
-
- - WTP_DEMO.TEST_DBMS_OUTPUT Test Result Details (Test Run ID 44)
------------------------------------------------------------
- PASS    4ms Test 1. EQ - Expected "Test 1" and got "Test 1"
-```
+<img src="images/Testing Put Line and Get Line.PNG" alt="Testing Put Line and Get Line Result">
 
 A successful test.  Notice that the value of the C_TEST1 constant is displayed in the test result details.
 
@@ -154,23 +141,7 @@ end;
 
 And get this:
 
-```
-    wtPLSQL 1.1.0 - Run ID 49: 16-Jun-2018 04:18:39 PM
-
-  Test Results for WTP_DEMO.TEST_DBMS_OUTPUT
-       Total Test Cases:        0       Total Assertions:        0
-  Minimum Interval msec:        0      Failed Assertions:        0
-  Average Interval msec:        0       Error Assertions:        0
-  Maximum Interval msec:        0             Test Yield: %
-   Total Run Time (sec):      0.0
-
-  *** Test Runner Error ***
-ORA-20000: Fault insertion exception
-ORA-06512: at "WTP_DEMO.TEST_DBMS_OUTPUT", line 10
-ORA-06512: at "WTP_DEMO.TEST_DBMS_OUTPUT", line 18
-ORA-06512: at line 1
-ORA-06512: at "WTP.WTPLSQL", line 309
-```
+<img src="images/Leaving Something Behind.PNG" alt="Leaving Something Behind Result">
 
 No assertions were run because of the exception.  The exception that was captured appears below the test results summary.
 
@@ -278,24 +249,7 @@ end;
 
 And get this:
 
-```
-    wtPLSQL 1.1.0 - Run ID 51: 16-Jun-2018 04:56:39 PM
-
-  Test Results for WTP_DEMO.TEST_DBMS_OUTPUT
-       Total Test Cases:        0       Total Assertions:        0
-  Minimum Interval msec:        0      Failed Assertions:        0
-  Average Interval msec:        0       Error Assertions:        0
-  Maximum Interval msec:        0             Test Yield: %
-   Total Run Time (sec):      0.1
-
-  *** Test Runner Error ***
-ORA-20000: ORA-20000: Fault insertion exception
-ORA-06512: at "WTP_DEMO.TEST_DBMS_OUTPUT", line 21
-ORA-06512: at "WTP_DEMO.TEST_DBMS_OUTPUT", line 47
-ORA-06512: at "WTP_DEMO.TEST_DBMS_OUTPUT", line 53
-ORA-06512: at line 1
-ORA-06512: at "WTP.WTPLSQL", line 309
-```
+<img src="images/Setup and Teardown.PNG" alt="Setup and Teardown Result">
 
 The exception handler preserved the error stack before calling teardown.  Also, there is an extra "ORA-20000:" at the front of the error stack displayed, but all the error information is preserved.
 

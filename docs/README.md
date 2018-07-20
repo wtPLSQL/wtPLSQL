@@ -11,9 +11,7 @@ Use [GitHub "issues"](https://github.com/DDieterich/wtPLSQL/issues) for support.
 
 This is the summary from the WT_ASSERT package self-test.  It was created with the default DBMS_OUTPUT reporting package.  Because test results and code coverage is stored in Oracle tables, other report formats are simple to create.
 
-
 <img src="images/Example wtPLSQL Test Results.PNG" alt="Sample DBMS_OUTPUT from wtPLSQL">
-
 
 To view the complete test results from the wtPLSQL self-test, go to the [test_allO.LST](https://github.com/DDieterich/wtPLSQL/blob/master/src/core/test_allO.LST) file in GitHub.  The [Demonstrations and Examples Page](demo/README.md) has more examples.
 
@@ -49,6 +47,14 @@ More information is available [in this link](utPLSQL-V2-Comparison.md).
 
 User Help
 * [Demonstrations and Examples Page](demo/README.md)
+   * [Package Test](demo/Package-Test.md)
+   * [Table Constraints Test](demo/Table-Test.md)
+   * [Trigger Test](demo/Trigger-Test.md)
+   * [Type Test](demo/Type-Test.md)
+   * [ut_betwnstr](demo/ut_betwnstr.md) - Choose a program to test
+   * [ut_calc_secs_between](demo/ut_calc_secs_between.md) - Test a Simple Procedure
+   * [ut_truncit](demo/ut_truncit.md) - Test a Table Modification Procedure
+   * [ut_str](demo/ut_str.md) - Test a Simple Function
 * [Reference](Reference.md)
 * [Best Practices](Best-Practices.md)
 * [DB Docs from SQL*Developer](core/DBDocs/index.html)

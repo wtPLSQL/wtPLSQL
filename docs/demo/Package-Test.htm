@@ -56,19 +56,8 @@ end;
 /
 </code></pre>
 <p>And get this:</p>
-<pre><code>    wtPLSQL 1.1.0 - Run ID 44: 16-Jun-2018 03:45:33 PM
+<img src="images/Testing Put Line and Get Line.PNG" alt="Testing Put Line and Get Line Result">
 
-  Test Results for WTP_DEMO.TEST_DBMS_OUTPUT
-       Total Test Cases:        0       Total Assertions:        1
-  Minimum Interval msec:        4      Failed Assertions:        0
-  Average Interval msec:        4       Error Assertions:        0
-  Maximum Interval msec:        4             Test Yield:   100.00%
-   Total Run Time (sec):      0.0
-
- - WTP_DEMO.TEST_DBMS_OUTPUT Test Result Details (Test Run ID 44)
------------------------------------------------------------
- PASS    4ms Test 1. EQ - Expected &quot;Test 1&quot; and got &quot;Test 1&quot;
-</code></pre>
 <p>A successful test. Notice that the value of the C_TEST1 constant is displayed in the test result details.</p>
 <h2 id="leaving-something-behind">Leaving Something Behind</h2>
 <p>In the previous example, everything worked correctly. If a problem occurs during testing, things can be left behind. Here is an example of GET_LINE not working, leaving the value of C_TEST1 in the DBMS_OUTPUT buffer. For testing purposes, an exception will be thrown between the PUT_LINE and GET_LINE call.</p>
@@ -112,22 +101,8 @@ end;
 /
 </code></pre>
 <p>And get this:</p>
-<pre><code>    wtPLSQL 1.1.0 - Run ID 49: 16-Jun-2018 04:18:39 PM
+<img src="images/Leaving Something Behind.PNG" alt="Leaving Something Behind Result">
 
-  Test Results for WTP_DEMO.TEST_DBMS_OUTPUT
-       Total Test Cases:        0       Total Assertions:        0
-  Minimum Interval msec:        0      Failed Assertions:        0
-  Average Interval msec:        0       Error Assertions:        0
-  Maximum Interval msec:        0             Test Yield: %
-   Total Run Time (sec):      0.0
-
-  *** Test Runner Error ***
-ORA-20000: Fault insertion exception
-ORA-06512: at &quot;WTP_DEMO.TEST_DBMS_OUTPUT&quot;, line 10
-ORA-06512: at &quot;WTP_DEMO.TEST_DBMS_OUTPUT&quot;, line 18
-ORA-06512: at line 1
-ORA-06512: at &quot;WTP.WTPLSQL&quot;, line 309
-</code></pre>
 <p>No assertions were run because of the exception. The exception that was captured appears below the test results summary.</p>
 <h2 id="setup-and-teardown">Setup and Teardown</h2>
 <p>Setup and Teardown procedures are used to prepare for and cleanup from tests. For DBMS_OUTPUT testing, the buffer needs to be preserved before testing starts. After testing is complete, the original buffer contents need to be returned to the buffer.</p>
@@ -217,23 +192,8 @@ end;
 /
 </code></pre>
 <p>And get this:</p>
-<pre><code>    wtPLSQL 1.1.0 - Run ID 51: 16-Jun-2018 04:56:39 PM
+<img src="images/Setup and Teardown.PNG" alt="Setup and Teardown Result">
 
-  Test Results for WTP_DEMO.TEST_DBMS_OUTPUT
-       Total Test Cases:        0       Total Assertions:        0
-  Minimum Interval msec:        0      Failed Assertions:        0
-  Average Interval msec:        0       Error Assertions:        0
-  Maximum Interval msec:        0             Test Yield: %
-   Total Run Time (sec):      0.1
-
-  *** Test Runner Error ***
-ORA-20000: ORA-20000: Fault insertion exception
-ORA-06512: at &quot;WTP_DEMO.TEST_DBMS_OUTPUT&quot;, line 21
-ORA-06512: at &quot;WTP_DEMO.TEST_DBMS_OUTPUT&quot;, line 47
-ORA-06512: at &quot;WTP_DEMO.TEST_DBMS_OUTPUT&quot;, line 53
-ORA-06512: at line 1
-ORA-06512: at &quot;WTP.WTPLSQL&quot;, line 309
-</code></pre>
 <p>The exception handler preserved the error stack before calling teardown. Also, there is an extra &quot;ORA-20000:&quot; at the front of the error stack displayed, but all the error information is preserved.</p>
 <p>These are all the basic tools needed to successfully create and run test runner packages in wtPLSQL.</p>
 <hr />
