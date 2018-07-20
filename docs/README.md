@@ -11,24 +11,9 @@ Use [GitHub "issues"](https://github.com/DDieterich/wtPLSQL/issues) for support.
 
 This is the summary from the WT_ASSERT package self-test.  It was created with the default DBMS_OUTPUT reporting package.  Because test results and code coverage is stored in Oracle tables, other report formats are simple to create.
 
-```
-    wtPLSQL 1.1.0 - Run ID 7: 09-Jun-2018 11:48:42 AM
 
-  Test Results for WTP.WT_ASSERT
-        Total Testcases:      150       Total Assertions:      404
-  Minimum Interval msec:        0      Failed Assertions:        0
-  Average Interval msec:        7       Error Assertions:        0
-  Maximum Interval msec:      761             Test Yield:   100.00%
-   Total Run Time (sec):      2.8
+<img src="images/Example wtPLSQL Test Results.PNG" alt="Sample DBMS_OUTPUT from wtPLSQL">
 
-  Code Coverage for PACKAGE BODY WTP.WT_ASSERT
-          Ignored Lines:     1103   Total Profiled Lines:     1464
-         Excluded Lines:        6   Total Executed Lines:      309
-  Minimum LineExec usec:        0     Not Executed Lines:        0
-  Average LineExec usec:      394          Unknown Lines:       46
-  Maximum LineExec usec:    65814          Code Coverage:   100.00%
-  Trigger Source Offset:        0
-```
 
 To view the complete test results from the wtPLSQL self-test, go to the [test_allO.LST](https://github.com/DDieterich/wtPLSQL/blob/master/src/core/test_allO.LST) file in GitHub.  The [Demonstrations and Examples Page](demo/README.md) has more examples.
 

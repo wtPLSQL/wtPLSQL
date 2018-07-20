@@ -5,23 +5,8 @@
 <p>Use <a href="https://github.com/DDieterich/wtPLSQL/issues">GitHub &quot;issues&quot;</a> for support. A (free) GitHub account will be required to create a new issue. Issues can be searched without an account.</p>
 <h2 id="example-wtplsql-test-results">Example wtPLSQL Test Results</h2>
 <p>This is the summary from the WT_ASSERT package self-test. It was created with the default DBMS_OUTPUT reporting package. Because test results and code coverage is stored in Oracle tables, other report formats are simple to create.</p>
-<pre><code>    wtPLSQL 1.1.0 - Run ID 7: 09-Jun-2018 11:48:42 AM
+<img src="images/Example wtPLSQL Test Results.PNG" alt="Sample DBMS_OUTPUT from wtPLSQL">
 
-  Test Results for WTP.WT_ASSERT
-        Total Testcases:      150       Total Assertions:      404
-  Minimum Interval msec:        0      Failed Assertions:        0
-  Average Interval msec:        7       Error Assertions:        0
-  Maximum Interval msec:      761             Test Yield:   100.00%
-   Total Run Time (sec):      2.8
-
-  Code Coverage for PACKAGE BODY WTP.WT_ASSERT
-          Ignored Lines:     1103   Total Profiled Lines:     1464
-         Excluded Lines:        6   Total Executed Lines:      309
-  Minimum LineExec usec:        0     Not Executed Lines:        0
-  Average LineExec usec:      394          Unknown Lines:       46
-  Maximum LineExec usec:    65814          Code Coverage:   100.00%
-  Trigger Source Offset:        0
-</code></pre>
 <p>To view the complete test results from the wtPLSQL self-test, go to the <a href="https://github.com/DDieterich/wtPLSQL/blob/master/src/core/test_allO.LST">test_allO.LST</a> file in GitHub. The <a href="demo/README.htm">Demonstrations and Examples Page</a> has more examples.</p>
 <h2 id="what-is-wtplsql">What is wtPLSQL?</h2>
 <p>wtPLSQL helps with white-box testing of Oracle database objects. It is particularly well suited for unit testing and simple integration testing. It is written in PL/SQL. It contains a self-test which makes it easier to support and customize.</p>
