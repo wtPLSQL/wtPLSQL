@@ -7,6 +7,7 @@ create table wt_version
    (install_dtm    date
    ,action         varchar2(15)
    ,text           varchar2(15)
+   ,constraint wt_version_pk primary key (install_dtm)
    ) pctfree 0;
 
 comment on table wt_version is 'Records the installed and upgraded versions.';

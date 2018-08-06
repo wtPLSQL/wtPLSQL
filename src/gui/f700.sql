@@ -13,7 +13,7 @@ prompt  APPLICATION 700 - wtPLSQL Core GUI
 -- Application Export:
 --   Application:     700
 --   Name:            wtPLSQL Core GUI
---   Date and Time:   21:38 Saturday July 28, 2018
+--   Date and Time:   23:46 Wednesday August 1, 2018
 --   Exported By:     WTP
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -146,7 +146,7 @@ wwv_flow_api.create_flow(
   p_default_region_template=> 4840201642414912 + wwv_flow_api.g_id_offset,
   p_error_template=> 4837131094414910 + wwv_flow_api.g_id_offset,
   p_page_protection_enabled_y_n=> 'Y',
-  p_checksum_salt_last_reset => '20180728213827',
+  p_checksum_salt_last_reset => '20180801234656',
   p_max_session_length_sec=> 28800,
   p_home_link=> 'f?p=&APP_ID.:3:&SESSION.',
   p_flow_language=> 'en',
@@ -192,7 +192,7 @@ wwv_flow_api.create_flow(
   p_default_listr_template => 4839116402414912 + wwv_flow_api.g_id_offset,
   p_default_irr_template => 4839831975414912 + wwv_flow_api.g_id_offset,
   p_last_updated_by => 'WTP',
-  p_last_upd_yyyymmddhh24miss=> '20180728213827',
+  p_last_upd_yyyymmddhh24miss=> '20180801234656',
   p_required_roles=> wwv_flow_utilities.string_to_table2(''));
  
  
@@ -668,7 +668,7 @@ wwv_flow_api.create_page (
  ,p_help_text => 
 'No help is available for this page.'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180728144548'
+ ,p_last_upd_yyyymmddhh24miss => '20180801213559'
   );
 null;
  
@@ -851,54 +851,33 @@ end;
 declare
  a1 varchar2(32767) := null;
 begin
-a1:=a1||'with q_max_start as ('||chr(10)||
-'select runner_owner'||chr(10)||
-'      ,runner_name'||chr(10)||
-'      ,max(start_dtm)  MAX_START_DTM'||chr(10)||
-' from  wt_test_runs'||chr(10)||
-' where :P1_OWNER is NULL'||chr(10)||
-'   or  :P1_OWNER = runner_owner'||chr(10)||
-' group by runner_owner'||chr(10)||
-'      ,runner_name'||chr(10)||
+a1:=a1||'with q_main as ('||chr(10)||
+'select sum(res.passes)    PASS'||chr(10)||
+'      ,sum(res.failures)  FAIL'||chr(10)||
+'      ,sum(res.errors)    ERR'||chr(10)||
+' from  wt_test_runs  tr'||chr(10)||
+'       join wt_test_run_stats  res'||chr(10)||
+'            on  res.test_run_id = tr.id'||chr(10)||
+' where (   :P1_OWNER is NULL'||chr(10)||
+'        or :P1_OWNER = tr.runner_owner )'||chr(10)||
+'  and  tr.is_last_run = wtplsql.get_last_run_flag'||chr(10)||
 '), q1 as ('||chr(10)||
-'select NULL             LINK'||chr(10)||
-'      ,''PASS''           LABEL'||chr(10)||
-'      ,sum(res.passes)  VALUE'||chr(10)||
-' from  q_max_start  ms'||chr(10)||
-'       join wt_test_runs  run'||chr(10)||
-'            on  run.runner_own';
+'select NULL       LINK'||chr(10)||
+'      ,''PASS''     LABEL'||chr(10)||
+'      ,pass   ';
 
-a1:=a1||'er = ms.runner_owner'||chr(10)||
-'            and run.runner_name  = ms.runner_name'||chr(10)||
-'            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
-'       join wt_test_run_stats  res'||chr(10)||
-'            on  res.test_run_id = run.id'||chr(10)||
+a1:=a1||'    VALUE'||chr(10)||
+' from  q_main'||chr(10)||
 'union all'||chr(10)||
-'select NULL               LINK'||chr(10)||
-'      ,''FAIL''             LABEL'||chr(10)||
-'      ,sum(res.failures)  VALUE'||chr(10)||
-' from  q_max_start  ms'||chr(10)||
-'       join wt_test_runs  run'||chr(10)||
-'            on  run.runner_owner = ms.runne';
-
-a1:=a1||'r_owner'||chr(10)||
-'            and run.runner_name  = ms.runner_name'||chr(10)||
-'            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
-'       join wt_test_run_stats  res'||chr(10)||
-'            on  res.test_run_id = run.id'||chr(10)||
+'select NULL       LINK'||chr(10)||
+'      ,''FAIL''     LABEL'||chr(10)||
+'      ,fail       VALUE'||chr(10)||
+' from  q_main'||chr(10)||
 'union all'||chr(10)||
-'select NULL             LINK'||chr(10)||
-'      ,''ERR''            LABEL'||chr(10)||
-'      ,sum(res.errors)  VALUE'||chr(10)||
-' from  q_max_start  ms'||chr(10)||
-'       join wt_test_runs  run'||chr(10)||
-'            on  run.runner_owner = ms.runner_owner'||chr(10)||
-'           ';
-
-a1:=a1||' and run.runner_name  = ms.runner_name'||chr(10)||
-'            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
-'       join wt_test_run_stats  res'||chr(10)||
-'            on  res.test_run_id = run.id'||chr(10)||
+'select NULL       LINK'||chr(10)||
+'      ,''ERR''      LABEL'||chr(10)||
+'      ,err        VALUE'||chr(10)||
+' from  q_main'||chr(10)||
 ')'||chr(10)||
 'select link, label, value'||chr(10)||
 ' from  q1'||chr(10)||
@@ -1069,67 +1048,39 @@ end;
 declare
  a1 varchar2(32767) := null;
 begin
-a1:=a1||'with q_max_start as ('||chr(10)||
-'select runner_owner'||chr(10)||
-'      ,runner_name'||chr(10)||
-'      ,max(start_dtm)  MAX_START_DTM'||chr(10)||
-' from  wt_test_runs'||chr(10)||
-' where :P1_OWNER is NULL'||chr(10)||
-'   or  :P1_OWNER = runner_owner'||chr(10)||
-' group by runner_owner'||chr(10)||
-'      ,runner_name'||chr(10)||
+a1:=a1||'with q_main as ('||chr(10)||
+'select sum(res.excluded_lines)   EXCL'||chr(10)||
+'      ,sum(res.executed_lines)   EXEC'||chr(10)||
+'      ,sum(res.notexec_lines)    NOTX'||chr(10)||
+'      ,sum(res.unknown_lines)    UNKN'||chr(10)||
+' from  wt_test_runs  tr'||chr(10)||
+'       join wt_test_run_stats  res'||chr(10)||
+'            on  res.test_run_id = tr.id'||chr(10)||
+' where (   :P1_OWNER is NULL'||chr(10)||
+'        or :P1_OWNER = runner_owner )'||chr(10)||
+'  and  is_last_run = wtplsql.get_last_run_flag'||chr(10)||
 '), q1 as ('||chr(10)||
-'select NULL                 LINK'||chr(10)||
-'      ,''EXCL''               LABEL'||chr(10)||
-'      ,sum(excluded_lines)  VALUE'||chr(10)||
-' from  q_max_start  ms'||chr(10)||
-'       join wt_test_runs  run'||chr(10)||
-'            on  ru';
+'select ';
 
-a1:=a1||'n.runner_owner = ms.runner_owner'||chr(10)||
-'            and run.runner_name  = ms.runner_name'||chr(10)||
-'            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
-'       join wt_test_run_stats  res'||chr(10)||
-'            on  res.test_run_id = run.id'||chr(10)||
+a1:=a1||'NULL    LINK'||chr(10)||
+'      ,''EXCL''  LABEL'||chr(10)||
+'      ,excl    VALUE'||chr(10)||
+' from  q_main'||chr(10)||
 'union all'||chr(10)||
-'select NULL                 LINK'||chr(10)||
-'      ,''EXEC''               LABEL'||chr(10)||
-'      ,sum(executed_lines)  VALUE'||chr(10)||
-' from  q_max_start  ms'||chr(10)||
-'       join wt_test_runs  run'||chr(10)||
-'            on  run.runne';
-
-a1:=a1||'r_owner = ms.runner_owner'||chr(10)||
-'            and run.runner_name  = ms.runner_name'||chr(10)||
-'            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
-'       join wt_test_run_stats  res'||chr(10)||
-'            on  res.test_run_id = run.id'||chr(10)||
+'select NULL    LINK'||chr(10)||
+'      ,''EXEC''  LABEL'||chr(10)||
+'      ,exec    VALUE'||chr(10)||
+' from  q_main'||chr(10)||
 'union all'||chr(10)||
-'select NULL                LINK'||chr(10)||
-'      ,''NOTX''              LABEL'||chr(10)||
-'      ,sum(notexec_lines)  VALUE'||chr(10)||
-' from  q_max_start  ms'||chr(10)||
-'       join wt_test_runs  run'||chr(10)||
-'            on  run.runner_owner = ';
-
-a1:=a1||'ms.runner_owner'||chr(10)||
-'            and run.runner_name  = ms.runner_name'||chr(10)||
-'            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
-'       join wt_test_run_stats  res'||chr(10)||
-'            on  res.test_run_id = run.id'||chr(10)||
+'select NULL    LINK'||chr(10)||
+'      ,''NOTX''  LABEL'||chr(10)||
+'      ,notx    VALUE'||chr(10)||
+' from  q_main'||chr(10)||
 'union all'||chr(10)||
-'select NULL                LINK'||chr(10)||
-'      ,''UNKN''              LABEL'||chr(10)||
-'      ,sum(unknown_lines)  VALUE'||chr(10)||
-' from  q_max_start  ms'||chr(10)||
-'       join wt_test_runs  run'||chr(10)||
-'            on  run.runner_owner = ms.runner_';
-
-a1:=a1||'owner'||chr(10)||
-'            and run.runner_name  = ms.runner_name'||chr(10)||
-'            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
-'       join wt_test_run_stats  res'||chr(10)||
-'            on  res.test_run_id = run.id'||chr(10)||
+'select NULL    LINK'||chr(10)||
+'      ,''UNKN''  LABEL'||chr(10)||
+'      ,unkn    VALUE'||chr(10)||
+' from  q_main'||chr(10)||
 ')'||chr(10)||
 'select link, label, value'||chr(10)||
 ' from  q1'||chr(10)||
@@ -1300,40 +1251,21 @@ end;
 declare
  a1 varchar2(32767) := null;
 begin
-a1:=a1||'with q_max_start as ('||chr(10)||
-'select runner_owner'||chr(10)||
-'      ,runner_name'||chr(10)||
-'      ,max(start_dtm)  MAX_START_DTM'||chr(10)||
-' from  wt_test_runs'||chr(10)||
-' where :P1_OWNER is NULL'||chr(10)||
-'   or  :P1_OWNER = runner_owner'||chr(10)||
-' group by runner_owner'||chr(10)||
-'      ,runner_name'||chr(10)||
-'), q_top_failures as ('||chr(10)||
-'select res.test_run_id'||chr(10)||
-'      ,ms.runner_owner || ''.'' ||'||chr(10)||
-'       ms.runner_name               RUNNER'||chr(10)||
-'      ,res.failures'||chr(10)||
-' from  q_max_start  ms'||chr(10)||
-'       join wt_tes';
-
-a1:=a1||'t_runs  run'||chr(10)||
-'            on  run.runner_owner = ms.runner_owner'||chr(10)||
-'            and run.runner_name  = ms.runner_name'||chr(10)||
-'            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
+a1:=a1||'select tr.id                        LINK'||chr(10)||
+'      ,tr.runner_owner || ''.'' ||'||chr(10)||
+'       tr.runner_name               LABEL'||chr(10)||
+'      ,res.failures                 VALUE'||chr(10)||
+' from  wt_test_runs  tr'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
-'            on  res.test_run_id = run.id'||chr(10)||
-' where res.failures > 0'||chr(10)||
-' order by failures desc, RUNNER'||chr(10)||
-')'||chr(10)||
-'--select * from q_max_start;'||chr(10)||
-'select test_run_id      LINK'||chr(10)||
-'      ,runner           LABEL'||chr(10)||
-'      ,failur';
+'            on  res.test_run_id = tr.id'||chr(10)||
+'            and res.failures    > 0'||chr(10)||
+' where (   :P1_OWNER is NULL'||chr(10)||
+'        or :P1_OWNER = tr.runner_owner )'||chr(10)||
+'  and  tr.is_last_run = wtplsql.get_l';
 
-a1:=a1||'es         VALUE'||chr(10)||
-' from  q_top_failures'||chr(10)||
-' where rownum <= 10';
+a1:=a1||'ast_run_flag'||chr(10)||
+' order by res.failures desc, LABEL'||chr(10)||
+'';
 
 wwv_flow_api.create_flash_chart5_series(
   p_id => 4858000738336332+wwv_flow_api.g_id_offset,
@@ -1346,7 +1278,7 @@ wwv_flow_api.create_flash_chart5_series(
   p_series_query_type         =>'SQL_QUERY',
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
-  p_series_query_row_count_max=>15,
+  p_series_query_row_count_max=>10,
   p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
   p_show_action_link          =>'C',
   p_action_link_checksum_type =>'');
@@ -1500,41 +1432,15 @@ end;
 declare
  a1 varchar2(32767) := null;
 begin
-a1:=a1||'with q_max_start as ('||chr(10)||
-'select runner_owner'||chr(10)||
-'      ,runner_name'||chr(10)||
-'      ,max(start_dtm)  MAX_START_DTM'||chr(10)||
+a1:=a1||'select id                                     LINK'||chr(10)||
+'      ,runner_owner || ''.'' || runner_name     LABEL'||chr(10)||
+'      ,extract(day from (end_dtm - start_dtm)*86400*100)/100'||chr(10)||
+'                                              VALUE'||chr(10)||
 ' from  wt_test_runs'||chr(10)||
-' where :P1_OWNER is NULL'||chr(10)||
-'   or  :P1_OWNER = runner_owner'||chr(10)||
-' group by runner_owner'||chr(10)||
-'      ,runner_name'||chr(10)||
-'), q_top_duration as ('||chr(10)||
-'select run.id                           TEST_RUN_ID'||chr(10)||
-'      ,ms.runner_owner || ''.'' ||'||chr(10)||
-'       ms.runner_name                   RUNNER'||chr(10)||
-'      ,extract(day from (run';
-
-a1:=a1||'.end_dtm -'||chr(10)||
-'                         run.start_dtm)*86400*100)/100'||chr(10)||
-'                                        DURATION_SECS'||chr(10)||
-' from  q_max_start  ms'||chr(10)||
-'       join wt_test_runs  run'||chr(10)||
-'            on  run.runner_owner = ms.runner_owner'||chr(10)||
-'            and run.runner_name  = ms.runner_name'||chr(10)||
-'            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
-' where extract(day from (run.end_dtm -'||chr(10)||
-'                         run.start_';
-
-a1:=a1||'dtm)*86400*100)/100 > 0'||chr(10)||
-' order by duration_secs desc, RUNNER'||chr(10)||
-')'||chr(10)||
-'--select * from q_max_start;'||chr(10)||
-'select test_run_id    LINK'||chr(10)||
-'      ,runner         LABEL'||chr(10)||
-'      ,duration_secs  VALUE'||chr(10)||
-' from  q_top_duration'||chr(10)||
-' where rownum <= 10';
+' where is_last_run = wtplsql.get_last_run_flag'||chr(10)||
+'  and  extract(day from (end_dtm - start_dtm)*86400*100)/100 > 0'||chr(10)||
+' order by VALUE desc, LABEL'||chr(10)||
+'';
 
 wwv_flow_api.create_flash_chart5_series(
   p_id => 4858612747526709+wwv_flow_api.g_id_offset,
@@ -1547,7 +1453,7 @@ wwv_flow_api.create_flash_chart5_series(
   p_series_query_type         =>'SQL_QUERY',
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
-  p_series_query_row_count_max=>15,
+  p_series_query_row_count_max=>10,
   p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
   p_show_action_link          =>'C',
   p_action_link_checksum_type =>'');
@@ -1701,40 +1607,21 @@ end;
 declare
  a1 varchar2(32767) := null;
 begin
-a1:=a1||'with q_max_start as ('||chr(10)||
-'select runner_owner'||chr(10)||
-'      ,runner_name'||chr(10)||
-'      ,max(start_dtm)  MAX_START_DTM'||chr(10)||
+a1:=a1||'select id                           LINK'||chr(10)||
+'      ,runner_owner || ''.'' ||'||chr(10)||
+'       runner_name                  LABEL'||chr(10)||
+'      ,extract(day from (sysdate - start_dtm)*10)/10'||chr(10)||
+'                                    VALUE'||chr(10)||
 ' from  wt_test_runs'||chr(10)||
-' where :P1_OWNER is NULL'||chr(10)||
-'   or  :P1_OWNER = runner_owner'||chr(10)||
-' group by runner_owner'||chr(10)||
-'      ,runner_name'||chr(10)||
-'), q_top_duration as ('||chr(10)||
-'select run.id                             TEST_RUN_ID'||chr(10)||
-'      ,ms.runner_owner || ''.'' ||'||chr(10)||
-'       ms.runner_name                     RUNNER'||chr(10)||
-'      ,extract(day from ';
+' where (   :P1_OWNER is NULL'||chr(10)||
+'        or :P1_OWNER = runner_owner )'||chr(10)||
+'  and  is_last_run = wtplsql.get_last_run_flag'||chr(10)||
+'  and  start_dtm is not null'||chr(10)||
+'  and  extract(day from (sysd';
 
-a1:=a1||'(sysdate - run.start_dtm)*10)/10'||chr(10)||
-'                                          AGE_DAYS'||chr(10)||
-' from  q_max_start  ms'||chr(10)||
-'       join wt_test_runs  run'||chr(10)||
-'            on  run.runner_owner = ms.runner_owner'||chr(10)||
-'            and run.runner_name  = ms.runner_name'||chr(10)||
-'            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
-' where run.start_dtm is not null'||chr(10)||
-'  and  extract(day from (sysdate - run.start_dtm)*10)/10 > 0'||chr(10)||
-' order by AGE_DA';
-
-a1:=a1||'YS desc, RUNNER'||chr(10)||
-')'||chr(10)||
-'--select * from q_max_start;'||chr(10)||
-'select test_run_id  LINK'||chr(10)||
-'      ,runner       LABEL'||chr(10)||
-'      ,age_days     VALUE'||chr(10)||
-' from  q_top_duration'||chr(10)||
-' where rownum <= 10';
+a1:=a1||'ate - start_dtm)*10)/10 > 0'||chr(10)||
+' order by VALUE desc, LABEL'||chr(10)||
+'';
 
 wwv_flow_api.create_flash_chart5_series(
   p_id => 4860108666458221+wwv_flow_api.g_id_offset,
@@ -1747,7 +1634,7 @@ wwv_flow_api.create_flash_chart5_series(
   p_series_query_type         =>'SQL_QUERY',
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
-  p_series_query_row_count_max=>15,
+  p_series_query_row_count_max=>10,
   p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
   p_show_action_link          =>'C',
   p_action_link_checksum_type =>'');
@@ -1901,42 +1788,23 @@ end;
 declare
  a1 varchar2(32767) := null;
 begin
-a1:=a1||'with q_max_start as ('||chr(10)||
-'select runner_owner'||chr(10)||
-'      ,runner_name'||chr(10)||
-'      ,max(start_dtm)  MAX_START_DTM'||chr(10)||
-' from  wt_test_runs'||chr(10)||
-' where :P1_OWNER is NULL'||chr(10)||
-'   or  :P1_OWNER = runner_owner'||chr(10)||
-' group by runner_owner'||chr(10)||
-'      ,runner_name'||chr(10)||
-'), q_top_notexec as ('||chr(10)||
-'select res.test_run_id'||chr(10)||
+a1:=a1||'select run.id                       LINK'||chr(10)||
 '      ,run.dbout_owner || ''.'' ||'||chr(10)||
 '       run.dbout_name  || ''('' ||'||chr(10)||
-'       run.dbout_type  || '')''       DBOUT'||chr(10)||
-'      ,res.notexec_lines'||chr(10)||
-' from';
-
-a1:=a1||'  q_max_start  ms'||chr(10)||
-'       join wt_test_runs  run'||chr(10)||
-'            on  run.runner_owner = ms.runner_owner'||chr(10)||
-'            and run.runner_name  = ms.runner_name'||chr(10)||
-'            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
+'       run.dbout_type  || '')''       LABEL'||chr(10)||
+'      ,res.notexec_lines            VALUE'||chr(10)||
+' from  wt_test_runs  run'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
-'            on  res.test_run_id = run.id'||chr(10)||
-' where run.dbout_name is not null'||chr(10)||
-'  and  res.notexec_lines > 0'||chr(10)||
-' order by notexec_lines desc, DBOUT'||chr(10)||
-')'||chr(10)||
-'--select * from q_max_';
+'            on  res.test_run_id   = run.id'||chr(10)||
+'            and res.notexec_lines > 0'||chr(10)||
+' where (   :P1_OWNER is NULL'||chr(10)||
+'        or :P1_OWNER = run.runner_owner';
 
-a1:=a1||'start;'||chr(10)||
-'select test_run_id      LINK'||chr(10)||
-'      ,dbout            LABEL'||chr(10)||
-'      ,notexec_lines    VALUE'||chr(10)||
-' from  q_top_notexec'||chr(10)||
-' where rownum <= 10';
+a1:=a1||' )'||chr(10)||
+'  and  run.is_last_run = wtplsql.get_last_run_flag'||chr(10)||
+'  and  run.dbout_name is not null'||chr(10)||
+' order by res.notexec_lines desc, LABEL'||chr(10)||
+'';
 
 wwv_flow_api.create_flash_chart5_series(
   p_id => 4860628410584610+wwv_flow_api.g_id_offset,
@@ -1949,7 +1817,7 @@ wwv_flow_api.create_flash_chart5_series(
   p_series_query_type         =>'SQL_QUERY',
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
-  p_series_query_row_count_max=>15,
+  p_series_query_row_count_max=>10,
   p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
   p_show_action_link          =>'C',
   p_action_link_checksum_type =>'');
@@ -2103,38 +1971,7 @@ end;
 declare
  a1 varchar2(32767) := null;
 begin
-a1:=a1||'with q_max_start as ('||chr(10)||
-'select runner_owner'||chr(10)||
-'      ,runner_name'||chr(10)||
-'      ,max(start_dtm)  MAX_START_DTM'||chr(10)||
-' from  wt_test_runs'||chr(10)||
-' where :P1_OWNER is NULL'||chr(10)||
-'   or  :P1_OWNER = runner_owner'||chr(10)||
-' group by runner_owner'||chr(10)||
-'      ,runner_name'||chr(10)||
-'), q_top_failures as ('||chr(10)||
-'select run.id                     TEST_RUN_ID'||chr(10)||
-'      ,tc.testcase'||chr(10)||
-'      ,ms.runner_owner || ''.'' ||'||chr(10)||
-'       ms.runner_name  || '':'' ||'||chr(10)||
-'       tc.testcase           ';
-
-a1:=a1||'     TESTCASE_LABEL'||chr(10)||
-'      ,tc.failures'||chr(10)||
-' from  q_max_start  ms'||chr(10)||
-'       join wt_test_runs  run'||chr(10)||
-'            on  run.runner_owner = ms.runner_owner'||chr(10)||
-'            and run.runner_name  = ms.runner_name'||chr(10)||
-'            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
-'       join wt_testcase_stats  tc'||chr(10)||
-'            on  tc.test_run_id = run.id'||chr(10)||
-' where tc.failures > 0'||chr(10)||
-' order by failures desc, TESTCASE'||chr(10)||
-')'||chr(10)||
-'--select * from q_max_';
-
-a1:=a1||'start;'||chr(10)||
-'select ''f?p='' || :APP_ID               ||'||chr(10)||
+a1:=a1||'select ''f?p='' || :APP_ID               ||'||chr(10)||
 '          '':'' || ''6''                   ||     -- Page'||chr(10)||
 '          '':'' || :APP_SESSION          ||'||chr(10)||
 '          '':'' || :REQUEST              ||'||chr(10)||
@@ -2142,16 +1979,26 @@ a1:=a1||'start;'||chr(10)||
 '          '':'' || ''N''                   ||     -- CLear Cache'||chr(10)||
 '          '':'' || ''P6_TEST_RUN_ID''      || '','' ||'||chr(10)||
 '                 ''P6_TESTCASE_NAME''    ||     -- Item Names'||chr(10)||
-' ';
+'        ';
 
-a1:=a1||'         '':'' || test_run_id           || '','' ||'||chr(10)||
-'                 testcase              ||     -- Item Values'||chr(10)||
-'          '':'' || V(''PRINTER_FRIENDLY'')'||chr(10)||
-'                       LINK'||chr(10)||
-'      ,testcase_label  LABEL'||chr(10)||
-'      ,failures        VALUE'||chr(10)||
-' from  q_top_failures'||chr(10)||
-' where rownum <= 10';
+a1:=a1||'  '':'' || run.id                || '','' ||'||chr(10)||
+'                 tc.testcase           ||     -- Item Values'||chr(10)||
+'          '':'' || V(''PRINTER_FRIENDLY'')    LINK'||chr(10)||
+'      ,run.runner_owner || ''.'' ||'||chr(10)||
+'       run.runner_name  || '':'' ||'||chr(10)||
+'       tc.testcase                        LABEL'||chr(10)||
+'      ,tc.failures                        VALUE'||chr(10)||
+' from  wt_test_runs  run'||chr(10)||
+'       join wt_testcase_stats  tc'||chr(10)||
+'            on  tc.test_run_';
+
+a1:=a1||'id = run.id'||chr(10)||
+'            and tc.failures    > 0'||chr(10)||
+' where (   :P1_OWNER is NULL'||chr(10)||
+'        or :P1_OWNER = runner_owner )'||chr(10)||
+'  and  is_last_run = wtplsql.get_last_run_flag'||chr(10)||
+' order by failures desc, TESTCASE'||chr(10)||
+'';
 
 wwv_flow_api.create_flash_chart5_series(
   p_id => 4861511054133729+wwv_flow_api.g_id_offset,
@@ -2164,7 +2011,7 @@ wwv_flow_api.create_flash_chart5_series(
   p_series_query_type         =>'SQL_QUERY',
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
-  p_series_query_row_count_max=>15,
+  p_series_query_row_count_max=>10,
   p_action_link               =>'',
   p_show_action_link          =>'N',
   p_action_link_checksum_type =>'');
@@ -2318,41 +2165,22 @@ end;
 declare
  a1 varchar2(32767) := null;
 begin
-a1:=a1||'with q_max_start as ('||chr(10)||
-'select runner_owner'||chr(10)||
-'      ,runner_name'||chr(10)||
-'      ,max(start_dtm)  MAX_START_DTM'||chr(10)||
-' from  wt_test_runs'||chr(10)||
-' where :P1_OWNER is NULL'||chr(10)||
-'   or  :P1_OWNER = runner_owner'||chr(10)||
-' group by runner_owner'||chr(10)||
-'      ,runner_name'||chr(10)||
-'), q_top_duration as ('||chr(10)||
-'select res.test_run_id'||chr(10)||
+a1:=a1||'select res.test_run_id                  LINK'||chr(10)||
 '      ,run.dbout_owner || ''.'' ||'||chr(10)||
 '       run.dbout_name  || ''('' ||'||chr(10)||
-'       run.dbout_type  || '')''           DBOUT'||chr(10)||
-'      ,res.max_executed_u';
-
-a1:=a1||'secs/1000      MAX_MSECS'||chr(10)||
-' from  q_max_start  ms'||chr(10)||
-'       join wt_test_runs  run'||chr(10)||
-'            on  run.runner_owner = ms.runner_owner'||chr(10)||
-'            and run.runner_name  = ms.runner_name'||chr(10)||
-'            and run.start_dtm    = ms.max_start_dtm'||chr(10)||
+'       run.dbout_type  || '')''           LABEL'||chr(10)||
+'      ,res.max_executed_usecs/1000      VALUE'||chr(10)||
+' from  wt_test_runs  run'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
-'            on   res.test_run_id = run.id'||chr(10)||
-' where res.max_executed_usecs > 0'||chr(10)||
-' order by MAX_MSECS desc, DBOUT'||chr(10)||
-')'||chr(10)||
-'--select * from q_max_st';
+'            on  res.test_run_id        = run.id'||chr(10)||
+'            and res.max_executed_usecs > 0'||chr(10)||
+' where (   :P1_OWNER is NULL'||chr(10)||
+'        or :P1_OW';
 
-a1:=a1||'art;'||chr(10)||
-'select test_run_id  LINK'||chr(10)||
-'      ,dbout        LABEL'||chr(10)||
-'      ,max_msecs    VALUE'||chr(10)||
-' from  q_top_duration'||chr(10)||
-' where rownum <= 10';
+a1:=a1||'NER = run.runner_owner )'||chr(10)||
+'  and  run.is_last_run = wtplsql.get_last_run_flag'||chr(10)||
+' order by VALUE desc, LABEL'||chr(10)||
+'';
 
 wwv_flow_api.create_flash_chart5_series(
   p_id => 4861925325144344+wwv_flow_api.g_id_offset,
@@ -2365,7 +2193,7 @@ wwv_flow_api.create_flash_chart5_series(
   p_series_query_type         =>'SQL_QUERY',
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
-  p_series_query_row_count_max=>15,
+  p_series_query_row_count_max=>10,
   p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
   p_show_action_link          =>'C',
   p_action_link_checksum_type =>'');
@@ -2657,32 +2485,19 @@ declare
   l_clob clob;
   l_length number := 1;
 begin
-s:=s||'with q_max_start as ('||chr(10)||
-'select runner_owner'||chr(10)||
-'      ,runner_name'||chr(10)||
-'      ,max(start_dtm)  MAX_START_DTM'||chr(10)||
+s:=s||'select id'||chr(10)||
+'      ,runner_owner || ''.'' ||'||chr(10)||
+'       runner_name             TEST_RUNNER'||chr(10)||
+'      ,dbout_owner || ''.'' ||'||chr(10)||
+'       dbout_name  || ''('' ||'||chr(10)||
+'       dbout_type  || '')''      DBOUT_PROFILED'||chr(10)||
+'      ,start_dtm'||chr(10)||
+'      ,error_message'||chr(10)||
 ' from  wt_test_runs'||chr(10)||
-' where :P1_OWNER is NULL'||chr(10)||
-'   or  :P1_OWNER = runner_owner'||chr(10)||
-' group by runner_owner'||chr(10)||
-'      ,runner_name'||chr(10)||
-')'||chr(10)||
-'select run.id'||chr(10)||
-'      ,q1.runner_owner || ''.'' ||'||chr(10)||
-'       q1.runner_name         TEST_RUNNER'||chr(10)||
-'      ,run.dbout_owner || ''.'' ||'||chr(10)||
-'       run.dbout_name  || ''('' ||'||chr(10)||
-'       run.dbout_type  || ';
-
-s:=s||''')''  DBOUT_PROFILED'||chr(10)||
-'      ,run.start_dtm'||chr(10)||
-'      ,run.error_message'||chr(10)||
-' from  q_max_start  q1'||chr(10)||
-'       join wt_test_runs  run'||chr(10)||
-'            on  run.runner_owner = q1.runner_owner'||chr(10)||
-'            and run.runner_name  = q1.runner_name'||chr(10)||
-'            and run.start_dtm    = q1.max_start_dtm'||chr(10)||
-' where run.error_message is not null';
+' where (   :P1_OWNER is NULL'||chr(10)||
+'        or :P1_OWNER = runner_owner )'||chr(10)||
+'  and  is_last_run = wtplsql.get_last_run_flag'||chr(10)||
+'  and  error_message is not null';
 
 wwv_flow_api.create_report_region (
   p_id=> 4869425043509942 + wwv_flow_api.g_id_offset,
@@ -3314,7 +3129,7 @@ wwv_flow_api.create_page (
  ,p_help_text => 
 'No help is available for this page.'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180718225301'
+ ,p_last_upd_yyyymmddhh24miss => '20180731230050'
   );
 null;
  
@@ -4426,14 +4241,15 @@ wwv_flow_api.create_page_item(
   p_attribute_01 => 'N',
   p_attribute_02 => 'PLSQL',
   p_attribute_03 => 'declare'||chr(10)||
-'   max_id   number;'||chr(10)||
+'   last_run_id   number;'||chr(10)||
 'begin'||chr(10)||
 '   -- Group Function never returns NO_DATA_FOUND'||chr(10)||
-'   select max(id) into max_id'||chr(10)||
+'   select id into last_run_id'||chr(10)||
 '    from  wt_test_runs'||chr(10)||
 '    where runner_owner = :APP_USER'||chr(10)||
-'     and  runner_name  = :P2_TEST_RUNNER;'||chr(10)||
-'   if max_id is not null'||chr(10)||
+'     and  runner_name  = :P2_TEST_RUNNER'||chr(10)||
+'     and  is_last_run = ''Y'';'||chr(10)||
+'   if last_run_id is not null'||chr(10)||
 '   then'||chr(10)||
 '      htp.p(''<a href="f?p='' || :APP_ID               ||'||chr(10)||
 '                        '':'' || ''3''                   ||     -- Page'||chr(10)||
@@ -4442,9 +4258,10 @@ wwv_flow_api.create_page_item(
 '                        '':'' || :DEBUG                ||'||chr(10)||
 '                        '':'' || ''N''                   ||     -- CLear Cache'||chr(10)||
 '                        '':'' || ''P3_TEST_RUN_ID''      ||     -- Item Names'||chr(10)||
-'                        '':'' || max_id                ||     -- Item Values'||chr(10)||
+'                        '':'' || last_run_id           ||     -- Item Values'||chr(10)||
 '                        '':'' || V(''PRINTER_FRIENDLY'') ||'||chr(10)||
-'                       ''">'' || max_id || '' (Click to View)'' || ''</a>'');'||chr(10)||
+'                       ''">'' || last_run_id           ||'||chr(10)||
+'                                  '' (Click to View)'' || ''</a>'');'||chr(10)||
 '   end if;'||chr(10)||
 'end;',
   p_show_quick_picks=>'N',
@@ -4635,7 +4452,7 @@ wwv_flow_api.create_page (
  ,p_help_text => 
 'No help is available for this page.'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180728193857'
+ ,p_last_upd_yyyymmddhh24miss => '20180731225449'
   );
 null;
  
@@ -10089,7 +9906,7 @@ wwv_flow_api.create_page (
  ,p_help_text => 
 'No help is available for this page.'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180728211729'
+ ,p_last_upd_yyyymmddhh24miss => '20180730195029'
   );
 null;
  
@@ -12254,27 +12071,25 @@ p:=p||'declare'||chr(10)||
 '   item_values   varchar2(4000);   -- Comma Delimited Values'||chr(10)||
 '   --'||chr(10)||
 '   procedure find_test_run_id is begin'||chr(10)||
-'      select max(id) into :P6_TEST_RUN_ID'||chr(10)||
-'       from wt_test_runs tr'||chr(10)||
-'       where runner_owner = :APP_US';
+'      select max(tc.test_run_id) into :P6_TEST_RUN_ID'||chr(10)||
+'       from wt_test_runs  tr'||chr(10)||
+'            join wt_te';
 
-p:=p||'ER'||chr(10)||
-'        and  exists (select ''x'' from wt_testcase_stats tc'||chr(10)||
-'                      where tc.test_run_id = tr.id'||chr(10)||
-'                    );'||chr(10)||
+p:=p||'stcase_stats  tc'||chr(10)||
+'                 on  tc.test_run_id = tr.id'||chr(10)||
+'       where tr.runner_owner = :APP_USER;'||chr(10)||
 '      if :P6_TEST_RUN_ID is NULL'||chr(10)||
 '      then'||chr(10)||
-'         select max(id) into :P6_TEST_RUN_ID'||chr(10)||
-'          from  wt_test_runs tr'||chr(10)||
-'          where exists (select ''x'' from wt_testcase_stats tc'||chr(10)||
-'                         where tc.test_run_id = tr.id'||chr(10)||
-'                       );'||chr(10)||
-'   ';
-
-p:=p||'   end if;'||chr(10)||
+'         select max(tc.test_run_id) into :P6_TEST_RUN_ID'||chr(10)||
+'          from wt_test_runs  tr'||chr(10)||
+'               join wt_testcase_stats  tc'||chr(10)||
+'                    on  tc.test_run_id = tr.id;'||chr(10)||
+'      end if;'||chr(10)||
 '   end find_test_run_id;'||chr(10)||
 '   --'||chr(10)||
-'   procedure process_test_run_id is begin'||chr(10)||
+'   procedure process_test_run';
+
+p:=p||'_id is begin'||chr(10)||
 '      for buff in ('||chr(10)||
 '         select tr.runner_owner'||chr(10)||
 '               ,tr.runner_name'||chr(10)||
@@ -12283,35 +12098,35 @@ p:=p||'   end if;'||chr(10)||
 '          from  wt_test_runs  tr'||chr(10)||
 '          where id = :P6_TEST_RUN_ID )  -- Primary Key, Only 1 row in loop'||chr(10)||
 '      loop'||chr(10)||
-'         :P';
+'         :P6_RUNNER_OWNER   := buff.runner_owner;'||chr(10)||
+'         :P6_RUNNER_NAME    := b';
 
-p:=p||'6_RUNNER_OWNER   := buff.runner_owner;'||chr(10)||
-'         :P6_RUNNER_NAME    := buff.runner_name;'||chr(10)||
+p:=p||'uff.runner_name;'||chr(10)||
 '         :P6_START_DTM      := buff.start_dtm;'||chr(10)||
 '         :P6_TEST_RUN_ERROR := buff.error_message;'||chr(10)||
 '         if buff.runner_owner = :APP_USER'||chr(10)||
 '         then'||chr(10)||
 '            page                 := ''2'';'||chr(10)||
 '            item_names           := ''P'' || page || ''_TEST_RUNNER'';'||chr(10)||
-'            item_values          := buff.runner_na';
+'            item_values          := buff.runner_name;'||chr(10)||
+'            :P6_RUNNER_NAME_DISP := ''<a href="f?p='' || :APP_ID     ';
 
-p:=p||'me;'||chr(10)||
-'            :P6_RUNNER_NAME_DISP := ''<a href="f?p='' || :APP_ID               ||'||chr(10)||
+p:=p||'          ||'||chr(10)||
 '                                                '':'' || page                  ||'||chr(10)||
 '                                                '':'' || :APP_SESSION          ||'||chr(10)||
 '                                                '':'' || :REQUEST              ||'||chr(10)||
-'                                                '':'' || :DEBUG               ';
+'                                                '':'' || :DEBUG                ||'||chr(10)||
+'                                                '':'' || clear_cache ';
 
-p:=p||' ||'||chr(10)||
-'                                                '':'' || clear_cache           ||'||chr(10)||
+p:=p||'          ||'||chr(10)||
 '                                                '':'' || item_names            ||'||chr(10)||
 '                                                '':'' || item_values           ||'||chr(10)||
 '                                                '':'' || V(''PRINTER_FRIENDLY'') ||'||chr(10)||
-'                                               ''">'' || buff.runner_name     ';
-
-p:=p||' ||'||chr(10)||
+'                                               ''">'' || buff.runner_name      ||'||chr(10)||
 '                              ''</a> (Click to Run)'' ;'||chr(10)||
-'         else'||chr(10)||
+'         else';
+
+p:=p||''||chr(10)||
 '            :P6_RUNNER_NAME_DISP := buff.runner_name;'||chr(10)||
 '         end if;'||chr(10)||
 '      end loop;'||chr(10)||
@@ -12320,10 +12135,10 @@ p:=p||' ||'||chr(10)||
 '   function check_testcase_name return boolean is begin'||chr(10)||
 '      for buff in (select ''x'' from wt_testcase_stats'||chr(10)||
 '                    where test_run_id = :P6_TEST_RUN_ID'||chr(10)||
-'                     and  testcase    = :P';
+'                     and  testcase    = :P6_TESTCASE_NAME )'||chr(10)||
+'                   -- Primary Key, Only returns 1 row';
 
-p:=p||'6_TESTCASE_NAME )'||chr(10)||
-'                   -- Primary Key, Only returns 1 row'||chr(10)||
+p:=p||''||chr(10)||
 '      loop'||chr(10)||
 '         return TRUE;'||chr(10)||
 '      end loop;'||chr(10)||
@@ -12337,26 +12152,26 @@ p:=p||'6_TESTCASE_NAME )'||chr(10)||
 '       where test_run_id = :P6_TEST_RUN_ID;'||chr(10)||
 '   end find_testcase_name;'||chr(10)||
 '   --'||chr(10)||
-'   procedure proce';
-
-p:=p||'ss_testcase_name is begin'||chr(10)||
+'   procedure process_testcase_name is begin'||chr(10)||
 '      page                 := ''3'';'||chr(10)||
-'      item_names           := ''P'' || page || ''_TEST_RUN_ID'';'||chr(10)||
+'      item';
+
+p:=p||'_names           := ''P'' || page || ''_TEST_RUN_ID'';'||chr(10)||
 '      item_values          := :P6_TEST_RUN_ID;'||chr(10)||
 '      :P6_TEST_RUN_ID_DISP := ''<a href="f?p='' || :APP_ID               ||'||chr(10)||
 '                                          '':'' || page                  ||'||chr(10)||
 '                                          '':'' || :APP_SESSION          ||'||chr(10)||
-'         ';
+'                                          '':'' || :REQUEST              ||'||chr(10)||
+'      ';
 
-p:=p||'                                 '':'' || :REQUEST              ||'||chr(10)||
-'                                          '':'' || :DEBUG                ||'||chr(10)||
+p:=p||'                                    '':'' || :DEBUG                ||'||chr(10)||
 '                                          '':'' || clear_cache           ||'||chr(10)||
 '                                          '':'' || item_names            ||'||chr(10)||
 '                                          '':'' || item_values           ||'||chr(10)||
-'                                       ';
+'                                          '':'' || V(''PRINTER_FRIENDLY'') ||'||chr(10)||
+'                                    ';
 
-p:=p||'   '':'' || V(''PRINTER_FRIENDLY'') ||'||chr(10)||
-'                                         ''">'' || :P6_TEST_RUN_ID       || ''</a>'';'||chr(10)||
+p:=p||'     ''">'' || :P6_TEST_RUN_ID       || ''</a>'';'||chr(10)||
 '      select max(tot_interval_msecs)    -- Need Group Function for NULL'||chr(10)||
 '        into :P6_TOTAL_ELAPSED'||chr(10)||
 '       from  wt_testcase_stats'||chr(10)||
@@ -12366,11 +12181,11 @@ p:=p||'   '':'' || V(''PRINTER_FRIENDLY'') ||'||chr(10)||
 '   --'||chr(10)||
 'begin'||chr(10)||
 '   --'||chr(10)||
-'   if :P6_GO';
-
-p:=p||'TO_TCASE is NOT NULL'||chr(10)||
+'   if :P6_GOTO_TCASE is NOT NULL'||chr(10)||
 '   then'||chr(10)||
-'      -- The LOV was triggered, so set Test Case and go.'||chr(10)||
+'      -- The LOV was triggered, so set Tes';
+
+p:=p||'t Case and go.'||chr(10)||
 '      :P6_TESTCASE_NAME := :P6_GOTO_TCASE;'||chr(10)||
 '      :P6_GOTO_TCASE    := NULL;'||chr(10)||
 '      :P6_GOTO_RUN_ID   := NULL;'||chr(10)||
@@ -12381,12 +12196,12 @@ p:=p||'TO_TCASE is NOT NULL'||chr(10)||
 '   if :P6_GOTO_RUN_ID is NOT NULL'||chr(10)||
 '   then'||chr(10)||
 '      -- The LOV was triggered, Set Test Run.'||chr(10)||
-'      :P6_TEST_RUN_';
-
-p:=p||'ID := :P6_GOTO_RUN_ID;'||chr(10)||
+'      :P6_TEST_RUN_ID := :P6_GOTO_RUN_ID;'||chr(10)||
 '      :P6_GOTO_RUN_ID := NULL;'||chr(10)||
 '   else'||chr(10)||
-'      if :P6_TEST_RUN_ID is NULL'||chr(10)||
+'      if ';
+
+p:=p||':P6_TEST_RUN_ID is NULL'||chr(10)||
 '      then'||chr(10)||
 '         -- Must have a Test Run ID'||chr(10)||
 '         find_test_run_id;'||chr(10)||
@@ -12400,9 +12215,7 @@ p:=p||'ID := :P6_GOTO_RUN_ID;'||chr(10)||
 '      -- Must set a Test Case'||chr(10)||
 '      find_testcase_name;'||chr(10)||
 '   end if;'||chr(10)||
-'   -- Set (or Reset) th';
-
-p:=p||'e Test Case dependents.'||chr(10)||
+'   -- Set (or Reset) the Test Case dependents.'||chr(10)||
 '   process_testcase_name;'||chr(10)||
 '   --'||chr(10)||
 'end;';

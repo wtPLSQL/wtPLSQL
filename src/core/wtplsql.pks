@@ -2,6 +2,11 @@ create or replace package wtplsql authid current_user
 as
    -- AUTHID CURRENT_USER is required for dynamic PL/SQL execution.
 
+   IS_LAST_RUN_FLAG  constant varchar2(1) := 'Y';
+
+   function get_last_run_flag
+      return varchar2;
+
    function show_version
       return varchar2;
 

@@ -64,7 +64,7 @@ $THEN
       end l_test_sqlerrm;
    begin
       --------------------------------------  WTPLSQL Testing --
-      -- This Test Case runs in the EXECUTE IMMEDAITE in the TEST_RUN
+      -- This Test Case runs in the EXECUTE IMMEDIATE in the TEST_RUN
       --   procedure in this package.
       wt_assert.g_testcase := 'CHECK_RUNNER Sad Path 1';
       begin
@@ -102,14 +102,14 @@ begin
       return;
    end if;
    g_test_runs_rec.end_dtm := systimestamp;
+   update wt_test_runs
+     set  is_last_run = NULL
+    where runner_owner = g_test_runs_rec.runner_owner
+     and  runner_name  = g_test_runs_rec.runner_name
+     and  is_last_run  = IS_LAST_RUN_FLAG;
    insert into wt_test_runs values g_test_runs_rec;
    g_test_runs_rec := l_wt_test_runs_recNULL;
    COMMIT;
-exception
-   when OTHERS
-   then
-      DBMS_OUTPUT.PUT_LINE(dbms_utility.format_error_stack ||
-                           dbms_utility.format_error_backtrace);
 end insert_test_run;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -143,64 +143,6 @@ $THEN
          check_query_in   => 'select count(*) from wt_test_runs' ||
                              ' where id = ' || l_test_runs_rec.id,
          against_value_in => 0);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'INSERT_TEST_RUN Sad Path 1';
-      -- Save/Clear the DBMS_OUPTUT Buffer
-      loop
-         DBMS_OUTPUT.GET_LINE (
-            line   => l_dbmsout_line,
-            status => l_dbmsout_stat);
-         exit when l_dbmsout_stat != 0;
-         l_dbmsout_buff(l_dbmsout_buff.COUNT) := l_dbmsout_line;
-         l_dbmsout_buff.extend;
-      end loop;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnotnull (
-         msg_in        => 'l_dbmsout_buff.COUNT - 1',
-         check_this_in => l_dbmsout_buff.COUNT - 1);
-      --------------------------------------  WTPLSQL Testing --
-      select count(*) into l_num_recs from wt_test_runs;
-      l_test_runs_rec := g_test_runs_rec;
-      g_test_runs_rec.start_dtm := null;
-      insert_test_run;
-      g_test_runs_rec := l_test_runs_rec;
-      wt_assert.eqqueryvalue (
-         msg_in           => 'Number of Records should stay the same',
-         check_query_in   => 'select count(*) from wt_test_runs',
-         against_value_in => l_num_recs);
-      --------------------------------------  WTPLSQL Testing --
-      DBMS_OUTPUT.GET_LINE (
-         line   => l_dbmsout_line,
-         status => l_dbmsout_stat);
-      wt_assert.eq (
-         msg_in          => 'DBMS_OUTPUT Status',
-         check_this_in   => l_dbmsout_stat,
-         against_this_in => 0);
-      --------------------------------------  WTPLSQL Testing --
-      if wt_assert.last_pass
-      then
-         wt_assert.isnotnull (
-            msg_in        => 'DBMS_OUTPUT Line',
-            check_this_in => l_dbmsout_line);
-         wt_assert.this (
-            msg_in        => 'Confirm DBMS_OUTPUT Line text',
-            check_this_in => (l_dbmsout_line like 'ORA-01400: cannot insert NULL into ("WTP"."WT_TEST_RUNS"."START_DTM")%'));
-      --------------------------------------  WTPLSQL Testing --
-         if not wt_assert.last_pass
-         then
-            -- No match, put the line back into DBMS_OUTPUT buffer and end this.
-            DBMS_OUTPUT.PUT_LINE(l_dbmsout_line);
-         end if;
-      end if;
-      --------------------------------------  WTPLSQL Testing --
-      -- Restore the DBMS_OUPTUT Buffer
-      for i in 1 .. l_dbmsout_buff.COUNT - 1
-      loop
-         DBMS_OUTPUT.PUT_LINE(l_dbmsout_buff(i));
-      end loop;
-      wt_assert.isnotnull (
-         msg_in        => 'l_dbmsout_buff.COUNT - 1',
-         check_this_in =>  l_dbmsout_buff.COUNT - 1);
    end t_insert_test_run;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
@@ -209,6 +151,14 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --  Public Procedures
 ---------------------
 
+
+------------------------------------------------------------
+function get_last_run_flag
+      return varchar2
+is
+begin
+   return IS_LAST_RUN_FLAG;
+end get_last_run_flag;
 
 ------------------------------------------------------------
 function show_version
@@ -241,6 +191,7 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       insert into wt_version (install_dtm, action, text)
          values (to_date('31-DEC-4000','DD-MON-YYYY'), 'TESTING', 'TESTING');
+      rollback;
       wt_assert.eq (
          msg_in          => 'Test New Version',
          check_this_in   => show_version,
@@ -280,7 +231,6 @@ begin
          test_all_aa(in_package_name) := 'X';
          return;
       end if;
-      --DBMS_OUTPUT.PUT_LINE('DEBUG WTPLSQL selftest Enabled for Test Runner "' || in_package_name || '"');
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    -- Reset the Test Runs Record before checking anything
    g_test_runs_rec               := l_test_runs_rec_NULL;
@@ -290,6 +240,7 @@ begin
    --g_test_runs_rec.runner_owner  := sys_context('userenv', 'current_schema');
    select username into g_test_runs_rec.runner_owner from user_users;
    g_test_runs_rec.runner_name   := in_package_name;
+   g_test_runs_rec.is_last_run   := IS_LAST_RUN_FLAG;
    g_test_runs_rec.error_message := '';
    check_runner;
    -- Initialize
@@ -336,11 +287,9 @@ exception
          DBMS_OUTPUT.PUT_LINE(g_test_runs_rec.error_message);
       else
          concat_err_message;
-         insert_test_run;    -- Autonomous Transaction COMMIT
+         raise_application_error(-20000,
+            substr(g_test_runs_rec.error_message,1,2048));
       end if;
-      wt_profiler.finalize;       -- Autonomous Transaction COMMIT
-      wt_result.finalize;         -- Autonomous Transaction COMMIT
-      wt_test_run_stat.finalize;  -- Autonomous Transaction COMMIT
 
 end test_run;
 
@@ -404,13 +353,39 @@ procedure delete_runs
       (in_test_run_id  in number)
 is
    PRAGMA AUTONOMOUS_TRANSACTION;
+   r_owner   varchar2(200);
+   r_name    varchar2(200);
 begin
    -- Profiler delete must be first because it contains a
    --    PRAGMA AUTONOMOUS_TRANSACTION
    wt_test_run_stat.delete_records(in_test_run_id);
    wt_profiler.delete_records(in_test_run_id);
    wt_result.delete_records(in_test_run_id);
-   delete from wt_test_runs where id = in_test_run_id;
+   begin
+      --
+      select runner_owner, runner_name
+        into r_owner,      r_name
+       from  wt_test_runs
+       where id = in_test_run_id;
+      --
+      delete from wt_test_runs
+       where id = in_test_run_id;
+      --
+      update wt_test_runs
+        set  is_last_run = IS_LAST_RUN_FLAG
+       where runner_owner = r_owner
+        and  runner_name  = r_name
+        and  start_dtm = (
+             select max(trn.start_dtm)
+              from  wt_test_runs  trn
+              where trn.runner_owner = r_owner
+               and  trn.runner_name  = r_name  )
+        and  is_last_run != IS_LAST_RUN_FLAG;
+      --
+   exception when NO_DATA_FOUND
+   then
+      null;  -- Ignore Error
+   end;
    COMMIT;
 end delete_runs;
 

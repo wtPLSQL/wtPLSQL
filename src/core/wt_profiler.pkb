@@ -1365,7 +1365,6 @@ begin
       ----------------%WTPLSQL_end_ignore_lines%----------------
    end if;
    -- This starts the PROFILER Running!!!
-   --dbms_output.put_line('DEBUG1. g_rec.prof_runid = ' || g_rec.prof_runid);
    l_retnum := dbms_profiler.START_PROFILER(run_number => g_rec.prof_runid);
    if l_retnum <> 0 then
       ------%WTPLSQL_begin_ignore_lines%------  Can't test this
@@ -1375,7 +1374,6 @@ begin
    end if;
    -- Everything is OK, set the Profiler Run ID
    out_profiler_runid := g_rec.prof_runid;
-   --dbms_output.put_line('DEBUG2. g_rec.prof_runid = ' || g_rec.prof_runid);
 end initialize;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -1586,11 +1584,9 @@ begin
    $END
    begin
       -- DBMS_PROFILER.FLUSH_DATA is included with DBMS_PROFILER.STOP_PROFILER
-      --dbms_output.put_line('DEBUG3. g_rec.prof_runid = ' || g_rec.prof_runid);
       dbms_profiler.STOP_PROFILER;
    exception when others then
       g_rec := l_rec_NULL;
-      --dbms_output.put_line('DEBUG4. SQLERRM = ' || sqlerrm);
       raise;
    end;
    insert_dbout_profile;
