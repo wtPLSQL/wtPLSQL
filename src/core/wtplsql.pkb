@@ -191,7 +191,6 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       insert into wt_version (install_dtm, action, text)
          values (to_date('31-DEC-4000','DD-MON-YYYY'), 'TESTING', 'TESTING');
-      rollback;
       wt_assert.eq (
          msg_in          => 'Test New Version',
          check_this_in   => show_version,
@@ -210,6 +209,7 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 procedure test_run
       (in_package_name  in  varchar2)
 is
+   pragma AUTONOMOUS_TRANSACTION;  -- Required if called as Remote Procedure Call (RPC)
    l_test_runs_rec_NULL   wt_test_runs%ROWTYPE;
    l_error_stack          varchar2(32000);
    procedure concat_err_message is begin
@@ -274,6 +274,7 @@ begin
    wt_profiler.finalize;       -- Autonomous Transaction COMMIT
    wt_result.finalize;         -- Autonomous Transaction COMMIT
    wt_test_run_stat.finalize;  -- Autonomous Transaction COMMIT
+   commit;  -- Required if called as Remote Procedure Call (RPC)
 
 exception
    when OTHERS
@@ -290,6 +291,7 @@ exception
          raise_application_error(-20000,
             substr(g_test_runs_rec.error_message,1,2048));
       end if;
+      commit;  -- Required if called as Remote Procedure Call (RPC)
 
 end test_run;
 
