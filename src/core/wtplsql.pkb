@@ -94,7 +94,6 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 ------------------------------------------------------------
 procedure insert_test_run
 is
-   PRAGMA AUTONOMOUS_TRANSACTION;
    l_wt_test_runs_recNULL  wt_test_runs%ROWTYPE;
 begin
    if g_test_runs_rec.id is null
@@ -102,14 +101,12 @@ begin
       return;
    end if;
    g_test_runs_rec.end_dtm := systimestamp;
-   update wt_test_runs
-     set  is_last_run = NULL
-    where runner_owner = g_test_runs_rec.runner_owner
-     and  runner_name  = g_test_runs_rec.runner_name
-     and  is_last_run  = IS_LAST_RUN_FLAG;
+   clear_last_run
+      (in_runner_owner  => g_test_runs_rec.runner_owner
+      ,in_runner_name   => g_test_runs_rec.runner_name
+      ,in_last_run_flag => IS_LAST_RUN_FLAG);
    insert into wt_test_runs values g_test_runs_rec;
    g_test_runs_rec := l_wt_test_runs_recNULL;
-   COMMIT;
 end insert_test_run;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -118,7 +115,7 @@ $THEN
    is
       --------------------------------------  WTPLSQL Testing --
       TYPE l_dbmsout_buff_type is table of varchar2(32767);
-      l_dbmsout_buff   l_dbmsout_buff_type := l_dbmsout_buff_type(1);
+      l_dbmsout_buff   l_dbmsout_buff_type;
       l_test_runs_rec  wt_test_runs%ROWTYPE;
       l_dbmsout_line   varchar2(32767);
       l_dbmsout_stat   number;
@@ -126,13 +123,19 @@ $THEN
    begin
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'INSERT_TEST_RUN Happy Path 1';
+      wt_assert.eqqueryvalue (
+         msg_in           => 'Records Before Insert',
+         check_query_in   => 'select count(*) from wt_test_runs' ||
+                             ' where id = ' || g_test_runs_rec.id,
+         against_value_in => 0);
+      --------------------------------------  WTPLSQL Testing --
       l_test_runs_rec := g_test_runs_rec;
       insert_test_run;
       g_test_runs_rec := l_test_runs_rec;
       wt_assert.eqqueryvalue (
          msg_in           => 'Number of Records',
          check_query_in   => 'select count(*) from wt_test_runs' ||
-                             ' where id = ' || l_test_runs_rec.id,
+                             ' where id = ' || g_test_runs_rec.id,
          against_value_in => 1);
       --------------------------------------  WTPLSQL Testing --
       delete from wt_test_runs
@@ -141,7 +144,18 @@ $THEN
       wt_assert.eqqueryvalue (
          msg_in           => 'Records After Delete',
          check_query_in   => 'select count(*) from wt_test_runs' ||
-                             ' where id = ' || l_test_runs_rec.id,
+                             ' where id = ' || g_test_runs_rec.id,
+         against_value_in => 0);
+      --------------------------------------  WTPLSQL Testing --	
+      wt_assert.g_testcase := 'INSERT_TEST_RUN Happy Path 2';
+      l_test_runs_rec := g_test_runs_rec;
+      g_test_runs_rec.id := null;
+      insert_test_run;
+      g_test_runs_rec := l_test_runs_rec;
+      wt_assert.eqqueryvalue (
+         msg_in           => 'Records After Delete',
+         check_query_in   => 'select count(*) from wt_test_runs' ||
+                             ' where id = ' || g_test_runs_rec.id,
          against_value_in => 0);
    end t_insert_test_run;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
@@ -212,14 +226,17 @@ is
    pragma AUTONOMOUS_TRANSACTION;  -- Required if called as Remote Procedure Call (RPC)
    l_test_runs_rec_NULL   wt_test_runs%ROWTYPE;
    l_error_stack          varchar2(32000);
-   procedure concat_err_message is begin
+   procedure concat_err_message
+         (in_err_msg  in varchar2)
+   is
+   begin
       if g_test_runs_rec.error_message is not null
       then
-         g_test_runs_rec.error_message := substr(l_error_stack || CHR(10)||
+         g_test_runs_rec.error_message := substr(in_err_msg || CHR(10)||
                                                  g_test_runs_rec.error_message
                                                 ,1,4000);
       else
-         g_test_runs_rec.error_message := l_error_stack;
+         g_test_runs_rec.error_message := in_err_msg;
       end if;
    end concat_err_message;
 begin
@@ -244,8 +261,9 @@ begin
    g_test_runs_rec.error_message := '';
    check_runner;
    -- Initialize
-   delete_runs(in_runner_owner => g_test_runs_rec.runner_owner  -- Autonomous Transaction COMMIT
+   delete_runs(in_runner_owner => g_test_runs_rec.runner_owner
               ,in_runner_name  => g_test_runs_rec.runner_name);
+   COMMIT;   -- Start a new Transaction
    wt_assert.reset_globals;
    wt_test_run_stat.initialize;
    wt_result.initialize(g_test_runs_rec.id);
@@ -257,7 +275,7 @@ begin
                           out_trigger_offset  => g_test_runs_rec.trigger_offset,
                           out_profiler_runid  => g_test_runs_rec.profiler_runid,
                           out_error_message   => l_error_stack);
-   concat_err_message;
+   concat_err_message(l_error_stack);
    -- Call the Test Runner
    begin
       execute immediate 'BEGIN ' || in_package_name || '.WTPLSQL_RUN; END;';
@@ -266,14 +284,14 @@ begin
       then
          l_error_stack := dbms_utility.format_error_stack     ||
                           dbms_utility.format_error_backtrace ;
-         concat_err_message;
+         concat_err_message(l_error_stack);
    end;
 
    -- Finalize
-   insert_test_run;            -- Autonomous Transaction COMMIT
-   wt_profiler.finalize;       -- Autonomous Transaction COMMIT
-   wt_result.finalize;         -- Autonomous Transaction COMMIT
-   wt_test_run_stat.finalize;  -- Autonomous Transaction COMMIT
+   insert_test_run;
+   wt_profiler.finalize;
+   wt_result.finalize;
+   wt_test_run_stat.finalize;
    commit;  -- Required if called as Remote Procedure Call (RPC)
 
 exception
@@ -281,16 +299,20 @@ exception
    then
       l_error_stack := dbms_utility.format_error_stack     ||
                        dbms_utility.format_error_backtrace ;
-      if g_test_runs_rec.id is null
-      then
-         DBMS_OUTPUT.PUT_LINE(l_error_stack);
-         DBMS_OUTPUT.PUT_LINE('---------------------------');
-         DBMS_OUTPUT.PUT_LINE(g_test_runs_rec.error_message);
-      else
-         concat_err_message;
-         raise_application_error(-20000,
-            substr(g_test_runs_rec.error_message,1,2048));
-      end if;
+      concat_err_message(l_error_stack);
+      begin
+         -- This is the only exception we can catch
+         --   with a full call stack
+         insert_test_run;
+      exception
+         when OTHERS
+         then
+            l_error_stack := dbms_utility.format_error_stack     ||
+                             dbms_utility.format_error_backtrace ;
+            concat_err_message(l_error_stack);
+            raise_application_error(-20000, substr(g_test_runs_rec.error_message
+                                                  ,1,2000         ));
+      end;
       commit;  -- Required if called as Remote Procedure Call (RPC)
 
 end test_run;
@@ -354,12 +376,9 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 procedure delete_runs
       (in_test_run_id  in number)
 is
-   PRAGMA AUTONOMOUS_TRANSACTION;
    r_owner   varchar2(200);
    r_name    varchar2(200);
 begin
-   -- Profiler delete must be first because it contains a
-   --    PRAGMA AUTONOMOUS_TRANSACTION
    wt_test_run_stat.delete_records(in_test_run_id);
    wt_profiler.delete_records(in_test_run_id);
    wt_result.delete_records(in_test_run_id);
@@ -388,7 +407,6 @@ begin
    then
       null;  -- Ignore Error
    end;
-   COMMIT;
 end delete_runs;
 
 procedure delete_runs
@@ -448,7 +466,7 @@ $THEN
          check_query_in   => 'select count(*) from wt_test_runs' ||
                              ' where id = ' || g_test_runs_rec.id,
          against_value_in => 1);
-      delete_runs(g_test_runs_rec.id);  -- Autonomous Transaction
+      delete_runs(g_test_runs_rec.id);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (
          msg_in           => 'Number of Records After Delete',

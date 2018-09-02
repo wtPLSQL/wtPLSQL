@@ -165,6 +165,10 @@ grant execute on wtplsql to public;
 grant execute on wt_assert to public;
 grant execute on wt_text_report to public;
 
+-- Procedures
+@clear_last_run.prc
+/
+
 -- Package Bodies
 @wtplsql.pkb
 /

@@ -416,7 +416,6 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 ------------------------------------------------------------
 procedure finalize
 is
-   PRAGMA AUTONOMOUS_TRANSACTION;
    l_executable_lines   number;
    tc                   varchar2(50);
 begin
@@ -470,7 +469,6 @@ begin
          tc := g_tc_aa.NEXT(tc);
       end loop;
    end if;
-   COMMIT;
    initialize;
 end finalize;
 
@@ -526,7 +524,7 @@ $THEN
       l_tc_aaTEST.delete;
       l_recTEST := l_recNULL;
       l_recTEST.test_run_id := l_test_run_id;
-      run_finalize('Run Finalize for Happy Path 1');  -- AUTONOMOUS COMMIT
+      run_finalize('Run Finalize for Happy Path 1');
       --------------------------------------  WTPLSQL Testing --
       begin
          select * into l_recTEST
@@ -663,7 +661,7 @@ $THEN
       l_recTEST.notexec_lines       := 2;
       --l_recTEST.unknown_lines       := null;
       l_recTEST.tot_executed_usecs  := 2000;
-      run_finalize('Run Finalize for Happy Path 2');  -- AUTONOMOUS COMMIT
+      run_finalize('Run Finalize for Happy Path 2');
       --------------------------------------  WTPLSQL Testing --
       begin
          select * into l_tstat_rec
@@ -878,7 +876,7 @@ $THEN
       l_tc_aaTEST.delete;
       l_recTEST := l_recNULL;
       l_recTEST.asserts := 2;
-      run_finalize('Run Finalize for Sad Path 1');  -- AUTONOMOUS COMMIT
+      run_finalize('Run Finalize for Sad Path 1');
       wt_assert.isnull (
          msg_in          => 'l_recTEST.test_run_id',
          check_this_in   => l_recTEST.test_run_id);

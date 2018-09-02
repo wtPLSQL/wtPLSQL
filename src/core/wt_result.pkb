@@ -113,7 +113,6 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --  it must be able to run multiple times without causing damage.
 procedure finalize
 is
-   PRAGMA AUTONOMOUS_TRANSACTION;
    l_results_recNULL   wt_results%ROWTYPE;
 begin
    if g_results_rec.test_run_id IS NULL
@@ -123,7 +122,6 @@ begin
    -- There is always an extra NULL element in the g_results_nt array.
    forall i in 1 .. g_results_nt.COUNT - 1
       insert into wt_results values g_results_nt(i);
-   COMMIT;
    g_results_nt := results_nt_type(null);
    g_results_rec := l_results_recNULL;
    g_results_nt := results_nt_type(null);
@@ -184,7 +182,6 @@ $THEN
       l_test_runs_rec.runner_name  := 'Finalize Test';
       l_test_runs_rec.runner_owner := 'BOGUS';
       insert into wt_test_runs values l_test_runs_rec;
-      commit;      -- Must commit because finalize is AUTONOMOUS TRANSACTION
       --------------------------------------  WTPLSQL Testing --
       finalize;    -- g_results_nt is still loaded with one element
       l_results_ntTEST  := g_results_nt;
@@ -287,6 +284,7 @@ $THEN
    begin
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Ad Hoc Save Happy Path Setup';
+      dbms_output.enable;
       -- Save/Clear the DBMS_OUPTUT Buffer
       loop
          DBMS_OUTPUT.GET_LINE (
@@ -303,7 +301,7 @@ $THEN
       wt_assert.g_testcase := 'Ad Hoc Save Testing Happy Path';
       l_test_run_id  := g_results_rec.test_run_id;
       g_results_rec.test_run_id := NULL;
-      g_skip_add := TRUE;
+      g_skip_add := TRUE;  -- Doesn't effect the DBMS_OUTPUT function
       wt_result.save (
          in_assertion  => 'SELFTEST1',
          in_status     => wt_assert.C_PASS,

@@ -33,9 +33,19 @@ as
          against_this_in => 'TEST1');
       rollback;
    end t_happy_path_1;
+   procedure t_sad_path_1
+   is
+   begin
+      wt_assert.g_testcase := 'Sad Path 1';
+      wt_assert.raises (
+         msg_in          => 'Raise Error',
+         check_call_in   => 'insert into table_test_tab (id, name) values (1, ''Test1'')',
+         against_exc_in  => 'ORA-02290: check constraint (WTP_DEMO.TABLE_TEST_TAB_CK1) violated');
+   end t_sad_path_1;
    procedure wtplsql_run is
    begin
       t_happy_path_1;
+      t_sad_path_1;
    end wtplsql_run;
 end table_test_pkg;
 /

@@ -13,7 +13,7 @@ prompt  APPLICATION 700 - wtPLSQL Core GUI
 -- Application Export:
 --   Application:     700
 --   Name:            wtPLSQL Core GUI
---   Date and Time:   23:46 Wednesday August 1, 2018
+--   Date and Time:   22:49 Saturday September 1, 2018
 --   Exported By:     WTP
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -25,19 +25,19 @@ prompt  APPLICATION 700 - wtPLSQL Core GUI
 --   Using SQL*Plus as the Oracle user APEX_040000 or as the owner (parsing schema) of the application.
  
 -- Application Statistics:
---   Pages:                    7
---     Items:                 52
---     Computations:           0
+--   Pages:                    8
+--     Items:                 27
+--     Computations:           8
 --     Validations:            0
---     Processes:             15
+--     Processes:             16
 --     Regions:               41
---     Buttons:                2
---     Dynamic Actions:        4
+--     Buttons:                6
+--     Dynamic Actions:        5
 --   Shared Components
 --     Breadcrumbs:            1
 --        Entries              2
 --     Items:                  1
---     Computations:           0
+--     Computations:           1
 --     Processes:              1
 --     Parent Tabs:            0
 --     Tab Sets:               1
@@ -146,7 +146,7 @@ wwv_flow_api.create_flow(
   p_default_region_template=> 4840201642414912 + wwv_flow_api.g_id_offset,
   p_error_template=> 4837131094414910 + wwv_flow_api.g_id_offset,
   p_page_protection_enabled_y_n=> 'Y',
-  p_checksum_salt_last_reset => '20180801234656',
+  p_checksum_salt_last_reset => '20180901224934',
   p_max_session_length_sec=> 28800,
   p_home_link=> 'f?p=&APP_ID.:3:&SESSION.',
   p_flow_language=> 'en',
@@ -192,7 +192,7 @@ wwv_flow_api.create_flow(
   p_default_listr_template => 4839116402414912 + wwv_flow_api.g_id_offset,
   p_default_irr_template => 4839831975414912 + wwv_flow_api.g_id_offset,
   p_last_updated_by => 'WTP',
-  p_last_upd_yyyymmddhh24miss=> '20180801234656',
+  p_last_upd_yyyymmddhh24miss=> '20180901224934',
   p_required_roles=> wwv_flow_utilities.string_to_table2(''));
  
  
@@ -241,7 +241,7 @@ end;
 
 prompt  ...application processes
 --
---application/shared_components/logic/application_processes/initialize_p1_owner
+--application/shared_components/logic/application_processes/initialize_items
  
 begin
  
@@ -250,19 +250,160 @@ declare
     l_clob clob;
     l_length number := 1;
 begin
-p:=p||'begin'||chr(10)||
-'   :P1_OWNER := ''1st Time'';'||chr(10)||
-'end;';
+p:=p||'DECLARE'||chr(10)||
+'   -- Set Test Run ID based on Test Owner and (optionally) Test Runner'||chr(10)||
+'   procedure set_run_id (in_runner_name varchar2 default NULL) is'||chr(10)||
+'   begin'||chr(10)||
+'      -- Group function will not raise NO_DATA_FOUND'||chr(10)||
+'      select max(id)'||chr(10)||
+'       into  :P0_TEST_RUN_ID'||chr(10)||
+'       from  wt_test_runs'||chr(10)||
+'       where runner_owner = :P0_TEST_OWNER'||chr(10)||
+'        and  (   in_runner_name is NULL'||chr(10)||
+'              or in_runner_name = ';
+
+p:=p||'runner_name);'||chr(10)||
+'   end set_run_id;'||chr(10)||
+'   -- Set Owner based on Test Run ID'||chr(10)||
+'   procedure set_owner is'||chr(10)||
+'   begin'||chr(10)||
+'      -- Group function will not raise NO_DATA_FOUND'||chr(10)||
+'      select min(runner_owner)'||chr(10)||
+'       into  :P0_TEST_OWNER'||chr(10)||
+'       from  wt_test_runs'||chr(10)||
+'       where id = :P0_TEST_RUN_ID;'||chr(10)||
+'   end set_owner;'||chr(10)||
+'   -- Set Runner based on Test Run ID'||chr(10)||
+'   procedure set_runner is'||chr(10)||
+'      num_recs  pls_integer;'||chr(10)||
+'   begin'||chr(10)||
+' ';
+
+p:=p||'     -- Group function will not raise NO_DATA_FOUND'||chr(10)||
+'      select count(*)'||chr(10)||
+'       into  num_recs'||chr(10)||
+'       from  wt_test_runs'||chr(10)||
+'       where id          = :P0_TEST_RUN_ID'||chr(10)||
+'        and  runner_name = :P0_TEST_RUNNER;'||chr(10)||
+'      if num_recs = 0'||chr(10)||
+'      then'||chr(10)||
+'         -- Group function will not raise NO_DATA_FOUND'||chr(10)||
+'         select min(runner_name)'||chr(10)||
+'          into  :P0_TEST_RUNNER'||chr(10)||
+'          from  wt_test_runs'||chr(10)||
+'        ';
+
+p:=p||'  where id = :P0_TEST_RUN_ID;'||chr(10)||
+'      end if;'||chr(10)||
+'   end set_runner;'||chr(10)||
+'   -- Set Test Case based on Test Run ID if Test Case not valid'||chr(10)||
+'   procedure set_test_case is'||chr(10)||
+'      num_recs  pls_integer;'||chr(10)||
+'   begin'||chr(10)||
+'      -- Group function will not raise NO_DATA_FOUND'||chr(10)||
+'      select count(*)'||chr(10)||
+'       into  num_recs'||chr(10)||
+'       from  wt_testcase_stats'||chr(10)||
+'       where test_run_id = :P0_TEST_RUN_ID'||chr(10)||
+'        and  testcase    = :P0_TES';
+
+p:=p||'T_CASE;'||chr(10)||
+'      if num_recs = 0'||chr(10)||
+'      then'||chr(10)||
+'         -- Group function will not raise NO_DATA_FOUND'||chr(10)||
+'         select min(testcase)'||chr(10)||
+'          into  :P0_TEST_CASE'||chr(10)||
+'          from  wt_testcase_stats'||chr(10)||
+'          where test_run_id = :P0_TEST_RUN_ID;'||chr(10)||
+'      end if;'||chr(10)||
+'   end set_test_case;'||chr(10)||
+'BEGIN'||chr(10)||
+'   -- Main Decision Logic'||chr(10)||
+'   case'||chr(10)||
+'      --'||chr(10)||
+'      when    :P0_TEST_RUN_ID is not null'||chr(10)||
+'           and (   :P0_OLD_TEST_RUN';
+
+p:=p||'_ID is null'||chr(10)||
+'                or :P0_OLD_TEST_RUN_ID != :P0_TEST_RUN_ID )'||chr(10)||
+'      then'||chr(10)||
+'         --   This is the most common case of getting called from a link'||chr(10)||
+'         :P0_DBG := ''P0_TEST_RUN_ID changed from '' || :P0_OLD_TEST_RUN_ID ||'||chr(10)||
+'                                            '' to '' || :P0_TEST_RUN_ID     ;'||chr(10)||
+'         set_owner;                       -- Based on Test Run ID'||chr(10)||
+'         set_runner;     ';
+
+p:=p||'                 -- Based on Test Run ID'||chr(10)||
+'         set_test_case;                   -- Based on Test Run ID'||chr(10)||
+'                                          --   if Test Case not valid'||chr(10)||
+'      --'||chr(10)||
+'      when :P0_TEST_OWNER is NULL'||chr(10)||
+'      then'||chr(10)||
+'         -- Set everything to NULL'||chr(10)||
+'         -- :P0_TEST_RUN_ID has not changed'||chr(10)||
+'         :P0_DBG := ''P0_TEST_ONWER is null'';'||chr(10)||
+'         :P0_TEST_RUNNER := NULL;'||chr(10)||
+'         :P';
+
+p:=p||'0_TEST_RUN_ID := NULL;'||chr(10)||
+'         :P0_TEST_CASE   := NULL;'||chr(10)||
+'      --'||chr(10)||
+'      when    :P0_OLD_TEST_OWNER is null'||chr(10)||
+'           or :P0_OLD_TEST_OWNER != :P0_TEST_OWNER'||chr(10)||
+'      then'||chr(10)||
+'         -- :P0_TEST_RUN_ID has not changed'||chr(10)||
+'         -- :P0_TEST_OWNER is not null'||chr(10)||
+'         :P0_DBG := ''P0_TEST_OWNER changed from '' || :P0_OLD_TEST_OWNER ||'||chr(10)||
+'                                           '' to '' || :P0_TEST_OWNER     ;';
+
+p:=p||''||chr(10)||
+'         set_run_id;                      -- Based on Test Owner'||chr(10)||
+'         set_runner;                      -- Based on Test Run ID'||chr(10)||
+'         set_test_case;                   -- Based on Test Run ID'||chr(10)||
+'                                          --   if Test Case not valid'||chr(10)||
+'      --'||chr(10)||
+'      when NOT (   (    :P0_TEST_RUNNER is null'||chr(10)||
+'                    and :P0_OLD_TEST_RUNNER is null )'||chr(10)||
+'                or :P';
+
+p:=p||'0_TEST_RUNNER = :P0_OLD_TEST_RUNNER )'||chr(10)||
+'      then'||chr(10)||
+'         -- :P0_TEST_RUN_ID has not changed'||chr(10)||
+'         -- :P0_TEST_OWNER is not null'||chr(10)||
+'         -- :P0_TEST_OWNER has not changed'||chr(10)||
+'         :P0_DBG := ''P0_TEST_RUNNER changed from '' || :P0_OLD_TEST_RUNNER ||'||chr(10)||
+'                                            '' to '' || :P0_TEST_RUNNER     ;'||chr(10)||
+'         set_run_id(:P0_TEST_RUNNER);     -- Based on Test Owner and Tes';
+
+p:=p||'t Runner'||chr(10)||
+'         set_test_case;                   -- Based on Test Run ID'||chr(10)||
+'                                          --   if Test Case not valid'||chr(10)||
+'      --'||chr(10)||
+'      else'||chr(10)||
+'         -- :P0_TEST_RUN_ID has not changed'||chr(10)||
+'         -- :P0_TEST_OWNER is not null'||chr(10)||
+'         -- :P0_TEST_OWNER has not changed'||chr(10)||
+'         -- :P0_TEST_RUNNER has not changed'||chr(10)||
+'         :P0_DBG := ''Do nothing'';'||chr(10)||
+'         null;'||chr(10)||
+'      --'||chr(10)||
+'      e';
+
+p:=p||'nd case;'||chr(10)||
+'   :P0_OLD_TEST_RUN_ID := :P0_TEST_RUN_ID;'||chr(10)||
+'   :P0_OLD_TEST_OWNER  := :P0_TEST_OWNER;'||chr(10)||
+'   :P0_OLD_TEST_RUNNER := :P0_TEST_RUNNER;'||chr(10)||
+'END;';
 
 wwv_flow_api.create_flow_process(
-  p_id => 4876315026134588 + wwv_flow_api.g_id_offset,
+  p_id => 5124821433507746 + wwv_flow_api.g_id_offset,
   p_flow_id => wwv_flow.g_flow_id,
-  p_process_sequence=> 1,
-  p_process_point => 'AFTER_AUTHENTICATION',
+  p_process_sequence=> 10,
+  p_process_point => 'BEFORE_HEADER',
   p_process_type=> 'PLSQL',
-  p_process_name=> 'Initialize P1_OWNER',
+  p_process_name=> 'Initialize Items',
   p_process_sql_clob=> p,
-  p_process_error_message=> '#SQLERRM#',
+  p_process_error_message=> 'Global Page Initialization Failed',
   p_process_when=> '',
   p_process_when_type=> '',
   p_process_comment=> '');
@@ -280,12 +421,12 @@ prompt  ...application items
 begin
  
 wwv_flow_api.create_flow_item(
-  p_id=> 4849121938416019 + wwv_flow_api.g_id_offset,
+  p_id=> 5108203250645963 + wwv_flow_api.g_id_offset,
   p_flow_id=> wwv_flow.g_flow_id,
   p_name=> 'FSP_AFTER_LOGIN_URL',
   p_data_type=> 'VARCHAR',
   p_is_persistent=> 'Y',
-  p_protection_level=> '',
+  p_protection_level=> 'N',
   p_item_comment=> '');
  
 null;
@@ -298,7 +439,32 @@ prompt  ...application level computations
  
 begin
  
-null;
+--application/shared_components/logic/application_computations/p0_test_owner
+wwv_flow_api.create_flow_computation (
+  p_id => 5148803335141101 + wwv_flow_api.g_id_offset,
+  p_flow_id => wwv_flow.g_flow_id,
+  p_computation_sequence => 10,
+  p_computation_item => 'P0_TEST_OWNER',
+  p_computation_point    => 'ON_NEW_INSTANCE',
+  p_computation_type => 'QUERY',
+  p_computation_processed=> 'REPLACE_EXISTING',
+  p_computation => 'with q1 as ('||chr(10)||
+'select max(runner_owner)  max_owner'||chr(10)||
+' from  wt_test_runs'||chr(10)||
+' where runner_owner <= :APP_USER'||chr(10)||
+'), q2 as ('||chr(10)||
+'select min(runner_owner)  min_owner'||chr(10)||
+' from  wt_test_runs'||chr(10)||
+' where runner_owner >= :APP_USER'||chr(10)||
+')'||chr(10)||
+'select nvl(q1.max_owner, q2.min_owner)'||chr(10)||
+' from  q1 cross join q2',
+  p_compute_when=> '',
+  p_compute_when_type=> '',
+  p_computation_error_message=>'',
+  p_computation_comment=> '',
+  p_required_patch => null + wwv_flow_api.g_id_offset);
+ 
  
 end;
 /
@@ -347,29 +513,29 @@ wwv_flow_api.create_tab (
   p_tab_parent_tabset=>'',
   p_tab_comment  => '');
  
---application/shared_components/navigation/tabs/standard/t_dbout_profile
-wwv_flow_api.create_tab (
-  p_id=> 5047612005953773 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_tab_set=> 'TS1',
-  p_tab_sequence=> 40,
-  p_tab_name=> 'T_DBOUT PROFILE',
-  p_tab_text => 'DBOUT Profile',
-  p_tab_step => 4,
-  p_tab_also_current_for_pages => '4',
-  p_tab_parent_tabset=>'',
-  p_tab_comment  => '');
- 
 --application/shared_components/navigation/tabs/standard/t_test_cases
 wwv_flow_api.create_tab (
   p_id=> 4977229177323155 + wwv_flow_api.g_id_offset,
   p_flow_id=> wwv_flow.g_flow_id,
   p_tab_set=> 'TS1',
-  p_tab_sequence=> 50,
+  p_tab_sequence=> 40,
   p_tab_name=> 'T_TEST CASES',
   p_tab_text => 'Test Case',
   p_tab_step => 6,
   p_tab_also_current_for_pages => '',
+  p_tab_parent_tabset=>'',
+  p_tab_comment  => '');
+ 
+--application/shared_components/navigation/tabs/standard/t_dbout_profile
+wwv_flow_api.create_tab (
+  p_id=> 5047612005953773 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_tab_set=> 'TS1',
+  p_tab_sequence=> 50,
+  p_tab_name=> 'T_DBOUT PROFILE',
+  p_tab_text => 'DBOUT Profile',
+  p_tab_step => 4,
+  p_tab_also_current_for_pages => '4',
   p_tab_parent_tabset=>'',
   p_tab_comment  => '');
  
@@ -641,6 +807,661 @@ end;
 prompt  ...comments: requires application express 2.2 or higher
 --
  
+--application/pages/page_00000
+prompt  ...PAGE 0: Global
+--
+ 
+begin
+ 
+wwv_flow_api.create_page (
+  p_flow_id => wwv_flow.g_flow_id
+ ,p_id => 0
+ ,p_name => 'Global'
+ ,p_step_title => '0'
+ ,p_step_sub_title_type => 'TEXT_WITH_SUBSTITUTIONS'
+ ,p_first_item => 'NO_FIRST_ITEM'
+ ,p_include_apex_css_js_yn => 'Y'
+ ,p_autocomplete_on_off => 'ON'
+ ,p_page_is_public_y_n => 'N'
+ ,p_protection_level => 'N'
+ ,p_cache_page_yn => 'N'
+ ,p_last_updated_by => 'WTP'
+ ,p_last_upd_yyyymmddhh24miss => '20180830054130'
+  );
+null;
+ 
+end;
+/
+
+declare
+  s varchar2(32767) := null;
+  l_clob clob;
+  l_length number := 1;
+begin
+s:=s||'begin'||chr(10)||
+' --  htp.p(''P0_TEST_OWNER      = '' || v(''P0_TEST_OWNER''      ) || ''<br>'');'||chr(10)||
+' --  htp.p(''P0_TEST_RUNNER     = '' || v(''P0_TEST_RUNNER''     ) || ''<br>'');'||chr(10)||
+' --  htp.p(''P0_TEST_RUN_ID     = '' || v(''P0_TEST_RUN_ID''     ) || ''<br>'');'||chr(10)||
+' --  htp.p(''P0_TEST_CASE       = '' || v(''P0_TEST_CASE''       ) || ''<br>'');'||chr(10)||
+' --  htp.p(''P0_DISPLAY         = '' || v(''P0_DISPLAY''         ) || ''<br>'');'||chr(10)||
+' --  htp.p(''P0_OLD_';
+
+s:=s||'TEST_OWNER  = '' || v(''P0_OLD_TEST_OWNER''  ) || ''<br>'');'||chr(10)||
+' --  htp.p(''P0_OLD_TEST_RUNNER = '' || v(''P0_OLD_TEST_RUNNER'' ) || ''<br>'');'||chr(10)||
+' --  htp.p(''P0_OLD_TEST_RUN_ID = '' || v(''P0_OLD_TEST_RUN_ID'' ) || ''<br>'');'||chr(10)||
+'   null;'||chr(10)||
+'end;';
+
+wwv_flow_api.create_page_plug (
+  p_id=> 5109401519013442 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 0,
+  p_plug_name=> 'Common Control',
+  p_region_name=>'',
+  p_plug_template=> 4840201642414912+ wwv_flow_api.g_id_offset,
+  p_plug_display_sequence=> 10,
+  p_plug_display_column=> 1,
+  p_plug_display_point=> 'REGION_POSITION_02',
+  p_plug_source=> s,
+  p_plug_source_type=> 'PLSQL_PROCEDURE',
+  p_translate_title=> 'Y',
+  p_plug_display_error_message=> '#SQLERRM#',
+  p_plug_query_row_template=> 1,
+  p_plug_query_headings_type=> 'QUERY_COLUMNS',
+  p_plug_query_num_rows_type => 'NEXT_PREVIOUS_LINKS',
+  p_plug_query_row_count_max => 500,
+  p_plug_query_show_nulls_as => ' - ',
+  p_plug_display_condition_type => 'PLSQL_EXPRESSION',
+  p_plug_display_when_condition => ':P0_DISPLAY = ''Y''',
+  p_pagination_display_position=>'BOTTOM_RIGHT',
+  p_plug_customized=>'0',
+  p_plug_caching=> 'NOT_CACHED',
+  p_plug_comment=> '');
+end;
+/
+ 
+begin
+ 
+null;
+ 
+end;
+/
+
+ 
+begin
+ 
+null;
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>5111411983271940 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 0,
+  p_name=>'P0_DISPLAY',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 210,
+  p_item_plug_id => 5109401519013442+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_HIDDEN',
+  p_lov_display_null=> 'NO',
+  p_lov_translated=> 'N',
+  p_cSize=> 10,
+  p_cMaxlength=> 4000,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'NO',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'LEFT',
+  p_field_alignment=> 'LEFT',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'YES',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_attribute_01 => 'N',
+  p_show_quick_picks=>'N',
+  p_item_comment => 'This item is set by each page.');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>5115915435597711 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 0,
+  p_name=>'P0_TEST_OWNER',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 10,
+  p_item_plug_id => 5109401519013442+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_prompt=>'Test Runner Owner',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_POPUP_LOV',
+  p_lov=> 'select owner         DISPLAY'||chr(10)||
+'      ,owner         RETURN'||chr(10)||
+' from  dba_arguments'||chr(10)||
+' where object_name   = ''WTPLSQL_RUN'''||chr(10)||
+'  and  argument_name is null'||chr(10)||
+'  and  position      = 1'||chr(10)||
+'  and  sequence      = 0'||chr(10)||
+' group by owner',
+  p_lov_display_null=> 'YES',
+  p_lov_translated=> 'N',
+  p_lov_null_text=>'All Owners',
+  p_lov_null_value=> '',
+  p_cSize=> 30,
+  p_cMaxlength=> 128,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'NO',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'ABOVE',
+  p_field_alignment=> 'LEFT-CENTER',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'NO',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_attribute_01 => 'NOT_ENTERABLE',
+  p_attribute_02 => 'FIRST_ROWSET',
+  p_show_quick_picks=>'N',
+  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>5116105869604358 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 0,
+  p_name=>'P0_TEST_RUNNER',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 20,
+  p_item_plug_id => 5109401519013442+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_prompt=>'Test Runner Name',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_POPUP_LOV',
+  p_lov=> 'select package_name   DISPLAY'||chr(10)||
+'      ,package_name   RETURN'||chr(10)||
+' from  dba_arguments'||chr(10)||
+' where owner         = :P0_TEST_OWNER'||chr(10)||
+'  and  object_name   = ''WTPLSQL_RUN'''||chr(10)||
+'  and  argument_name is null'||chr(10)||
+'  and  position      = 1'||chr(10)||
+'  and  sequence      = 0'||chr(10)||
+' order by package_name',
+  p_lov_display_null=> 'YES',
+  p_lov_translated=> 'N',
+  p_lov_null_text=>'',
+  p_lov_null_value=> '',
+  p_cSize=> 30,
+  p_cMaxlength=> 128,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'NO',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'ABOVE',
+  p_field_alignment=> 'LEFT-CENTER',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'NO',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_attribute_01 => 'NOT_ENTERABLE',
+  p_attribute_02 => 'FIRST_ROWSET',
+  p_show_quick_picks=>'N',
+  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>5116329072611020 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 0,
+  p_name=>'P0_TEST_RUN_ID',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 30,
+  p_item_plug_id => 5109401519013442+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_prompt=>'Test Run ID',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_POPUP_LOV',
+  p_lov=> 'select id            || '': '' ||'||chr(10)||
+'       to_char(start_dtm,''YYYY-MM-DD HH24:MI:SS'')    DISPLAY'||chr(10)||
+'      ,id                                            RETURN'||chr(10)||
+' from  wt_test_runs'||chr(10)||
+' where runner_owner = :P0_TEST_OWNER'||chr(10)||
+'  and  runner_name  = :P0_TEST_RUNNER'||chr(10)||
+' order by id desc',
+  p_lov_display_null=> 'YES',
+  p_lov_translated=> 'N',
+  p_lov_null_text=>'',
+  p_lov_null_value=> '',
+  p_cSize=> 30,
+  p_cMaxlength=> 30,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'NO',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'ABOVE',
+  p_field_alignment=> 'LEFT-CENTER',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'NO',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_attribute_01 => 'NOT_ENTERABLE',
+  p_attribute_02 => 'FIRST_ROWSET',
+  p_show_quick_picks=>'N',
+  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>5116511887615523 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 0,
+  p_name=>'P0_TEST_CASE',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 40,
+  p_item_plug_id => 5109401519013442+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_prompt=>'Test Case Name',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_POPUP_LOV',
+  p_lov=> 'select testcase    DISPLAY'||chr(10)||
+'      ,testcase    RETURN'||chr(10)||
+' from  wt_testcase_stats'||chr(10)||
+' where test_run_id = :P0_TEST_RUN_ID'||chr(10)||
+' order by testcase',
+  p_lov_display_null=> 'YES',
+  p_lov_translated=> 'N',
+  p_lov_null_text=>'',
+  p_lov_null_value=> '',
+  p_cSize=> 30,
+  p_cMaxlength=> 50,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'NO',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'ABOVE',
+  p_field_alignment=> 'LEFT-CENTER',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'NO',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_attribute_01 => 'NOT_ENTERABLE',
+  p_attribute_02 => 'FIRST_ROWSET',
+  p_show_quick_picks=>'N',
+  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>5123905176304413 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 0,
+  p_name=>'P0_OLD_TEST_OWNER',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 110,
+  p_item_plug_id => 5109401519013442+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_HIDDEN',
+  p_lov_display_null=> 'NO',
+  p_lov_translated=> 'N',
+  p_cSize=> 30,
+  p_cMaxlength=> 4000,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'NO',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'ABOVE',
+  p_field_alignment=> 'LEFT',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'YES',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_attribute_01 => 'Y',
+  p_show_quick_picks=>'N',
+  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>5124122837309434 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 0,
+  p_name=>'P0_OLD_TEST_RUNNER',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 120,
+  p_item_plug_id => 5109401519013442+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_HIDDEN',
+  p_lov_display_null=> 'NO',
+  p_lov_translated=> 'N',
+  p_cSize=> 30,
+  p_cMaxlength=> 4000,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'NO',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'ABOVE',
+  p_field_alignment=> 'LEFT',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'YES',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_attribute_01 => 'Y',
+  p_show_quick_picks=>'N',
+  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>5124303922313440 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 0,
+  p_name=>'P0_OLD_TEST_RUN_ID',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 130,
+  p_item_plug_id => 5109401519013442+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_HIDDEN',
+  p_lov_display_null=> 'NO',
+  p_lov_translated=> 'N',
+  p_cSize=> 10,
+  p_cMaxlength=> 4000,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'NO',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'ABOVE',
+  p_field_alignment=> 'LEFT',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'YES',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_attribute_01 => 'Y',
+  p_show_quick_picks=>'N',
+  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
+ 
+ 
+end;
+/
+
+declare
+    h varchar2(32767) := null;
+begin
+wwv_flow_api.create_page_item(
+  p_id=>5156507341612883 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 0,
+  p_name=>'P0_DBG',
+  p_data_type=> 'VARCHAR',
+  p_is_required=> false,
+  p_accept_processing=> 'REPLACE_EXISTING',
+  p_item_sequence=> 220,
+  p_item_plug_id => 5109401519013442+wwv_flow_api.g_id_offset,
+  p_use_cache_before_default=> 'YES',
+  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
+  p_prompt=>'Page 0 Init Debug:',
+  p_source_type=> 'STATIC',
+  p_display_as=> 'NATIVE_DISPLAY_ONLY',
+  p_lov_display_null=> 'NO',
+  p_lov_translated=> 'N',
+  p_cSize=> 30,
+  p_cMaxlength=> 4000,
+  p_cHeight=> 1,
+  p_cAttributes=> 'nowrap="nowrap"',
+  p_begin_on_new_line=> 'YES',
+  p_begin_on_new_field=> 'YES',
+  p_colspan=> 1,
+  p_rowspan=> 1,
+  p_label_alignment=> 'RIGHT',
+  p_field_alignment=> 'LEFT-CENTER',
+  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
+  p_is_persistent=> 'Y',
+  p_lov_display_extra=>'YES',
+  p_protection_level => 'N',
+  p_escape_on_http_output => 'Y',
+  p_attribute_01 => 'N',
+  p_attribute_02 => 'VALUE',
+  p_attribute_04 => 'Y',
+  p_show_quick_picks=>'N',
+  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
+ 
+ 
+end;
+/
+
+ 
+begin
+ 
+wwv_flow_api.create_page_da_event (
+  p_id => 5132717988076486 + wwv_flow_api.g_id_offset
+ ,p_flow_id => wwv_flow.g_flow_id
+ ,p_page_id => 0
+ ,p_name => 'Submit After Test Owner Change'
+ ,p_event_sequence => 10
+ ,p_triggering_element_type => 'ITEM'
+ ,p_triggering_element => 'P0_TEST_OWNER'
+ ,p_bind_type => 'bind'
+ ,p_bind_event_type => 'change'
+  );
+wwv_flow_api.create_page_da_action (
+  p_id => 5133011351076491 + wwv_flow_api.g_id_offset
+ ,p_flow_id => wwv_flow.g_flow_id
+ ,p_page_id => 0
+ ,p_event_id => 5132717988076486 + wwv_flow_api.g_id_offset
+ ,p_event_result => 'TRUE'
+ ,p_action_sequence => 10
+ ,p_execute_on_page_init => 'N'
+ ,p_action => 'NATIVE_SUBMIT_PAGE'
+ ,p_attribute_01 => 'REFRESH'
+ ,p_stop_execution_on_error => 'Y'
+ );
+null;
+ 
+end;
+/
+
+ 
+begin
+ 
+wwv_flow_api.create_page_da_event (
+  p_id => 5133128377079428 + wwv_flow_api.g_id_offset
+ ,p_flow_id => wwv_flow.g_flow_id
+ ,p_page_id => 0
+ ,p_name => 'Submit After Test Runner Change'
+ ,p_event_sequence => 20
+ ,p_triggering_element_type => 'ITEM'
+ ,p_triggering_element => 'P0_TEST_RUNNER'
+ ,p_bind_type => 'bind'
+ ,p_bind_event_type => 'change'
+  );
+wwv_flow_api.create_page_da_action (
+  p_id => 5133404881079428 + wwv_flow_api.g_id_offset
+ ,p_flow_id => wwv_flow.g_flow_id
+ ,p_page_id => 0
+ ,p_event_id => 5133128377079428 + wwv_flow_api.g_id_offset
+ ,p_event_result => 'TRUE'
+ ,p_action_sequence => 10
+ ,p_execute_on_page_init => 'N'
+ ,p_action => 'NATIVE_SUBMIT_PAGE'
+ ,p_attribute_01 => 'REFRESH'
+ ,p_stop_execution_on_error => 'Y'
+ );
+null;
+ 
+end;
+/
+
+ 
+begin
+ 
+wwv_flow_api.create_page_da_event (
+  p_id => 5133521236086857 + wwv_flow_api.g_id_offset
+ ,p_flow_id => wwv_flow.g_flow_id
+ ,p_page_id => 0
+ ,p_name => 'Submit After Test Run ID Change'
+ ,p_event_sequence => 30
+ ,p_triggering_element_type => 'ITEM'
+ ,p_triggering_element => 'P0_TEST_RUN_ID'
+ ,p_bind_type => 'bind'
+ ,p_bind_event_type => 'change'
+  );
+wwv_flow_api.create_page_da_action (
+  p_id => 5133821690086857 + wwv_flow_api.g_id_offset
+ ,p_flow_id => wwv_flow.g_flow_id
+ ,p_page_id => 0
+ ,p_event_id => 5133521236086857 + wwv_flow_api.g_id_offset
+ ,p_event_result => 'TRUE'
+ ,p_action_sequence => 10
+ ,p_execute_on_page_init => 'N'
+ ,p_action => 'NATIVE_SUBMIT_PAGE'
+ ,p_attribute_01 => 'REFRESH'
+ ,p_stop_execution_on_error => 'Y'
+ );
+null;
+ 
+end;
+/
+
+ 
+begin
+ 
+wwv_flow_api.create_page_da_event (
+  p_id => 5133928854089093 + wwv_flow_api.g_id_offset
+ ,p_flow_id => wwv_flow.g_flow_id
+ ,p_page_id => 0
+ ,p_name => 'Submit After Test Case Change'
+ ,p_event_sequence => 40
+ ,p_triggering_element_type => 'ITEM'
+ ,p_triggering_element => 'P0_TEST_CASE'
+ ,p_bind_type => 'bind'
+ ,p_bind_event_type => 'change'
+  );
+wwv_flow_api.create_page_da_action (
+  p_id => 5134216946089093 + wwv_flow_api.g_id_offset
+ ,p_flow_id => wwv_flow.g_flow_id
+ ,p_page_id => 0
+ ,p_event_id => 5133928854089093 + wwv_flow_api.g_id_offset
+ ,p_event_result => 'TRUE'
+ ,p_action_sequence => 10
+ ,p_execute_on_page_init => 'N'
+ ,p_action => 'NATIVE_SUBMIT_PAGE'
+ ,p_attribute_01 => 'REFRESH'
+ ,p_stop_execution_on_error => 'Y'
+ );
+null;
+ 
+end;
+/
+
+ 
+begin
+ 
+---------------------------------------
+-- ...updatable report columns for page 0
+--
+ 
+begin
+ 
+null;
+end;
+null;
+ 
+end;
+/
+
+ 
 --application/pages/page_00001
 prompt  ...PAGE 1: Dashboard
 --
@@ -668,7 +1489,7 @@ wwv_flow_api.create_page (
  ,p_help_text => 
 'No help is available for this page.'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180801213559'
+ ,p_last_upd_yyyymmddhh24miss => '20180901112031'
   );
 null;
  
@@ -680,24 +1501,95 @@ declare
   l_clob clob;
   l_length number := 1;
 begin
-s:=s||'&nbsp;';
+s:=s||'declare'||chr(10)||
+'   num_owners   number;'||chr(10)||
+'   num_runners  number;'||chr(10)||
+'   num_dbouts   number;'||chr(10)||
+'   num_cases    number;'||chr(10)||
+'begin'||chr(10)||
+'   --'||chr(10)||
+'   with q1 as ('||chr(10)||
+'   select runner_owner'||chr(10)||
+'    from  wt_test_runs'||chr(10)||
+'    where :P0_TEST_OWNER is NULL'||chr(10)||
+'      or  :P0_TEST_OWNER = runner_owner'||chr(10)||
+'    group by runner_owner'||chr(10)||
+'   )'||chr(10)||
+'   --'||chr(10)||
+'   select count(*)'||chr(10)||
+'    into  num_owners'||chr(10)||
+'    from  q1;'||chr(10)||
+'   with q1 as ('||chr(10)||
+'   select runner_owner, runner_name'||chr(10)||
+'    fr';
+
+s:=s||'om  wt_test_runs'||chr(10)||
+'    where :P0_TEST_OWNER is NULL'||chr(10)||
+'      or  :P0_TEST_OWNER = runner_owner'||chr(10)||
+'    group by runner_owner, runner_name'||chr(10)||
+'   )'||chr(10)||
+'   select count(*)'||chr(10)||
+'    into  num_runners'||chr(10)||
+'    from  q1;'||chr(10)||
+'   --'||chr(10)||
+'   with q1 as ('||chr(10)||
+'   select dbout_owner, dbout_name, dbout_type'||chr(10)||
+'    from  wt_test_runs'||chr(10)||
+'    where :P0_TEST_OWNER is NULL'||chr(10)||
+'      or  :P0_TEST_OWNER = runner_owner'||chr(10)||
+'    group by dbout_owner, dbout_name, dbout_typ';
+
+s:=s||'e'||chr(10)||
+'   )'||chr(10)||
+'   select count(*)'||chr(10)||
+'    into  num_dbouts'||chr(10)||
+'    from  q1;'||chr(10)||
+'   --'||chr(10)||
+'   with q1 as ('||chr(10)||
+'   select runner_owner, runner_name, testcase'||chr(10)||
+'    from  wt_test_runs  run'||chr(10)||
+'          join wt_testcase_stats  case'||chr(10)||
+'               on  case.test_run_id = run.id'||chr(10)||
+'    where :P0_TEST_OWNER is NULL'||chr(10)||
+'      or  :P0_TEST_OWNER = runner_owner'||chr(10)||
+'    group by runner_owner, runner_name, testcase'||chr(10)||
+'   )'||chr(10)||
+'   select count(*)'||chr(10)||
+'    into  num';
+
+s:=s||'_cases'||chr(10)||
+'    from  q1;'||chr(10)||
+'   --'||chr(10)||
+'   htp.p(''<b><br>&nbsp;'');'||chr(10)||
+'   htp.p(''Number of Test Owners: '' || num_owners || ''<br>'');'||chr(10)||
+'   htp.p(''<br>&nbsp;'');'||chr(10)||
+'   htp.p(''Number of Test Runners: '' || num_runners || ''<br>'');'||chr(10)||
+'   htp.p(''<br>&nbsp;'');'||chr(10)||
+'   htp.p(''Number of Test Cases: '' || num_cases || ''<br>'');'||chr(10)||
+'   htp.p(''<br>&nbsp;'');'||chr(10)||
+'   htp.p(''Number of Tested DBOUTs: '' || num_dbouts || ''<br>'');'||chr(10)||
+'   htp.p(''<br>&nbsp;</b>'');'||chr(10)||
+'';
+
+s:=s||'end;';
 
 wwv_flow_api.create_page_plug (
   p_id=> 4846907308414925 + wwv_flow_api.g_id_offset,
   p_flow_id=> wwv_flow.g_flow_id,
   p_page_id=> 1,
-  p_plug_name=> 'Control',
+  p_plug_name=> 'Summary',
   p_region_name=>'',
-  p_plug_template=> 4840201642414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 11,
-  p_plug_display_column=> 1,
+  p_plug_template=> 4839912075414912+ wwv_flow_api.g_id_offset,
+  p_plug_display_sequence=> 2,
+  p_plug_display_column=> 2,
   p_plug_display_point=> 'BEFORE_BOX_BODY',
   p_plug_source=> s,
-  p_plug_source_type=> 'STATIC_TEXT',
+  p_plug_source_type=> 'PLSQL_PROCEDURE',
   p_translate_title=> 'Y',
   p_plug_query_row_template=> 1,
   p_plug_query_headings_type=> 'COLON_DELMITED_LIST',
   p_plug_query_row_count_max => 500,
+  p_plug_column_width => 'td width="320"',
   p_plug_display_condition_type => '',
   p_plug_customized=>'0',
   p_plug_caching=> 'NOT_CACHED',
@@ -755,8 +1647,8 @@ wwv_flow_api.create_page_plug (
   p_plug_name=> 'Test Runners Status Summary',
   p_region_name=>'',
   p_plug_template=> 4840201642414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 12,
-  p_plug_display_column=> 2,
+  p_plug_display_sequence=> 1,
+  p_plug_display_column=> 1,
   p_plug_display_point=> 'BEFORE_BOX_BODY',
   p_plug_source=> s,
   p_plug_source_type=> 'FLASH_CHART5',
@@ -858,15 +1750,15 @@ a1:=a1||'with q_main as ('||chr(10)||
 ' from  wt_test_runs  tr'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = tr.id'||chr(10)||
-' where (   :P1_OWNER is NULL'||chr(10)||
-'        or :P1_OWNER = tr.runner_owner )'||chr(10)||
+' where (   :P0_TEST_OWNER is NULL'||chr(10)||
+'        or :P0_TEST_OWNER = tr.runner_owner )'||chr(10)||
 '  and  tr.is_last_run = wtplsql.get_last_run_flag'||chr(10)||
 '), q1 as ('||chr(10)||
 'select NULL       LINK'||chr(10)||
 '      ,''PASS''     LABEL'||chr(10)||
-'      ,pass   ';
+'    ';
 
-a1:=a1||'    VALUE'||chr(10)||
+a1:=a1||'  ,pass       VALUE'||chr(10)||
 ' from  q_main'||chr(10)||
 'union all'||chr(10)||
 'select NULL       LINK'||chr(10)||
@@ -951,7 +1843,7 @@ wwv_flow_api.create_page_plug (
   p_plug_name=> 'DBOUT Profiles Status Summary',
   p_region_name=>'',
   p_plug_template=> 4840201642414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 13,
+  p_plug_display_sequence=> 3,
   p_plug_display_column=> 3,
   p_plug_display_point=> 'BEFORE_BOX_BODY',
   p_plug_source=> s,
@@ -1056,13 +1948,13 @@ a1:=a1||'with q_main as ('||chr(10)||
 ' from  wt_test_runs  tr'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = tr.id'||chr(10)||
-' where (   :P1_OWNER is NULL'||chr(10)||
-'        or :P1_OWNER = runner_owner )'||chr(10)||
+' where (   :P0_TEST_OWNER is NULL'||chr(10)||
+'        or :P0_TEST_OWNER = runner_owner )'||chr(10)||
 '  and  is_last_run = wtplsql.get_last_run_flag'||chr(10)||
-'), q1 as ('||chr(10)||
-'select ';
+'), q1 as';
 
-a1:=a1||'NULL    LINK'||chr(10)||
+a1:=a1||' ('||chr(10)||
+'select NULL    LINK'||chr(10)||
 '      ,''EXCL''  LABEL'||chr(10)||
 '      ,excl    VALUE'||chr(10)||
 ' from  q_main'||chr(10)||
@@ -1154,8 +2046,8 @@ wwv_flow_api.create_page_plug (
   p_plug_name=> 'Top Test Runner Failures',
   p_region_name=>'',
   p_plug_template=> 4839217975414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 32,
-  p_plug_display_column=> 2,
+  p_plug_display_sequence=> 1,
+  p_plug_display_column=> 1,
   p_plug_display_point=> 'BEFORE_SHOW_ITEMS',
   p_plug_source=> s,
   p_plug_source_type=> 'FLASH_CHART5',
@@ -1259,11 +2151,11 @@ a1:=a1||'select tr.id                        LINK'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = tr.id'||chr(10)||
 '            and res.failures    > 0'||chr(10)||
-' where (   :P1_OWNER is NULL'||chr(10)||
-'        or :P1_OWNER = tr.runner_owner )'||chr(10)||
-'  and  tr.is_last_run = wtplsql.get_l';
+' where (   :P0_TEST_OWNER is NULL'||chr(10)||
+'        or :P0_TEST_OWNER = tr.runner_owner )'||chr(10)||
+'  and  tr.is_last_run = wtp';
 
-a1:=a1||'ast_run_flag'||chr(10)||
+a1:=a1||'lsql.get_last_run_flag'||chr(10)||
 ' order by res.failures desc, LABEL'||chr(10)||
 '';
 
@@ -1279,7 +2171,7 @@ wwv_flow_api.create_flash_chart5_series(
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
   p_series_query_row_count_max=>10,
-  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
+  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P0_TEST_RUN_ID:#LINK#',
   p_show_action_link          =>'C',
   p_action_link_checksum_type =>'');
 end;
@@ -1335,8 +2227,8 @@ wwv_flow_api.create_page_plug (
   p_plug_name=> 'Top Test Runner Durations',
   p_region_name=>'',
   p_plug_template=> 4839217975414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 42,
-  p_plug_display_column=> 2,
+  p_plug_display_sequence=> 4,
+  p_plug_display_column=> 1,
   p_plug_display_point=> 'BEFORE_SHOW_ITEMS',
   p_plug_source=> s,
   p_plug_source_type=> 'FLASH_CHART5',
@@ -1437,8 +2329,12 @@ a1:=a1||'select id                                     LINK'||chr(10)||
 '      ,extract(day from (end_dtm - start_dtm)*86400*100)/100'||chr(10)||
 '                                              VALUE'||chr(10)||
 ' from  wt_test_runs'||chr(10)||
-' where is_last_run = wtplsql.get_last_run_flag'||chr(10)||
-'  and  extract(day from (end_dtm - start_dtm)*86400*100)/100 > 0'||chr(10)||
+' where (   :P0_TEST_OWNER is NULL'||chr(10)||
+'        or :P0_TEST_OWNER = runner_owner )'||chr(10)||
+'  and  is_last_run = wtplsql.get_last_run_flag'||chr(10)||
+'  and  extract(day from (end_dtm - start';
+
+a1:=a1||'_dtm)*86400*100)/100 > 0'||chr(10)||
 ' order by VALUE desc, LABEL'||chr(10)||
 '';
 
@@ -1454,7 +2350,7 @@ wwv_flow_api.create_flash_chart5_series(
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
   p_series_query_row_count_max=>10,
-  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
+  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P0_TEST_RUN_ID:#LINK#',
   p_show_action_link          =>'C',
   p_action_link_checksum_type =>'');
 end;
@@ -1510,8 +2406,8 @@ wwv_flow_api.create_page_plug (
   p_plug_name=> 'Top Test Runner Age',
   p_region_name=>'',
   p_plug_template=> 4839217975414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 41,
-  p_plug_display_column=> 1,
+  p_plug_display_sequence=> 5,
+  p_plug_display_column=> 2,
   p_plug_display_point=> 'BEFORE_SHOW_ITEMS',
   p_plug_source=> s,
   p_plug_source_type=> 'FLASH_CHART5',
@@ -1613,13 +2509,13 @@ a1:=a1||'select id                           LINK'||chr(10)||
 '      ,extract(day from (sysdate - start_dtm)*10)/10'||chr(10)||
 '                                    VALUE'||chr(10)||
 ' from  wt_test_runs'||chr(10)||
-' where (   :P1_OWNER is NULL'||chr(10)||
-'        or :P1_OWNER = runner_owner )'||chr(10)||
+' where (   :P0_TEST_OWNER is NULL'||chr(10)||
+'        or :P0_TEST_OWNER = runner_owner )'||chr(10)||
 '  and  is_last_run = wtplsql.get_last_run_flag'||chr(10)||
 '  and  start_dtm is not null'||chr(10)||
-'  and  extract(day from (sysd';
+'  and  extract(day ';
 
-a1:=a1||'ate - start_dtm)*10)/10 > 0'||chr(10)||
+a1:=a1||'from (sysdate - start_dtm)*10)/10 > 0'||chr(10)||
 ' order by VALUE desc, LABEL'||chr(10)||
 '';
 
@@ -1635,7 +2531,7 @@ wwv_flow_api.create_flash_chart5_series(
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
   p_series_query_row_count_max=>10,
-  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
+  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P0_TEST_RUN_ID:#LINK#',
   p_show_action_link          =>'C',
   p_action_link_checksum_type =>'');
 end;
@@ -1691,7 +2587,7 @@ wwv_flow_api.create_page_plug (
   p_plug_name=> 'Top DBOUT NotExec Lines',
   p_region_name=>'',
   p_plug_template=> 4839217975414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 33,
+  p_plug_display_sequence=> 3,
   p_plug_display_column=> 3,
   p_plug_display_point=> 'BEFORE_SHOW_ITEMS',
   p_plug_source=> s,
@@ -1797,10 +2693,10 @@ a1:=a1||'select run.id                       LINK'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id   = run.id'||chr(10)||
 '            and res.notexec_lines > 0'||chr(10)||
-' where (   :P1_OWNER is NULL'||chr(10)||
-'        or :P1_OWNER = run.runner_owner';
+' where (   :P0_TEST_OWNER is NULL'||chr(10)||
+'        or :P0_TEST_OWNER = run.ru';
 
-a1:=a1||' )'||chr(10)||
+a1:=a1||'nner_owner )'||chr(10)||
 '  and  run.is_last_run = wtplsql.get_last_run_flag'||chr(10)||
 '  and  run.dbout_name is not null'||chr(10)||
 ' order by res.notexec_lines desc, LABEL'||chr(10)||
@@ -1818,7 +2714,7 @@ wwv_flow_api.create_flash_chart5_series(
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
   p_series_query_row_count_max=>10,
-  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
+  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P0_TEST_RUN_ID:#LINK#',
   p_show_action_link          =>'C',
   p_action_link_checksum_type =>'');
 end;
@@ -1874,8 +2770,8 @@ wwv_flow_api.create_page_plug (
   p_plug_name=> 'Top Test Case Failures',
   p_region_name=>'',
   p_plug_template=> 4839217975414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 31,
-  p_plug_display_column=> 1,
+  p_plug_display_sequence=> 2,
+  p_plug_display_column=> 2,
   p_plug_display_point=> 'BEFORE_SHOW_ITEMS',
   p_plug_source=> s,
   p_plug_source_type=> 'FLASH_CHART5',
@@ -1977,8 +2873,8 @@ a1:=a1||'select ''f?p='' || :APP_ID               ||'||chr(10)||
 '          '':'' || :REQUEST              ||'||chr(10)||
 '          '':'' || :DEBUG                ||'||chr(10)||
 '          '':'' || ''N''                   ||     -- CLear Cache'||chr(10)||
-'          '':'' || ''P6_TEST_RUN_ID''      || '','' ||'||chr(10)||
-'                 ''P6_TESTCASE_NAME''    ||     -- Item Names'||chr(10)||
+'          '':'' || ''P0_TEST_RUN_ID''      || '','' ||'||chr(10)||
+'                 ''P0_TEST_CASE''        ||     -- Item Names'||chr(10)||
 '        ';
 
 a1:=a1||'  '':'' || run.id                || '','' ||'||chr(10)||
@@ -1994,8 +2890,8 @@ a1:=a1||'  '':'' || run.id                || '','' ||'||chr(10)||
 
 a1:=a1||'id = run.id'||chr(10)||
 '            and tc.failures    > 0'||chr(10)||
-' where (   :P1_OWNER is NULL'||chr(10)||
-'        or :P1_OWNER = runner_owner )'||chr(10)||
+' where (   :P0_TEST_OWNER is NULL'||chr(10)||
+'        or :P0_TEST_OWNER = runner_owner )'||chr(10)||
 '  and  is_last_run = wtplsql.get_last_run_flag'||chr(10)||
 ' order by failures desc, TESTCASE'||chr(10)||
 '';
@@ -2068,7 +2964,7 @@ wwv_flow_api.create_page_plug (
   p_plug_name=> 'Top DBOUT LineExec Times',
   p_region_name=>'',
   p_plug_template=> 4839217975414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 43,
+  p_plug_display_sequence=> 6,
   p_plug_display_column=> 3,
   p_plug_display_point=> 'BEFORE_SHOW_ITEMS',
   p_plug_source=> s,
@@ -2174,10 +3070,10 @@ a1:=a1||'select res.test_run_id                  LINK'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id        = run.id'||chr(10)||
 '            and res.max_executed_usecs > 0'||chr(10)||
-' where (   :P1_OWNER is NULL'||chr(10)||
-'        or :P1_OW';
+' where (   :P0_TEST_OWNER is NULL'||chr(10)||
+'        or :';
 
-a1:=a1||'NER = run.runner_owner )'||chr(10)||
+a1:=a1||'P0_TEST_OWNER = run.runner_owner )'||chr(10)||
 '  and  run.is_last_run = wtplsql.get_last_run_flag'||chr(10)||
 ' order by VALUE desc, LABEL'||chr(10)||
 '';
@@ -2194,7 +3090,7 @@ wwv_flow_api.create_flash_chart5_series(
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
   p_series_query_row_count_max=>10,
-  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
+  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P0_TEST_RUN_ID:#LINK#',
   p_show_action_link          =>'C',
   p_action_link_checksum_type =>'');
 end;
@@ -2215,8 +3111,8 @@ s:=s||'select log_id'||chr(10)||
 '      ,additional_info'||chr(10)||
 ' from  wt_scheduler_jobs'||chr(10)||
 ' where status != ''SUCCEEDED'''||chr(10)||
-'  and  (   :P1_OWNER is null'||chr(10)||
-'        or job_name like :P1_OWNER || ''$%'' )';
+'  and  (   :P0_TEST_OWNER is null'||chr(10)||
+'        or job_name like :P0_TEST_OWNER || ''$%'' )';
 
 wwv_flow_api.create_report_region (
   p_id=> 4868303731390297 + wwv_flow_api.g_id_offset,
@@ -2494,10 +3390,12 @@ s:=s||'select id'||chr(10)||
 '      ,start_dtm'||chr(10)||
 '      ,error_message'||chr(10)||
 ' from  wt_test_runs'||chr(10)||
-' where (   :P1_OWNER is NULL'||chr(10)||
-'        or :P1_OWNER = runner_owner )'||chr(10)||
+' where (   :P0_TEST_OWNER is NULL'||chr(10)||
+'        or :P0_TEST_OWNER = runner_owner )'||chr(10)||
 '  and  is_last_run = wtplsql.get_last_run_flag'||chr(10)||
-'  and  error_message is not null';
+'  and  error_message is not nul';
+
+s:=s||'l';
 
 wwv_flow_api.create_report_region (
   p_id=> 4869425043509942 + wwv_flow_api.g_id_offset,
@@ -2593,11 +3491,11 @@ wwv_flow_api.create_report_columns (
   p_column_alias=> 'ID',
   p_column_display_sequence=> 1,
   p_column_heading=> 'Test Run ID',
-  p_column_link=>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#ID#',
+  p_column_link=>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P0_TEST_RUN_ID:#ID#',
   p_column_linktext=>'#ID#',
   p_column_alignment=>'LEFT',
   p_heading_alignment=>'RIGHT',
-  p_default_sort_column_sequence=>1,
+  p_default_sort_column_sequence=>2,
   p_default_sort_dir=>'desc',
   p_disable_sort_column=>'N',
   p_sum_column=> 'N',
@@ -2681,7 +3579,8 @@ wwv_flow_api.create_report_columns (
   p_column_display_sequence=> 4,
   p_column_heading=> 'Start Date/Time',
   p_column_alignment=>'LEFT',
-  p_default_sort_column_sequence=>0,
+  p_default_sort_column_sequence=>1,
+  p_default_sort_dir=>'desc',
   p_disable_sort_column=>'N',
   p_sum_column=> 'N',
   p_hidden_column=> 'N',
@@ -2745,341 +3644,22 @@ wwv_flow_api.create_page_branch(
 end;
 /
 
-declare
-    h varchar2(32767) := null;
+ 
 begin
-wwv_flow_api.create_page_item(
-  p_id=>4851514010066641 + wwv_flow_api.g_id_offset,
+ 
+wwv_flow_api.create_page_computation(
+  p_id=> 5111815015291792 + wwv_flow_api.g_id_offset,
   p_flow_id=> wwv_flow.g_flow_id,
   p_flow_step_id=> 1,
-  p_name=>'P1_OWNER',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 10,
-  p_item_plug_id => 4846907308414925+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Test Runner Owner:',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_POPUP_LOV',
-  p_lov=> 'select runner_owner  DISPLAY'||chr(10)||
-'      ,runner_owner  VALUE'||chr(10)||
-' from  wt_test_runs'||chr(10)||
-' group by runner_owner'||chr(10)||
-' order by runner_owner',
-  p_lov_display_null=> 'YES',
-  p_lov_translated=> 'N',
-  p_lov_null_text=>'All Owners',
-  p_lov_null_value=> '',
-  p_cSize=> 20,
-  p_cMaxlength=> 128,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843706770414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'NO',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'ENTERABLE',
-  p_attribute_02 => 'FIRST_ROWSET',
-  p_show_quick_picks=>'N',
-  p_item_comment => '');
+  p_computation_sequence => 10,
+  p_computation_item=> 'P0_DISPLAY',
+  p_computation_point=> 'BEFORE_HEADER',
+  p_computation_type=> 'STATIC_ASSIGNMENT',
+  p_computation_processed=> 'REPLACE_EXISTING',
+  p_computation=> 'Y',
+  p_compute_when => '',
+  p_compute_when_type=>'');
  
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4852421357324186 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 1,
-  p_name=>'P1_NUM_RUNNERS',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 30,
-  p_item_plug_id => 4846907308414925+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'NO',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Test Runners:',
-  p_source=>'with q1 as ('||chr(10)||
-'select runner_owner, runner_name'||chr(10)||
-' from  wt_test_runs'||chr(10)||
-' where :P1_OWNER is NULL'||chr(10)||
-'   or  :P1_OWNER = runner_owner'||chr(10)||
-' group by runner_owner, runner_name'||chr(10)||
-')'||chr(10)||
-'select count(*) from q1',
-  p_source_type=> 'QUERY',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'N',
-  p_attribute_02 => 'VALUE',
-  p_attribute_04 => 'Y',
-  p_show_quick_picks=>'N',
-  p_item_comment => '');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4852904959385757 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 1,
-  p_name=>'P1_NUM_DBOUTS',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 40,
-  p_item_plug_id => 4846907308414925+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Named DBOUTs:',
-  p_source=>'with q1 as ('||chr(10)||
-'select dbout_owner, dbout_name, dbout_type'||chr(10)||
-' from  wt_test_runs'||chr(10)||
-' where :P1_OWNER is NULL'||chr(10)||
-'   or  :P1_OWNER = runner_owner'||chr(10)||
-' group by dbout_owner, dbout_name, dbout_type'||chr(10)||
-')'||chr(10)||
-'select count(*) from q1',
-  p_source_type=> 'QUERY',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'N',
-  p_attribute_02 => 'VALUE',
-  p_attribute_04 => 'Y',
-  p_show_quick_picks=>'N',
-  p_item_comment => '');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4853512324444641 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 1,
-  p_name=>'P1_NUM_CASES',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 50,
-  p_item_plug_id => 4846907308414925+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Test Cases:',
-  p_source=>'with q1 as ('||chr(10)||
-'select runner_owner, runner_name, testcase'||chr(10)||
-' from  wt_test_runs  run'||chr(10)||
-'       join wt_testcase_stats  case'||chr(10)||
-'            on  case.test_run_id = run.id'||chr(10)||
-' where :P1_OWNER is NULL'||chr(10)||
-'   or  :P1_OWNER = runner_owner'||chr(10)||
-' group by runner_owner, runner_name, testcase'||chr(10)||
-')'||chr(10)||
-'select count(*) from q1',
-  p_source_type=> 'QUERY',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'N',
-  p_attribute_02 => 'VALUE',
-  p_attribute_04 => 'Y',
-  p_show_quick_picks=>'N',
-  p_item_comment => '');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4929328361080445 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 1,
-  p_name=>'P1_SPACER_01',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 70,
-  p_item_plug_id => 4846907308414925+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'&nbsp;',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843706770414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'N',
-  p_attribute_02 => 'VALUE',
-  p_attribute_04 => 'Y',
-  p_show_quick_picks=>'N',
-  p_item_comment => '');
- 
- 
-end;
-/
-
- 
-begin
- 
-wwv_flow_api.create_page_da_event (
-  p_id => 4928723466050705 + wwv_flow_api.g_id_offset
- ,p_flow_id => wwv_flow.g_flow_id
- ,p_page_id => 1
- ,p_name => 'Submit After LOV Change'
- ,p_event_sequence => 10
- ,p_triggering_element_type => 'ITEM'
- ,p_triggering_element => 'P1_OWNER'
- ,p_bind_type => 'bind'
- ,p_bind_event_type => 'change'
-  );
-wwv_flow_api.create_page_da_action (
-  p_id => 4929031293050707 + wwv_flow_api.g_id_offset
- ,p_flow_id => wwv_flow.g_flow_id
- ,p_page_id => 1
- ,p_event_id => 4928723466050705 + wwv_flow_api.g_id_offset
- ,p_event_result => 'TRUE'
- ,p_action_sequence => 10
- ,p_execute_on_page_init => 'N'
- ,p_action => 'NATIVE_SUBMIT_PAGE'
- ,p_attribute_01 => 'REFRESH'
- ,p_stop_execution_on_error => 'Y'
- );
-null;
- 
-end;
-/
-
- 
-begin
- 
-declare
-  p varchar2(32767) := null;
-  l_clob clob;
-  l_length number := 1;
-begin
-p:=p||'begin'||chr(10)||
-'   if :P1_OWNER = ''1st Time'''||chr(10)||
-'   then'||chr(10)||
-'      begin'||chr(10)||
-'         select max(runner_owner)'||chr(10)||
-'          into  :P1_OWNER'||chr(10)||
-'          from  wt_test_runs'||chr(10)||
-'          where runner_owner <= :APP_USER;'||chr(10)||
-'      exception when NO_DATA_FOUND'||chr(10)||
-'      then'||chr(10)||
-'         begin'||chr(10)||
-'            select min(runner_owner)'||chr(10)||
-'             into  :P1_OWNER'||chr(10)||
-'             from  wt_test_runs'||chr(10)||
-'             where runner_owner >= :APP_USER;'||chr(10)||
-'        ';
-
-p:=p||' exception when NO_DATA_FOUND'||chr(10)||
-'         then'||chr(10)||
-'            :P1_OWNER := NULL;'||chr(10)||
-'         end;'||chr(10)||
-'      end;'||chr(10)||
-'   end if;'||chr(10)||
-'end;';
-
-wwv_flow_api.create_page_process(
-  p_id     => 4900928128520593 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id => 1,
-  p_process_sequence=> 10,
-  p_process_point=> 'BEFORE_HEADER',
-  p_process_type=> 'PLSQL',
-  p_process_name=> 'P1_INIT_OWNER',
-  p_process_sql_clob => p, 
-  p_process_error_message=> '',
-  p_process_success_message=> '',
-  p_process_is_stateful_y_n=>'N',
-  p_process_comment=>'');
-end;
 null;
  
 end;
@@ -3129,7 +3709,7 @@ wwv_flow_api.create_page (
  ,p_help_text => 
 'No help is available for this page.'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180731230050'
+ ,p_last_upd_yyyymmddhh24miss => '20180901224458'
   );
 null;
  
@@ -3141,7 +3721,57 @@ declare
   l_clob clob;
   l_length number := 1;
 begin
-s := null;
+s:=s||'declare'||chr(10)||
+'   last_run_id   number;'||chr(10)||
+'begin'||chr(10)||
+'   htp.p(''<br>'');'||chr(10)||
+'   htp.p(''<br>'');'||chr(10)||
+'   if     :P2_DB_LINK_HOST is null'||chr(10)||
+'      and :P0_TEST_OWNER is not null'||chr(10)||
+'   then'||chr(10)||
+'      htp.p(''<font color=#ff0000><b>*** DB Link is missing. ***<b></font>'');'||chr(10)||
+'      htp.p(''<br>'');'||chr(10)||
+'      htp.p(''<br>'');'||chr(10)||
+'   end if;'||chr(10)||
+'   htp.p('' &nbsp; <b>Last Run ID: </b>'');'||chr(10)||
+'   select id into last_run_id'||chr(10)||
+'    from  wt_test_runs'||chr(10)||
+'    where runner_own';
+
+s:=s||'er = :P0_TEST_OWNER'||chr(10)||
+'     and  runner_name  = :P0_TEST_RUNNER'||chr(10)||
+'     and  is_last_run = ''Y'';'||chr(10)||
+'   -- last_run_id cannot be null, or NO_DATA_FOUND'||chr(10)||
+'   --   would have been raised (ID is a Primary Key)'||chr(10)||
+'   if last_run_id != nvl(:P0_TEST_RUN_ID,-1)'||chr(10)||
+'   then'||chr(10)||
+'      htp.p(''<a href="f?p='' || :APP_ID               ||'||chr(10)||
+'                        '':'' || ''3''                   ||     -- Page'||chr(10)||
+'                        '':'' |';
+
+s:=s||'| :APP_SESSION          ||'||chr(10)||
+'                        '':'' || :REQUEST              ||'||chr(10)||
+'                        '':'' || :DEBUG                ||'||chr(10)||
+'                        '':'' || ''N''                   ||     -- CLear Cache'||chr(10)||
+'                        '':'' || ''P0_TEST_RUN_ID''      ||     -- Item Names'||chr(10)||
+'                        '':'' || last_run_id           ||     -- Item Values'||chr(10)||
+'                        '':'' || V(''PRI';
+
+s:=s||'NTER_FRIENDLY'') ||'||chr(10)||
+'                       ''">'' || last_run_id           ||'||chr(10)||
+'                                  '' (Click to View)'' || ''</a><br>'');'||chr(10)||
+'   else'||chr(10)||
+'      htp.p(''Same ID<br>'');'||chr(10)||
+'   end if;'||chr(10)||
+'   htp.p(''<br>'');'||chr(10)||
+'   htp.p(''<br>'');'||chr(10)||
+'exception when NO_DATA_FOUND'||chr(10)||
+'then'||chr(10)||
+'   htp.p(''Last Test Run Not found<br>'');'||chr(10)||
+'   htp.p(''<br>'');'||chr(10)||
+'   htp.p(''<br>'');'||chr(10)||
+'end;';
+
 wwv_flow_api.create_page_plug (
   p_id=> 4847515458414925 + wwv_flow_api.g_id_offset,
   p_flow_id=> wwv_flow.g_flow_id,
@@ -3149,15 +3779,16 @@ wwv_flow_api.create_page_plug (
   p_plug_name=> 'Run Test',
   p_region_name=>'',
   p_plug_template=> 4839912075414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 1,
+  p_plug_display_sequence=> 10,
   p_plug_display_column=> 1,
-  p_plug_display_point=> 'BEFORE_SHOW_ITEMS',
+  p_plug_display_point=> 'BEFORE_BOX_BODY',
   p_plug_source=> s,
-  p_plug_source_type=> 'STATIC_TEXT',
+  p_plug_source_type=> 'PLSQL_PROCEDURE',
   p_translate_title=> 'Y',
   p_plug_query_row_template=> 1,
   p_plug_query_headings_type=> 'COLON_DELMITED_LIST',
   p_plug_query_row_count_max => 500,
+  p_plug_column_width => 'td width="320"',
   p_plug_display_condition_type => '',
   p_plug_customized=>'0',
   p_plug_caching=> 'NOT_CACHED',
@@ -3179,7 +3810,7 @@ s:=s||'select log_id'||chr(10)||
 '      ,error_num'||chr(10)||
 '      ,additional_info'||chr(10)||
 ' from  wt_scheduler_jobs'||chr(10)||
-' where job_name like :APP_USER || ''$%''';
+'-- where job_name like :APP_USER || ''$%''';
 
 wwv_flow_api.create_page_plug (
   p_id=> 4885513244116318 + wwv_flow_api.g_id_offset,
@@ -3188,7 +3819,7 @@ wwv_flow_api.create_page_plug (
   p_plug_name=> 'DBMS_SCHEDULER Jobs',
   p_region_name=>'',
   p_plug_template=> 4839831975414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 4,
+  p_plug_display_sequence=> 40,
   p_plug_display_column=> 1,
   p_plug_display_point=> 'AFTER_SHOW_ITEMS',
   p_plug_source=> s,
@@ -3218,7 +3849,7 @@ a1:=a1||'select log_id'||chr(10)||
 '      ,error_num'||chr(10)||
 '      ,additional_info'||chr(10)||
 ' from  wt_scheduler_jobs'||chr(10)||
-' where job_name like :APP_USER || ''$%''';
+'-- where job_name like :APP_USER || ''$%''';
 
 wwv_flow_api.create_worksheet(
   p_id=> 4885631457116318+wwv_flow_api.g_id_offset,
@@ -3688,9 +4319,9 @@ wwv_flow_api.create_page_plug (
   p_plug_name=> 'Test Runner Jobs Setup',
   p_region_name=>'',
   p_plug_template=> 4839912075414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 14,
+  p_plug_display_sequence=> 20,
   p_plug_display_column=> 3,
-  p_plug_display_point=> 'BEFORE_SHOW_ITEMS',
+  p_plug_display_point=> 'BEFORE_BOX_BODY',
   p_plug_source=> s,
   p_plug_source_type=> 'STATIC_TEXT',
   p_translate_title=> 'Y',
@@ -3708,8 +4339,262 @@ wwv_flow_api.create_page_plug (
   p_plug_comment=> '');
 end;
 /
+declare
+  s varchar2(32767) := null;
+  l_clob clob;
+  l_length number := 1;
+begin
+s:=s||'select arg.owner             TEST_RUNNER_OWNER'||chr(10)||
+'      ,dbl.db_link'||chr(10)||
+'      ,dbl.username'||chr(10)||
+'      ,dbl.host'||chr(10)||
+'      ,dbl.created'||chr(10)||
+'      ,case when dbl.username is null'||chr(10)||
+'            then'||chr(10)||
+'               ''<font color=#ff0000><b>Username missing</b></font>'''||chr(10)||
+'            when dbl.host is null'||chr(10)||
+'            then'||chr(10)||
+'               ''<font color=#ff0000><b>Host value missing</b></font>'''||chr(10)||
+'            when dbl.db_link != dbl';
+
+s:=s||'.username'||chr(10)||
+'            then'||chr(10)||
+'               ''<font color=#ff0000><b>DB Link != Username</b></font>'''||chr(10)||
+'            else'||chr(10)||
+'               ''<font color=##00cc66>Good Link</font>'''||chr(10)||
+'            end              LINK_STATUS'||chr(10)||
+' from  dba_arguments  arg'||chr(10)||
+'  left join user_db_links  dbl'||chr(10)||
+'            on  dbl.db_link  = arg.owner'||chr(10)||
+'            or  dbl.username = arg.owner'||chr(10)||
+' where object_name   = ''WTPLSQL_RUN'''||chr(10)||
+'  and  argume';
+
+s:=s||'nt_name is null'||chr(10)||
+'  and  position      = 1'||chr(10)||
+'  and  sequence      = 0'||chr(10)||
+' group by arg.owner'||chr(10)||
+'      ,dbl.db_link'||chr(10)||
+'      ,dbl.username'||chr(10)||
+'      ,dbl.host'||chr(10)||
+'      ,dbl.created'||chr(10)||
+'';
+
+wwv_flow_api.create_report_region (
+  p_id=> 5180621438298420 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_page_id=> 2,
+  p_name=> 'All Test Runner Owners',
+  p_region_name=>'',
+  p_template=> 4840201642414912+ wwv_flow_api.g_id_offset,
+  p_display_sequence=> 30,
+  p_display_column=> 1,
+  p_display_point=> 'BEFORE_SHOW_ITEMS',
+  p_source=> s,
+  p_source_type=> 'SQL_QUERY',
+  p_display_error_message=> '#SQLERRM#',
+  p_display_when_condition=> 'P2_SHOW_OWNERS',
+  p_display_when_cond2=> 'Y',
+  p_display_condition_type=> 'VAL_OF_ITEM_IN_COND_EQ_COND2',
+  p_plug_caching=> 'NOT_CACHED',
+  p_customized=> '0',
+  p_translate_title=> 'Y',
+  p_ajax_enabled=> 'Y',
+  p_query_row_template=> 4843113555414914+ wwv_flow_api.g_id_offset,
+  p_query_headings_type=> 'COLON_DELMITED_LIST',
+  p_query_num_rows=> '15',
+  p_query_options=> 'DERIVED_REPORT_COLUMNS',
+  p_query_show_nulls_as=> ' - ',
+  p_query_break_cols=> '0',
+  p_query_no_data_found=> 'no data found',
+  p_query_num_rows_type=> 'NEXT_PREVIOUS_LINKS',
+  p_pagination_display_position=> 'BOTTOM_RIGHT',
+  p_csv_output=> 'N',
+  p_query_asc_image=> 'apex/builder/dup.gif',
+  p_query_asc_image_attr=> 'width="16" height="16" alt="" ',
+  p_query_desc_image=> 'apex/builder/ddown.gif',
+  p_query_desc_image_attr=> 'width="16" height="16" alt="" ',
+  p_plug_query_strip_html=> 'Y',
+  p_comment=>'');
+end;
+/
+declare
+  s varchar2(32767) := null;
+begin
+s := null;
+wwv_flow_api.create_report_columns (
+  p_id=> 5182216515391627 + wwv_flow_api.g_id_offset,
+  p_region_id=> 5180621438298420 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_query_column_id=> 1,
+  p_form_element_id=> null,
+  p_column_alias=> 'TEST_RUNNER_OWNER',
+  p_column_display_sequence=> 1,
+  p_column_heading=> 'Test Runner Owner',
+  p_column_link=>'f?p=&APP_ID.:2:&SESSION.::&DEBUG.::P0_TEST_OWNER:#TEST_RUNNER_OWNER#',
+  p_column_linktext=>'#TEST_RUNNER_OWNER#',
+  p_column_alignment=>'LEFT',
+  p_heading_alignment=>'CENTER',
+  p_default_sort_column_sequence=>1,
+  p_disable_sort_column=>'N',
+  p_sum_column=> 'N',
+  p_hidden_column=> 'N',
+  p_display_as=>'ESCAPE_SC',
+  p_lov_show_nulls=> 'NO',
+  p_is_required=> false,
+  p_pk_col_source=> s,
+  p_lov_display_extra=> 'YES',
+  p_include_in_export=> 'Y',
+  p_column_comment=>'');
+end;
+/
+declare
+  s varchar2(32767) := null;
+begin
+s := null;
+wwv_flow_api.create_report_columns (
+  p_id=> 5181215424303709 + wwv_flow_api.g_id_offset,
+  p_region_id=> 5180621438298420 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_query_column_id=> 2,
+  p_form_element_id=> null,
+  p_column_alias=> 'DB_LINK',
+  p_column_display_sequence=> 2,
+  p_column_heading=> 'Db Link',
+  p_column_alignment=>'LEFT',
+  p_heading_alignment=>'CENTER',
+  p_default_sort_column_sequence=>0,
+  p_disable_sort_column=>'N',
+  p_sum_column=> 'N',
+  p_hidden_column=> 'N',
+  p_display_as=>'ESCAPE_SC',
+  p_is_required=> false,
+  p_pk_col_source=> s,
+  p_column_comment=>'');
+end;
+/
+declare
+  s varchar2(32767) := null;
+begin
+s := null;
+wwv_flow_api.create_report_columns (
+  p_id=> 5181332039303709 + wwv_flow_api.g_id_offset,
+  p_region_id=> 5180621438298420 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_query_column_id=> 3,
+  p_form_element_id=> null,
+  p_column_alias=> 'USERNAME',
+  p_column_display_sequence=> 3,
+  p_column_heading=> 'Username',
+  p_column_alignment=>'LEFT',
+  p_heading_alignment=>'CENTER',
+  p_default_sort_column_sequence=>0,
+  p_disable_sort_column=>'N',
+  p_sum_column=> 'N',
+  p_hidden_column=> 'N',
+  p_display_as=>'ESCAPE_SC',
+  p_is_required=> false,
+  p_pk_col_source=> s,
+  p_column_comment=>'');
+end;
+/
+declare
+  s varchar2(32767) := null;
+begin
+s := null;
+wwv_flow_api.create_report_columns (
+  p_id=> 5181428671303709 + wwv_flow_api.g_id_offset,
+  p_region_id=> 5180621438298420 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_query_column_id=> 4,
+  p_form_element_id=> null,
+  p_column_alias=> 'HOST',
+  p_column_display_sequence=> 4,
+  p_column_heading=> 'Host',
+  p_column_alignment=>'LEFT',
+  p_heading_alignment=>'CENTER',
+  p_default_sort_column_sequence=>0,
+  p_disable_sort_column=>'N',
+  p_sum_column=> 'N',
+  p_hidden_column=> 'N',
+  p_display_as=>'ESCAPE_SC',
+  p_is_required=> false,
+  p_pk_col_source=> s,
+  p_column_comment=>'');
+end;
+/
+declare
+  s varchar2(32767) := null;
+begin
+s := null;
+wwv_flow_api.create_report_columns (
+  p_id=> 5181522703303709 + wwv_flow_api.g_id_offset,
+  p_region_id=> 5180621438298420 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_query_column_id=> 5,
+  p_form_element_id=> null,
+  p_column_alias=> 'CREATED',
+  p_column_display_sequence=> 5,
+  p_column_heading=> 'Created',
+  p_column_alignment=>'LEFT',
+  p_heading_alignment=>'CENTER',
+  p_default_sort_column_sequence=>0,
+  p_disable_sort_column=>'N',
+  p_sum_column=> 'N',
+  p_hidden_column=> 'N',
+  p_display_as=>'ESCAPE_SC',
+  p_is_required=> false,
+  p_pk_col_source=> s,
+  p_column_comment=>'');
+end;
+/
+declare
+  s varchar2(32767) := null;
+begin
+s := null;
+wwv_flow_api.create_report_columns (
+  p_id=> 5181806987351019 + wwv_flow_api.g_id_offset,
+  p_region_id=> 5180621438298420 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_query_column_id=> 6,
+  p_form_element_id=> null,
+  p_column_alias=> 'LINK_STATUS',
+  p_column_display_sequence=> 6,
+  p_column_heading=> 'Link Status',
+  p_column_alignment=>'LEFT',
+  p_heading_alignment=>'CENTER',
+  p_default_sort_column_sequence=>0,
+  p_disable_sort_column=>'N',
+  p_sum_column=> 'N',
+  p_hidden_column=> 'N',
+  p_display_as=>'WITHOUT_MODIFICATION',
+  p_lov_show_nulls=> 'NO',
+  p_is_required=> false,
+  p_pk_col_source=> s,
+  p_lov_display_extra=> 'YES',
+  p_include_in_export=> 'Y',
+  p_column_comment=>'');
+end;
+/
  
 begin
+ 
+wwv_flow_api.create_page_button(
+  p_id             => 5173925590382378 + wwv_flow_api.g_id_offset,
+  p_flow_id        => wwv_flow.g_flow_id,
+  p_flow_step_id   => 2,
+  p_button_sequence=> 10,
+  p_button_plug_id => 4847515458414925+wwv_flow_api.g_id_offset,
+  p_button_name    => 'RUN_TEST',
+  p_button_image   => 'template:'||to_char(4838226535414911+wwv_flow_api.g_id_offset),
+  p_button_image_alt=> 'Run Test',
+  p_button_position=> 'ABOVE_BOX',
+  p_button_alignment=> 'LEFT',
+  p_button_redirect_url=> '',
+  p_button_execute_validations=>'Y',
+  p_button_condition=> 'P2_DB_LINK_HOST',
+  p_button_condition_type=> 'ITEM_IS_NOT_NULL',
+  p_required_patch => null + wwv_flow_api.g_id_offset);
  
 wwv_flow_api.create_page_button(
   p_id             => 4943012566012609 + wwv_flow_api.g_id_offset,
@@ -3717,13 +4602,47 @@ wwv_flow_api.create_page_button(
   p_flow_step_id   => 2,
   p_button_sequence=> 20,
   p_button_plug_id => 4847515458414925+wwv_flow_api.g_id_offset,
-  p_button_name    => 'P3_RUN_ALL_TESTS',
-  p_button_image   => 'template:'||to_char(4838226535414911+wwv_flow_api.g_id_offset),
-  p_button_image_alt=> 'Run All Tests',
+  p_button_name    => 'P3_TEST_ALL',
+  p_button_image   => 'template:'||to_char(4838306817414911+wwv_flow_api.g_id_offset),
+  p_button_image_alt=> 'Run All Tests for This Owner',
   p_button_position=> 'BOTTOM',
   p_button_alignment=> 'LEFT',
-  p_button_redirect_url=> 'javascript:confirmDelete(''Run all Tests for Owner &APP_USER.'', ''TEST_ALL'')',
+  p_button_redirect_url=> 'javascript:confirmDelete(''Run all Tests for Owner &P0_TEST_OWNER.'', ''TEST_ALL'')',
   p_button_execute_validations=>'Y',
+  p_button_condition=> 'P2_DB_LINK_HOST',
+  p_button_condition_type=> 'ITEM_IS_NOT_NULL',
+  p_required_patch => null + wwv_flow_api.g_id_offset);
+ 
+wwv_flow_api.create_page_button(
+  p_id             => 5182629852433290 + wwv_flow_api.g_id_offset,
+  p_flow_id        => wwv_flow.g_flow_id,
+  p_flow_step_id   => 2,
+  p_button_sequence=> 30,
+  p_button_plug_id => 5180621438298420+wwv_flow_api.g_id_offset,
+  p_button_name    => 'P2_TEST_ALL_SEQ',
+  p_button_image   => 'template:'||to_char(4838306817414911+wwv_flow_api.g_id_offset),
+  p_button_image_alt=> 'Run All Tests for All Owners Sequentially',
+  p_button_position=> 'BOTTOM',
+  p_button_alignment=> 'LEFT',
+  p_button_redirect_url=> 'javascript:confirmDelete(''Run all Tests for all Owners, one after another'', ''TEST_ALL_SEQ'')',
+  p_button_execute_validations=>'Y',
+  p_button_condition=> 'P2_DB_LINK_HOST',
+  p_required_patch => null + wwv_flow_api.g_id_offset);
+ 
+wwv_flow_api.create_page_button(
+  p_id             => 5183117778458242 + wwv_flow_api.g_id_offset,
+  p_flow_id        => wwv_flow.g_flow_id,
+  p_flow_step_id   => 2,
+  p_button_sequence=> 40,
+  p_button_plug_id => 5180621438298420+wwv_flow_api.g_id_offset,
+  p_button_name    => 'P2_TEST_ALL_PAR',
+  p_button_image   => 'template:'||to_char(4838306817414911+wwv_flow_api.g_id_offset),
+  p_button_image_alt=> 'Run All Tests for All Owners in Parallel',
+  p_button_position=> 'BOTTOM',
+  p_button_alignment=> 'LEFT',
+  p_button_redirect_url=> 'javascript:confirmDelete(''Run all Tests for all Owners with all Owners running at the same time'', ''TEST_ALL_PAR'')',
+  p_button_execute_validations=>'Y',
+  p_button_condition=> 'P2_DB_LINK_HOST',
   p_required_patch => null + wwv_flow_api.g_id_offset);
  
  
@@ -3737,7 +4656,7 @@ wwv_flow_api.create_page_branch(
   p_id=>4941327317931667 + wwv_flow_api.g_id_offset,
   p_flow_id=> wwv_flow.g_flow_id,
   p_flow_step_id=> 2,
-  p_branch_action=> 'f?p=&APP_ID.:1:&SESSION.::&DEBUG.::P1_OWNER:&APP_USER.&success_msg=#SUCCESS_MSG#',
+  p_branch_action=> 'f?p=&APP_ID.:1:&SESSION.::&DEBUG.:::&success_msg=#SUCCESS_MSG#',
   p_branch_point=> 'AFTER_PROCESSING',
   p_branch_type=> 'REDIRECT_URL',
   p_branch_sequence=> 10,
@@ -3756,104 +4675,6 @@ wwv_flow_api.create_page_branch(
   p_branch_sequence=> 99,
   p_save_state_before_branch_yn=>'Y',
   p_branch_comment=> '');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4875003523525673 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 2,
-  p_name=>'P2_TEST_RUNNER',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> true,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 1,
-  p_item_plug_id => 4847515458414925+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Test Runner:',
-  p_source=>'select min(package_name)'||chr(10)||
-' from  dba_arguments'||chr(10)||
-' where owner         = :APP_USER'||chr(10)||
-'  and  object_name   = ''WTPLSQL_RUN'''||chr(10)||
-'  and  argument_name is null'||chr(10)||
-'  and  position      = 1'||chr(10)||
-'  and  sequence      = 0',
-  p_source_type=> 'QUERY',
-  p_display_as=> 'NATIVE_POPUP_LOV',
-  p_lov=> 'select package_name   DISPLAY'||chr(10)||
-'      ,package_name   RETURN'||chr(10)||
-' from  dba_arguments'||chr(10)||
-' where owner         = :APP_USER'||chr(10)||
-'  and  object_name   = ''WTPLSQL_RUN'''||chr(10)||
-'  and  argument_name is null'||chr(10)||
-'  and  position      = 1'||chr(10)||
-'  and  sequence      = 0'||chr(10)||
-' order by package_name',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'NO',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'NOT_ENTERABLE',
-  p_attribute_02 => 'FIRST_ROWSET',
-  p_show_quick_picks=>'N',
-  p_item_comment => '');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4876813883701993 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 2,
-  p_name=>'P2_RUN_TEST',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 2,
-  p_item_plug_id => 4847515458414925+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'NO',
-  p_item_default=> 'RUN_TEST',
-  p_prompt=>'Run Test',
-  p_source=>'RUN_TEST',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'BUTTON',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> null,
-  p_cMaxlength=> 2000,
-  p_cHeight=> null,
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'LEFT',
-  p_field_alignment=> 'LEFT',
-  p_is_persistent=> 'N',
-  p_button_execute_validations=>'Y',
-  p_item_comment => '');
  
  
 end;
@@ -3904,6 +4725,7 @@ wwv_flow_api.create_page_item(
 '       where name = ''job_queue_processes'''||chr(10)||
 '       order by inst_id )'||chr(10)||
 '   loop'||chr(10)||
+'      -- Set these as list items'||chr(10)||
 '      htp.p(''<li>'');'||chr(10)||
 '      if buff.value > 0'||chr(10)||
 '      then'||chr(10)||
@@ -3957,7 +4779,8 @@ wwv_flow_api.create_page_item(
   p_rowspan=> 1,
   p_label_alignment=> 'RIGHT',
   p_field_alignment=> 'LEFT',
-  p_display_when=>'apex_plsql_job.jobs_are_enabled = FALSE',
+  p_display_when=>'P0_TEST_OWNER',
+  p_display_when_type=>'ITEM_IS_NOT_NULL',
   p_is_persistent=> 'N',
   p_button_execute_validations=>'Y',
   p_item_comment => '');
@@ -3996,6 +4819,8 @@ wwv_flow_api.create_page_item(
   p_rowspan=> 1,
   p_label_alignment=> 'RIGHT',
   p_field_alignment=> 'LEFT',
+  p_display_when=>'P0_TEST_OWNER',
+  p_display_when_type=>'ITEM_IS_NOT_NULL',
   p_is_persistent=> 'Y',
   p_lov_display_extra=>'YES',
   p_protection_level => 'N',
@@ -4040,6 +4865,8 @@ wwv_flow_api.create_page_item(
   p_rowspan=> 1,
   p_label_alignment=> 'RIGHT',
   p_field_alignment=> 'LEFT-CENTER',
+  p_display_when=>'P0_TEST_OWNER',
+  p_display_when_type=>'ITEM_IS_NOT_NULL',
   p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
   p_is_persistent=> 'Y',
   p_lov_display_extra=>'YES',
@@ -4070,6 +4897,8 @@ wwv_flow_api.create_page_item(
   p_use_cache_before_default=> 'YES',
   p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
   p_prompt=>'DB Link Host:',
+  p_pre_element_text=>'<font color=##00cc66>',
+  p_post_element_text=>'</font>',
   p_source_type=> 'STATIC',
   p_display_as=> 'NATIVE_DISPLAY_ONLY',
   p_lov_display_null=> 'NO',
@@ -4084,73 +4913,18 @@ wwv_flow_api.create_page_item(
   p_rowspan=> 1,
   p_label_alignment=> 'RIGHT',
   p_field_alignment=> 'LEFT-CENTER',
+  p_display_when=>'P0_TEST_OWNER',
+  p_display_when_type=>'ITEM_IS_NOT_NULL',
   p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
   p_is_persistent=> 'Y',
   p_lov_display_extra=>'YES',
   p_protection_level => 'N',
   p_escape_on_http_output => 'Y',
   p_attribute_01 => 'N',
-  p_attribute_02 => 'PLSQL',
-  p_attribute_03 => 'declare'||chr(10)||
-'   host_string  varchar2(2000);'||chr(10)||
-'begin'||chr(10)||
-'   select host into host_string'||chr(10)||
-'    from  user_db_links'||chr(10)||
-'    where db_link = :APP_USER;'||chr(10)||
-'   htp.p(''<font color=##00cc66>'' || host_string || ''</font>'');'||chr(10)||
-'exception when NO_DATA_FOUND then'||chr(10)||
-'   htp.p(''<font color=#ff0000><b>*** DB Link Missing ***<b></font>'');'||chr(10)||
-'end;',
+  p_attribute_02 => 'VALUE',
+  p_attribute_04 => 'Y',
   p_show_quick_picks=>'N',
-  p_item_comment => '');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>5035808710455768 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 2,
-  p_name=>'P2_SPACER',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 4,
-  p_item_plug_id => 4847515458414925+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'N',
-  p_attribute_02 => 'PLSQL',
-  p_attribute_03 => 'begin'||chr(10)||
-'   htp.p(''<br>'');'||chr(10)||
-'   htp.p(''<br>'');'||chr(10)||
-'end;'||chr(10)||
-'',
-  p_show_quick_picks=>'N',
-  p_item_comment => '');
+  p_item_comment => 'Set by a page computation before header.');
  
  
 end;
@@ -4186,6 +4960,8 @@ wwv_flow_api.create_page_item(
   p_rowspan=> 1,
   p_label_alignment=> 'RIGHT',
   p_field_alignment=> 'LEFT-CENTER',
+  p_display_when=>'P0_TEST_OWNER',
+  p_display_when_type=>'ITEM_IS_NOT_NULL',
   p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
   p_is_persistent=> 'Y',
   p_lov_display_extra=>'YES',
@@ -4194,7 +4970,7 @@ wwv_flow_api.create_page_item(
   p_attribute_01 => 'N',
   p_attribute_02 => 'PLSQL',
   p_attribute_03 => 'begin'||chr(10)||
-'   htp.p(:APP_USER);'||chr(10)||
+'   htp.p(:P0_TEST_OWNER);'||chr(10)||
 'end;',
   p_show_quick_picks=>'N',
   p_item_comment => '');
@@ -4207,20 +4983,23 @@ declare
     h varchar2(32767) := null;
 begin
 wwv_flow_api.create_page_item(
-  p_id=>5073001504097405 + wwv_flow_api.g_id_offset,
+  p_id=>5179801820226564 + wwv_flow_api.g_id_offset,
   p_flow_id=> wwv_flow.g_flow_id,
   p_flow_step_id=> 2,
-  p_name=>'P2_LAST_RUN_ID',
+  p_name=>'P2_SHOW_OWNERS',
   p_data_type=> 'VARCHAR',
-  p_is_required=> false,
+  p_is_required=> true,
   p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 3,
+  p_item_sequence=> 10,
   p_item_plug_id => 4847515458414925+wwv_flow_api.g_id_offset,
   p_use_cache_before_default=> 'YES',
   p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Last Run ID:',
+  p_prompt=>'Show All Test Runner Owners:',
+  p_source=>'N',
   p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
+  p_display_as=> 'NATIVE_RADIOGROUP',
+  p_named_lov=> 'Y_OR_N',
+  p_lov=> '.'||to_char(4923728354614299 + wwv_flow_api.g_id_offset)||'.',
   p_lov_display_null=> 'NO',
   p_lov_translated=> 'N',
   p_cSize=> 30,
@@ -4238,35 +5017,56 @@ wwv_flow_api.create_page_item(
   p_lov_display_extra=>'YES',
   p_protection_level => 'N',
   p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'N',
-  p_attribute_02 => 'PLSQL',
-  p_attribute_03 => 'declare'||chr(10)||
-'   last_run_id   number;'||chr(10)||
-'begin'||chr(10)||
-'   -- Group Function never returns NO_DATA_FOUND'||chr(10)||
-'   select id into last_run_id'||chr(10)||
-'    from  wt_test_runs'||chr(10)||
-'    where runner_owner = :APP_USER'||chr(10)||
-'     and  runner_name  = :P2_TEST_RUNNER'||chr(10)||
-'     and  is_last_run = ''Y'';'||chr(10)||
-'   if last_run_id is not null'||chr(10)||
-'   then'||chr(10)||
-'      htp.p(''<a href="f?p='' || :APP_ID               ||'||chr(10)||
-'                        '':'' || ''3''                   ||     -- Page'||chr(10)||
-'                        '':'' || :APP_SESSION          ||'||chr(10)||
-'                        '':'' || :REQUEST              ||'||chr(10)||
-'                        '':'' || :DEBUG                ||'||chr(10)||
-'                        '':'' || ''N''                   ||     -- CLear Cache'||chr(10)||
-'                        '':'' || ''P3_TEST_RUN_ID''      ||     -- Item Names'||chr(10)||
-'                        '':'' || last_run_id           ||     -- Item Values'||chr(10)||
-'                        '':'' || V(''PRINTER_FRIENDLY'') ||'||chr(10)||
-'                       ''">'' || last_run_id           ||'||chr(10)||
-'                                  '' (Click to View)'' || ''</a>'');'||chr(10)||
-'   end if;'||chr(10)||
-'end;',
+  p_attribute_01 => '2',
+  p_attribute_02 => 'SUBMIT',
+  p_attribute_03 => 'Y',
   p_show_quick_picks=>'N',
   p_item_comment => '');
  
+ 
+end;
+/
+
+ 
+begin
+ 
+wwv_flow_api.create_page_computation(
+  p_id=> 5112015839301513 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 2,
+  p_computation_sequence => 10,
+  p_computation_item=> 'P0_DISPLAY',
+  p_computation_point=> 'BEFORE_HEADER',
+  p_computation_type=> 'STATIC_ASSIGNMENT',
+  p_computation_processed=> 'REPLACE_EXISTING',
+  p_computation=> 'Y',
+  p_compute_when => '',
+  p_compute_when_type=>'');
+ 
+null;
+ 
+end;
+/
+
+ 
+begin
+ 
+wwv_flow_api.create_page_computation(
+  p_id=> 5174632347422111 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 2,
+  p_computation_sequence => 10,
+  p_computation_item=> 'P2_DB_LINK_HOST',
+  p_computation_point=> 'BEFORE_HEADER',
+  p_computation_type=> 'QUERY',
+  p_computation_processed=> 'REPLACE_EXISTING',
+  p_computation=> 'select host'||chr(10)||
+' from  user_db_links'||chr(10)||
+' where db_link = :P0_TEST_OWNER',
+  p_compute_when => '',
+  p_compute_when_type=>'');
+ 
+null;
  
 end;
 /
@@ -4281,16 +5081,16 @@ declare
 begin
 p:=p||'DECLARE'||chr(10)||
 '   run_str  varchar2(2000) := ''wtplsql.test_run@'' ||'||chr(10)||
-'                               :APP_USER          || ''('''''' ||'||chr(10)||
-'                               :P2_TEST_RUNNER    || '''''')'' ;'||chr(10)||
+'                               :P0_TEST_OWNER     || ''('''''' ||'||chr(10)||
+'                               :P0_TEST_RUNNER    || '''''')'' ;'||chr(10)||
 'BEGIN'||chr(10)||
 '   DBMS_SCHEDULER.CREATE_JOB'||chr(10)||
-'      (job_name    =>  substr(:APP_USER || ''$'' || :P2_TEST_RUNNER, 1, 30)'||chr(10)||
+'      (job_name    =>  substr(:P0_TEST_OWNER || ''$'' || :P0_TEST_RUNNER, 1, 30)'||chr(10)||
 '      ,job_type    =>  ''PLSQL_BLOCK'''||chr(10)||
 '      ,job_action  =>  ''begin '' || run_str || ''; commit; end;'''||chr(10)||
-'      ,';
+'  ';
 
-p:=p||'comments    =>  run_str'||chr(10)||
+p:=p||'    ,comments    =>  run_str'||chr(10)||
 '      ,enabled     =>  TRUE);'||chr(10)||
 '   COMMIT;'||chr(10)||
 'END;';
@@ -4325,10 +5125,10 @@ declare
   l_length number := 1;
 begin
 p:=p||'DECLARE'||chr(10)||
-'   run_str  varchar2(2000) := ''wtplsql.test_all@'' || :APP_USER;'||chr(10)||
+'   run_str  varchar2(2000) := ''wtplsql.test_all@'' || :P0_TEST_OWNER;'||chr(10)||
 'BEGIN'||chr(10)||
 '   DBMS_SCHEDULER.CREATE_JOB'||chr(10)||
-'      (job_name    =>  substr(:APP_USER || ''$TEST$ALL'', 1, 30)'||chr(10)||
+'      (job_name    =>  substr(:P0_TEST_OWNER || ''$TEST$ALL'', 1, 30)'||chr(10)||
 '      ,job_type    =>  ''PLSQL_BLOCK'''||chr(10)||
 '      ,job_action  =>  ''begin '' || run_str || ''; commit; end;'''||chr(10)||
 '      ,comments    =>  run_str'||chr(10)||
@@ -4347,6 +5147,131 @@ wwv_flow_api.create_page_process(
   p_process_sql_clob => p, 
   p_process_error_message=> 'Failed to submit job (&P2_LAST_JOB_ID.)',
   p_process_when=>'TEST_ALL',
+  p_process_when_type=>'REQUEST_EQUALS_CONDITION',
+  p_process_success_message=> 'Successful submitted job &P2_LAST_JOB_ID.',
+  p_process_is_stateful_y_n=>'N',
+  p_process_comment=>'');
+end;
+null;
+ 
+end;
+/
+
+ 
+begin
+ 
+declare
+  p varchar2(32767) := null;
+  l_clob clob;
+  l_length number := 1;
+begin
+p:=p||'DECLARE'||chr(10)||
+'   run_str  varchar2(32000);'||chr(10)||
+'BEGIN'||chr(10)||
+'   -- String all the "Test Alls" into one PL/SQL Block'||chr(10)||
+'   for buff in ('||chr(10)||
+'      select arg.owner             TEST_OWNER'||chr(10)||
+'       from  dba_arguments  arg'||chr(10)||
+'             join user_db_links  dbl'||chr(10)||
+'                  on  dbl.db_link  = arg.owner'||chr(10)||
+'                  and dbl.db_link  = dbl.username'||chr(10)||
+'                  and dbl.username is not null'||chr(10)||
+'                  and dbl.';
+
+p:=p||'host     is not null'||chr(10)||
+'       where object_name   = ''WTPLSQL_RUN'''||chr(10)||
+'        and  argument_name is null'||chr(10)||
+'        and  position      = 1'||chr(10)||
+'        and  sequence      = 0'||chr(10)||
+'       group by arg.owner )'||chr(10)||
+'   loop'||chr(10)||
+'      run_str := run_str || ''wtplsql.test_all@'' || buff.TEST_OWNER || '';'' || CHR(10);'||chr(10)||
+'   end loop;'||chr(10)||
+'   -- Create 1 Scheduler Job'||chr(10)||
+'   DBMS_SCHEDULER.CREATE_JOB'||chr(10)||
+'      (job_name    =>  ''TEST_ALL_SEQ'''||chr(10)||
+'      ,j';
+
+p:=p||'ob_type    =>  ''PLSQL_BLOCK'''||chr(10)||
+'      ,job_action  =>  ''begin'' || CHR(10) || run_str || ''commit;'' || CHR(10) || ''end;'''||chr(10)||
+'      ,comments    =>  ''Sequential Tests for All Owners'''||chr(10)||
+'      ,enabled     =>  TRUE);'||chr(10)||
+'   COMMIT;'||chr(10)||
+'END;';
+
+wwv_flow_api.create_page_process(
+  p_id     => 5183316524467299 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id => 2,
+  p_process_sequence=> 40,
+  p_process_point=> 'AFTER_SUBMIT',
+  p_process_type=> 'PLSQL',
+  p_process_name=> 'TEST_ALL_SEQ',
+  p_process_sql_clob => p, 
+  p_process_error_message=> 'Failed to submit job (&P2_LAST_JOB_ID.)',
+  p_process_when=>'TEST_ALL_SEQ',
+  p_process_when_type=>'REQUEST_EQUALS_CONDITION',
+  p_process_success_message=> 'Successfully submitted job &P2_LAST_JOB_ID.',
+  p_process_is_stateful_y_n=>'N',
+  p_process_comment=>'');
+end;
+null;
+ 
+end;
+/
+
+ 
+begin
+ 
+declare
+  p varchar2(32767) := null;
+  l_clob clob;
+  l_length number := 1;
+begin
+p:=p||'DECLARE'||chr(10)||
+'   run_str  varchar2(32000);'||chr(10)||
+'BEGIN'||chr(10)||
+'   for buff in ('||chr(10)||
+'      select arg.owner             TEST_OWNER'||chr(10)||
+'       from  dba_arguments  arg'||chr(10)||
+'             join user_db_links  dbl'||chr(10)||
+'                  on  dbl.db_link  = arg.owner'||chr(10)||
+'                  and dbl.db_link  = dbl.username'||chr(10)||
+'                  and dbl.username is not null'||chr(10)||
+'                  and dbl.host     is not null'||chr(10)||
+'       where object_name   = ''WTPL';
+
+p:=p||'SQL_RUN'''||chr(10)||
+'        and  argument_name is null'||chr(10)||
+'        and  position      = 1'||chr(10)||
+'        and  sequence      = 0'||chr(10)||
+'       group by arg.owner )'||chr(10)||
+'   loop'||chr(10)||
+'      -- Create a Scheduler Job for each Test Owner'||chr(10)||
+'      run_str := ''wtplsql.test_all@'' || buff.TEST_OWNER;'||chr(10)||
+'      DBMS_SCHEDULER.CREATE_JOB'||chr(10)||
+'         (job_name    =>  substr(buff.TEST_OWNER || ''$PAR$TEST$ALL'', 1, 30)'||chr(10)||
+'         ,job_type    =>  ''PLSQL_BLOCK'''||chr(10)||
+' ';
+
+p:=p||'        ,job_action  =>  ''begin '' || run_str || ''; commit; end;'''||chr(10)||
+'         ,comments    =>  buff.TEST_OWNER || '': Parallel Tests for All Owners'''||chr(10)||
+'         ,enabled     =>  TRUE);'||chr(10)||
+'   end loop;'||chr(10)||
+'   COMMIT;'||chr(10)||
+'END;';
+
+wwv_flow_api.create_page_process(
+  p_id     => 5184104609728862 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id => 2,
+  p_process_sequence=> 50,
+  p_process_point=> 'AFTER_SUBMIT',
+  p_process_type=> 'PLSQL',
+  p_process_name=> 'TEST_ALL_PAR',
+  p_process_sql_clob => p, 
+  p_process_error_message=> 'Failed to submit job (&P2_LAST_JOB_ID.)',
+  p_process_when=>'TEST_ALL_PAR',
   p_process_when_type=>'REQUEST_EQUALS_CONDITION',
   p_process_success_message=> 'Successful submitted job &P2_LAST_JOB_ID.',
   p_process_is_stateful_y_n=>'N',
@@ -4390,7 +5315,7 @@ wwv_flow_api.create_page_process(
   p_id     => 5027926237038111 + wwv_flow_api.g_id_offset,
   p_flow_id=> wwv_flow.g_flow_id,
   p_flow_step_id => 2,
-  p_process_sequence=> 40,
+  p_process_sequence=> 90,
   p_process_point=> 'AFTER_SUBMIT',
   p_process_type=> 'PLSQL',
   p_process_name=> 'RESET_DB_LINK',
@@ -4452,7 +5377,7 @@ wwv_flow_api.create_page (
  ,p_help_text => 
 'No help is available for this page.'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180731225449'
+ ,p_last_upd_yyyymmddhh24miss => '20180901163029'
   );
 null;
  
@@ -4464,119 +5389,94 @@ declare
   l_clob clob;
   l_length number := 1;
 begin
-s := null;
+s:=s||'declare'||chr(10)||
+'   cursor main is'||chr(10)||
+'      select round(extract(day from (tr.end_dtm -'||chr(10)||
+'                                     tr.start_dtm'||chr(10)||
+'                                    )*86400*100'||chr(10)||
+'                          )/100,2'||chr(10)||
+'                  )                       DURATION'||chr(10)||
+'            ,tr.dbout_owner'||chr(10)||
+'            ,tr.dbout_name'||chr(10)||
+'            ,tr.dbout_type'||chr(10)||
+'            ,tr.trigger_offset'||chr(10)||
+'            ,tr.error_messag';
+
+s:=s||'e'||chr(10)||
+'            ,count(tc.testcase)           NUM_TESTCASES'||chr(10)||
+'       from  wt_test_runs  tr'||chr(10)||
+'        left join wt_testcase_stats  tc'||chr(10)||
+'             on  tc.test_run_id = tr.id'||chr(10)||
+'       where tr.id = :P0_TEST_RUN_ID'||chr(10)||
+'      group by round(extract(day from (tr.end_dtm -'||chr(10)||
+'                                       tr.start_dtm'||chr(10)||
+'                                      )*86400*100'||chr(10)||
+'                            )/100,2'||chr(10)||
+'     ';
+
+s:=s||'               )'||chr(10)||
+'            ,tr.dbout_owner'||chr(10)||
+'            ,tr.dbout_name'||chr(10)||
+'            ,tr.dbout_type'||chr(10)||
+'            ,tr.trigger_offset'||chr(10)||
+'            ,tr.error_message;'||chr(10)||
+'   buff  main%ROWTYPE;'||chr(10)||
+'   num_runs   number;'||chr(10)||
+'begin'||chr(10)||
+'   --'||chr(10)||
+'   open main;'||chr(10)||
+'   fetch main into buff;'||chr(10)||
+'   close main;'||chr(10)||
+'   --'||chr(10)||
+'   select count(runner_name)'||chr(10)||
+'    into  num_runs'||chr(10)||
+'    from  wt_test_runs'||chr(10)||
+'    where runner_owner = :P0_TEST_OWNER'||chr(10)||
+'     and  r';
+
+s:=s||'unner_name  = :P0_TEST_RUNNER;'||chr(10)||
+'   --'||chr(10)||
+'   htp.p(''<b>'');'||chr(10)||
+'   htp.p(''&nbsp;Duration (secs): '' || buff.duration || ''<br>'');'||chr(10)||
+'   htp.p(''<br>'');'||chr(10)||
+'   htp.p(''&nbsp;Num Testcases: '' || buff.num_testcases || ''<br>'');'||chr(10)||
+'   htp.p(''<br>'');'||chr(10)||
+'   htp.p(''&nbsp;Num Test Runs: '' || num_runs || ''<br>'');'||chr(10)||
+'   htp.p(''<br>'');'||chr(10)||
+'   htp.p(''&nbsp;DBOUT Owner: '' || buff.dbout_owner || ''<br>'');'||chr(10)||
+'   htp.p(''<br>'');'||chr(10)||
+'   htp.p(''&nbsp;DBOUT N';
+
+s:=s||'ame: '' || buff.dbout_name || ''<br>'');'||chr(10)||
+'   htp.p(''<br>'');'||chr(10)||
+'   htp.p(''&nbsp;DBOUT Type: '' || buff.dbout_type || ''<br>'');'||chr(10)||
+'   htp.p(''<br>'');'||chr(10)||
+'   htp.p(''&nbsp;Trigger Offset: '' || buff.trigger_offset || ''<br>'');'||chr(10)||
+'   htp.p(''</b>'');'||chr(10)||
+'   --'||chr(10)||
+'end;';
+
 wwv_flow_api.create_page_plug (
   p_id=> 4848108018414926 + wwv_flow_api.g_id_offset,
   p_flow_id=> wwv_flow.g_flow_id,
   p_page_id=> 3,
-  p_plug_name=> 'Test Runner',
+  p_plug_name=> 'Summary',
   p_region_name=>'',
-  p_plug_template=> 4839831975414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 11,
-  p_plug_display_column=> 1,
+  p_plug_template=> 4839912075414912+ wwv_flow_api.g_id_offset,
+  p_plug_display_sequence=> 2,
+  p_plug_display_column=> 2,
   p_plug_display_point=> 'BEFORE_BOX_BODY',
   p_plug_source=> s,
-  p_plug_source_type=> 'STATIC_TEXT',
+  p_plug_source_type=> 'PLSQL_PROCEDURE',
   p_translate_title=> 'Y',
   p_plug_query_row_template=> 1,
   p_plug_query_headings_type=> 'COLON_DELMITED_LIST',
   p_plug_query_row_count_max => 500,
+  p_plug_column_width => 'td width="320"',
   p_plug_display_condition_type => '',
   p_plug_customized=>'0',
   p_plug_caching=> 'NOT_CACHED',
   p_plug_comment=> '');
-end;
-/
-declare
-  s varchar2(32767) := null;
-  l_clob clob;
-  l_length number := 1;
-begin
-s:=s||'select case when connect_by_isleaf = 1 then 0'||chr(10)||
-'            when level = 1             then 1'||chr(10)||
-'            else                           -1'||chr(10)||
-'       end as status, '||chr(10)||
-'       level, '||chr(10)||
-'       "TEXT" as title, '||chr(10)||
-'       null as icon, '||chr(10)||
-'       "ID" as value, '||chr(10)||
-'       null as tooltip, '||chr(10)||
-'       ''f?p=&APP_ID.:3:''||:APP_SESSION||''::::P3_TEST_RUN_ID:''||"ID" as link '||chr(10)||
-'from "#OWNER#"."WT_TEST_RUNS_TREE"'||chr(10)||
-'start with "PAREN';
-
-s:=s||'T_ID" is null'||chr(10)||
-'connect by prior "ID" = "PARENT_ID"';
-
-wwv_flow_api.create_page_plug (
-  p_id=> 4914618551787988 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_page_id=> 3,
-  p_plug_name=> 'Test Runs Tree',
-  p_region_name=>'',
-  p_plug_template=> 4840201642414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 14,
-  p_plug_display_column=> 4,
-  p_plug_display_point=> 'REGION_POSITION_03',
-  p_plug_source=> s,
-  p_plug_source_type=> 'JSTREE',
-  p_translate_title=> 'Y',
-  p_plug_display_error_message=> '#SQLERRM#',
-  p_plug_query_row_template=> 1,
-  p_plug_query_headings_type=> 'COLON_DELMITED_LIST',
-  p_plug_query_row_count_max => 500,
-  p_plug_display_condition_type => 'PLSQL_EXPRESSION',
-  p_plug_display_when_condition => ':P3_SHOW_TREE = ''Y''',
-  p_plug_customized=>'0',
-  p_plug_caching=> 'NOT_CACHED',
-  p_plug_comment=> '');
-end;
-/
-declare
- a1 varchar2(32767) := null;
-begin
-a1:=a1||'select case when connect_by_isleaf = 1 then 0'||chr(10)||
-'            when level = 1             then 1'||chr(10)||
-'            else                           -1'||chr(10)||
-'       end                                           STATUS'||chr(10)||
-'      ,level'||chr(10)||
-'      ,"TEXT"                                        TITLE'||chr(10)||
-'      ,null                                          ICON'||chr(10)||
-'      ,"ID"                                          VALUE'||chr(10)||
-'      ,"TEXT"';
-
-a1:=a1||'                                        TOOLTIP'||chr(10)||
-'      ,case when id > 0 then'||chr(10)||
-'       ''f?p=&APP_ID.:3:''||:APP_SESSION||''::::P3_TEST_RUN_ID:''||"ID"'||chr(10)||
-'       else NULL end                                 LINK'||chr(10)||
-' from  "#OWNER#"."WT_TEST_RUNS_GUI_TREE"'||chr(10)||
-' start with "PARENT_ID" is null'||chr(10)||
-' connect by prior "ID" = "PARENT_ID"';
-
-wwv_flow_api.create_jstree(
-  p_id => 4914517648787988+wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_page_id => 3,
-  p_region_id => 4914618551787988+wwv_flow_api.g_id_offset,
-  p_tree_template     =>'classic',
-  p_tree_source             =>'',
-  p_tree_query             =>a1,
-  p_tree_node_title   =>'TEXT',
-  p_tree_node_value   =>'ID',
-  p_tree_node_icon   =>'',
-  p_tree_node_link   =>'',
-  p_tree_node_hints   =>'ID',
-  p_tree_start_item   =>'PARENT_ID',
-  p_tree_start_value   =>'',
-  p_tree_button_option   =>'',
-  p_show_node_link   =>'',
-  p_node_link_checksum_type   =>null,
-  p_tree_comment          =>'',
-  p_show_hints          =>'DB',
-  p_tree_has_focus          =>'N',
-  p_tree_hint_text          =>'',
-  p_tree_click_action          =>'S',
-  p_selected_node          =>'P3_TEST_RUN_ID');
 end;
 /
 declare
@@ -4630,8 +5530,8 @@ wwv_flow_api.create_page_plug (
   p_plug_name=> 'Test Runner Status',
   p_region_name=>'',
   p_plug_template=> 4839217975414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 12,
-  p_plug_display_column=> 2,
+  p_plug_display_sequence=> 1,
+  p_plug_display_column=> 1,
   p_plug_display_point=> 'BEFORE_BOX_BODY',
   p_plug_source=> s,
   p_plug_source_type=> 'FLASH_CHART5',
@@ -4733,7 +5633,7 @@ a1:=a1||'with q1 as ('||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-' where id = :P3_TEST_RUN_ID'||chr(10)||
+' where id = :P0_TEST_RUN_ID'||chr(10)||
 'union all'||chr(10)||
 'select NULL               LINK'||chr(10)||
 '      ,''FAIL''             LABEL'||chr(10)||
@@ -4743,7 +5643,7 @@ a1:=a1||'with q1 as ('||chr(10)||
 '    ';
 
 a1:=a1||'        on  res.test_run_id = run.id'||chr(10)||
-' where id = :P3_TEST_RUN_ID'||chr(10)||
+' where id = :P0_TEST_RUN_ID'||chr(10)||
 'union all'||chr(10)||
 'select NULL             LINK'||chr(10)||
 '      ,''ERR''            LABEL'||chr(10)||
@@ -4751,7 +5651,7 @@ a1:=a1||'        on  res.test_run_id = run.id'||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-' where id = :P3_TEST_RUN_ID'||chr(10)||
+' where id = :P0_TEST_RUN_ID'||chr(10)||
 ')'||chr(10)||
 'select link, label, value'||chr(10)||
 ' from  q1'||chr(10)||
@@ -4825,7 +5725,7 @@ wwv_flow_api.create_page_plug (
   p_plug_name=> 'DBOUT Profile Status',
   p_region_name=>'',
   p_plug_template=> 4839217975414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 13,
+  p_plug_display_sequence=> 3,
   p_plug_display_column=> 3,
   p_plug_display_point=> 'BEFORE_BOX_BODY',
   p_plug_source=> s,
@@ -4928,7 +5828,7 @@ a1:=a1||'with q1 as ('||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-' where id = :P3_TEST_RUN_ID'||chr(10)||
+' where id = :P0_TEST_RUN_ID'||chr(10)||
 'union all'||chr(10)||
 'select NULL                 LINK'||chr(10)||
 '      ,''EXEC''               LABEL'||chr(10)||
@@ -4938,7 +5838,7 @@ a1:=a1||'with q1 as ('||chr(10)||
 
 a1:=a1||'un_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-' where id = :P3_TEST_RUN_ID'||chr(10)||
+' where id = :P0_TEST_RUN_ID'||chr(10)||
 'union all'||chr(10)||
 'select NULL                LINK'||chr(10)||
 '      ,''NOTX''              LABEL'||chr(10)||
@@ -4946,7 +5846,7 @@ a1:=a1||'un_stats  res'||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-' where id = :P3_TEST_RUN_ID'||chr(10)||
+' where id = :P0_TEST_RUN_ID'||chr(10)||
 'union all'||chr(10)||
 'select NULL                LINK'||chr(10)||
 '      ,''UNKN''              LABEL'||chr(10)||
@@ -4956,7 +5856,7 @@ a1:=a1||' ,sum(unknown_lines)  VALUE'||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-' where id = :P3_TEST_RUN_ID'||chr(10)||
+' where id = :P0_TEST_RUN_ID'||chr(10)||
 ')'||chr(10)||
 'select link, label, value'||chr(10)||
 ' from  q1'||chr(10)||
@@ -5030,7 +5930,7 @@ wwv_flow_api.create_page_plug (
   p_plug_name=> 'Test Runner Status Trend',
   p_region_name=>'',
   p_plug_template=> 4839217975414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 21,
+  p_plug_display_sequence=> 1,
   p_plug_display_column=> 1,
   p_plug_display_point=> 'BEFORE_SHOW_ITEMS',
   p_plug_source=> s,
@@ -5132,109 +6032,37 @@ a1:=a1||'with q1 as ('||chr(10)||
 'select res.test_run_id   LINK'||chr(10)||
 '      ,''ID'' || run.id    LABEL'||chr(10)||
 '      ,res.passes        PASS'||chr(10)||
+'      ,res.failures      FAIL'||chr(10)||
+'      ,res.errors        ERROR'||chr(10)||
+'      ,rownum            RNUM'||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-' where run.runner_owner = :P3_RUNNER_OWNER'||chr(10)||
-'  and  run.runner_name  = :P3_RUNNER_NAME'||chr(10)||
+' where run.runner_owner = :P0_TEST_OWNER'||chr(10)||
+'  and  run.runner_name  = :P0_TEST_RUNNER'||chr(10)||
 ' order by run.id'||chr(10)||
-'), q2 as ('||chr(10)||
+'), q';
+
+a1:=a1||'2 as ('||chr(10)||
 'select count(*) num_rows from q1'||chr(10)||
 ')'||chr(10)||
-'select * from q1'||chr(10)||
-' where rownum > (select num_ro';
-
-a1:=a1||'ws from q2) - 10';
+'select link, label, pass, fail, error'||chr(10)||
+' from  q1'||chr(10)||
+' where rnum > (select num_rows from q2) - 10';
 
 wwv_flow_api.create_flash_chart5_series(
   p_id => 4932905763476124+wwv_flow_api.g_id_offset,
   p_chart_id => 4932831378476124+wwv_flow_api.g_id_offset,
   p_flow_id=> wwv_flow.g_flow_id,
   p_series_seq                =>10,
-  p_series_name               =>'Pass',
+  p_series_name               =>'Main',
   p_series_query              => a1,
   p_series_type               =>'Bar',
   p_series_query_type         =>'SQL_QUERY',
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
   p_series_query_row_count_max=>15,
-  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
-  p_show_action_link          =>'C',
-  p_action_link_checksum_type =>'');
-end;
-/
-declare
- a1 varchar2(32767) := null;
-begin
-a1:=a1||'with q1 as ('||chr(10)||
-'select res.test_run_id   LINK'||chr(10)||
-'      ,''ID'' || run.id    LABEL'||chr(10)||
-'      ,res.failures      FAIL'||chr(10)||
-' from  wt_test_runs  run'||chr(10)||
-'       join wt_test_run_stats  res'||chr(10)||
-'            on  res.test_run_id = run.id'||chr(10)||
-' where run.runner_owner = :P3_RUNNER_OWNER'||chr(10)||
-'  and  run.runner_name  = :P3_RUNNER_NAME'||chr(10)||
-' order by run.id'||chr(10)||
-'), q2 as ('||chr(10)||
-'select count(*) num_rows from q1'||chr(10)||
-')'||chr(10)||
-'select * from q1'||chr(10)||
-' where rownum > (select num_ro';
-
-a1:=a1||'ws from q2) - 10';
-
-wwv_flow_api.create_flash_chart5_series(
-  p_id => 4933904400593950+wwv_flow_api.g_id_offset,
-  p_chart_id => 4932831378476124+wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_series_seq                =>20,
-  p_series_name               =>'Fail',
-  p_series_query              => a1,
-  p_series_type               =>'Bar',
-  p_series_query_type         =>'SQL_QUERY',
-  p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
-  p_series_query_no_data_found=>'',
-  p_series_query_row_count_max=>15,
-  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
-  p_show_action_link          =>'C',
-  p_action_link_checksum_type =>'');
-end;
-/
-declare
- a1 varchar2(32767) := null;
-begin
-a1:=a1||'with q1 as ('||chr(10)||
-'select res.test_run_id   LINK'||chr(10)||
-'      ,''ID'' || run.id    LABEL'||chr(10)||
-'      ,res.errors        ERR'||chr(10)||
-' from  wt_test_runs  run'||chr(10)||
-'       join wt_test_run_stats  res'||chr(10)||
-'            on  res.test_run_id = run.id'||chr(10)||
-' where run.runner_owner = :P3_RUNNER_OWNER'||chr(10)||
-'  and  run.runner_name  = :P3_RUNNER_NAME'||chr(10)||
-' order by run.id'||chr(10)||
-'), q2 as ('||chr(10)||
-'select count(*) num_rows from q1'||chr(10)||
-')'||chr(10)||
-'select * from q1'||chr(10)||
-' where rownum > (select num_row';
-
-a1:=a1||'s from q2) - 10';
-
-wwv_flow_api.create_flash_chart5_series(
-  p_id => 4934008387632959+wwv_flow_api.g_id_offset,
-  p_chart_id => 4932831378476124+wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_series_seq                =>30,
-  p_series_name               =>'Error',
-  p_series_query              => a1,
-  p_series_type               =>'Bar',
-  p_series_query_type         =>'SQL_QUERY',
-  p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
-  p_series_query_no_data_found=>'',
-  p_series_query_row_count_max=>15,
-  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
+  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P0_TEST_RUN_ID:#LINK#',
   p_show_action_link          =>'C',
   p_action_link_checksum_type =>'');
 end;
@@ -5290,8 +6118,8 @@ wwv_flow_api.create_page_plug (
   p_plug_name=> 'DBOUT Profile Status Trend',
   p_region_name=>'',
   p_plug_template=> 4839217975414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 22,
-  p_plug_display_column=> 2,
+  p_plug_display_sequence=> 3,
+  p_plug_display_column=> 3,
   p_plug_display_point=> 'BEFORE_SHOW_ITEMS',
   p_plug_source=> s,
   p_plug_source_type=> 'FLASH_CHART5',
@@ -5392,147 +6220,43 @@ a1:=a1||'with q1 as ('||chr(10)||
 'select res.test_run_id     LINK'||chr(10)||
 '      ,''ID'' || run.id      LABEL'||chr(10)||
 '      ,res.executed_lines  EXEC'||chr(10)||
+'      ,res.excluded_lines  EXCL'||chr(10)||
+'      ,res.unknown_lines   UNKN'||chr(10)||
+'      ,res.notexec_lines   NOTX'||chr(10)||
+'      ,rownum              RNUM'||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-' where run.runner_owner = :P3_RUNNER_OWNER'||chr(10)||
-'  and  run.runner_name  = :P3_RUNNER_NAME'||chr(10)||
+' where run.runner_owner = :P0_TEST_OWNER'||chr(10)||
+'  and  run.runner_na';
+
+a1:=a1||'me  = :P0_TEST_RUNNER'||chr(10)||
 ' order by run.id'||chr(10)||
 '), q2 as ('||chr(10)||
 'select count(*) num_rows from q1'||chr(10)||
 ')'||chr(10)||
-'select * from q1'||chr(10)||
-' where rownum > (select ';
-
-a1:=a1||'num_rows from q2) - 10';
+'select link'||chr(10)||
+'      ,label'||chr(10)||
+'      ,exec'||chr(10)||
+'      ,excl'||chr(10)||
+'      ,unkn'||chr(10)||
+'      ,notx'||chr(10)||
+' from  q1'||chr(10)||
+' where rnum > (select num_rows from q2) - 10';
 
 wwv_flow_api.create_flash_chart5_series(
   p_id => 4934601765722219+wwv_flow_api.g_id_offset,
   p_chart_id => 4934324926722219+wwv_flow_api.g_id_offset,
   p_flow_id=> wwv_flow.g_flow_id,
   p_series_seq                =>10,
-  p_series_name               =>'Executed',
+  p_series_name               =>'Series 1',
   p_series_query              => a1,
   p_series_type               =>'Bar',
   p_series_query_type         =>'SQL_QUERY',
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
   p_series_query_row_count_max=>15,
-  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
-  p_show_action_link          =>'C',
-  p_action_link_checksum_type =>'');
-end;
-/
-declare
- a1 varchar2(32767) := null;
-begin
-a1:=a1||'with q1 as ('||chr(10)||
-'select res.test_run_id     LINK'||chr(10)||
-'      ,''ID'' || run.id      LABEL'||chr(10)||
-'      ,res.excluded_lines  EXCL'||chr(10)||
-' from  wt_test_runs  run'||chr(10)||
-'       join wt_test_run_stats  res'||chr(10)||
-'            on  res.test_run_id = run.id'||chr(10)||
-' where run.runner_owner = :P3_RUNNER_OWNER'||chr(10)||
-'  and  run.runner_name  = :P3_RUNNER_NAME'||chr(10)||
-' order by run.id'||chr(10)||
-'), q2 as ('||chr(10)||
-'select count(*) num_rows from q1'||chr(10)||
-')'||chr(10)||
-'select * from q1'||chr(10)||
-' where rownum > (select ';
-
-a1:=a1||'num_rows from q2) - 10';
-
-wwv_flow_api.create_flash_chart5_series(
-  p_id => 4934721303769138+wwv_flow_api.g_id_offset,
-  p_chart_id => 4934324926722219+wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_series_seq                =>20,
-  p_series_name               =>'Excluded',
-  p_series_query              => a1,
-  p_series_type               =>'Bar',
-  p_series_query_type         =>'SQL_QUERY',
-  p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
-  p_series_query_no_data_found=>'',
-  p_series_query_row_count_max=>15,
-  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
-  p_show_action_link          =>'C',
-  p_action_link_checksum_type =>'');
-end;
-/
-declare
- a1 varchar2(32767) := null;
-begin
-a1:=a1||'with q1 as ('||chr(10)||
-'select res.test_run_id    LINK'||chr(10)||
-'      ,''ID'' || run.id     LABEL'||chr(10)||
-'      ,res.unknown_lines  UNKN'||chr(10)||
-' from  wt_test_runs  run'||chr(10)||
-'       join wt_test_run_stats  res'||chr(10)||
-'            on  res.test_run_id = run.id'||chr(10)||
-' where run.runner_owner = :P3_RUNNER_OWNER'||chr(10)||
-'  and  run.runner_name  = :P3_RUNNER_NAME'||chr(10)||
-' order by run.id'||chr(10)||
-'), q2 as ('||chr(10)||
-'select count(*) num_rows from q1'||chr(10)||
-')'||chr(10)||
-'select * from q1'||chr(10)||
-' where rownum > (select num';
-
-a1:=a1||'_rows from q2) - 10';
-
-wwv_flow_api.create_flash_chart5_series(
-  p_id => 4934527525722219+wwv_flow_api.g_id_offset,
-  p_chart_id => 4934324926722219+wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_series_seq                =>30,
-  p_series_name               =>'Unknown',
-  p_series_query              => a1,
-  p_series_type               =>'Bar',
-  p_series_query_type         =>'SQL_QUERY',
-  p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
-  p_series_query_no_data_found=>'',
-  p_series_query_row_count_max=>15,
-  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
-  p_show_action_link          =>'C',
-  p_action_link_checksum_type =>'');
-end;
-/
-declare
- a1 varchar2(32767) := null;
-begin
-a1:=a1||'with q1 as ('||chr(10)||
-'select res.test_run_id    LINK'||chr(10)||
-'      ,''ID'' || run.id     LABEL'||chr(10)||
-'      ,res.notexec_lines  NOTX'||chr(10)||
-' from  wt_test_runs  run'||chr(10)||
-'       join wt_test_run_stats  res'||chr(10)||
-'            on  res.test_run_id = run.id'||chr(10)||
-' where run.runner_owner = :P3_RUNNER_OWNER'||chr(10)||
-'  and  run.runner_name  = :P3_RUNNER_NAME'||chr(10)||
-' order by run.id'||chr(10)||
-'), q2 as ('||chr(10)||
-'select count(*) num_rows from q1'||chr(10)||
-')'||chr(10)||
-'select * from q1'||chr(10)||
-' where rownum > (select num';
-
-a1:=a1||'_rows from q2) - 10';
-
-wwv_flow_api.create_flash_chart5_series(
-  p_id => 4934406303722219+wwv_flow_api.g_id_offset,
-  p_chart_id => 4934324926722219+wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_series_seq                =>40,
-  p_series_name               =>'Not Executed',
-  p_series_query              => a1,
-  p_series_type               =>'Bar',
-  p_series_query_type         =>'SQL_QUERY',
-  p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
-  p_series_query_no_data_found=>'',
-  p_series_query_row_count_max=>15,
-  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
+  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P0_TEST_RUN_ID:#LINK#',
   p_show_action_link          =>'C',
   p_action_link_checksum_type =>'');
 end;
@@ -5588,8 +6312,8 @@ wwv_flow_api.create_page_plug (
   p_plug_name=> 'Top Test Case Failures',
   p_region_name=>'',
   p_plug_template=> 4839217975414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 23,
-  p_plug_display_column=> 3,
+  p_plug_display_sequence=> 2,
+  p_plug_display_column=> 2,
   p_plug_display_point=> 'BEFORE_SHOW_ITEMS',
   p_plug_source=> s,
   p_plug_source_type=> 'FLASH_CHART5',
@@ -5691,8 +6415,8 @@ a1:=a1||'select ''f?p='' || :APP_ID               ||'||chr(10)||
 '          '':'' || :REQUEST              ||'||chr(10)||
 '          '':'' || :DEBUG                ||'||chr(10)||
 '          '':'' || ''N''                   ||     -- CLear Cache'||chr(10)||
-'          '':'' || ''P6_TEST_RUN_ID''      || '','' ||'||chr(10)||
-'                 ''P6_TESTCASE_NAME''    ||     -- Item Names'||chr(10)||
+'          '':'' || ''P0_TEST_RUN_ID''      || '','' ||'||chr(10)||
+'                 ''P0_TEST_CASE''        ||     -- Item Names'||chr(10)||
 '        ';
 
 a1:=a1||'  '':'' || tc.test_run_id        || '','' ||'||chr(10)||
@@ -5707,7 +6431,7 @@ a1:=a1||'  '':'' || tc.test_run_id        || '','' ||'||chr(10)||
 '            on  tc.test_run_';
 
 a1:=a1||'id = run.id'||chr(10)||
-' where run.id = :P3_TEST_RUN_ID'||chr(10)||
+' where run.id = :P0_TEST_RUN_ID'||chr(10)||
 '  and  tc.failures > 0'||chr(10)||
 ' order by failures desc, tc.testcase'||chr(10)||
 '';
@@ -5780,7 +6504,7 @@ wwv_flow_api.create_page_plug (
   p_plug_name=> 'Test Runner Duration Trend',
   p_region_name=>'',
   p_plug_template=> 4839217975414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 31,
+  p_plug_display_sequence=> 4,
   p_plug_display_column=> 1,
   p_plug_display_point=> 'BEFORE_SHOW_ITEMS',
   p_plug_source=> s,
@@ -5882,19 +6606,23 @@ a1:=a1||'with q1 as ('||chr(10)||
 '      ,''ID'' || run.id    LABEL'||chr(10)||
 '      ,extract(day from (run.end_dtm - run.start_dtm)*86400*100)/100'||chr(10)||
 '                         SECONDS'||chr(10)||
+'      ,rownum            RNUM'||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-' where run.runner_owner = :P3_RUNNER_OWNER'||chr(10)||
-'  and  run.runner_name  = :P3_RUNNER_NAME'||chr(10)||
-' order by id'||chr(10)||
-'), q2 as ('||chr(10)||
-'select count(*';
+' where run.runner_owner = :P0_TEST_OWNER'||chr(10)||
+'  and  run.runner_name  = :P0_TEST_RUNNER'||chr(10)||
+' order by ';
 
-a1:=a1||') num_rows from q1'||chr(10)||
+a1:=a1||'id'||chr(10)||
+'), q2 as ('||chr(10)||
+'select count(*) num_rows from q1'||chr(10)||
 ')'||chr(10)||
-'select * from q1'||chr(10)||
-' where rownum > (select num_rows from q2) - 10';
+'select link'||chr(10)||
+'      ,label'||chr(10)||
+'      ,seconds'||chr(10)||
+' from  q1'||chr(10)||
+' where rnum > (select num_rows from q2) - 10';
 
 wwv_flow_api.create_flash_chart5_series(
   p_id => 4946720535544262+wwv_flow_api.g_id_offset,
@@ -5908,7 +6636,7 @@ wwv_flow_api.create_flash_chart5_series(
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
   p_series_query_row_count_max=>15,
-  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
+  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P0_TEST_RUN_ID:#LINK#',
   p_show_action_link          =>'C',
   p_action_link_checksum_type =>'');
 end;
@@ -5961,11 +6689,11 @@ wwv_flow_api.create_page_plug (
   p_id=> 4948217713035992 + wwv_flow_api.g_id_offset,
   p_flow_id=> wwv_flow.g_flow_id,
   p_page_id=> 3,
-  p_plug_name=> 'Maximum Profiled LineExec Trend',
+  p_plug_name=> 'LineExec Long Duration Trend',
   p_region_name=>'',
   p_plug_template=> 4839217975414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 32,
-  p_plug_display_column=> 2,
+  p_plug_display_sequence=> 6,
+  p_plug_display_column=> 3,
   p_plug_display_point=> 'BEFORE_SHOW_ITEMS',
   p_plug_source=> s,
   p_plug_source_type=> 'FLASH_CHART5',
@@ -6062,22 +6790,43 @@ declare
  a1 varchar2(32767) := null;
 begin
 a1:=a1||'with q1 as ('||chr(10)||
-'select res.test_run_id         LINK'||chr(10)||
-'      ,''ID'' || run.id          LABEL'||chr(10)||
-'      ,res.max_executed_usecs  VALUE'||chr(10)||
+'select res.test_run_id'||chr(10)||
+'      ,res.max_executed_usecs'||chr(10)||
+'      ,rownum                  RNUM'||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-' where run.runner_owner = :P3_RUNNER_OWNER'||chr(10)||
-'  and  run.runner_name  = :P3_RUNNER_NAME'||chr(10)||
+'  left join wt_dbout_profiles  prof'||chr(10)||
+'            on  prof.test_run_id = run.id'||chr(10)||
+'            and prof.max_usecs   = res.max_executed_usecs'||chr(10)||
+' where run.runner_owner = :P0_TEST_OWNER'||chr(10)||
+'  and  run.runner_na';
+
+a1:=a1||'me  = :P0_TEST_RUNNER'||chr(10)||
 ' order by id'||chr(10)||
 '), q2 as ('||chr(10)||
 'select count(*) num_rows from q1'||chr(10)||
+'), q3 as ('||chr(10)||
+'select test_run_id'||chr(10)||
+'      ,max_usecs'||chr(10)||
+'      ,min(line) line'||chr(10)||
+' from  wt_dbout_profiles'||chr(10)||
+' group by test_run_id'||chr(10)||
+'      ,max_usecs'||chr(10)||
 ')'||chr(10)||
-'select * from q1'||chr(10)||
-' where rownum >';
+'select q1.test_run_id                LINK'||chr(10)||
+'      ,''ID''    || q1.test_run_id ||'||chr(10)||
+'       '',Line'' || q3.line            LABEL'||chr(10)||
+'      ,q1.max_executed_usecs         VALUE'||chr(10)||
+' from  q1 '||chr(10)||
+'  left join';
 
-a1:=a1||' (select num_rows from q2) - 10';
+a1:=a1||' q3'||chr(10)||
+'            on  q3.test_run_id = q1.test_run_id'||chr(10)||
+'            and q3.max_usecs   = q1.max_executed_usecs'||chr(10)||
+' where q1.rnum > (select num_rows from q2) - 10'||chr(10)||
+' order by q1.test_run_id'||chr(10)||
+'';
 
 wwv_flow_api.create_flash_chart5_series(
   p_id => 4948500124035997+wwv_flow_api.g_id_offset,
@@ -6091,7 +6840,7 @@ wwv_flow_api.create_flash_chart5_series(
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
   p_series_query_row_count_max=>15,
-  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#LINK#',
+  p_action_link               =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P0_TEST_RUN_ID:#LINK#',
   p_show_action_link          =>'C',
   p_action_link_checksum_type =>'');
 end;
@@ -6147,8 +6896,8 @@ wwv_flow_api.create_page_plug (
   p_plug_name=> 'Top Test Case Long Duration',
   p_region_name=>'',
   p_plug_template=> 4839217975414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 33,
-  p_plug_display_column=> 3,
+  p_plug_display_sequence=> 5,
+  p_plug_display_column=> 2,
   p_plug_display_point=> 'BEFORE_SHOW_ITEMS',
   p_plug_source=> s,
   p_plug_source_type=> 'FLASH_CHART5',
@@ -6250,8 +6999,8 @@ a1:=a1||'select ''f?p='' || :APP_ID               ||'||chr(10)||
 '          '':'' || :REQUEST              ||'||chr(10)||
 '          '':'' || :DEBUG                ||'||chr(10)||
 '          '':'' || ''N''                   ||     -- CLear Cache'||chr(10)||
-'          '':'' || ''P6_TEST_RUN_ID''      || '','' ||'||chr(10)||
-'                 ''P6_TESTCASE_NAME''    ||     -- Item Names'||chr(10)||
+'          '':'' || ''P0_TEST_RUN_ID''      || '','' ||'||chr(10)||
+'                 ''P0_TEST_CASE''        ||     -- Item Names'||chr(10)||
 '        ';
 
 a1:=a1||'  '':'' || test_run_id           || '','' ||'||chr(10)||
@@ -6260,7 +7009,7 @@ a1:=a1||'  '':'' || test_run_id           || '','' ||'||chr(10)||
 '      ,testcase                           LABEL'||chr(10)||
 '      ,tot_interval_msecs                 VALUE'||chr(10)||
 ' from  wt_testcase_stats'||chr(10)||
-' where test_run_id = :P3_TEST_RUN_ID'||chr(10)||
+' where test_run_id = :P0_TEST_RUN_ID'||chr(10)||
 ' order by tot_interval_msecs desc'||chr(10)||
 '';
 
@@ -6296,7 +7045,7 @@ s:=s||'select test_run_id'||chr(10)||
 '      ,testcase'||chr(10)||
 '      ,message'||chr(10)||
 ' from  wt_results'||chr(10)||
-' where test_run_id = :P3_TEST_RUN_ID';
+' where test_run_id = :P0_TEST_RUN_ID';
 
 wwv_flow_api.create_page_plug (
   p_id=> 4949525229387041 + wwv_flow_api.g_id_offset,
@@ -6335,7 +7084,7 @@ a1:=a1||'select test_run_id'||chr(10)||
 '      ,testcase'||chr(10)||
 '      ,message'||chr(10)||
 ' from  wt_results'||chr(10)||
-' where test_run_id = :P3_TEST_RUN_ID';
+' where test_run_id = :P0_TEST_RUN_ID';
 
 wwv_flow_api.create_worksheet(
   p_id=> 4949624635387041+wwv_flow_api.g_id_offset,
@@ -6675,7 +7424,7 @@ wwv_flow_api.create_worksheet_column(
   p_report_label           =>'Testcase',
   p_sync_form_label        =>'Y',
   p_display_in_default_rpt =>'Y',
-  p_column_link            =>'f?p=&APP_ID.:6:&SESSION.::&DEBUG.::P6_TEST_RUN_ID,P6_TESTCASE_NAME:#TEST_RUN_ID#,#TESTCASE#',
+  p_column_link            =>'f?p=&APP_ID.:6:&SESSION.::&DEBUG.::P0_TEST_RUN_ID,P0_TEST_CASE:#TEST_RUN_ID#,#TESTCASE#',
   p_column_linktext        =>'#TESTCASE#',
   p_column_link_attr       =>'title="Go To Test Case #TESTCASE#" style="color:blue"',
   p_is_sortable            =>'Y',
@@ -6832,15 +7581,19 @@ declare
   l_length number := 1;
 begin
 s:=s||'begin'||chr(10)||
-'   if :P3_TEST_RUN_ERROR is NOT NULL'||chr(10)||
-'   then'||chr(10)||
+'   for buff in (select error_message from wt_test_runs'||chr(10)||
+'                 where id = :P0_TEST_RUN_ID'||chr(10)||
+'                  and  error_message is not null)'||chr(10)||
+'   loop'||chr(10)||
 '      htp.p(''<font color=##ff0000><b>Test Runner Error Message:</b></font> '' ||'||chr(10)||
-'            :P3_TEST_RUN_ERROR || ''<br>'');'||chr(10)||
-'   end if;'||chr(10)||
+'            buff.error_message || ''<br>'');'||chr(10)||
+'   end loop;'||chr(10)||
 '   htp.p(''<br>'');'||chr(10)||
 '   htp.p(''<br>'');'||chr(10)||
 '   htp.p(''<br>'');'||chr(10)||
-'   htp.p(''<b>Test Results Details Search:</b><br>'');'||chr(10)||
+'   htp.p(''<b>Test Results Details Search:</b><b';
+
+s:=s||'r>'');'||chr(10)||
 'end;'||chr(10)||
 '';
 
@@ -6896,8 +7649,11 @@ wwv_flow_api.create_page_plug (
   p_plug_query_num_rows_type => 'NEXT_PREVIOUS_LINKS',
   p_plug_query_row_count_max => 500,
   p_plug_query_show_nulls_as => ' - ',
-  p_plug_display_condition_type => 'PLSQL_EXPRESSION',
-  p_plug_display_when_condition => ':P3_DBOUT_NAME is NOT NULL',
+  p_plug_display_condition_type => 'EXISTS',
+  p_plug_display_when_condition => 'select dbout_name'||chr(10)||
+' from  wt_test_runs'||chr(10)||
+' where id = :P0_TEST_RUN_ID'||chr(10)||
+'  and  dbout_name is not null',
   p_pagination_display_position=>'BOTTOM_RIGHT',
   p_plug_customized=>'0',
   p_plug_caching=> 'NOT_CACHED',
@@ -6952,7 +7708,7 @@ s:=s||'select line'||chr(10)||
 ' from  wt_dbout_profil';
 
 s:=s||'es'||chr(10)||
-' where test_run_id = :P3_TEST_RUN_ID'||chr(10)||
+' where test_run_id = :P0_TEST_RUN_ID'||chr(10)||
 ' -- and  status != ''IGNR'''||chr(10)||
 '  and  (   instr(upper("STATUS"),upper(nvl(:P3_SEARCH,"STATUS"))) > 0'||chr(10)||
 '        OR instr(upper("TEXT"),upper(nvl(:P3_SEARCH,"TEXT"))) > 0    )'||chr(10)||
@@ -7236,11 +7992,32 @@ wwv_flow_api.create_page_button(
   p_button_plug_id => 4848108018414926+wwv_flow_api.g_id_offset,
   p_button_name    => 'P3_DELETE',
   p_button_image   => 'template:'||to_char(4838306817414911+wwv_flow_api.g_id_offset),
-  p_button_image_alt=> 'DELETE Test Runner',
+  p_button_image_alt=> 'DELETE Runner Results All Runs',
   p_button_position=> 'BOTTOM',
   p_button_alignment=> 'LEFT',
-  p_button_redirect_url=> 'javascript:confirmDelete(''Confirm DELETE of Test Results for '' + document.getElementById(''P3_RUNNER_OWNER'').value + ''.'' + document.getElementById(''P3_RUNNER_NAME'').value, ''DELETE'')',
+  p_button_redirect_url=> 'javascript:confirmDelete(''Confirm DELETE of all Test Results for '' + document.getElementById(''P0_TEST_OWNER'').value + ''.'' + document.getElementById(''P0_TEST_RUNNER'').value, ''DELETE'')',
   p_button_execute_validations=>'Y',
+  p_required_patch => null + wwv_flow_api.g_id_offset);
+ 
+wwv_flow_api.create_page_button(
+  p_id             => 5168718571973414 + wwv_flow_api.g_id_offset,
+  p_flow_id        => wwv_flow.g_flow_id,
+  p_flow_step_id   => 3,
+  p_button_sequence=> 20,
+  p_button_plug_id => 4848108018414926+wwv_flow_api.g_id_offset,
+  p_button_name    => 'RUN_NOW',
+  p_button_image   => 'template:'||to_char(4838226535414911+wwv_flow_api.g_id_offset),
+  p_button_image_alt=> 'Run Now & Wait',
+  p_button_position=> 'TOP',
+  p_button_alignment=> 'LEFT',
+  p_button_redirect_url=> '',
+  p_button_execute_validations=>'Y',
+  p_button_condition=> 'select host'||chr(10)||
+' from  user_db_links'||chr(10)||
+' where :P0_TEST_OWNER  = db_link'||chr(10)||
+'  and  :P0_TEST_RUNNER is not null',
+  p_button_condition_type=> 'EXISTS',
+  p_button_comment=>'Warning: The web page will not return until the test runner has completed.',
   p_required_patch => null + wwv_flow_api.g_id_offset);
  
  
@@ -7271,422 +8048,6 @@ wwv_flow_api.create_page_branch(
   p_branch_sequence=> 99,
   p_save_state_before_branch_yn=>'Y',
   p_branch_comment=> '');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4902724562737162 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 3,
-  p_name=>'P3_TEST_RUN_ID',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 1,
-  p_item_plug_id => 4848108018414926+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Test Run ID:',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'Y',
-  p_attribute_02 => 'VALUE',
-  p_attribute_04 => 'Y',
-  p_show_quick_picks=>'N',
-  p_item_comment => '');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-h := null;
-h:=h||'This item is initialized by the "Initialize Items" process.';
-
-wwv_flow_api.create_page_item(
-  p_id=>4903101050383315 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 3,
-  p_name=>'P3_RUNNER_OWNER',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 2,
-  p_item_plug_id => 4848108018414926+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Runner Owner:',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_help_text=> h,
-  p_attribute_01 => 'Y',
-  p_attribute_02 => 'VALUE',
-  p_attribute_04 => 'N',
-  p_show_quick_picks=>'N',
-  p_item_comment => '');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4903616465425595 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 3,
-  p_name=>'P3_START_DTM',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 5,
-  p_item_plug_id => 4848108018414926+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Start Date/Time:',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'N',
-  p_attribute_02 => 'VALUE',
-  p_attribute_04 => 'N',
-  p_show_quick_picks=>'N',
-  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4903901489440175 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 3,
-  p_name=>'P3_RUNNER_NAME_DISP',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 3,
-  p_item_plug_id => 4848108018414926+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Runner Name:',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'N',
-  p_attribute_01 => 'N',
-  p_attribute_02 => 'VALUE',
-  p_attribute_04 => 'N',
-  p_show_quick_picks=>'N',
-  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4904730944600100 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 3,
-  p_name=>'P3_DBOUT_OWNER',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 8,
-  p_item_plug_id => 4848108018414926+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'DBOUT Owner:',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'N',
-  p_attribute_02 => 'VALUE',
-  p_attribute_04 => 'N',
-  p_show_quick_picks=>'N',
-  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4911112682701919 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 3,
-  p_name=>'P3_NUM_TESTCASES',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 7,
-  p_item_plug_id => 4848108018414926+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Num Testcases:',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'N',
-  p_attribute_02 => 'VALUE',
-  p_attribute_04 => 'N',
-  p_show_quick_picks=>'N',
-  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4918501858218652 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 3,
-  p_name=>'P3_DBOUT_TYPE',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 10,
-  p_item_plug_id => 4848108018414926+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'DBOUT Type:',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'N',
-  p_attribute_02 => 'VALUE',
-  p_attribute_04 => 'N',
-  p_show_quick_picks=>'N',
-  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4919509411391193 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 3,
-  p_name=>'P3_DBOUT_NAME',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 9,
-  p_item_plug_id => 4848108018414926+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'DBOUT Name:',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'N',
-  p_attribute_02 => 'VALUE',
-  p_attribute_04 => 'N',
-  p_show_quick_picks=>'N',
-  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4922532107511287 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 3,
-  p_name=>'P3_GOTO_RUN_ID',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 12,
-  p_item_plug_id => 4848108018414926+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Go To Run ID:',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_POPUP_LOV',
-  p_lov=> 'select id            || '': '' ||'||chr(10)||
-'       runner_owner  || ''.'' ||'||chr(10)||
-'       runner_name   || '', '' ||'||chr(10)||
-'       to_char(start_dtm,''YYYY/MM/DD HH24:MI:SS'')    DISPLAY'||chr(10)||
-'      ,id                                            RETURN'||chr(10)||
-' from  wt_test_runs'||chr(10)||
-' where id != :P3_TEST_RUN_ID'||chr(10)||
-' order by id desc',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 10,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'NO',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'NOT_ENTERABLE',
-  p_attribute_02 => 'NO_FETCH',
-  p_show_quick_picks=>'N',
-  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
  
  
 end;
@@ -7744,47 +8105,6 @@ declare
     h varchar2(32767) := null;
 begin
 wwv_flow_api.create_page_item(
-  p_id=>4933725384514861 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 3,
-  p_name=>'P3_RUNNER_NAME',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 4,
-  p_item_plug_id => 4848108018414926+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_HIDDEN',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'NO',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'LEFT',
-  p_field_alignment=> 'LEFT',
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'N',
-  p_show_quick_picks=>'N',
-  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
   p_id=>4939603900584303 + wwv_flow_api.g_id_offset,
   p_flow_id=> wwv_flow.g_flow_id,
   p_flow_step_id=> 3,
@@ -7817,51 +8137,6 @@ wwv_flow_api.create_page_item(
   p_attribute_01 => 'N',
   p_show_quick_picks=>'N',
   p_item_comment => '');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4947226661584377 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 3,
-  p_name=>'P3_TEST_DURATION',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 6,
-  p_item_plug_id => 4848108018414926+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Duration (secs):',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'N',
-  p_attribute_02 => 'VALUE',
-  p_attribute_04 => 'N',
-  p_show_quick_picks=>'N',
-  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
  
  
 end;
@@ -8027,132 +8302,23 @@ wwv_flow_api.create_page_item(
 end;
 /
 
-declare
-    h varchar2(32767) := null;
+ 
 begin
-wwv_flow_api.create_page_item(
-  p_id=>4959114220858173 + wwv_flow_api.g_id_offset,
+ 
+wwv_flow_api.create_page_computation(
+  p_id=> 5113008183346610 + wwv_flow_api.g_id_offset,
   p_flow_id=> wwv_flow.g_flow_id,
   p_flow_step_id=> 3,
-  p_name=>'P3_TEST_RUN_ERROR',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 99,
-  p_item_plug_id => 4957623889633835+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_HIDDEN',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'NO',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'LEFT',
-  p_field_alignment=> 'LEFT',
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'N',
-  p_show_quick_picks=>'N',
-  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
+  p_computation_sequence => 20,
+  p_computation_item=> 'P0_DISPLAY',
+  p_computation_point=> 'BEFORE_HEADER',
+  p_computation_type=> 'STATIC_ASSIGNMENT',
+  p_computation_processed=> 'REPLACE_EXISTING',
+  p_computation=> 'Y',
+  p_compute_when => '',
+  p_compute_when_type=>'');
  
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4993326896795754 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 3,
-  p_name=>'P3_TRIGGER_OFFSET',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 11,
-  p_item_plug_id => 4848108018414926+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Trigger Offset:',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_attribute_01 => 'N',
-  p_attribute_02 => 'VALUE',
-  p_attribute_04 => 'Y',
-  p_item_comment => '');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>5006118725435545 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 3,
-  p_name=>'P3_SHOW_TREE',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> true,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 14,
-  p_item_plug_id => 4848108018414926+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Show Tree:',
-  p_source=>'N',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_RADIOGROUP',
-  p_named_lov=> 'Y_OR_N',
-  p_lov=> '.'||to_char(4923728354614299 + wwv_flow_api.g_id_offset)||'.',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => '2',
-  p_attribute_02 => 'SUBMIT',
-  p_attribute_03 => 'Y',
-  p_show_quick_picks=>'N',
-  p_item_comment => '');
- 
+null;
  
 end;
 /
@@ -8258,112 +8424,36 @@ declare
   l_length number := 1;
 begin
 p:=p||'declare'||chr(10)||
-'   --'||chr(10)||
-'   page          varchar2(5);      -- Destination Page'||chr(10)||
-'   clear_cache   varchar2(4000);   -- Comma Delimited Names'||chr(10)||
-'   item_names    varchar2(4000);   -- Comma Delimited Names'||chr(10)||
-'   item_values   varchar2(4000);   -- Comma Delimited Values'||chr(10)||
-'   --'||chr(10)||
+'   run_str  varchar2(2000) := ''wtplsql.test_run@'' ||'||chr(10)||
+'                               :P0_TEST_OWNER     || ''('''''' ||'||chr(10)||
+'                               :P0_TEST_RUNNER    || '''''')'' ;'||chr(10)||
 'begin'||chr(10)||
-'   --'||chr(10)||
-'   if :P3_GOTO_RUN_ID is NOT NULL'||chr(10)||
+'   execute immediate ''begin '' || run_str || ''; end;'';'||chr(10)||
+'   begin'||chr(10)||
+'      select max(id)'||chr(10)||
+'       into  :P0_TEST_RUN_ID'||chr(10)||
+'       from  wt_test_runs'||chr(10)||
+'       where runner_owner = :P0_TEST_OWNER'||chr(10)||
+'        and  runner_name  = ';
+
+p:=p||':P0_TEST_RUNNER;'||chr(10)||
+'   exception when NO_DATA_FOUND'||chr(10)||
 '   then'||chr(10)||
-'      :P3_TEST_RUN_ID := :P3_GOTO_RUN_ID;'||chr(10)||
-'      :P3_GOTO_RUN_ID := NULL;'||chr(10)||
-'   else'||chr(10)||
-'      if ';
-
-p:=p||':P3_TEST_RUN_ID is NULL'||chr(10)||
-'      then'||chr(10)||
-'         select max(id) into :P3_TEST_RUN_ID'||chr(10)||
-'          from wt_test_runs'||chr(10)||
-'          where runner_owner = :APP_USER;'||chr(10)||
-'      end if;'||chr(10)||
-'      if :P3_TEST_RUN_ID is NULL'||chr(10)||
-'      then'||chr(10)||
-'         select max(id) into :P3_TEST_RUN_ID'||chr(10)||
-'          from wt_test_runs;'||chr(10)||
-'      end if;'||chr(10)||
-'   end if;'||chr(10)||
-'   --'||chr(10)||
-'   if :P3_TEST_RUN_ID is NOT NULL'||chr(10)||
-'   then'||chr(10)||
-'      for buff in ('||chr(10)||
-'         select runner_ow';
-
-p:=p||'ner'||chr(10)||
-'               ,runner_name'||chr(10)||
-'               ,to_char(start_dtm,''YYYY/MM/DD HH24:MI:SS'')     START_DTM'||chr(10)||
-'               ,round(extract(day from (end_dtm - start_dtm)*86400*100)/100,2)'||chr(10)||
-'                                                               DURATION'||chr(10)||
-'               ,dbout_owner'||chr(10)||
-'               ,dbout_name'||chr(10)||
-'               ,dbout_type'||chr(10)||
-'               ,trigger_offset'||chr(10)||
-'               ,error_message'||chr(10)||
-' ';
-
-p:=p||'         from  wt_test_runs'||chr(10)||
-'          where id = :P3_TEST_RUN_ID )'||chr(10)||
-'      loop'||chr(10)||
-'         --'||chr(10)||
-'         :P3_RUNNER_OWNER   := buff.runner_owner;'||chr(10)||
-'         :P3_RUNNER_NAME    := buff.runner_name;'||chr(10)||
-'         :P3_START_DTM      := buff.start_dtm;'||chr(10)||
-'         :P3_TEST_DURATION  := buff.duration;'||chr(10)||
-'         :P3_DBOUT_OWNER    := buff.dbout_owner;'||chr(10)||
-'         :P3_DBOUT_NAME     := buff.dbout_name;'||chr(10)||
-'         :P3_DBOUT_TY';
-
-p:=p||'PE     := buff.dbout_type;'||chr(10)||
-'         :P3_TRIGGER_OFFSET := buff.trigger_offset;'||chr(10)||
-'         :P3_TEST_RUN_ERROR := buff.error_message;'||chr(10)||
-'         --'||chr(10)||
-'         if buff.runner_owner = :APP_USER'||chr(10)||
-'         then'||chr(10)||
-'            page                 := ''2'';'||chr(10)||
-'            item_names           := ''P'' || page || ''_TEST_RUNNER'';'||chr(10)||
-'            item_values          := buff.runner_name;'||chr(10)||
-'            :P3_RUNNER_NAME_DISP := ''<a ';
-
-p:=p||'href="f?p='' || :APP_ID               ||'||chr(10)||
-'                                                '':'' || page                  ||'||chr(10)||
-'                                                '':'' || :APP_SESSION          ||'||chr(10)||
-'                                                '':'' || :REQUEST              ||'||chr(10)||
-'                                                '':'' || :DEBUG                ||'||chr(10)||
-'                                        ';
-
-p:=p||'        '':'' || clear_cache           ||'||chr(10)||
-'                                                '':'' || item_names            ||'||chr(10)||
-'                                                '':'' || item_values           ||'||chr(10)||
-'                                                '':'' || V(''PRINTER_FRIENDLY'') ||'||chr(10)||
-'                                               ''">'' || buff.runner_name      ||'||chr(10)||
-'                              '' (Click t';
-
-p:=p||'o Run)</a>'' ;'||chr(10)||
-'         else'||chr(10)||
-'            :P3_RUNNER_NAME_DISP := buff.runner_name;'||chr(10)||
-'         end if;'||chr(10)||
-'         --'||chr(10)||
-'      end loop;'||chr(10)||
-'      --'||chr(10)||
-'      select count(*) into :P3_NUM_TESTCASES'||chr(10)||
-'       from  wt_testcase_stats'||chr(10)||
-'       where test_run_id = :P3_TEST_RUN_ID;'||chr(10)||
-'      --'||chr(10)||
-'   end if;'||chr(10)||
+'      null;  -- Do Nothing'||chr(10)||
+'   end;'||chr(10)||
 'end;';
 
 wwv_flow_api.create_page_process(
-  p_id     => 4919220015384831 + wwv_flow_api.g_id_offset,
+  p_id     => 5168825843975543 + wwv_flow_api.g_id_offset,
   p_flow_id=> wwv_flow.g_flow_id,
   p_flow_step_id => 3,
-  p_process_sequence=> 10,
-  p_process_point=> 'BEFORE_HEADER',
+  p_process_sequence=> 50,
+  p_process_point=> 'AFTER_SUBMIT',
   p_process_type=> 'PLSQL',
-  p_process_name=> 'Initialize Items',
+  p_process_name=> 'RUN_NOW',
   p_process_sql_clob => p, 
   p_process_error_message=> '',
+  p_process_when_button_id=>5168718571973414 + wwv_flow_api.g_id_offset,
   p_process_success_message=> '',
   p_process_is_stateful_y_n=>'N',
   p_process_comment=>'');
@@ -8400,15 +8490,15 @@ p:=p||'           num_res   || '' WT_RESULTS, ''        ||'||chr(10)||
 '   load_msg;'||chr(10)||
 '   for buff in ('||chr(10)||
 '      select id from wt_test_runs'||chr(10)||
-'       where runner_owner = :P3_RUNNER_OWNER'||chr(10)||
-'        and  runner_name  = :P3_RUNNER_NAME )'||chr(10)||
+'       where runner_owner = :P0_TEST_OWNER'||chr(10)||
+'        and  runner_name  = :P0_TEST_RUNNER )'||chr(10)||
 '   loop'||chr(10)||
 '      --'||chr(10)||
 '      delete from wt_test_run_stats'||chr(10)||
 '       where test_run_id = buff.id;'||chr(10)||
-'      num_stats';
+'      num_stats :';
 
-p:=p||' := num_stats + SQL%ROWCOUNT;'||chr(10)||
+p:=p||'= num_stats + SQL%ROWCOUNT;'||chr(10)||
 '      --'||chr(10)||
 '      delete from wt_testcase_stats'||chr(10)||
 '       where test_run_id = buff.id;'||chr(10)||
@@ -8421,9 +8511,9 @@ p:=p||' := num_stats + SQL%ROWCOUNT;'||chr(10)||
 '      delete from wt_dbout_profiles'||chr(10)||
 '       where test_run_id = buff.id;'||chr(10)||
 '      num_profs := num_profs + SQL%ROWCOUNT;'||chr(10)||
-'   ';
+'     ';
 
-p:=p||'   --'||chr(10)||
+p:=p||' --'||chr(10)||
 '      delete from wt_test_runs'||chr(10)||
 '       where id = buff.id;'||chr(10)||
 '      num_runs := num_runs + SQL%ROWCOUNT;'||chr(10)||
@@ -8431,7 +8521,8 @@ p:=p||'   --'||chr(10)||
 '      load_msg;'||chr(10)||
 '      --'||chr(10)||
 '   end loop;'||chr(10)||
-'   :P3_TEST_RUN_ID  := NULL;'||chr(10)||
+'   :P0_TEST_RUN_ID  := NULL;'||chr(10)||
+'   :P0_TEST_RUNNER  := NULL;'||chr(10)||
 'end;';
 
 wwv_flow_api.create_page_process(
@@ -8499,7 +8590,7 @@ wwv_flow_api.create_page (
  ,p_help_text => 
 'No help is available for this page.'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180719224813'
+ ,p_last_upd_yyyymmddhh24miss => '20180829211824'
   );
 null;
  
@@ -8819,7 +8910,7 @@ wwv_flow_api.create_worksheet_column(
   p_report_label           =>'Test<br>Run<br>ID',
   p_sync_form_label        =>'N',
   p_display_in_default_rpt =>'Y',
-  p_column_link            =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_TEST_RUN_ID:#TEST_RUN_ID#',
+  p_column_link            =>'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P0_TEST_RUN_ID:#TEST_RUN_ID#',
   p_column_linktext        =>'#TEST_RUN_ID#',
   p_column_link_attr       =>'title="Go To Test Run ID #TEST_RUN_ID#" style="color:blue"',
   p_is_sortable            =>'Y',
@@ -9548,6 +9639,27 @@ end;
  
 begin
  
+wwv_flow_api.create_page_computation(
+  p_id=> 5113829569371666 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 4,
+  p_computation_sequence => 30,
+  p_computation_item=> 'P0_DISPLAY',
+  p_computation_point=> 'BEFORE_HEADER',
+  p_computation_type=> 'STATIC_ASSIGNMENT',
+  p_computation_processed=> 'REPLACE_EXISTING',
+  p_computation=> 'N',
+  p_compute_when => '',
+  p_compute_when_type=>'');
+ 
+null;
+ 
+end;
+/
+
+ 
+begin
+ 
 ---------------------------------------
 -- ...updatable report columns for page 4
 --
@@ -9586,7 +9698,7 @@ wwv_flow_api.create_page (
  ,p_cache_timeout_seconds => 21600
  ,p_cache_by_user_yn => 'N'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180711231159'
+ ,p_last_upd_yyyymmddhh24miss => '20180825100311'
   );
 null;
  
@@ -9864,6 +9976,27 @@ end;
  
 begin
  
+wwv_flow_api.create_page_computation(
+  p_id=> 5112710130337711 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 5,
+  p_computation_sequence => 20,
+  p_computation_item=> 'P0_DISPLAY',
+  p_computation_point=> 'BEFORE_HEADER',
+  p_computation_type=> 'STATIC_ASSIGNMENT',
+  p_computation_processed=> 'REPLACE_EXISTING',
+  p_computation=> 'N',
+  p_compute_when => '',
+  p_compute_when_type=>'');
+ 
+null;
+ 
+end;
+/
+
+ 
+begin
+ 
 ---------------------------------------
 -- ...updatable report columns for page 5
 --
@@ -9906,7 +10039,7 @@ wwv_flow_api.create_page (
  ,p_help_text => 
 'No help is available for this page.'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180730195029'
+ ,p_last_upd_yyyymmddhh24miss => '20180901170818'
   );
 null;
  
@@ -9918,23 +10051,54 @@ declare
   l_clob clob;
   l_length number := 1;
 begin
-s := null;
+s:=s||'declare'||chr(10)||
+'   total_elapsed   number;'||chr(10)||
+'   num_runs        number;'||chr(10)||
+'begin'||chr(10)||
+'   --'||chr(10)||
+'   select max(tot_interval_msecs)  -- Need Group Function for NULL'||chr(10)||
+'     into total_elapsed'||chr(10)||
+'    from  wt_testcase_stats'||chr(10)||
+'    where test_run_id = :P0_TEST_RUN_ID'||chr(10)||
+'     and  testcase    = :P0_TEST_CASE;'||chr(10)||
+'   --'||chr(10)||
+'   select count(tr.id)  -- Need Group Function for NULL'||chr(10)||
+'    into  num_runs'||chr(10)||
+'    from  wt_test_runs  tr'||chr(10)||
+'          join wt_te';
+
+s:=s||'stcase_stats  tc'||chr(10)||
+'               on  tc.test_run_id = tr.id'||chr(10)||
+'               and tc.testcase    = :P0_TEST_CASE'||chr(10)||
+'    where tr.runner_owner = :P0_TEST_OWNER'||chr(10)||
+'     and  tr.runner_name  = :P0_TEST_RUNNER;'||chr(10)||
+'   --'||chr(10)||
+'   htp.p(''<br>'');'||chr(10)||
+'   htp.p(''Test Case Duration (msec): '' || total_elapsed || ''<br>'');'||chr(10)||
+'   htp.p(''<br>'');'||chr(10)||
+'   htp.p(''Number of Test Runs: '' || num_runs || ''<br>'');'||chr(10)||
+'   htp.p(''<br>'');'||chr(10)||
+'   --'||chr(10)||
+'end;'||chr(10)||
+'';
+
 wwv_flow_api.create_page_plug (
   p_id=> 4978906587323161 + wwv_flow_api.g_id_offset,
   p_flow_id=> wwv_flow.g_flow_id,
   p_page_id=> 6,
-  p_plug_name=> 'Test Case',
+  p_plug_name=> 'Summary',
   p_region_name=>'',
   p_plug_template=> 4839831975414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 11,
-  p_plug_display_column=> 1,
+  p_plug_display_sequence=> 2,
+  p_plug_display_column=> 2,
   p_plug_display_point=> 'BEFORE_BOX_BODY',
   p_plug_source=> s,
-  p_plug_source_type=> 'STATIC_TEXT',
+  p_plug_source_type=> 'PLSQL_PROCEDURE',
   p_translate_title=> 'Y',
   p_plug_query_row_template=> 1,
   p_plug_query_headings_type=> 'COLON_DELMITED_LIST',
   p_plug_query_row_count_max => 500,
+  p_plug_column_width => 'td width="320"',
   p_plug_display_condition_type => '',
   p_plug_customized=>'0',
   p_plug_caching=> 'NOT_CACHED',
@@ -9955,8 +10119,8 @@ s:=s||'select result_seq       SEQ'||chr(10)||
 '      ,testcase'||chr(10)||
 '      ,message'||chr(10)||
 ' from  wt_results'||chr(10)||
-' where test_run_id = :P6_TEST_RUN_ID'||chr(10)||
-'  and  testcase    = :P6_TESTCASE_NAME';
+' where test_run_id = :P0_TEST_RUN_ID'||chr(10)||
+'  and  testcase    = :P0_TEST_CASE';
 
 wwv_flow_api.create_page_plug (
   p_id=> 4982202570323168 + wwv_flow_api.g_id_offset,
@@ -9994,8 +10158,8 @@ a1:=a1||'select result_seq       SEQ'||chr(10)||
 '      ,testcase'||chr(10)||
 '      ,message'||chr(10)||
 ' from  wt_results'||chr(10)||
-' where test_run_id = :P6_TEST_RUN_ID'||chr(10)||
-'  and  testcase    = :P6_TESTCASE_NAME';
+' where test_run_id = :P0_TEST_RUN_ID'||chr(10)||
+'  and  testcase    = :P0_TEST_CASE';
 
 wwv_flow_api.create_worksheet(
   p_id=> 4982411530323169+wwv_flow_api.g_id_offset,
@@ -10451,15 +10615,19 @@ declare
   l_length number := 1;
 begin
 s:=s||'begin'||chr(10)||
-'   if :P6_TEST_RUN_ERROR is NOT NULL'||chr(10)||
-'   then'||chr(10)||
+'   for buff in (select error_message from wt_test_runs'||chr(10)||
+'                 where id = :P0_TEST_RUN_ID'||chr(10)||
+'                  and  error_message is not null)'||chr(10)||
+'   loop'||chr(10)||
 '      htp.p(''<font color=##ff0000><b>Test Runner Error Message:</b></font> '' ||'||chr(10)||
-'            :P6_TEST_RUN_ERROR || ''<br>'');'||chr(10)||
-'   end if;'||chr(10)||
+'            buff.error_message || ''<br>'');'||chr(10)||
+'   end loop;'||chr(10)||
 '   htp.p(''<br>'');'||chr(10)||
 '   htp.p(''<br>'');'||chr(10)||
 '   htp.p(''<br>'');'||chr(10)||
-'   htp.p(''<b>Test Results Details Search:</b><br>'');'||chr(10)||
+'   htp.p(''<b>Test Results Details Search:</b><b';
+
+s:=s||'r>'');'||chr(10)||
 'end;'||chr(10)||
 '';
 
@@ -10488,117 +10656,6 @@ wwv_flow_api.create_page_plug (
   p_plug_customized=>'0',
   p_plug_caching=> 'NOT_CACHED',
   p_plug_comment=> '');
-end;
-/
-declare
-  s varchar2(32767) := null;
-  l_clob clob;
-  l_length number := 1;
-begin
-s:=s||'select case when connect_by_isleaf = 1 then 0'||chr(10)||
-'            when level = 1             then 1'||chr(10)||
-'            else                           -1'||chr(10)||
-'       end as status, '||chr(10)||
-'       level, '||chr(10)||
-'       "TEXT" as title, '||chr(10)||
-'       null as icon, '||chr(10)||
-'       "ID" as value, '||chr(10)||
-'       null as tooltip, '||chr(10)||
-'       ''f?p=&APP_ID.:3:''||:APP_SESSION||''::::P6_TEST_RUN_ID:''||"ID" as link '||chr(10)||
-'from "#OWNER#"."WT_TEST_RUNS_TREE"'||chr(10)||
-'start with "PAREN';
-
-s:=s||'T_ID" is null'||chr(10)||
-'connect by prior "ID" = "PARENT_ID"';
-
-wwv_flow_api.create_page_plug (
-  p_id=> 4986317798323180 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_page_id=> 6,
-  p_plug_name=> 'Test Case Tree',
-  p_region_name=>'',
-  p_plug_template=> 4840201642414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 10,
-  p_plug_display_column=> 1,
-  p_plug_display_point=> 'REGION_POSITION_03',
-  p_plug_source=> s,
-  p_plug_source_type=> 'JSTREE',
-  p_translate_title=> 'Y',
-  p_plug_display_error_message=> '#SQLERRM#',
-  p_plug_query_row_template=> 1,
-  p_plug_query_headings_type=> 'COLON_DELMITED_LIST',
-  p_plug_query_row_count_max => 500,
-  p_plug_display_condition_type => 'PLSQL_EXPRESSION',
-  p_plug_display_when_condition => ':P6_SHOW_TREE = ''Y''',
-  p_plug_customized=>'0',
-  p_plug_caching=> 'NOT_CACHED',
-  p_plug_comment=> '');
-end;
-/
-declare
- a1 varchar2(32767) := null;
-begin
-a1:=a1||'with q_main as ('||chr(10)||
-'select to_char(id)          ID'||chr(10)||
-'      ,to_char(parent_id)   PARENT_ID'||chr(10)||
-'      ,text'||chr(10)||
-'      ,''GUI_TREE''           SOURCE'||chr(10)||
-'-- from  #OWNER#.wt_test_runs_gui_tree'||chr(10)||
-' from  wt_test_runs_gui_tree'||chr(10)||
-'union all'||chr(10)||
-'select tc.testcase              ID'||chr(10)||
-'      ,to_char(tc.test_run_id)  PARENT_ID'||chr(10)||
-'      ,tc.testcase              TEXT'||chr(10)||
-'      ,''TESTCASES''              SOURCE'||chr(10)||
-' from wt_testcase_stats  tc'||chr(10)||
-'      jo';
-
-a1:=a1||'in wt_test_runs  tr'||chr(10)||
-'           on  tr.id = tc.test_run_id'||chr(10)||
-')'||chr(10)||
-'--select * from q_main;'||chr(10)||
-'select case when connect_by_isleaf = 1 then 0'||chr(10)||
-'            when level = 1             then 1'||chr(10)||
-'            else                           -1'||chr(10)||
-'       end                                           STATUS'||chr(10)||
-'      ,level'||chr(10)||
-'      ,text'||chr(10)||
-'      ,null                                          ICON'||chr(10)||
-'      ,id                          ';
-
-a1:=a1||'                  VALUE'||chr(10)||
-'      ,text                                          TOOLTIP'||chr(10)||
-'      ,case when SOURCE = ''TESTCASES'' then'||chr(10)||
-'       ''f?p=&APP_ID.:6:''||:APP_SESSION||''::::P6_TEST_RUN_ID,P6_TESTCASE_NAME:''||"PARENT_ID"||'',''||"ID"'||chr(10)||
-'       else NULL end                                 LINK'||chr(10)||
-' from  q_main'||chr(10)||
-' start with parent_id is null'||chr(10)||
-' connect by prior "ID" = parent_id;';
-
-wwv_flow_api.create_jstree(
-  p_id => 4986504998323181+wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_page_id => 6,
-  p_region_id => 4986317798323180+wwv_flow_api.g_id_offset,
-  p_tree_template     =>'classic',
-  p_tree_source             =>'',
-  p_tree_query             =>a1,
-  p_tree_node_title   =>'TEXT',
-  p_tree_node_value   =>'ID',
-  p_tree_node_icon   =>'',
-  p_tree_node_link   =>'',
-  p_tree_node_hints   =>'ID',
-  p_tree_start_item   =>'PARENT_ID',
-  p_tree_start_value   =>'',
-  p_tree_button_option   =>'',
-  p_show_node_link   =>'',
-  p_node_link_checksum_type   =>null,
-  p_tree_comment          =>'',
-  p_show_hints          =>'DB',
-  p_tree_has_focus          =>'N',
-  p_tree_hint_text          =>'',
-  p_tree_click_action          =>'S',
-  p_selected_node          =>'P3_TEST_RUN_ID');
 end;
 /
 declare
@@ -10652,8 +10709,8 @@ wwv_flow_api.create_page_plug (
   p_plug_name=> 'Test Case Status',
   p_region_name=>'',
   p_plug_template=> 4839217975414912+ wwv_flow_api.g_id_offset,
-  p_plug_display_sequence=> 12,
-  p_plug_display_column=> 2,
+  p_plug_display_sequence=> 1,
+  p_plug_display_column=> 1,
   p_plug_display_point=> 'BEFORE_BOX_BODY',
   p_plug_source=> s,
   p_plug_source_type=> 'FLASH_CHART5',
@@ -10755,19 +10812,19 @@ a1:=a1||'with q1 as ('||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
 '       join wt_testcase_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-'            and res.testcase = :P6_TESTCASE_NAME'||chr(10)||
-' where id = :P6_TEST_RUN_ID'||chr(10)||
+'            and res.testcase = :P0_TEST_CASE'||chr(10)||
+' where id = :P0_TEST_RUN_ID'||chr(10)||
 'union all'||chr(10)||
 'select NULL               LINK'||chr(10)||
 '      ,''FAIL''             LABEL'||chr(10)||
 '      ,sum(res.failures)  VALUE'||chr(10)||
-' from  wt_test_';
+' from  wt_test_runs';
 
-a1:=a1||'runs  run'||chr(10)||
+a1:=a1||'  run'||chr(10)||
 '       join wt_testcase_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-'            and res.testcase = :P6_TESTCASE_NAME'||chr(10)||
-' where id = :P6_TEST_RUN_ID'||chr(10)||
+'            and res.testcase = :P0_TEST_CASE'||chr(10)||
+' where id = :P0_TEST_RUN_ID'||chr(10)||
 'union all'||chr(10)||
 'select NULL             LINK'||chr(10)||
 '      ,''ERR''            LABEL'||chr(10)||
@@ -10775,10 +10832,10 @@ a1:=a1||'runs  run'||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
 '       join wt_testcase_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-'            and res.testcase = :P6_TE';
+'            and res.testcase = :P0_TEST_CASE'||chr(10)||
+'';
 
-a1:=a1||'STCASE_NAME'||chr(10)||
-' where id = :P6_TEST_RUN_ID'||chr(10)||
+a1:=a1||' where id = :P0_TEST_RUN_ID'||chr(10)||
 ')'||chr(10)||
 'select link, label, value'||chr(10)||
 ' from  q1'||chr(10)||
@@ -10904,7 +10961,7 @@ wwv_flow_api.create_flash_chart5(
   p_custom_colors          =>'#99FF99,#FFFF99,#FF6699',
   p_map_undef_color_scheme =>'',
   p_map_undef_custom_colors =>'',
-  p_x_axis_title           =>'',
+  p_x_axis_title           =>'Test Run ID',
   p_x_axis_min             =>null,
   p_x_axis_max             =>null,
   p_x_axis_decimal_place   =>null,
@@ -10951,152 +11008,46 @@ declare
  a1 varchar2(32767) := null;
 begin
 a1:=a1||'with q1 as ('||chr(10)||
-'select ''f?p='' || :APP_ID               ||'||chr(10)||
-'          '':'' || ''6''                   ||     -- Page'||chr(10)||
-'          '':'' || :APP_SESSION          ||'||chr(10)||
-'          '':'' || :REQUEST              ||'||chr(10)||
-'          '':'' || :DEBUG                ||'||chr(10)||
-'          '':'' || ''N''                   ||     -- CLear Cache'||chr(10)||
-'          '':'' || ''P6_TEST_RUN_ID''      || '','' ||'||chr(10)||
-'                 ''P6_TESTCASE_NAME''    ||     -- Item N';
-
-a1:=a1||'ames'||chr(10)||
-'          '':'' || res.test_run_id       || '','' ||'||chr(10)||
-'                 res.testcase          ||     -- Item Values'||chr(10)||
-'          '':'' || V(''PRINTER_FRIENDLY'')    LINK'||chr(10)||
-'      ,''ID''   || run.id                   LABEL'||chr(10)||
+'select res.test_run_id                    LINK'||chr(10)||
+'      ,res.test_run_id                    LABEL'||chr(10)||
 '      ,res.passes                         PASS'||chr(10)||
+'      ,res.failures                       FAIL'||chr(10)||
+'      ,res.errors                         ERR'||chr(10)||
+'      ,rownum                             RNUM'||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
 '       join wt_testcase_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-'            and res.testcase = :P6_TESTCAS';
+'    ';
 
-a1:=a1||'E_NAME'||chr(10)||
-' where run.runner_owner = :P6_RUNNER_OWNER'||chr(10)||
-'  and  run.runner_name  = :P6_RUNNER_NAME'||chr(10)||
+a1:=a1||'        and res.testcase = :P0_TEST_CASE'||chr(10)||
+' where run.runner_owner = :P0_TEST_OWNER'||chr(10)||
+'  and  run.runner_name  = :P0_TEST_RUNNER'||chr(10)||
 ' order by run.id'||chr(10)||
 '), q2 as ('||chr(10)||
 'select count(*) num_rows from q1'||chr(10)||
 ')'||chr(10)||
-'select * from q1'||chr(10)||
-' where rownum > (select num_rows from q2) - 10';
+'select link'||chr(10)||
+'      ,label'||chr(10)||
+'      ,pass'||chr(10)||
+'      ,fail'||chr(10)||
+'      ,err'||chr(10)||
+' from  q1'||chr(10)||
+' where rnum > (select num_rows from q2) - 10';
 
 wwv_flow_api.create_flash_chart5_series(
   p_id => 4988016280323183+wwv_flow_api.g_id_offset,
   p_chart_id => 4987702388323183+wwv_flow_api.g_id_offset,
   p_flow_id=> wwv_flow.g_flow_id,
   p_series_seq                =>10,
-  p_series_name               =>'Pass',
+  p_series_name               =>'Series 1',
   p_series_query              => a1,
   p_series_type               =>'Bar',
   p_series_query_type         =>'SQL_QUERY',
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
   p_series_query_row_count_max=>15,
-  p_action_link               =>'',
-  p_show_action_link          =>'N',
-  p_action_link_checksum_type =>'');
-end;
-/
-declare
- a1 varchar2(32767) := null;
-begin
-a1:=a1||'with q1 as ('||chr(10)||
-'select ''f?p='' || :APP_ID               ||'||chr(10)||
-'          '':'' || ''6''                   ||     -- Page'||chr(10)||
-'          '':'' || :APP_SESSION          ||'||chr(10)||
-'          '':'' || :REQUEST              ||'||chr(10)||
-'          '':'' || :DEBUG                ||'||chr(10)||
-'          '':'' || ''N''                   ||     -- CLear Cache'||chr(10)||
-'          '':'' || ''P6_TEST_RUN_ID''      || '','' ||'||chr(10)||
-'                 ''P6_TESTCASE_NAME''    ||     -- Item N';
-
-a1:=a1||'ames'||chr(10)||
-'          '':'' || res.test_run_id       || '','' ||'||chr(10)||
-'                 res.testcase          ||     -- Item Values'||chr(10)||
-'          '':'' || V(''PRINTER_FRIENDLY'')    LINK'||chr(10)||
-'      ,''ID'' || run.id                     LABEL'||chr(10)||
-'      ,res.failures                       FAIL'||chr(10)||
-' from  wt_test_runs  run'||chr(10)||
-'       join wt_testcase_stats  res'||chr(10)||
-'            on  res.test_run_id = run.id'||chr(10)||
-'            and res.testcase = :P6_TESTCAS';
-
-a1:=a1||'E_NAME'||chr(10)||
-' where run.runner_owner = :P6_RUNNER_OWNER'||chr(10)||
-'  and  run.runner_name  = :P6_RUNNER_NAME'||chr(10)||
-' order by run.id'||chr(10)||
-'), q2 as ('||chr(10)||
-'select count(*) num_rows from q1'||chr(10)||
-')'||chr(10)||
-'select * from q1'||chr(10)||
-' where rownum > (select num_rows from q2) - 10';
-
-wwv_flow_api.create_flash_chart5_series(
-  p_id => 4987805822323183+wwv_flow_api.g_id_offset,
-  p_chart_id => 4987702388323183+wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_series_seq                =>20,
-  p_series_name               =>'Fail',
-  p_series_query              => a1,
-  p_series_type               =>'Bar',
-  p_series_query_type         =>'SQL_QUERY',
-  p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
-  p_series_query_no_data_found=>'',
-  p_series_query_row_count_max=>15,
-  p_action_link               =>'',
-  p_show_action_link          =>'N',
-  p_action_link_checksum_type =>'');
-end;
-/
-declare
- a1 varchar2(32767) := null;
-begin
-a1:=a1||'with q1 as ('||chr(10)||
-'select ''f?p='' || :APP_ID               ||'||chr(10)||
-'          '':'' || ''6''                   ||     -- Page'||chr(10)||
-'          '':'' || :APP_SESSION          ||'||chr(10)||
-'          '':'' || :REQUEST              ||'||chr(10)||
-'          '':'' || :DEBUG                ||'||chr(10)||
-'          '':'' || ''N''                   ||     -- CLear Cache'||chr(10)||
-'          '':'' || ''P6_TEST_RUN_ID''      || '','' ||'||chr(10)||
-'                 ''P6_TESTCASE_NAME''    ||     -- Item N';
-
-a1:=a1||'ames'||chr(10)||
-'          '':'' || res.test_run_id       || '','' ||'||chr(10)||
-'                 res.testcase          ||     -- Item Values'||chr(10)||
-'          '':'' || V(''PRINTER_FRIENDLY'')    LINK'||chr(10)||
-'      ,''ID'' || run.id                     LABEL'||chr(10)||
-'      ,res.errors                         ERR'||chr(10)||
-' from  wt_test_runs  run'||chr(10)||
-'       join wt_testcase_stats  res'||chr(10)||
-'            on  res.test_run_id = run.id'||chr(10)||
-'            and res.testcase = :P6_TESTCASE';
-
-a1:=a1||'_NAME'||chr(10)||
-' where run.runner_owner = :P6_RUNNER_OWNER'||chr(10)||
-'  and  run.runner_name  = :P6_RUNNER_NAME'||chr(10)||
-' order by run.id'||chr(10)||
-'), q2 as ('||chr(10)||
-'select count(*) num_rows from q1'||chr(10)||
-')'||chr(10)||
-'select * from q1'||chr(10)||
-' where rownum > (select num_rows from q2) - 10';
-
-wwv_flow_api.create_flash_chart5_series(
-  p_id => 4987900146323183+wwv_flow_api.g_id_offset,
-  p_chart_id => 4987702388323183+wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_series_seq                =>30,
-  p_series_name               =>'Error',
-  p_series_query              => a1,
-  p_series_type               =>'Bar',
-  p_series_query_type         =>'SQL_QUERY',
-  p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
-  p_series_query_no_data_found=>'',
-  p_series_query_row_count_max=>15,
-  p_action_link               =>'',
-  p_show_action_link          =>'N',
+  p_action_link               =>'f?p=&APP_ID.:6:&SESSION.::&DEBUG.::P0_TEST_RUN_ID:#LINK#',
+  p_show_action_link          =>'C',
   p_action_link_checksum_type =>'');
 end;
 /
@@ -11183,7 +11134,7 @@ wwv_flow_api.create_flash_chart5(
   p_chart_width            =>300,
   p_chart_height           =>200,
   p_chart_animation        =>'N',
-  p_display_attr           =>':H::V:Y:N:N::V:Y:None:::N:::Default',
+  p_display_attr           =>':H:N::Y:N:N::V:Y:None:::N:::Default',
   p_dial_tick_attr         =>':::::::::::',
   p_gantt_attr             =>'Y:Rhomb:Rhomb:Full:Rhomb:Rhomb:Full:Rhomb:Rhomb:Full:30:15:5:Y:I:N:S:E',
   p_map_attr               =>'Orthographic:RegionBounds:REGION_NAME',
@@ -11202,7 +11153,7 @@ wwv_flow_api.create_flash_chart5(
   p_custom_colors          =>'',
   p_map_undef_color_scheme =>'',
   p_map_undef_custom_colors =>'',
-  p_x_axis_title           =>'',
+  p_x_axis_title           =>'Test Run ID',
   p_x_axis_min             =>null,
   p_x_axis_max             =>null,
   p_x_axis_decimal_place   =>null,
@@ -11249,36 +11200,27 @@ declare
  a1 varchar2(32767) := null;
 begin
 a1:=a1||'with q1 as ('||chr(10)||
-'select ''f?p='' || :APP_ID               ||'||chr(10)||
-'          '':'' || ''6''                   ||     -- Page'||chr(10)||
-'          '':'' || :APP_SESSION          ||'||chr(10)||
-'          '':'' || :REQUEST              ||'||chr(10)||
-'          '':'' || :DEBUG                ||'||chr(10)||
-'          '':'' || ''N''                   ||     -- CLear Cache'||chr(10)||
-'          '':'' || ''P6_TEST_RUN_ID''      || '','' ||'||chr(10)||
-'                 ''P6_TESTCASE_NAME''    ||     -- Item N';
-
-a1:=a1||'ames'||chr(10)||
-'          '':'' || run.id                || '','' ||'||chr(10)||
-'                 res.testcase          ||     -- Item Values'||chr(10)||
-'          '':'' || V(''PRINTER_FRIENDLY'')    LINK'||chr(10)||
-'      ,''ID'' || run.id ||'||chr(10)||
-'       '': '' || res.testcase               LABEL'||chr(10)||
+'select res.test_run_id                    LINK'||chr(10)||
+'      ,res.test_run_id                    LABEL'||chr(10)||
 '      ,res.tot_interval_msecs             MILLISECONDS'||chr(10)||
+'      ,rownum                             RNUM'||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
 '       join wt_testcase_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
-'         ';
+'            and res.testcase = :P0_TEST_CASE'||chr(10)||
+' where run.runner_owner = :P0_TEST_OWNER'||chr(10)||
+'  a';
 
-a1:=a1||'   and res.testcase = :P6_TESTCASE_NAME'||chr(10)||
-' where run.runner_owner = :P6_RUNNER_OWNER'||chr(10)||
-'  and  run.runner_name  = :P6_RUNNER_NAME'||chr(10)||
+a1:=a1||'nd  run.runner_name  = :P0_TEST_RUNNER'||chr(10)||
 ' order by id'||chr(10)||
 '), q2 as ('||chr(10)||
 'select count(*) num_rows from q1'||chr(10)||
 ')'||chr(10)||
-'select * from q1'||chr(10)||
-' where rownum > (select num_rows from q2) - 10';
+'select link'||chr(10)||
+'      ,label'||chr(10)||
+'      ,milliseconds'||chr(10)||
+' from  q1'||chr(10)||
+' where rnum > (select num_rows from q2) - 10';
 
 wwv_flow_api.create_flash_chart5_series(
   p_id => 4988419037323184+wwv_flow_api.g_id_offset,
@@ -11292,8 +11234,8 @@ wwv_flow_api.create_flash_chart5_series(
   p_series_query_parse_opt    =>'PARSE_CHART_QUERY',
   p_series_query_no_data_found=>'No data found.',
   p_series_query_row_count_max=>15,
-  p_action_link               =>'',
-  p_show_action_link          =>'N',
+  p_action_link               =>'f?p=&APP_ID.:6:&SESSION.::&DEBUG.::P0_TEST_RUN_ID:#LINK#',
+  p_show_action_link          =>'C',
   p_action_link_checksum_type =>'');
 end;
 /
@@ -11318,60 +11260,6 @@ wwv_flow_api.create_page_branch(
   p_branch_sequence=> 99,
   p_save_state_before_branch_yn=>'Y',
   p_branch_comment=> '');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4979526173323164 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 6,
-  p_name=>'P6_GOTO_RUN_ID',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 9,
-  p_item_plug_id => 4978906587323161+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Go To Run ID:',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_POPUP_LOV',
-  p_lov=> 'select id            || '': '' ||'||chr(10)||
-'       runner_owner  || ''.'' ||'||chr(10)||
-'       runner_name   || '', '' ||'||chr(10)||
-'       to_char(start_dtm,''YYYY/MM/DD HH24:MI:SS'')    DISPLAY'||chr(10)||
-'      ,id                                            RETURN'||chr(10)||
-' from  wt_test_runs tr'||chr(10)||
-' where id != :P6_TEST_RUN_ID'||chr(10)||
-'  and  exists (select ''x'' from wt_testcase_stats tc'||chr(10)||
-'                where tc.test_run_id = tr.id )'||chr(10)||
-' order by id desc',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 10,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'NO',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'NOT_ENTERABLE',
-  p_attribute_02 => 'NO_FETCH',
-  p_show_quick_picks=>'N',
-  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
  
  
 end;
@@ -11425,570 +11313,22 @@ wwv_flow_api.create_page_item(
 end;
 /
 
-declare
-    h varchar2(32767) := null;
+ 
 begin
-wwv_flow_api.create_page_item(
-  p_id=>4979902815323165 + wwv_flow_api.g_id_offset,
+ 
+wwv_flow_api.create_page_computation(
+  p_id=> 5113216840349039 + wwv_flow_api.g_id_offset,
   p_flow_id=> wwv_flow.g_flow_id,
   p_flow_step_id=> 6,
-  p_name=>'P6_RUNNER_NAME',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 5,
-  p_item_plug_id => 4978906587323161+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_HIDDEN',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'NO',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'LEFT',
-  p_field_alignment=> 'LEFT',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'N',
-  p_show_quick_picks=>'N',
-  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
+  p_computation_sequence => 20,
+  p_computation_item=> 'P0_DISPLAY',
+  p_computation_point=> 'BEFORE_HEADER',
+  p_computation_type=> 'STATIC_ASSIGNMENT',
+  p_computation_processed=> 'REPLACE_EXISTING',
+  p_computation=> 'Y',
+  p_compute_when => '',
+  p_compute_when_type=>'');
  
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4980303495323165 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 6,
-  p_name=>'P6_TOTAL_ELAPSED',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 8,
-  p_item_plug_id => 4978906587323161+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Elapsed (msecs):',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'N',
-  p_attribute_02 => 'VALUE',
-  p_attribute_04 => 'N',
-  p_show_quick_picks=>'N',
-  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4980909283323166 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 6,
-  p_name=>'P6_TEST_RUN_ID',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 2,
-  p_item_plug_id => 4978906587323161+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_source_type=> 'STATIC',
-  p_source_post_computation => 'to_number(:P6_TEST_RUN_ID)',
-  p_display_as=> 'NATIVE_HIDDEN',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'NO',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'Y',
-  p_show_quick_picks=>'N',
-  p_item_comment => '');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-h := null;
-h:=h||'This item is initialized by the "Initialize Items" process.';
-
-wwv_flow_api.create_page_item(
-  p_id=>4981107070323166 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 6,
-  p_name=>'P6_RUNNER_OWNER',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 3,
-  p_item_plug_id => 4978906587323161+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Runner Owner:',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_help_text=> h,
-  p_attribute_01 => 'N',
-  p_attribute_02 => 'VALUE',
-  p_attribute_04 => 'N',
-  p_show_quick_picks=>'N',
-  p_item_comment => '');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4981616597323167 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 6,
-  p_name=>'P6_START_DTM',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 7,
-  p_item_plug_id => 4978906587323161+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Start Date/Time:',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'N',
-  p_attribute_02 => 'VALUE',
-  p_attribute_04 => 'N',
-  p_show_quick_picks=>'N',
-  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4981808770323167 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 6,
-  p_name=>'P6_RUNNER_NAME_DISP',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 4,
-  p_item_plug_id => 4978906587323161+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Runner Name:',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'N',
-  p_attribute_01 => 'N',
-  p_attribute_02 => 'VALUE',
-  p_attribute_04 => 'N',
-  p_show_quick_picks=>'N',
-  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4984013419323176 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 6,
-  p_name=>'P6_TEST_RUN_ERROR',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 99,
-  p_item_plug_id => 4983829548323176+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_HIDDEN',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'NO',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'LEFT',
-  p_field_alignment=> 'LEFT',
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'N',
-  p_show_quick_picks=>'N',
-  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4995211406848083 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 6,
-  p_name=>'P6_TESTCASE_NAME',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 6,
-  p_item_plug_id => 4978906587323161+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Test Case Name:',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_attribute_01 => 'N',
-  p_attribute_02 => 'VALUE',
-  p_attribute_04 => 'Y',
-  p_item_comment => '');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>4995404957855714 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 6,
-  p_name=>'P6_GO_TO_TCASE',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 10,
-  p_item_plug_id => 4978906587323161+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Go To Test Case:',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_POPUP_LOV',
-  p_lov=> 'select testcase    DISPLAY'||chr(10)||
-'      ,testcase    RETURN'||chr(10)||
-' from  wt_testcase_stats'||chr(10)||
-' where test_run_id = :P6_TEST_RUN_ID'||chr(10)||
-'  and  testcase   != :P6_TESTCASE_NAME'||chr(10)||
-' order by testcase',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 10,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'NO',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => 'NOT_ENTERABLE',
-  p_attribute_02 => 'NO_FETCH',
-  p_show_quick_picks=>'N',
-  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>5007723478780547 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 6,
-  p_name=>'P6_SHOW_TREE',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> true,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 12,
-  p_item_plug_id => 4978906587323161+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Show Tree:',
-  p_source=>'N',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_RADIOGROUP',
-  p_named_lov=> 'Y_OR_N',
-  p_lov=> '.'||to_char(4923728354614299 + wwv_flow_api.g_id_offset)||'.',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'Y',
-  p_attribute_01 => '2',
-  p_attribute_02 => 'SUBMIT',
-  p_attribute_03 => 'Y',
-  p_show_quick_picks=>'N',
-  p_item_comment => '');
- 
- 
-end;
-/
-
-declare
-    h varchar2(32767) := null;
-begin
-wwv_flow_api.create_page_item(
-  p_id=>5064723722530218 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id=> 6,
-  p_name=>'P6_TEST_RUN_ID_DISP',
-  p_data_type=> 'VARCHAR',
-  p_is_required=> false,
-  p_accept_processing=> 'REPLACE_EXISTING',
-  p_item_sequence=> 1,
-  p_item_plug_id => 4978906587323161+wwv_flow_api.g_id_offset,
-  p_use_cache_before_default=> 'YES',
-  p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
-  p_prompt=>'Test Run ID:',
-  p_source_type=> 'STATIC',
-  p_display_as=> 'NATIVE_DISPLAY_ONLY',
-  p_lov_display_null=> 'NO',
-  p_lov_translated=> 'N',
-  p_cSize=> 30,
-  p_cMaxlength=> 4000,
-  p_cHeight=> 1,
-  p_cAttributes=> 'nowrap="nowrap"',
-  p_begin_on_new_line=> 'YES',
-  p_begin_on_new_field=> 'YES',
-  p_colspan=> 1,
-  p_rowspan=> 1,
-  p_label_alignment=> 'RIGHT',
-  p_field_alignment=> 'LEFT-CENTER',
-  p_field_template=> 4843803724414915+wwv_flow_api.g_id_offset,
-  p_is_persistent=> 'Y',
-  p_lov_display_extra=>'YES',
-  p_protection_level => 'N',
-  p_escape_on_http_output => 'N',
-  p_attribute_01 => 'N',
-  p_attribute_02 => 'VALUE',
-  p_attribute_04 => 'Y',
-  p_show_quick_picks=>'N',
-  p_item_comment => 'This item is initialized by the "Initialize Items" process.');
- 
- 
-end;
-/
-
- 
-begin
- 
-wwv_flow_api.create_page_da_event (
-  p_id => 4989710358323189 + wwv_flow_api.g_id_offset
- ,p_flow_id => wwv_flow.g_flow_id
- ,p_page_id => 6
- ,p_name => 'Submit After Test Run LOV Change'
- ,p_event_sequence => 10
- ,p_triggering_element_type => 'ITEM'
- ,p_triggering_element => 'P6_GOTO_RUN_ID'
- ,p_bind_type => 'bind'
- ,p_bind_event_type => 'change'
-  );
-wwv_flow_api.create_page_da_action (
-  p_id => 4998326694508289 + wwv_flow_api.g_id_offset
- ,p_flow_id => wwv_flow.g_flow_id
- ,p_page_id => 6
- ,p_event_id => 4989710358323189 + wwv_flow_api.g_id_offset
- ,p_event_result => 'TRUE'
- ,p_action_sequence => 10
- ,p_execute_on_page_init => 'N'
- ,p_action => 'NATIVE_CLEAR'
- ,p_affected_elements_type => 'ITEM'
- ,p_affected_elements => 'P6_TESTCASE_NAME'
- ,p_stop_execution_on_error => 'Y'
- );
-wwv_flow_api.create_page_da_action (
-  p_id => 4990017349323191 + wwv_flow_api.g_id_offset
- ,p_flow_id => wwv_flow.g_flow_id
- ,p_page_id => 6
- ,p_event_id => 4989710358323189 + wwv_flow_api.g_id_offset
- ,p_event_result => 'TRUE'
- ,p_action_sequence => 20
- ,p_execute_on_page_init => 'N'
- ,p_action => 'NATIVE_SUBMIT_PAGE'
- ,p_attribute_01 => 'REFRESH'
- ,p_stop_execution_on_error => 'Y'
- );
-null;
- 
-end;
-/
-
- 
-begin
- 
-wwv_flow_api.create_page_da_event (
-  p_id => 4997805569502165 + wwv_flow_api.g_id_offset
- ,p_flow_id => wwv_flow.g_flow_id
- ,p_page_id => 6
- ,p_name => 'Submit After Test Case LOV Change'
- ,p_event_sequence => 20
- ,p_triggering_element_type => 'ITEM'
- ,p_triggering_element => 'P6_GO_TO_TCASE'
- ,p_bind_type => 'bind'
- ,p_bind_event_type => 'change'
-  );
-wwv_flow_api.create_page_da_action (
-  p_id => 4998111776502171 + wwv_flow_api.g_id_offset
- ,p_flow_id => wwv_flow.g_flow_id
- ,p_page_id => 6
- ,p_event_id => 4997805569502165 + wwv_flow_api.g_id_offset
- ,p_event_result => 'TRUE'
- ,p_action_sequence => 10
- ,p_execute_on_page_init => 'N'
- ,p_action => 'NATIVE_SUBMIT_PAGE'
- ,p_attribute_01 => 'REFRESH'
- ,p_stop_execution_on_error => 'Y'
- );
 null;
  
 end;
@@ -12058,190 +11398,6 @@ end;
  
 begin
  
-declare
-  p varchar2(32767) := null;
-  l_clob clob;
-  l_length number := 1;
-begin
-p:=p||'declare'||chr(10)||
-'   --'||chr(10)||
-'   page          varchar2(5);      -- Destination Page'||chr(10)||
-'   clear_cache   varchar2(4000);   -- Comma Delimited Names'||chr(10)||
-'   item_names    varchar2(4000);   -- Comma Delimited Names'||chr(10)||
-'   item_values   varchar2(4000);   -- Comma Delimited Values'||chr(10)||
-'   --'||chr(10)||
-'   procedure find_test_run_id is begin'||chr(10)||
-'      select max(tc.test_run_id) into :P6_TEST_RUN_ID'||chr(10)||
-'       from wt_test_runs  tr'||chr(10)||
-'            join wt_te';
-
-p:=p||'stcase_stats  tc'||chr(10)||
-'                 on  tc.test_run_id = tr.id'||chr(10)||
-'       where tr.runner_owner = :APP_USER;'||chr(10)||
-'      if :P6_TEST_RUN_ID is NULL'||chr(10)||
-'      then'||chr(10)||
-'         select max(tc.test_run_id) into :P6_TEST_RUN_ID'||chr(10)||
-'          from wt_test_runs  tr'||chr(10)||
-'               join wt_testcase_stats  tc'||chr(10)||
-'                    on  tc.test_run_id = tr.id;'||chr(10)||
-'      end if;'||chr(10)||
-'   end find_test_run_id;'||chr(10)||
-'   --'||chr(10)||
-'   procedure process_test_run';
-
-p:=p||'_id is begin'||chr(10)||
-'      for buff in ('||chr(10)||
-'         select tr.runner_owner'||chr(10)||
-'               ,tr.runner_name'||chr(10)||
-'               ,to_char(start_dtm,''YYYY/MM/DD HH24:MI:SS'')     START_DTM'||chr(10)||
-'               ,error_message'||chr(10)||
-'          from  wt_test_runs  tr'||chr(10)||
-'          where id = :P6_TEST_RUN_ID )  -- Primary Key, Only 1 row in loop'||chr(10)||
-'      loop'||chr(10)||
-'         :P6_RUNNER_OWNER   := buff.runner_owner;'||chr(10)||
-'         :P6_RUNNER_NAME    := b';
-
-p:=p||'uff.runner_name;'||chr(10)||
-'         :P6_START_DTM      := buff.start_dtm;'||chr(10)||
-'         :P6_TEST_RUN_ERROR := buff.error_message;'||chr(10)||
-'         if buff.runner_owner = :APP_USER'||chr(10)||
-'         then'||chr(10)||
-'            page                 := ''2'';'||chr(10)||
-'            item_names           := ''P'' || page || ''_TEST_RUNNER'';'||chr(10)||
-'            item_values          := buff.runner_name;'||chr(10)||
-'            :P6_RUNNER_NAME_DISP := ''<a href="f?p='' || :APP_ID     ';
-
-p:=p||'          ||'||chr(10)||
-'                                                '':'' || page                  ||'||chr(10)||
-'                                                '':'' || :APP_SESSION          ||'||chr(10)||
-'                                                '':'' || :REQUEST              ||'||chr(10)||
-'                                                '':'' || :DEBUG                ||'||chr(10)||
-'                                                '':'' || clear_cache ';
-
-p:=p||'          ||'||chr(10)||
-'                                                '':'' || item_names            ||'||chr(10)||
-'                                                '':'' || item_values           ||'||chr(10)||
-'                                                '':'' || V(''PRINTER_FRIENDLY'') ||'||chr(10)||
-'                                               ''">'' || buff.runner_name      ||'||chr(10)||
-'                              ''</a> (Click to Run)'' ;'||chr(10)||
-'         else';
-
-p:=p||''||chr(10)||
-'            :P6_RUNNER_NAME_DISP := buff.runner_name;'||chr(10)||
-'         end if;'||chr(10)||
-'      end loop;'||chr(10)||
-'   end process_test_run_id;'||chr(10)||
-'   --'||chr(10)||
-'   function check_testcase_name return boolean is begin'||chr(10)||
-'      for buff in (select ''x'' from wt_testcase_stats'||chr(10)||
-'                    where test_run_id = :P6_TEST_RUN_ID'||chr(10)||
-'                     and  testcase    = :P6_TESTCASE_NAME )'||chr(10)||
-'                   -- Primary Key, Only returns 1 row';
-
-p:=p||''||chr(10)||
-'      loop'||chr(10)||
-'         return TRUE;'||chr(10)||
-'      end loop;'||chr(10)||
-'      return FALSE;'||chr(10)||
-'   end check_testcase_name;'||chr(10)||
-'   --'||chr(10)||
-'   procedure find_testcase_name is begin'||chr(10)||
-'      select min(testcase)'||chr(10)||
-'       into  :P6_TESTCASE_NAME'||chr(10)||
-'       from  wt_testcase_stats'||chr(10)||
-'       where test_run_id = :P6_TEST_RUN_ID;'||chr(10)||
-'   end find_testcase_name;'||chr(10)||
-'   --'||chr(10)||
-'   procedure process_testcase_name is begin'||chr(10)||
-'      page                 := ''3'';'||chr(10)||
-'      item';
-
-p:=p||'_names           := ''P'' || page || ''_TEST_RUN_ID'';'||chr(10)||
-'      item_values          := :P6_TEST_RUN_ID;'||chr(10)||
-'      :P6_TEST_RUN_ID_DISP := ''<a href="f?p='' || :APP_ID               ||'||chr(10)||
-'                                          '':'' || page                  ||'||chr(10)||
-'                                          '':'' || :APP_SESSION          ||'||chr(10)||
-'                                          '':'' || :REQUEST              ||'||chr(10)||
-'      ';
-
-p:=p||'                                    '':'' || :DEBUG                ||'||chr(10)||
-'                                          '':'' || clear_cache           ||'||chr(10)||
-'                                          '':'' || item_names            ||'||chr(10)||
-'                                          '':'' || item_values           ||'||chr(10)||
-'                                          '':'' || V(''PRINTER_FRIENDLY'') ||'||chr(10)||
-'                                    ';
-
-p:=p||'     ''">'' || :P6_TEST_RUN_ID       || ''</a>'';'||chr(10)||
-'      select max(tot_interval_msecs)    -- Need Group Function for NULL'||chr(10)||
-'        into :P6_TOTAL_ELAPSED'||chr(10)||
-'       from  wt_testcase_stats'||chr(10)||
-'       where test_run_id = :P6_TEST_RUN_ID'||chr(10)||
-'        and  testcase    = :P6_TESTCASE_NAME;'||chr(10)||
-'   end process_testcase_name;'||chr(10)||
-'   --'||chr(10)||
-'begin'||chr(10)||
-'   --'||chr(10)||
-'   if :P6_GOTO_TCASE is NOT NULL'||chr(10)||
-'   then'||chr(10)||
-'      -- The LOV was triggered, so set Tes';
-
-p:=p||'t Case and go.'||chr(10)||
-'      :P6_TESTCASE_NAME := :P6_GOTO_TCASE;'||chr(10)||
-'      :P6_GOTO_TCASE    := NULL;'||chr(10)||
-'      :P6_GOTO_RUN_ID   := NULL;'||chr(10)||
-'      process_testcase_name;'||chr(10)||
-'      return;                              -- Done!'||chr(10)||
-'   end if;'||chr(10)||
-'   --'||chr(10)||
-'   if :P6_GOTO_RUN_ID is NOT NULL'||chr(10)||
-'   then'||chr(10)||
-'      -- The LOV was triggered, Set Test Run.'||chr(10)||
-'      :P6_TEST_RUN_ID := :P6_GOTO_RUN_ID;'||chr(10)||
-'      :P6_GOTO_RUN_ID := NULL;'||chr(10)||
-'   else'||chr(10)||
-'      if ';
-
-p:=p||':P6_TEST_RUN_ID is NULL'||chr(10)||
-'      then'||chr(10)||
-'         -- Must have a Test Run ID'||chr(10)||
-'         find_test_run_id;'||chr(10)||
-'      end if;'||chr(10)||
-'   end if;'||chr(10)||
-'   -- Set (or Reset) the Test Run ID dependents'||chr(10)||
-'   process_test_run_id;'||chr(10)||
-'   --'||chr(10)||
-'   if not check_testcase_name'||chr(10)||
-'   then'||chr(10)||
-'      -- Must set a Test Case'||chr(10)||
-'      find_testcase_name;'||chr(10)||
-'   end if;'||chr(10)||
-'   -- Set (or Reset) the Test Case dependents.'||chr(10)||
-'   process_testcase_name;'||chr(10)||
-'   --'||chr(10)||
-'end;';
-
-wwv_flow_api.create_page_process(
-  p_id     => 4989127437323187 + wwv_flow_api.g_id_offset,
-  p_flow_id=> wwv_flow.g_flow_id,
-  p_flow_step_id => 6,
-  p_process_sequence=> 10,
-  p_process_point=> 'BEFORE_HEADER',
-  p_process_type=> 'PLSQL',
-  p_process_name=> 'Initialize Items',
-  p_process_sql_clob => p, 
-  p_process_error_message=> '',
-  p_process_success_message=> '',
-  p_process_is_stateful_y_n=>'N',
-  p_process_comment=>'');
-end;
-null;
- 
-end;
-/
-
- 
-begin
- 
 ---------------------------------------
 -- ...updatable report columns for page 6
 --
@@ -12276,7 +11432,7 @@ wwv_flow_api.create_page (
  ,p_page_is_public_y_n => 'N'
  ,p_cache_page_yn => 'N'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180719205429'
+ ,p_last_upd_yyyymmddhh24miss => '20180828203310'
   );
 null;
  
@@ -12293,7 +11449,7 @@ wwv_flow_api.create_page_plug (
   p_id=> 4845720626414921 + wwv_flow_api.g_id_offset,
   p_flow_id=> wwv_flow.g_flow_id,
   p_page_id=> 101,
-  p_plug_name=> 'Login',
+  p_plug_name=> 'wtPLSQL - White Box Testing for Oracle''s PL/SQL',
   p_region_name=>'',
   p_plug_template=> 4839304121414912+ wwv_flow_api.g_id_offset,
   p_plug_display_sequence=> 10,
@@ -12301,10 +11457,12 @@ wwv_flow_api.create_page_plug (
   p_plug_display_point=> 'AFTER_SHOW_ITEMS',
   p_plug_source=> s,
   p_plug_source_type=> 'STATIC_TEXT',
+  p_translate_title=> 'Y',
   p_plug_query_row_template=> 1,
   p_plug_query_headings_type=> 'COLON_DELMITED_LIST',
   p_plug_query_row_count_max => 500,
   p_plug_display_condition_type => '',
+  p_plug_customized=>'0',
   p_plug_caching=> 'NOT_CACHED',
   p_plug_comment=> '');
 end;
@@ -12441,6 +11599,27 @@ end;
  
 begin
  
+wwv_flow_api.create_page_computation(
+  p_id=> 5113529438362167 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id=> 101,
+  p_computation_sequence => 30,
+  p_computation_item=> 'P0_DISPLAY',
+  p_computation_point=> 'BEFORE_HEADER',
+  p_computation_type=> 'STATIC_ASSIGNMENT',
+  p_computation_processed=> 'REPLACE_EXISTING',
+  p_computation=> 'N',
+  p_compute_when => '',
+  p_compute_when_type=>'');
+ 
+null;
+ 
+end;
+/
+
+ 
+begin
+ 
 declare
   p varchar2(32767) := null;
   l_clob clob;
@@ -12485,7 +11664,7 @@ p:=p||'wwv_flow_custom_auth_std.login('||chr(10)||
 '    P_UNAME       => :P101_USERNAME,'||chr(10)||
 '    P_PASSWORD    => :P101_PASSWORD,'||chr(10)||
 '    P_SESSION_ID  => v(''APP_SESSION''),'||chr(10)||
-'    P_FLOW_PAGE   => :APP_ID||'':3'''||chr(10)||
+'    P_FLOW_PAGE   => :APP_ID||'':1'''||chr(10)||
 '    );';
 
 wwv_flow_api.create_page_process(
@@ -12525,6 +11704,37 @@ wwv_flow_api.create_page_process(
   p_process_point=> 'AFTER_SUBMIT',
   p_process_type=> 'CLEAR_CACHE_FOR_PAGES',
   p_process_name=> 'Clear Page(s) Cache',
+  p_process_sql_clob => p, 
+  p_process_error_message=> '',
+  p_process_success_message=> '',
+  p_process_is_stateful_y_n=>'N',
+  p_process_comment=>'');
+end;
+null;
+ 
+end;
+/
+
+ 
+begin
+ 
+declare
+  p varchar2(32767) := null;
+  l_clob clob;
+  l_length number := 1;
+begin
+p:=p||'begin'||chr(10)||
+'   :P0_TEST_OWNER := :APP_USER;'||chr(10)||
+'end;';
+
+wwv_flow_api.create_page_process(
+  p_id     => 5166510581225261 + wwv_flow_api.g_id_offset,
+  p_flow_id=> wwv_flow.g_flow_id,
+  p_flow_step_id => 101,
+  p_process_sequence=> 40,
+  p_process_point=> 'AFTER_SUBMIT',
+  p_process_type=> 'PLSQL',
+  p_process_name=> 'Set Test Owner',
   p_process_sql_clob => p, 
   p_process_error_message=> '',
   p_process_success_message=> '',

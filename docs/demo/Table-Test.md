@@ -71,9 +71,19 @@ as
          against_this_in => 'TEST1');
       rollback;
    end t_happy_path_1;
+   procedure t_sad_path_1
+   is
+   begin
+      wt_assert.g_testcase := 'Sad Path 1';
+      wt_assert.raises (
+         msg_in          => 'Raise Error',
+         check_call_in   => 'insert into table_test_tab (id, name) values (1, ''Test1'')',
+         against_exc_in  => 'ORA-02290: check constraint (WTP_DEMO.TABLE_TEST_TAB_CK1) violated');
+   end t_sad_path_1;
    procedure wtplsql_run is
    begin
       t_happy_path_1;
+      t_sad_path_1;
    end wtplsql_run;
 end table_test_pkg;
 /
@@ -87,8 +97,8 @@ Run this:
 set serveroutput on size unlimited format word_wrapped
 
 begin
-   wtplsql.test_run('TRIGGER_TEST_PKG');
-   wt_text_report.dbms_out(USER,'TRIGGER_TEST_PKG',30);
+   wtplsql.test_run('TABLE_TEST_PKG');
+   wt_text_report.dbms_out(USER,'TABLE_TEST_PKG',30);
 end;
 /
 ```
@@ -96,20 +106,22 @@ end;
 And Get This:
 
 ```
-    wtPLSQL 1.1.0 - Run ID 70: 23-Jun-2018 07:30:47 PM
+    wtPLSQL 1.1.0 - Run ID 344: 01-Sep-2018 10:51:48 PM
 
   Test Results for WTP_DEMO.TABLE_TEST_PKG
-       Total Test Cases:        1       Total Assertions:        2
+       Total Test Cases:        2       Total Assertions:        3
   Minimum Interval msec:        0      Failed Assertions:        0
-  Average Interval msec:      443       Error Assertions:        0
-  Maximum Interval msec:      886             Test Yield:   100.00%
-   Total Run Time (sec):      0.9
+  Average Interval msec:        5       Error Assertions:        0
+  Maximum Interval msec:       16             Test Yield:   100.00%
+   Total Run Time (sec):      0.0
 
- - WTP_DEMO.TABLE_TEST_PKG Test Result Details (Test Run ID 70)
+ - WTP_DEMO.TABLE_TEST_PKG Test Result Details (Test Run ID 344)
 -----------------------------------------------------------
  ---- Test Case: Happy Path 1
- PASS  886ms Successful Insert. RAISES/THROWS - No exception was expected. Exception raised was "". Exception raised by: "insert into table_test_tab (id, name) values (1, 'TEST1')".
+ PASS   16ms Successful Insert. RAISES/THROWS - No exception was expected. Exception raised was "". Exception raised by: "insert into table_test_tab (id, name) values (1, 'TEST1')".
  PASS    0ms Confirm l_rec.name. EQ - Expected "TEST1" and got "TEST1"
+ ---- Test Case: Sad Path 1
+ PASS    0ms Raise Error. RAISES/THROWS - Expected exception "%ORA-02290: check constraint (WTP_DEMO.TABLE_TEST_TAB_CK1) violated%". Actual exception raised was "ORA-02290: check constraint (WTP_DEMO.TABLE_TEST_TAB_CK1) violated". Exception raised by: "insert into table_test_tab (id, name) values (1, 'Test1')".
 ```
 
 This is report level 30, the most detailed level of reporting.  Starting from the top, we find the test runner executed 1 test case and 2 assertions.  All tests passed for a 100% yield.  There is no code coverage for the constraints.

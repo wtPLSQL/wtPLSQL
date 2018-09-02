@@ -345,7 +345,6 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 procedure delete_plsql_profiler_recs
       (in_profiler_runid  in number)
 is
-   PRAGMA AUTONOMOUS_TRANSACTION;
 begin
    delete from plsql_profiler_data
     where runid = in_profiler_runid;
@@ -353,7 +352,6 @@ begin
     where runid = in_profiler_runid;
    delete from plsql_profiler_runs
     where runid = in_profiler_runid;
-   COMMIT;
 end delete_plsql_profiler_recs;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -1023,7 +1021,6 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 ------------------------------------------------------------
 procedure insert_dbout_profile
 is
-   PRAGMA AUTONOMOUS_TRANSACTION;
    prof_rec    wt_dbout_profiles%ROWTYPE;
    l_max_line  number;
    procedure l_set_status is begin
@@ -1115,11 +1112,9 @@ begin
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
    end loop;
-   COMMIT;
-   -- Delete PLSQL Profiler has it's own
-   --   PRAGMA AUTONOMOUS_TRANSACTION and COMMIT;
    g_ignr_aa.delete;
    delete_plsql_profiler_recs(g_rec.prof_runid);
+   commit;
 end insert_dbout_profile;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
