@@ -399,7 +399,8 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 ------------------------------------------------------------
 procedure find_dbout
-      (in_pkg_name  in  varchar2)
+      (in_owner     in  varchar2
+      ,in_pkg_name  in  varchar2)
 is
    --
    -- https://docs.oracle.com/cd/E11882_01/server.112/e41084/sql_elements008.htm#SQLRF51129
@@ -448,8 +449,9 @@ is
    -- This cursor is used to catch the first occurance of a DBOUT annotation
    cursor c_annotation is
       select regexp_substr(src.text, C_HEAD_RE||C_MAIN_RE||C_TAIL_RE)  TEXT
-       from  user_source  src
-       where src.name  = in_pkg_name
+       from  dba_source  src
+       where src.owner = in_owner
+        and  src.name  = in_pkg_name
         and  src.type  = 'PACKAGE BODY'
         and  regexp_like(src.text, C_HEAD_RE||C_MAIN_RE||C_TAIL_RE)
        order by src.line;
@@ -493,21 +495,21 @@ begin
    l_cln_pos := instr(l_target,':');
    begin
       with q_main as (
-      select u.username               OWNER
+      select obj.owner
             ,obj.object_name
             ,obj.object_type
-       from  user_objects  obj
-       cross join user_users  u
-       where ( -- No separators were given, assume USER is the owner.
-               -- No object type was given. This could throw TOO_MANY_ROWS.
-                  l_dot_pos       = 0
-              and l_cln_pos       = 0
-              and obj.object_name = l_target  )
-         OR  ( -- No object owner was given, assume USER is the owner.
-                  l_dot_pos       = 0
-              and l_cln_pos      != 0
-              and obj.object_name = substr(l_target, 1, l_cln_pos-1)
-              and obj.object_type = substr(l_target, l_cln_pos+1, 512) )
+       from  dba_objects  obj
+       where obj.owner = in_owner
+        and (   ( -- No separators were given, assume USER is the owner.
+                  -- No object type was given. This could throw TOO_MANY_ROWS.
+                     l_dot_pos       = 0
+                 and l_cln_pos       = 0
+                 and obj.object_name = l_target  )
+             OR ( -- No object owner was given, assume USER is the owner.
+                     l_dot_pos       = 0
+                 and l_cln_pos      != 0
+                 and obj.object_name = substr(l_target, 1, l_cln_pos-1)
+                 and obj.object_type = substr(l_target, l_cln_pos+1, 512) ) )
       UNION ALL
       select obj.owner
             ,obj.object_name
@@ -572,16 +574,18 @@ $THEN
       l_recSAVE    rec_type;
       l_recNULL    rec_type;
       l_recTEST    rec_type;
+      l_owner      varchar2(128);
       l_pname      varchar2(128) := 'WT_PROFILE_FIND_DBOUT';
       --------------------------------------  WTPLSQL Testing --
       procedure run_find_dbout is begin
          l_recSAVE := g_rec;
          g_rec := l_recNULL;
-         find_dbout(l_pname);
+         find_dbout(l_owner, l_pname);
          l_recTEST := g_rec;
          g_rec := l_recSAVE;
       end run_find_dbout;
    begin
+      select username into l_owner from user_users;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Find DBOUT Setup';
       tl_compile_db_object
@@ -1299,6 +1303,7 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 ------------------------------------------------------------
 procedure initialize
       (in_test_run_id      in  number,
+       in_runner_owner     in  varchar2,
        in_runner_name      in  varchar2,
        out_dbout_owner     out varchar2,
        out_dbout_name      out varchar2,
@@ -1331,7 +1336,8 @@ begin
    end if;
    g_rec.test_run_id := in_test_run_id;
    -- Find the Database Object Under Test
-   find_dbout(in_pkg_name => in_runner_name);
+   find_dbout(in_owner    => in_runner_owner
+             ,in_pkg_name => in_runner_name);
    out_dbout_owner    := g_rec.dbout_owner;
    out_dbout_name     := g_rec.dbout_name;
    out_dbout_type     := g_rec.dbout_type;
@@ -1376,12 +1382,14 @@ $THEN
    procedure t_initialize
    is
       c_test_run_id   constant number := -96;
+      l_owner         varchar2(128);
       l_pname         varchar2(128) := 'WT_PROFILE_INITIALIZE';
       l_recSAVE       rec_type;
       l_recTEST       rec_type;
       l_recOUT        rec_type;
       l_sqlerrm       varchar2(4000);
    begin
+      select username into l_owner from user_users;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Insert DBOUT Profile Setup';
       tl_compile_db_object
@@ -1400,6 +1408,7 @@ $THEN
       l_recSAVE := g_rec;
       initialize
          (in_test_run_id      => c_test_run_id,
+          in_runner_owner     => l_owner,
           in_runner_name      => l_pname,
           out_dbout_owner     => l_recOUT.dbout_owner,
           out_dbout_name      => l_recOUT.dbout_name,
@@ -1465,6 +1474,7 @@ $THEN
       l_recSAVE := g_rec;
       initialize
          (in_test_run_id      => c_test_run_id,
+          in_runner_owner     => l_owner,
           in_runner_name      => l_pname,
           out_dbout_owner     => l_recOUT.dbout_owner,
           out_dbout_name      => l_recOUT.dbout_name,
@@ -1530,6 +1540,7 @@ $THEN
       begin
          initialize
             (in_test_run_id      => null,
+             in_runner_owner     => l_owner,
              in_runner_name      => 'Sad Path 1',
              out_dbout_owner     => l_recOUT.dbout_owner,
              out_dbout_name      => l_recOUT.dbout_name,

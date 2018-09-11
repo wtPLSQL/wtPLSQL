@@ -59,7 +59,7 @@ WHENEVER SQLERROR exit SQL.SQLCODE
 -- Connect as SCHEMA_OWNER
 ----------------------------------------
 
-connect &schema_owner./&schema_owner.
+connect &schema_owner./&schema_owner.&connect_string.
 set serveroutput on size unlimited format truncated
 
 begin

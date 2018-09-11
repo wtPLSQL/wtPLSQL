@@ -2,7 +2,7 @@
 --
 --  Core Installation
 --
---   Run as System
+--   Run as SYS
 --
 
 -- Capture output
@@ -16,7 +16,7 @@ set serveroutput on size unlimited format truncated
 WHENEVER SQLERROR exit SQL.SQLCODE
 
 begin
-   if USER not in ('SYS','SYSTEM')
+   if USER not in ('SYS')
    then
       raise_application_error (-20000,
         'Not logged in as SYS');
@@ -33,17 +33,21 @@ create user &schema_owner. identified by &schema_owner.
    quota unlimited on users
    temporary tablespace temp;
 
-grant create session   to &schema_owner.;
-grant create type      to &schema_owner.;
-grant create sequence  to &schema_owner.;
-grant create table     to &schema_owner.;
-grant create trigger   to &schema_owner.;
-grant create view      to &schema_owner.;
-grant create procedure to &schema_owner.;
-grant select on dba_source to &schema_owner.;
+grant create session       to &schema_owner.;
+grant create type          to &schema_owner.;
+grant create sequence      to &schema_owner.;
+grant create table         to &schema_owner.;
+grant create trigger       to &schema_owner.;
+grant create view          to &schema_owner.;
+grant create procedure     to &schema_owner.;
+grant create database link to &schema_owner.;
+grant create job           to &schema_owner.;
 
 -- This MUST be run by SYS.
-grant select on dba_objects to &schema_owner.;
+grant select on dba_objects       to &schema_owner.;
+grant select on dba_source        to &schema_owner.;
+grant select on dba_procedures    to &schema_owner.;
+grant select on sys.gv_$parameter to &schema_owner.;
 
 begin
    for buff in (select p.value PLSQL_CCFLAGS
@@ -113,7 +117,7 @@ create or replace public synonym wtplsql        for &schema_owner..wtplsql;
 WHENEVER SQLERROR exit SQL.SQLCODE
 
 -- Connect as SCHEMA_OWNER
-connect &schema_owner./&schema_owner.
+connect &schema_owner./&schema_owner.&connect_string.
 set serveroutput on size unlimited format truncated
 
 begin
@@ -146,6 +150,9 @@ create index plsql_profiler_runs_idx1
 @wt_test_run_stats.tab
 @wt_testcase_stats.tab
 @wt_self_test.tab
+
+-- Install Views
+@wt_scheduler_jobs.vw
 
 -- Package Specifications
 @wtplsql.pks

@@ -13,7 +13,7 @@ prompt  APPLICATION 700 - wtPLSQL Core GUI
 -- Application Export:
 --   Application:     700
 --   Name:            wtPLSQL Core GUI
---   Date and Time:   10:47 Monday September 3, 2018
+--   Date and Time:   04:31 Tuesday September 11, 2018
 --   Exported By:     WTP
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -146,7 +146,7 @@ wwv_flow_api.create_flow(
   p_default_region_template=> 4840201642414912 + wwv_flow_api.g_id_offset,
   p_error_template=> 4837131094414910 + wwv_flow_api.g_id_offset,
   p_page_protection_enabled_y_n=> 'Y',
-  p_checksum_salt_last_reset => '20180903104721',
+  p_checksum_salt_last_reset => '20180911043155',
   p_max_session_length_sec=> 28800,
   p_home_link=> 'f?p=&APP_ID.:3:&SESSION.',
   p_flow_language=> 'en',
@@ -192,7 +192,7 @@ wwv_flow_api.create_flow(
   p_default_listr_template => 4839116402414912 + wwv_flow_api.g_id_offset,
   p_default_irr_template => 4839831975414912 + wwv_flow_api.g_id_offset,
   p_last_updated_by => 'WTP',
-  p_last_upd_yyyymmddhh24miss=> '20180903104721',
+  p_last_upd_yyyymmddhh24miss=> '20180911043155',
   p_required_roles=> wwv_flow_utilities.string_to_table2(''));
  
  
@@ -826,7 +826,7 @@ wwv_flow_api.create_page (
  ,p_protection_level => 'N'
  ,p_cache_page_yn => 'N'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180903100035'
+ ,p_last_upd_yyyymmddhh24miss => '20180911033245'
   );
 null;
  
@@ -957,12 +957,11 @@ wwv_flow_api.create_page_item(
   p_display_as=> 'NATIVE_POPUP_LOV',
   p_lov=> 'select owner         DISPLAY'||chr(10)||
 '      ,owner         RETURN'||chr(10)||
-' from  dba_arguments'||chr(10)||
-' where object_name   = ''WTPLSQL_RUN'''||chr(10)||
-'  and  argument_name is null'||chr(10)||
-'  and  position      = 1'||chr(10)||
-'  and  sequence      = 0'||chr(10)||
-' group by owner',
+' from  dba_procedures'||chr(10)||
+' where procedure_name = ''WTPLSQL_RUN'''||chr(10)||
+'  and  object_type    = ''PACKAGE'''||chr(10)||
+' group by owner'||chr(10)||
+' order by owner',
   p_lov_display_null=> 'YES',
   p_lov_translated=> 'N',
   p_lov_null_text=>'All Owners',
@@ -1009,15 +1008,14 @@ wwv_flow_api.create_page_item(
   p_prompt=>'Test Runner Name:',
   p_source_type=> 'STATIC',
   p_display_as=> 'NATIVE_POPUP_LOV',
-  p_lov=> 'select package_name   DISPLAY'||chr(10)||
-'      ,package_name   RETURN'||chr(10)||
-' from  dba_arguments'||chr(10)||
-' where owner         = :P0_TEST_OWNER'||chr(10)||
-'  and  object_name   = ''WTPLSQL_RUN'''||chr(10)||
-'  and  argument_name is null'||chr(10)||
-'  and  position      = 1'||chr(10)||
-'  and  sequence      = 0'||chr(10)||
-' order by package_name',
+  p_lov=> 'select object_name   DISPLAY'||chr(10)||
+'      ,object_name   RETURN'||chr(10)||
+' from  dba_procedures'||chr(10)||
+' where owner          = :P0_TEST_OWNER'||chr(10)||
+'  and  procedure_name = ''WTPLSQL_RUN'''||chr(10)||
+'  and  object_type    = ''PACKAGE'''||chr(10)||
+' group by object_name'||chr(10)||
+' order by object_name',
   p_lov_display_null=> 'YES',
   p_lov_translated=> 'N',
   p_lov_null_text=>'',
@@ -3710,7 +3708,7 @@ wwv_flow_api.create_page (
  ,p_help_text => 
 'No help is available for this page.'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180901224458'
+ ,p_last_upd_yyyymmddhh24miss => '20180911042355'
   );
 null;
  
@@ -4345,7 +4343,7 @@ declare
   l_clob clob;
   l_length number := 1;
 begin
-s:=s||'select arg.owner             TEST_RUNNER_OWNER'||chr(10)||
+s:=s||'select proc.owner             TEST_RUNNER_OWNER'||chr(10)||
 '      ,dbl.db_link'||chr(10)||
 '      ,dbl.username'||chr(10)||
 '      ,dbl.host'||chr(10)||
@@ -4356,30 +4354,27 @@ s:=s||'select arg.owner             TEST_RUNNER_OWNER'||chr(10)||
 '            when dbl.host is null'||chr(10)||
 '            then'||chr(10)||
 '               ''<font color=#ff0000><b>Host value missing</b></font>'''||chr(10)||
-'            when dbl.db_link != dbl';
+'            when dbl.db_link || ''.';
 
-s:=s||'.username'||chr(10)||
+s:=s||''' not like dbl.username || ''.%'''||chr(10)||
 '            then'||chr(10)||
 '               ''<font color=#ff0000><b>DB Link != Username</b></font>'''||chr(10)||
 '            else'||chr(10)||
 '               ''<font color=##00cc66>Good Link</font>'''||chr(10)||
 '            end              LINK_STATUS'||chr(10)||
-' from  dba_arguments  arg'||chr(10)||
+' from  dba_procedures  proc'||chr(10)||
 '  left join user_db_links  dbl'||chr(10)||
-'            on  dbl.db_link  = arg.owner'||chr(10)||
-'            or  dbl.username = arg.owner'||chr(10)||
-' where object_name   = ''WTPLSQL_RUN'''||chr(10)||
-'  and  argume';
+'            on  dbl.db_link  = proc.owner'||chr(10)||
+'            or  dbl.username = proc.owner'||chr(10)||
+' where procedure_name = ';
 
-s:=s||'nt_name is null'||chr(10)||
-'  and  position      = 1'||chr(10)||
-'  and  sequence      = 0'||chr(10)||
-' group by arg.owner'||chr(10)||
+s:=s||'''WTPLSQL_RUN'''||chr(10)||
+'  and  object_type    = ''PACKAGE'''||chr(10)||
+' group by proc.owner'||chr(10)||
 '      ,dbl.db_link'||chr(10)||
 '      ,dbl.username'||chr(10)||
 '      ,dbl.host'||chr(10)||
-'      ,dbl.created'||chr(10)||
-'';
+'      ,dbl.created';
 
 wwv_flow_api.create_report_region (
   p_id=> 5180621438298420 + wwv_flow_api.g_id_offset,
@@ -4851,7 +4846,7 @@ wwv_flow_api.create_page_item(
   p_use_cache_before_default=> 'YES',
   p_item_default_type=> 'STATIC_TEXT_WITH_SUBSTITUTIONS',
   p_prompt=>'New DB Link Host:',
-  p_source=>'''//localhost:1521/'' || SYS_CONTEXT(''USERENV'',''DB_NAME'')',
+  p_source=>'''//localhost:1521/'' || SYS_CONTEXT(''USERENV'',''SERVICE_NAME'')',
   p_source_type=> 'FUNCTION',
   p_display_as=> 'NATIVE_TEXT_FIELD',
   p_lov_display_null=> 'NO',
@@ -5063,7 +5058,8 @@ wwv_flow_api.create_page_computation(
   p_computation_processed=> 'REPLACE_EXISTING',
   p_computation=> 'select host'||chr(10)||
 ' from  user_db_links'||chr(10)||
-' where db_link = :P0_TEST_OWNER',
+' where db_link || ''.'' like :P0_TEST_OWNER || ''.%'''||chr(10)||
+'',
   p_compute_when => '',
   p_compute_when_type=>'');
  
@@ -5171,29 +5167,28 @@ p:=p||'DECLARE'||chr(10)||
 'BEGIN'||chr(10)||
 '   -- String all the "Test Alls" into one PL/SQL Block'||chr(10)||
 '   for buff in ('||chr(10)||
-'      select arg.owner             TEST_OWNER'||chr(10)||
-'       from  dba_arguments  arg'||chr(10)||
+'      select proc.owner             TEST_OWNER'||chr(10)||
+'       from  dba_procedures  proc'||chr(10)||
 '             join user_db_links  dbl'||chr(10)||
-'                  on  dbl.db_link  = arg.owner'||chr(10)||
-'                  and dbl.db_link  = dbl.username'||chr(10)||
+'                  on  dbl.db_link  = proc.owner'||chr(10)||
+'                  and dbl.db_link || ''.'' like dbl.username || ''.%'''||chr(10)||
 '                  and dbl.username is not null'||chr(10)||
-'                  and dbl.';
+'     ';
 
-p:=p||'host     is not null'||chr(10)||
-'       where object_name   = ''WTPLSQL_RUN'''||chr(10)||
-'        and  argument_name is null'||chr(10)||
-'        and  position      = 1'||chr(10)||
-'        and  sequence      = 0'||chr(10)||
-'       group by arg.owner )'||chr(10)||
+p:=p||'             and dbl.host     is not null'||chr(10)||
+'       where proc.procedure_name = ''WTPLSQL_RUN'''||chr(10)||
+'        and  proc.object_type    = ''PACKAGE'''||chr(10)||
+'       group by proc.owner'||chr(10)||
+'       order by proc.owner )'||chr(10)||
 '   loop'||chr(10)||
 '      run_str := run_str || ''wtplsql.test_all@'' || buff.TEST_OWNER || '';'' || CHR(10);'||chr(10)||
 '   end loop;'||chr(10)||
 '   -- Create 1 Scheduler Job'||chr(10)||
 '   DBMS_SCHEDULER.CREATE_JOB'||chr(10)||
 '      (job_name    =>  ''TEST_ALL_SEQ'''||chr(10)||
-'      ,j';
+'     ';
 
-p:=p||'ob_type    =>  ''PLSQL_BLOCK'''||chr(10)||
+p:=p||' ,job_type    =>  ''PLSQL_BLOCK'''||chr(10)||
 '      ,job_action  =>  ''begin'' || CHR(10) || run_str || ''commit;'' || CHR(10) || ''end;'''||chr(10)||
 '      ,comments    =>  ''Sequential Tests for All Owners'''||chr(10)||
 '      ,enabled     =>  TRUE);'||chr(10)||
@@ -5233,29 +5228,27 @@ p:=p||'DECLARE'||chr(10)||
 '   run_str  varchar2(32000);'||chr(10)||
 'BEGIN'||chr(10)||
 '   for buff in ('||chr(10)||
-'      select arg.owner             TEST_OWNER'||chr(10)||
-'       from  dba_arguments  arg'||chr(10)||
+'      select proc.owner             TEST_OWNER'||chr(10)||
+'       from  dba_procedures  proc'||chr(10)||
 '             join user_db_links  dbl'||chr(10)||
-'                  on  dbl.db_link  = arg.owner'||chr(10)||
-'                  and dbl.db_link  = dbl.username'||chr(10)||
+'                  on  dbl.db_link || ''.'' like proc.owner   || ''.%'''||chr(10)||
+'                  and dbl.db_link || ''.'' like dbl.username || ''.%'''||chr(10)||
 '                  and dbl.username is not null'||chr(10)||
-'                  and dbl.host     is not null'||chr(10)||
-'       where object_name   = ''WTPL';
+'                  and dbl.host     is not';
 
-p:=p||'SQL_RUN'''||chr(10)||
-'        and  argument_name is null'||chr(10)||
-'        and  position      = 1'||chr(10)||
-'        and  sequence      = 0'||chr(10)||
-'       group by arg.owner )'||chr(10)||
+p:=p||' null'||chr(10)||
+'       where proc.procedure_name = ''WTPLSQL_RUN'''||chr(10)||
+'        and  proc.object_type    = ''PACKAGE'''||chr(10)||
+'       group by proc.owner )'||chr(10)||
 '   loop'||chr(10)||
 '      -- Create a Scheduler Job for each Test Owner'||chr(10)||
 '      run_str := ''wtplsql.test_all@'' || buff.TEST_OWNER;'||chr(10)||
 '      DBMS_SCHEDULER.CREATE_JOB'||chr(10)||
 '         (job_name    =>  substr(buff.TEST_OWNER || ''$PAR$TEST$ALL'', 1, 30)'||chr(10)||
 '         ,job_type    =>  ''PLSQL_BLOCK'''||chr(10)||
-' ';
+'      ';
 
-p:=p||'        ,job_action  =>  ''begin '' || run_str || ''; commit; end;'''||chr(10)||
+p:=p||'   ,job_action  =>  ''begin '' || run_str || ''; commit; end;'''||chr(10)||
 '         ,comments    =>  buff.TEST_OWNER || '': Parallel Tests for All Owners'''||chr(10)||
 '         ,enabled     =>  TRUE);'||chr(10)||
 '   end loop;'||chr(10)||
@@ -5294,7 +5287,7 @@ begin
 p:=p||'begin'||chr(10)||
 '   --'||chr(10)||
 '   begin'||chr(10)||
-'      execute immediate ''drop database link '' || :APP_USER;'||chr(10)||
+'      execute immediate ''drop database link '' || :P0_TEST_OWNER;'||chr(10)||
 '   exception when OTHERS then'||chr(10)||
 '      if SQLERRM = ''ORA-02024: database link not found'''||chr(10)||
 '      then'||chr(10)||
@@ -5304,10 +5297,10 @@ p:=p||'begin'||chr(10)||
 '      end if;'||chr(10)||
 '   end;'||chr(10)||
 '   --'||chr(10)||
-'   execute immediate ''create database link '' || :APP_USER            ||'||chr(10)||
-'                              '' connect to '' || :APP_USER  ';
+'   execute immediate ''create database link '' || :P0_TEST_OWNER       ||'||chr(10)||
+'                              '' connect to '' || :P0_TE';
 
-p:=p||'          ||'||chr(10)||
+p:=p||'ST_OWNER       ||'||chr(10)||
 '                           '' identified by '' || :P2_PASSWORD         ||'||chr(10)||
 '                                 '' using '''''' || :P2_NEW_DB_LINK_HOST || '''''''';'||chr(10)||
 'end;';
@@ -5378,7 +5371,7 @@ wwv_flow_api.create_page (
  ,p_help_text => 
 'No help is available for this page.'
  ,p_last_updated_by => 'WTP'
- ,p_last_upd_yyyymmddhh24miss => '20180901163029'
+ ,p_last_upd_yyyymmddhh24miss => '20180911035321'
   );
 null;
  
@@ -8015,7 +8008,8 @@ wwv_flow_api.create_page_button(
   p_button_execute_validations=>'Y',
   p_button_condition=> 'select host'||chr(10)||
 ' from  user_db_links'||chr(10)||
-' where :P0_TEST_OWNER  = db_link'||chr(10)||
+' where :P0_TEST_OWNER = :APP_USER'||chr(10)||
+'  and  db_link || ''.'' like :P0_TEST_OWNER || ''.%'''||chr(10)||
 '  and  :P0_TEST_RUNNER is not null',
   p_button_condition_type=> 'EXISTS',
   p_button_comment=>'Warning: The web page will not return until the test runner has completed.',

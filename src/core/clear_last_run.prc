@@ -6,9 +6,9 @@ create or replace procedure clear_last_run
 as
    -- This procedure is required to prevent granting UPDATE on
    --   WT_TEST_RUNS to PUBLIC.  The WTPLSQL package must run
-   --   with calling user permissions.  If this procedure is
-   --   run by mistake, it is a simple matter to correct the
-   --   IS_LAST_RUN flag.
+   --   with calling user permissions.  Use the SET_LAST_RUN
+   --   procedure to set the IS_LAST_RUN flag after running
+   --   this procedure.
 begin
    update wt_test_runs
      set  is_last_run = NULL

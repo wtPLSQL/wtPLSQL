@@ -3,6 +3,7 @@ as
 
    procedure initialize
       (in_test_run_id      in  number,
+       in_runner_owner     in  varchar2,
        in_runner_name      in  varchar2,
        out_dbout_owner     out varchar2,
        out_dbout_name      out varchar2,

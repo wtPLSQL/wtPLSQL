@@ -21,5 +21,3 @@ select log_id
       ,error#             ERROR_NUM
       ,additional_info
  from  user_scheduler_job_run_details;
-
-select owner from apex_applications where application_id = 700;

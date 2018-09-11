@@ -469,7 +469,7 @@ procedure this (
 is
 begin
    g_rec.last_assert  := 'THIS';
-   g_rec.last_msg     := msg_in;
+   g_rec.last_msg     := substr(msg_in,1,200);
    g_rec.last_pass    := nvl(check_this_in, FALSE);
    g_rec.last_details := 'Expected "TRUE" and got "' ||
                           boolean_to_status(check_this_in) || '"';

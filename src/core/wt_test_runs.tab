@@ -12,7 +12,7 @@ create table wt_test_runs
    (id             number(38)     constraint wt_test_runs_nn1 not null
    ,start_dtm      timestamp      constraint wt_test_runs_nn2 not null
    ,runner_owner   varchar2(128)  constraint wt_test_runs_nn3 not null
-   ,runner_name    varchar2(128)  constraint wt_test_runs_nn3 not null
+   ,runner_name    varchar2(128)  constraint wt_test_runs_nn4 not null
    ,is_last_run    varchar2(1)
    ,dbout_owner    varchar2(128)
    ,dbout_name     varchar2(128)

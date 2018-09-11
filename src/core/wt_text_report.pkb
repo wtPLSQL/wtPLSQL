@@ -302,6 +302,7 @@ is
 begin
 
    for buff in (
+      -- MAX(t2.start_dtm) is a fail-safe if IS_LAST_RUN is not set.
       select * from wt_test_runs
        where (          runner_name,        start_dtm) in
              (select t2.runner_name, max(t2.start_dtm)

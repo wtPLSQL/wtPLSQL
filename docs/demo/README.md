@@ -93,5 +93,31 @@ wtPLSQL was built with the utPLSQL "ut_assert" API.  These examples were created
 * [ut_truncit](ut_truncit.md) - Test a Table Modification Procedure
 * [ut_str](ut_str.md) - Test a Simple Function
 
+## Demo Installer
+To save some typing, there is an installer for the demonstrations and examples.  This installer will:
+* Prompt for a schema name (WT_DEMO is the default).
+* Confirm the database user is SYS or SYSTEM.
+* Create the schema.
+* Load database objects in the schema.
+
+To run this installer:
+1. cd to "src/demo"
+1. login as SYS or SYSTEM using SQL*Plus
+1. Run the "install.sql" script
+
+To confirm a successful installation, review the newly created "install.LST" log file against the "installO.LST" example log file.
+
+## Demo Un-Install
+
+The "uninstall.sql" script provided in the "src/demo" directory drops the demo schema from the database, with cascade.
+
+To un-install:
+1. cd to "src/demo"
+1. login as SYS or SYSTEM using SQL*Plus
+1. Run the "uninstall.sql" script
+
+
+To confirm a successful un-install, review the "uninstall.LST" log file against the "uninstallO.LST" example log file.
+
 ---
 [Website Home Page](../README.md)

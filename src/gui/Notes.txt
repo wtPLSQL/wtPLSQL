@@ -1,9 +1,9 @@
 
 Gui Demo
 
- 1) GUI Installation
- 2) Demo Installation
- 3) Demo Review
+ 1) Demo Installation
+ 2) Demo Review ???
+ 3) GUI Installation
  4) Setup DB Link and Job Queue Process Parameter
  5) Run Demo Test (w/ Test Case, No DBOUT)
  6) Review Test Run
@@ -13,3 +13,6 @@ Gui Demo
 10) Search DBOUT
 11) Run Test All
 10) Dashboard
+
+A Relational Alternative to JUnit Testing
+White Box Testing for PLSQL

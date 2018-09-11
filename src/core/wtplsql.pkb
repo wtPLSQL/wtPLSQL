@@ -32,19 +32,18 @@ begin
    end if;
    --  Check for Valid Runner Name
    select count(*) into l_package_check
-    from  user_arguments
-    where object_name   = 'WTPLSQL_RUN'
-     and  package_name  = g_test_runs_rec.runner_name
-     and  argument_name is null
-     and  position      = 1
-     and  sequence      = 0;
+    from  user_procedures
+    where procedure_name = 'WTPLSQL_RUN'
+     and  object_name    = g_test_runs_rec.runner_name
+     and  object_type    = 'PACKAGE';
    if l_package_check != 1
    then
-      raise_application_error (-20002, 'RUNNER_NAME "' ||
+      raise_application_error (-20002, 'RUNNER_NAME Procedure "' ||
                            g_test_runs_rec.runner_name ||
                            '.WTPLSQL_RUN" is not valid');
    end if;
 end check_runner;
+
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
@@ -268,6 +267,7 @@ begin
    wt_test_run_stat.initialize;
    wt_result.initialize(g_test_runs_rec.id);
    wt_profiler.initialize(in_test_run_id      => g_test_runs_rec.id,
+                          in_runner_owner     => g_test_runs_rec.runner_owner,
                           in_runner_name      => g_test_runs_rec.runner_name,
                           out_dbout_owner     => g_test_runs_rec.dbout_owner,
                           out_dbout_name      => g_test_runs_rec.dbout_name,
@@ -330,21 +330,13 @@ is
    TYPE runners_nt_type is table of varchar2(128);
    l_runners_nt      runners_nt_type;
 begin
-   select package_name
+   select object_name
      bulk collect into l_runners_nt
-    from  user_arguments  t1
-    where object_name = 'WTPLSQL_RUN'
-     and  position    = 1
-     and  sequence    = 0
-     and  data_type   is null
-     and  not exists (
-          select 'x' from user_arguments  t2
-           where t2.object_name = t1.object_name
-            and  t2.position    > t1.position
-            and  t2.sequence    > t1.sequence
-            and  (   t2.overload is null
-                  OR t2.overload = t1.overload)
-          );
+    from  user_procedures  t1
+    where procedure_name = 'WTPLSQL_RUN'
+     and  object_type    = 'PACKAGE'
+    group by object_name
+    order by object_name;
    for i in 1 .. l_runners_nt.COUNT
    loop
       test_run(l_runners_nt(i));
@@ -392,16 +384,9 @@ begin
       delete from wt_test_runs
        where id = in_test_run_id;
       --
-      update wt_test_runs
-        set  is_last_run = IS_LAST_RUN_FLAG
-       where runner_owner = r_owner
-        and  runner_name  = r_name
-        and  start_dtm = (
-             select max(trn.start_dtm)
-              from  wt_test_runs  trn
-              where trn.runner_owner = r_owner
-               and  trn.runner_name  = r_name  )
-        and  is_last_run != IS_LAST_RUN_FLAG;
+      set_last_run(in_runner_owner  => r_owner
+                  ,in_runner_name   => r_name
+                  ,in_last_run_flag => IS_LAST_RUN_FLAG);
       --
    exception when NO_DATA_FOUND
    then
