@@ -119,6 +119,9 @@ declare
             add_teardown := TRUE;
          else
             ret_str := ret_str ||
+                         '   ' || 'wt_assert.g_testcase := ' ||
+                           substr(proc_buff.procedure_name,1,50) ||
+                           ';' || CHR(10) ||
                          '   ' || proc_buff.procedure_name ||
                            ';' || CHR(10);
          end case;
