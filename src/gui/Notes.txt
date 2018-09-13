@@ -1,4 +1,16 @@
 
+P2_NEW_DB_LINK_HOST:
+select '//localhost:1521/' || global_name from global_name;
+
+Page 2, p_process_name=> 'TEST_ALL_SEQ':
+on  dbl.db_link || ''.'' like proc.owner   || ''.%'''||
+and dbl.db_link || ''.'' like dbl.username || ''.%'''||
+
+Page 2, p_process_name=> 'TEST_ALL_PAR':
+group by proc.owner'||
+order by proc.owner )'||
+
+
 Gui Demo
 
  1) Demo Installation
