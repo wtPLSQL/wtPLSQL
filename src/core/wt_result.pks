@@ -1,6 +1,10 @@
 create or replace package wt_result authid definer
 as
 
+   TYPE results_nt_type is table of wt_results%ROWTYPE;
+   g_results_nt      results_nt_type;
+   g_results_rec     wt_results%ROWTYPE;
+
    procedure initialize
       (in_test_run_id   in wt_test_runs.id%TYPE);
 

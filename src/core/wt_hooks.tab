@@ -1,0 +1,30 @@
+
+--
+--  wtPLSQL Hooks Table Installation
+--
+
+create table wt_hooks
+   (hook_name   varchar2(20)     constraint wt_hooks_nn1 not null
+   ,seq         number(2)        constraint wt_hooks_nn2 not null
+   ,run_string  varchar2(4000)   constraint wt_hooks_nn3 not null
+   ,description varchar2(1000)
+   ,constraint wt_hooks_pk primary key (hook_name, seq)
+   ,constraint wt_hooks_ck1 check (hook_name in ('before_test_all'
+                                                ,'before_run_init'
+                                                ,'after_run_init'
+                                                ,'after_assertion'
+                                                ,'before_run_final'
+                                                ,'after_run_final'
+                                                ,'after_test_all'
+                                                ,'before_delete_runs'
+                                                ,'after_delete_runs'))
+   ,constraint wt_hooks_ck2 check (seq > 0)
+   );
+
+comment on table wt_hooks is 'wtPLSQL Hooks.';
+comment on column wt_hooks.hook_name is 'Primary Key for each Hook Name';
+comment on column wt_hooks.seq is 'Primary Key for the sequence of the Hook';
+comment on column wt_hooks.run_string is 'Procedure Name or Un-named PL/SQL Block for EXECUTE IMMEDIATE';
+comment on column wt_hooks.description is 'Description of this Hook.';
+
+grant select on wt_hooks to public;

@@ -145,7 +145,7 @@ begin
                           where src.owner          = obj.owner
                            and  src.name           = obj.object_name
                            and  src.type           = obj.object_type
-                           and  regexp_like(src.text, 'wtplsql_run', 'i') )
+                           and  regexp_like(src.text, wtplsql.C_RUNNER_ENTRY_POINT, 'i') )
        order by object_type desc, owner, object_name )
        -- Package Bodies before Package Specifications
    loop
@@ -163,15 +163,16 @@ begin
       when 'PACKAGE'
       then
          src_clob := substr(tmp_clob, 1, end_ptr-1) || CHR(10) ||
-                     '   procedure wtplsql_run;'    || CHR(10) || CHR(10) ||
-                     end_str;
+               '   procedure ' || wtplsql.C_RUNNER_ENTRY_POINT || ';' || 
+                                            CHR(10) || CHR(10) || end_str;
       when 'PACKAGE BODY'
       then
          src_clob := substr(tmp_clob, 1, end_ptr-1)   || CHR(10) ||
-                     'procedure wtplsql_run is begin' || CHR(10) ||
-                     get_procedures(obj_rec.owner, obj_rec.object_name)     ||
-                     'end wtplsql_run;'               || CHR(10) || CHR(10) ||
-                     end_str;
+                    'procedure ' || wtplsql.C_RUNNER_ENTRY_POINT ||
+                                          ' is begin' || CHR(10) ||
+              get_procedures(obj_rec.owner, obj_rec.object_name) ||
+                          'end ' || wtplsql.C_RUNNER_ENTRY_POINT || ';'
+                                           || CHR(10) || CHR(10) || end_str;
       else
          raise_application_error(-20000, 'Unknown Object Type: ' || obj_rec.object_type);
       end case;

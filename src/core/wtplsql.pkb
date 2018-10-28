@@ -1,10 +1,6 @@
 create or replace package body wtplsql
 as
 
-   C_KEEP_NUM_RECS  number := 20;
-
-   g_test_runs_rec   wt_test_runs%ROWTYPE;
-
    $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
    $THEN
       TYPE test_all_aa_type is table of varchar2(400) index by varchar2(400);
@@ -33,14 +29,15 @@ begin
    --  Check for Valid Runner Name
    select count(*) into l_package_check
     from  user_procedures
-    where procedure_name = 'WTPLSQL_RUN'
+    where procedure_name = C_RUNNER_ENTRY_POINT
      and  object_name    = g_test_runs_rec.runner_name
      and  object_type    = 'PACKAGE';
    if l_package_check != 1
    then
       raise_application_error (-20002, 'RUNNER_NAME Procedure "' ||
-                           g_test_runs_rec.runner_name ||
-                           '.WTPLSQL_RUN" is not valid');
+                                     g_test_runs_rec.runner_name ||
+                                     '.' || C_RUNNER_ENTRY_POINT ||
+                                                '" is not valid' );
    end if;
 end check_runner;
 
@@ -80,7 +77,8 @@ $THEN
       begin
          g_test_runs_rec.runner_name := 'BOGUS';
          l_msg_in := 'Invalid RUNNER_NAME';
-         l_err_in := 'ORA-20002: RUNNER_NAME "BOGUS.WTPLSQL_RUN" is not valid';
+         l_err_in := 'ORA-20002: RUNNER_NAME "BOGUS.' ||
+                     C_RUNNER_ENTRY_POINT || '" is not valid';
          check_runner;
          l_test_sqlerrm;
       exception when others then
@@ -174,6 +172,14 @@ begin
 end get_last_run_flag;
 
 ------------------------------------------------------------
+function get_runner_entry_point
+   return varchar2
+is
+begin
+   return C_RUNNER_ENTRY_POINT;
+end get_runner_entry_point;
+
+------------------------------------------------------------
 function show_version
    return varchar2
 is
@@ -263,6 +269,7 @@ begin
    delete_runs(in_runner_owner => g_test_runs_rec.runner_owner
               ,in_runner_name  => g_test_runs_rec.runner_name);
    COMMIT;   -- Start a new Transaction
+   wt_hook.before_run_init;
    wt_assert.reset_globals;
    wt_test_run_stat.initialize;
    wt_result.initialize(g_test_runs_rec.id);
@@ -276,9 +283,11 @@ begin
                           out_profiler_runid  => g_test_runs_rec.profiler_runid,
                           out_error_message   => l_error_stack);
    concat_err_message(l_error_stack);
+   wt_hook.after_run_init
    -- Call the Test Runner
    begin
-      execute immediate 'BEGIN ' || in_package_name || '.WTPLSQL_RUN; END;';
+      execute immediate 'BEGIN ' || in_package_name || '.' ||
+                      C_RUNNER_ENTRY_POINT || '; END;';
    exception
       when OTHERS
       then
@@ -289,9 +298,11 @@ begin
 
    -- Finalize
    insert_test_run;
+   wt_hook.before_run_final;
    wt_profiler.finalize;
    wt_result.finalize;
    wt_test_run_stat.finalize;
+   wt_hook.after_run_final;
    commit;  -- Required if called as Remote Procedure Call (RPC)
 
 exception
@@ -330,10 +341,11 @@ is
    TYPE runners_nt_type is table of varchar2(128);
    l_runners_nt      runners_nt_type;
 begin
+   wt_hook.before_test_all;
    select object_name
      bulk collect into l_runners_nt
     from  user_procedures  t1
-    where procedure_name = 'WTPLSQL_RUN'
+    where procedure_name = C_RUNNER_ENTRY_POINT
      and  object_type    = 'PACKAGE'
     group by object_name
     order by object_name;
@@ -341,6 +353,7 @@ begin
    loop
       test_run(l_runners_nt(i));
    end loop;
+   wt_hook.after_test_all;
 end test_all;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -371,6 +384,7 @@ is
    r_owner   varchar2(200);
    r_name    varchar2(200);
 begin
+   wt_hook.before_delete_runs;
    wt_test_run_stat.delete_records(in_test_run_id);
    wt_profiler.delete_records(in_test_run_id);
    wt_result.delete_records(in_test_run_id);
@@ -392,6 +406,7 @@ begin
    then
       null;  -- Ignore Error
    end;
+   wt_hook.after_delete_runs;
 end delete_runs;
 
 procedure delete_runs
@@ -407,7 +422,7 @@ begin
                  order by start_dtm desc, id desc)
    loop
       -- Keep the last 20 rest runs for this USER
-      if num_recs > C_KEEP_NUM_RECS
+      if num_recs > g_keep_num_recs
       then
        -- Autonomous Transaction COMMIT
        delete_runs(buf2.id);
@@ -427,7 +442,7 @@ $THEN
       --  DELETE_RECORDS has already run when we arrive here.
       -- Cleanup from previous test
       delete from wt_test_runs
-        where id between 0-C_KEEP_NUM_RECS and 0-1;
+        where id between 0-g_keep_num_recs and 0-1;
       commit;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'DELETE_RUNS Happy Path 1';
@@ -441,8 +456,8 @@ $THEN
          msg_in        => 'Number of Records Before Insert',
          check_this_in => l_num_recs);
       wt_assert.this (
-         msg_in        => 'Number of Records Before Insert <= ' || C_KEEP_NUM_RECS,
-         check_this_in => l_num_recs <= C_KEEP_NUM_RECS);
+         msg_in        => 'Number of Records Before Insert <= ' || g_keep_num_recs,
+         check_this_in => l_num_recs <= g_keep_num_recs);
       --------------------------------------  WTPLSQL Testing --
       insert into wt_test_runs values g_test_runs_rec;
       COMMIT;
@@ -468,7 +483,7 @@ $THEN
                            '''',
          against_value_in => l_num_recs);
       --------------------------------------  WTPLSQL Testing --
-      for i in 1 .. C_KEEP_NUM_RECS
+      for i in 1 .. g_keep_num_recs
       loop
          insert into wt_test_runs
                (id, start_dtm, runner_owner, runner_name)
@@ -478,12 +493,12 @@ $THEN
       commit;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (
-         msg_in           => 'Check Added ' || C_KEEP_NUM_RECS || ' records',
+         msg_in           => 'Check Added ' || g_keep_num_recs || ' records',
          check_query_in   => 'select count(*) from wt_test_runs' ||
                              ' where runner_owner = ''' || g_test_runs_rec.runner_owner ||
                            ''' and runner_name = ''' || g_test_runs_rec.runner_name ||
                            '''',
-         against_value_in => l_num_recs + C_KEEP_NUM_RECS);
+         against_value_in => l_num_recs + g_keep_num_recs);
       delete_runs(g_test_runs_rec.runner_owner, g_test_runs_rec.runner_name);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (
@@ -492,9 +507,9 @@ $THEN
                              ' where runner_owner = ''' || g_test_runs_rec.runner_owner ||
                            ''' and runner_name = ''' || g_test_runs_rec.runner_name ||
                            '''',
-         against_value_in => C_KEEP_NUM_RECS);
+         against_value_in => g_keep_num_recs);
       delete from wt_test_runs
-        where id between 0-C_KEEP_NUM_RECS and 0-1;
+        where id between 0-g_keep_num_recs and 0-1;
       commit;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (

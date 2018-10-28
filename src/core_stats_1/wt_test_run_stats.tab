@@ -1,0 +1,41 @@
+
+--
+--  Test Runs Statistics Table Installation
+--
+
+create table wt_test_run_stats
+   (test_run_id         number(38)   constraint wt_test_run_stats_nn1 not null
+   ,yield_pct           number(3)    constraint wt_test_run_stats_nn2 not null
+   ,testcases           number(7)    constraint wt_test_run_stats_nn3 not null
+   ,passes              number(7)    constraint wt_test_run_stats_nn4 not null
+   ,failures            number(7)    constraint wt_test_run_stats_nn5 not null
+   ,min_interval_msecs  number(10)   constraint wt_test_run_stats_nn6 not null
+   ,avg_interval_msecs  number(10)   constraint wt_test_run_stats_nn7 not null
+   ,max_interval_msecs  number(10)   constraint wt_test_run_stats_nn10 not null
+   ,tot_interval_msecs  number(10)   constraint wt_test_run_stats_nn11 not null
+   ,constraint wt_test_run_stats_pk primary key (test_run_id)
+   ,constraint wt_test_run_stats_fk1 foreign key (test_run_id)
+       references wt_test_runs (id)
+   ,constraint wt_test_run_stats_ck1 check (yield_pct = trunc(100*passes/testcases))
+   ,constraint wt_test_run_stats_ck2 check (testcases = passes + failures)
+   ,constraint wt_test_run_stats_ck3 check (passes   >= 0)
+   ,constraint wt_test_run_stats_ck4 check (failures >= 0)
+   ,constraint wt_test_run_stats_ck5 check (min_interval_msecs >= 0)
+   ,constraint wt_test_run_stats_ck6 check (avg_interval_msecs >= min_interval_msecs)
+   ,constraint wt_test_run_stats_ck7 check (max_interval_msecs >= avg_interval_msecs)
+   ,constraint wt_test_run_stats_ck8 check (tot_interval_msecs >= max_interval_msecs)
+   ) pctfree 0;
+
+comment on table wt_test_run_stats is 'Test Run data statistics for each execution of a Test Runner.';
+comment on column wt_test_run_stats.test_run_id is 'Primary Key for each Test Run. Also the Test Runs foreign key.';
+comment on column wt_test_run_stats.yield_pct is 'Percentage of successful test cases to total Test Cases.';
+comment on column wt_test_run_stats.testcases is 'Total number of Test Cases.';
+comment on column wt_test_run_stats.passes is 'Number of passed Test Cases.';
+comment on column wt_test_run_stats.failures is 'Number of failed Test Cases.';
+comment on column wt_test_run_stats.min_interval_msecs is 'Minimum tot_interval_msecs between assertions across all Test Cases';
+comment on column wt_test_run_stats.avg_interval_msecs is 'Average tot_interval_msecs between assertions across all Test Cases';
+comment on column wt_test_run_stats.max_interval_msecs is 'Maximum tot_interval_msecs between assertions across all Test Cases';
+comment on column wt_test_run_stats.tot_interval_msecs is 'Total (sum) of tot_interval_msecs between assertions across all Test Cases';
+
+grant select on wt_test_run_stats to public;
+grant delete on wt_test_run_stats to public;

@@ -9,6 +9,13 @@ is
    C_FAIL  CONSTANT varchar2(10) := 'FAIL';
 
    -- See RESET_GLOBALS procedure for default global values
+   TYPE g_rec_type is record
+      (last_pass        boolean
+      ,raise_exception  boolean
+      ,last_assert      wt_results.assertion%TYPE
+      ,last_msg         wt_results.message%TYPE
+      ,last_details     wt_results.details%TYPE);
+   g_rec  g_rec_type;
 
    -- Testcase name for a series of assertions.
    --   Modify as required

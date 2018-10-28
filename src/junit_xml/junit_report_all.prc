@@ -22,10 +22,8 @@ begin
                   then 'TEST_RUNNER'
                   else tr.dbout_name || ':' || tr.dbout_type
              end                             CLASS_NAME
-            ,asserts
-            ,failures
-            ,ts.errors + case when tr.error_message is null
-                         then 0 else 1 end   ERRORS
+            ,ts.testcases
+            ,ts.failures
             ,extract(day from (tr.end_dtm -
                                tr.start_dtm) * 86400000)
                                              TOT_INTERVAL_MSECS
@@ -33,12 +31,12 @@ begin
        from  wt_test_runs  tr
         left join wt_test_run_stats  ts
                   on  ts.test_run_id = tr.id
-       where is_last_run = wtplsql.get_last_run_flag
-       order by start_dtm, id )
+       where tr.is_last_run = wtplsql.get_last_run_flag
+       order by tr.start_dtm, tr.id )
    loop
       p('  <testsuite name="' || suites.suite_name ||
-                  '" tests="' || suites.asserts ||
-               '" failures="' || (suites.failures + suites.errors) ||
+                  '" tests="' || suites.testcases ||
+               '" failures="' || suites.failures ||
                    '" time="' || suites.tot_interval_msecs ||
               '" timestamp="' || to_char(suites.start_dtm,'YYYY-MM-DD"T"HH24:MI:SS.FF3') ||
                                  to_char(systimestamp,'TZH:TZM') ||
@@ -46,35 +44,28 @@ begin
       for cases in (
          select tr.id 
                ,tc.testcase
-               ,nvl(tc.asserts,  ts.asserts)   ASSERTS
-               ,nvl(tc.failures, ts.failures)  FAILURES
-               ,nvl(tc.errors,   ts.errors) +
-                case when tr.error_message is null
-                     then 0 else 1 end         ERRORS
+               ,tc.asserts
+               ,tc.failures
                ,nvl(tc.tot_interval_msecs
                    ,suites.tot_interval_msecs) TOT_INTERVAL_MSECS
           from  wt_test_runs  tr
-           left join wt_test_run_stats  ts
-                     on  ts.test_run_id = tr.id
            left join wt_testcase_stats  tc
                      on  tc.test_run_id = tr.id
           where tr.id = suites.id
           order by testcase )
       loop
-         if nvl(cases.failures,1) + nvl(cases.errors,1) = 0
+         if     nvl(cases.failures,1) = 0
+            and suites.error_message is null
          then
-            p('    <testcase name="' || nvl(cases.testcase,'DEFAULT') ||
+            p('    <testcase name="' || nvl(cases.testcase,'NULL') ||
                       '" classname="' || suites.suite_name ||
                       '" time="' || cases.tot_interval_msecs || '"/>');
          else
-            p('    <testcase name="' || nvl(cases.testcase,'DEFAULT') ||
+            p('    <testcase name="' || nvl(cases.testcase,'NULL') ||
                       '" classname="' || suites.package_name || '.' || suites.class_name ||
                            '" time="' || cases.tot_interval_msecs || '">');
-            p('      <error message="' || cases.asserts        || ' ASSERTIONS, ' ||
-                                          cases.failures       || ' FAILURES, '   ||
-                                          cases.errors         || ' ERRORS">'    );
-            -- Put the big error on top
-            p(suites.error_message);
+            p('      <error message="' || nvl(cases.failures,'No') || ' assertion failures. ' ||
+                                          suites.error_message || '">');
             -- Print each of the non-passing results
             for asrts in (
                select result_seq

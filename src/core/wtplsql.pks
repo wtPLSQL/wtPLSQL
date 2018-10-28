@@ -5,10 +5,19 @@ as
    IS_LAST_RUN_FLAG  constant varchar2(1) := 'Y';
 
    function get_last_run_flag
-      return varchar2;
+      return varchar2 deterministic;
+
+   C_RUNNER_ENTRY_POINT constant varchar2(30) := 'WTPLSQL_RUN';
+
+   function get_runner_entry_point
+      return varchar2 deterministic;
 
    function show_version
       return varchar2;
+
+   g_keep_num_recs  number := 20;
+
+   g_test_runs_rec   wt_test_runs%ROWTYPE;
 
    procedure test_run
       (in_package_name  in  varchar2);

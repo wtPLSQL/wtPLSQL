@@ -1,0 +1,50 @@
+
+--
+--  DBOUT Profiler Statistics Table Installation
+--
+
+create table wt_profiler_stats
+   (test_run_id         number(38)  constraint wt_profiler_stats_nn1 not null
+   ,coverage_pct        number(3)   constraint wt_profiler_stats_nn2 not null
+   ,profiled_lines      number(6)   constraint wt_profiler_stats_nn3 not null
+   ,executed_lines      number(6)   constraint wt_profiler_stats_nn4 not null
+   ,ignored_lines       number(6)   constraint wt_profiler_stats_nn5 not null
+   ,excluded_lines      number(6)   constraint wt_profiler_stats_nn6 not null
+   ,notexec_lines       number(6)   constraint wt_profiler_stats_nn7 not null
+   ,unknown_lines       number(6)   constraint wt_profiler_stats_nn8 not null
+   ,min_executed_usecs  number(11)  constraint wt_profiler_stats_nn9 not null
+   ,avg_executed_usecs  number(11)  constraint wt_profiler_stats_nn10 not null
+   ,max_executed_usecs  number(11)  constraint wt_profiler_stats_nn11 not null
+   ,tot_executed_usecs  number(11)  constraint wt_profiler_stats_nn12 not null
+   ,constraint wt_profiler_stats_pk primary key (test_run_id)
+   ,constraint wt_profiler_stats_fk1 foreign key (test_run_id)
+       references wt_test_runs (id)
+   ,constraint wt_profiler_stats_ck1 check (coverage_pct between 0 and 100)
+   ,constraint wt_profiler_stats_ck2 check (profiled_lines >= 0)
+   ,constraint wt_profiler_stats_ck3 check (executed_lines >= 0)
+   ,constraint wt_profiler_stats_ck4 check (ignored_lines  >= 0)
+   ,constraint wt_profiler_stats_ck5 check (excluded_lines >= 0)
+   ,constraint wt_profiler_stats_ck6 check (notexec_lines  >= 0)
+   ,constraint wt_profiler_stats_ck7 check (unknown_lines  >= 0)
+   ,constraint wt_profiler_stats_ck8  check (min_executed_usecs >= 0)
+   ,constraint wt_profiler_stats_ck9  check (avg_executed_usecs >= min_executed_usecs)
+   ,constraint wt_profiler_stats_ck10 check (max_executed_usecs >= avg_executed_usecs)
+   ,constraint wt_profiler_stats_ck11 check (tot_executed_usecs >= max_executed_usecs)
+   ) pctfree 0;
+
+comment on table wt_profiler_stats is 'Test Run profile statistics for each execution of a Test Runner.';
+comment on column wt_profiler_stats.test_run_id is 'Primary (Surrogate) Key for each Test Run. Also the Test Runs foreign key.';
+comment on column wt_profiler_stats.coverage_pct is 'Percentage of executed source lines to valid executable source lines.';
+comment on column wt_profiler_stats.profiled_lines is 'Total number of source lines as counted by DBMS_PROFILER';
+comment on column wt_profiler_stats.executed_lines is 'Number of source lines executed';
+comment on column wt_profiler_stats.ignored_lines is 'Number of source lines ignored as uncountable';
+comment on column wt_profiler_stats.excluded_lines is 'Number of source lines excluded due to unexplained DBMS_PROFILER metrics';
+comment on column wt_profiler_stats.notexec_lines is 'Number of source lines not executed';
+comment on column wt_profiler_stats.unknown_lines is 'Number of source lines that have unexplained DBMS_PROFILER metrics';
+comment on column wt_profiler_stats.min_executed_usecs is 'Minumum execution time for a line of source in microseconds';
+comment on column wt_profiler_stats.avg_executed_usecs is 'Average execution time for a line of source in microseconds';
+comment on column wt_profiler_stats.max_executed_usecs is 'Maximum execution time for a line of source in microseconds';
+comment on column wt_profiler_stats.tot_executed_usecs is 'Total (Sum) of execution times for a line of source in microseconds';
+
+grant select on wt_profiler_stats to public;
+grant delete on wt_profiler_stats to public;

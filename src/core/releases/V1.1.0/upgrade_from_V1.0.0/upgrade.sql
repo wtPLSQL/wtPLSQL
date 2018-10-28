@@ -11,7 +11,7 @@ set serveroutput on size unlimited format truncated
 set showmode off
 
 -- Shared Setup Script
-@../../common_setup.sql
+@../../../common_setup.sql
 
 WHENEVER SQLERROR exit SQL.SQLCODE
 

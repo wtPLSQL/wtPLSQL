@@ -1,14 +1,5 @@
 create or replace package body wt_assert is
 
-   -- See (public) RESET_GLOBALS procedure for default global values
-   TYPE g_rec_type is record
-      (last_pass        boolean
-      ,raise_exception  boolean
-      ,last_assert      wt_results.assertion%TYPE
-      ,last_msg         wt_results.message%TYPE
-      ,last_details     wt_results.details%TYPE);
-   g_rec  g_rec_type;
-
    $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
       temp_rowid1 CONSTANT rowid          := chartorowid('AAAFd1AAFAAAABSAA/');
       temp_rowid2 CONSTANT rowid          := chartorowid('AAAFd1AAFAAAABSAB/');
@@ -110,6 +101,8 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 $IF $$WTPLSQL_SELFTEST $THEN   ------%WTPLSQL_begin_ignore_lines%------
    end if;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+   wt_hook.after_assertion;
 
    if g_rec.raise_exception and not g_rec.last_pass
    then
