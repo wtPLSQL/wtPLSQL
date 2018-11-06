@@ -1,0 +1,72 @@
+
+create or replace view wt_test_runners as
+select owner, object_name PACKAGE_NAME
+ from  dba_procedures
+ where procedure_name = wtplsql.get_runner_entry_point
+  and  object_type    = 'PACKAGE';
+
+-- Page 0: P0_TEST_OWNER LOV
+select owner DISPLAY
+      ,owner RETURN
+ from  wt_test_runners
+ group by owner
+ order by owner;
+
+-- Page 0: P0_TEST_RUNNER LOV
+select package_name DISPLAY
+      ,package_name RETURN
+ from  wt_test_runners
+ where owner = 'WTP'
+ order by package_name;
+
+-- Page 2: All Test Runner Owners
+select proc.owner             TEST_RUNNER_OWNER
+      ,dbl.db_link
+      ,dbl.username
+      ,dbl.host
+      ,dbl.created
+      ,case when dbl.username is null
+            then
+               '<font color=#ff0000><b>Username missing</b></font>'
+            when dbl.host is null
+            then
+               '<font color=#ff0000><b>Host value missing</b></font>'
+            when dbl.db_link || '.' not like dbl.username || '.%'
+            then
+               '<font color=#ff0000><b>DB Link != Username</b></font>'
+            else
+               '<font color=##00cc66>Good Link</font>'
+            end              LINK_STATUS
+ from  wt_test_runners  proc
+  left join user_db_links  dbl
+            on  dbl.db_link  = proc.owner
+            or  dbl.username = proc.owner
+ group by proc.owner
+      ,dbl.db_link
+      ,dbl.username
+      ,dbl.host
+      ,dbl.created;
+
+-- Page2: TEST_ALL_SEQ
+      select proc.owner             TEST_OWNER
+       from  wt_test_runners  proc
+             join user_db_links  dbl
+                  on  dbl.db_link  = proc.owner
+                  and dbl.db_link || '.' like dbl.username || '.%'
+                  and dbl.username is not null
+                  and dbl.host     is not null
+       group by proc.owner
+       order by proc.owner;
+
+-- Page2: TEST_ALL_PAR
+      select proc.owner             TEST_OWNER
+       from  wt_test_runners  proc
+             join user_db_links  dbl
+                  on  dbl.db_link || '.' like proc.owner   || '.%'
+                  and dbl.db_link || '.' like dbl.username || '.%'
+                  and dbl.username is not null
+                  and dbl.host     is not null
+       group by proc.owner;
+
+select * from wt_results
+ where testcase is null;

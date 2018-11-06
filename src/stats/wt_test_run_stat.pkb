@@ -98,7 +98,7 @@ begin
    g_rec.tot_interval_msecs := nvl(g_rec.tot_interval_msecs,0) +
                                in_results_rec.interval_msecs;
    --
-   tc := nvl(in_results_rec.testcase,'Unnamed Test Case');
+   tc := in_results_rec.testcase;
    g_tc_aa(tc).testcase    := tc;
    g_tc_aa(tc).test_run_id := in_results_rec.test_run_id;
    g_tc_aa(tc).asserts     := nvl(g_tc_aa(tc).asserts,0) + 1;

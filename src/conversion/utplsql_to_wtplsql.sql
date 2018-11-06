@@ -112,23 +112,31 @@ declare
          case proc_buff.procedure_name
          when 'ZTST_SETUP'
          then
-            ret_str := '   ' || proc_buff.procedure_name ||
-                         ';' || CHR(10) || ret_str;
+            ret_str := '   wt_assert.g_testcase := ''' || proc_buff.object_name ||
+                                                 '_ZTST_TEARDOWN'';' || CHR(10) ||
+                       '                           ZTST_TEARDOWN;'   || CHR(10) ||
+                                                                        CHR(10) ||
+                        ret_str ;
          when 'ZTST_TEARDOWN'
          then
             add_teardown := TRUE;
          else
             ret_str := ret_str ||
-                         '   ' || 'wt_assert.g_testcase := ' ||
-                           substr(proc_buff.procedure_name,1,50) ||
-                           ';' || CHR(10) ||
-                         '   ' || proc_buff.procedure_name ||
-                           ';' || CHR(10);
+                       '   ' || 'wt_assert.g_testcase := ' ||
+                     substr(proc_buff.procedure_name,1,50) ||
+                         ';' || CHR(10) ||
+                       '   ' || proc_buff.procedure_name ||
+                         ';' || CHR(10) ||
+                                CHR(10) ;
          end case;
       end loop;
       if add_teardown
       then
-         ret_str := ret_str || '   ZTST_TEARDOWN;' || CHR(10);
+         ret_str := ret_str ||
+                    '   wt_assert.g_testcase := ''' || proc_buff.object_name ||
+                                              '_ZTST_TEARDOWN'';' || CHR(10) ||
+                    '                           ZTST_TEARDOWN;'   || CHR(10) ||
+                                                                     CHR(10) ;
       end if;
     return ret_str;
    end get_procedures;
@@ -141,11 +149,10 @@ begin
         and  object_type in ('PACKAGE', 'PACKAGE BODY')
         and  owner       = :SCHEMA_NAME
         and  owner       not in ('SYS','UTP')
-        and  not exists (select 'x' from dba_source  src
+        and  not exists (select 'x'
+                          from  wt_qual_test_runners_vw  src
                           where src.owner          = obj.owner
-                           and  src.name           = obj.object_name
-                           and  src.type           = obj.object_type
-                           and  regexp_like(src.text, wtplsql.C_RUNNER_ENTRY_POINT, 'i') )
+                           and  src.package_name   = obj.object_name )
        order by object_type desc, owner, object_name )
        -- Package Bodies before Package Specifications
    loop
@@ -164,17 +171,22 @@ begin
       then
          src_clob := substr(tmp_clob, 1, end_ptr-1) || CHR(10) ||
                '   procedure ' || wtplsql.C_RUNNER_ENTRY_POINT || ';' || 
-                                            CHR(10) || CHR(10) || end_str;
+                                                       CHR(10) ||
+                                                       CHR(10) ||
+                     end_str;
       when 'PACKAGE BODY'
       then
          src_clob := substr(tmp_clob, 1, end_ptr-1)   || CHR(10) ||
                     'procedure ' || wtplsql.C_RUNNER_ENTRY_POINT ||
                                           ' is begin' || CHR(10) ||
               get_procedures(obj_rec.owner, obj_rec.object_name) ||
-                          'end ' || wtplsql.C_RUNNER_ENTRY_POINT || ';'
-                                           || CHR(10) || CHR(10) || end_str;
+                          'end ' || wtplsql.C_RUNNER_ENTRY_POINT || ';' ||
+                                                         CHR(10) ||
+                                                         CHR(10) ||
+                    end_str;
       else
-         raise_application_error(-20000, 'Unknown Object Type: ' || obj_rec.object_type);
+         raise_application_error(-20000, 'Unknown Object Type: ' ||
+                                            obj_rec.object_type) ;
       end case;
       dbms_output.put_line('Compiling ' || obj_rec.object_type ||
                                     ' ' || obj_rec.owner       ||

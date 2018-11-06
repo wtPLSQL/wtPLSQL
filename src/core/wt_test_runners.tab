@@ -6,17 +6,17 @@
 create sequence wt_test_runners_seq order;
 
 create table wt_test_runners
-   (id             number(38)     constraint wt_test_runs_nn1 not null
-   ,runner_owner   varchar2(128)  constraint wt_test_runs_nn2 not null
-   ,runner_name    varchar2(128)  constraint wt_test_runs_nn3 not null
+   (id      number(38)     constraint wt_test_runs_nn1 not null
+   ,owner   varchar2(128)  constraint wt_test_runs_nn2 not null
+   ,name    varchar2(128)  constraint wt_test_runs_nn3 not null
    ,constraint wt_test_runners_pk primary key (id)
    ,constraint wt_test_runners_nk1 unique (runner_owner, runner_name)
    ) pctfree 0;
 
 comment on table wt_test_runners is 'List of Test Runners.';
 comment on column wt_test_runners.id is 'Primary (Surrogate) Key for each Test Runner';
-comment on column wt_test_runners.runner_owner is 'Owner of the Test Runner package. Natural Key 1 part 1';
-comment on column wt_test_runners.runner_name is 'Name of the Test Runner package. Natural Key 1 part 2';
+comment on column wt_test_runners.owner is 'Owner of the Test Runner package. Natural Key 1 part 1';
+comment on column wt_test_runners.name is 'Name of the Test Runner package. Natural Key 1 part 2';
 
 grant select on wt_test_runners to public;
 grant delete on wt_test_runners to public;

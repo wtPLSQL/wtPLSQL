@@ -14,35 +14,24 @@ begin
       select tr.start_dtm
             ,tr.end_dtm
             ,tr.id
-            ,tr.runner_owner || '.' || tr.runner_name     SUITE_NAME
-            ,nvl(tr.dbout_owner, tr.runner_owner)         PACKAGE_NAME
-            ,case when tr.dbout_name || tr.dbout_type is null
-                  then 'TEST_RUNNER'
-                  else tr.dbout_name || ':' || tr.dbout_type
-             end                                          CLASS_NAME
-            ,count(distinct res.testcase_id)              TESTCASES
-            ,sum(case res.status when 'FAIL' then 1
-                                             else 0
-                 end)                                     FAILURES
-            ,extract(day from (tr.end_dtm -
-                               tr.start_dtm) * 86400000)  TOT_INTERVAL_MSECS
-            ,tr.error_message
-       from  wt_test_runs  tr
-        left join wt_results  res
-                  on  res.test_run_id = tr.id
-       where tr.is_last_run = wtplsql.get_last_run_flag
-       group by tr.start_dtm
-            ,tr.end_dtm
-            ,tr.id
             ,tr.runner_owner || '.' || tr.runner_name
+                                             SUITE_NAME
             ,nvl(tr.dbout_owner, tr.runner_owner)
+                                             PACKAGE_NAME
             ,case when tr.dbout_name || tr.dbout_type is null
                   then 'TEST_RUNNER'
                   else tr.dbout_name || ':' || tr.dbout_type
-             end
+             end                             CLASS_NAME
+            ,ts.testcases
+            ,ts.failures
             ,extract(day from (tr.end_dtm -
                                tr.start_dtm) * 86400000)
+                                             TOT_INTERVAL_MSECS
             ,tr.error_message
+       from  wt_test_runs  tr
+        left join wt_test_run_stats  ts
+                  on  ts.test_run_id = tr.id
+       where tr.is_last_run = wtplsql.get_last_run_flag
        order by tr.start_dtm, tr.id )
    loop
       p('  <testsuite name="' || suites.suite_name ||
@@ -54,20 +43,15 @@ begin
                          '">' );
       for cases in (
          select tr.id 
-               ,res.name                                TESTCASE
-               ,count(res.test_run_id)
-               ,sum(case res.status when 'FAIL' then 1
-                                                else 0
-                    end)                                FAILURES
-               ,sum(nvl(res.interval_msecs,0))          TOT_INTERVAL_MSECS
+               ,tc.testcase
+               ,tc.asserts
+               ,tc.failures
+               ,nvl(tc.tot_interval_msecs
+                   ,suites.tot_interval_msecs) TOT_INTERVAL_MSECS
           from  wt_test_runs  tr
-           left join wt_results  res
-                     on  res.test_run_id = tr.id
-           left join wt_testcases  tc
-                     on  tc.id = res.testcase_id
+           left join wt_testcase_stats  tc
+                     on  tc.test_run_id = tr.id
           where tr.id = suites.id
-          group by tr.id
-               ,res.name
           order by testcase )
       loop
          if     nvl(cases.failures,1) = 0

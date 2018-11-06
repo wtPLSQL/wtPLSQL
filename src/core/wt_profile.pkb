@@ -1,6 +1,16 @@
 create or replace package body wt_profile
 as
 
+   TYPE rec_type is record
+      (test_run_id     wt_test_runs.id%TYPE
+      ,dbout_owner     wt_test_runs.dbout_owner%TYPE
+      ,dbout_name      wt_test_runs.dbout_name%TYPE
+      ,dbout_type      wt_test_runs.dbout_type%TYPE
+      ,prof_runid      binary_integer
+      ,trigger_offset  binary_integer
+      ,error_message   varchar2(4000));
+   g_rec  rec_type;
+   
    TYPE ignr_aa_type is table
       of varchar2(1)
       index by PLS_INTEGER;

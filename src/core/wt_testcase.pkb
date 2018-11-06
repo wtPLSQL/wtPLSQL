@@ -6,7 +6,7 @@ as
 ---------------------
 
 ------------------------------------------------------------
-function get_testcase_id
+function get_id
       (in_testcase   in varchar2)
    return number
 is
@@ -22,16 +22,16 @@ exception
       rec.testcase := in_testcase;
       insert into wt_testcases values rec;
       return rec.id;
-end get_testcase_id;
+end get_id;
 
 ------------------------------------------------------------
-procedure clear_testcases
+procedure clear_unused
 is
 begin
    delete from wt_testcases
     where id not in (
           select testcase_id
            from  wt_results );
-end clear_testcases;
+end clear_unused;
 
 end wt_testcase;

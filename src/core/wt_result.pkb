@@ -1,6 +1,10 @@
 create or replace package body wt_result
 as
 
+   TYPE results_nt_type is table of wt_results%ROWTYPE;
+   g_results_nt      results_nt_type;
+   g_results_rec     wt_results%ROWTYPE;
+
    $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
       g_skip_add  BOOLEAN := FALSE;
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
