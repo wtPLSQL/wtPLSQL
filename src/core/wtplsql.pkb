@@ -88,76 +88,6 @@ $THEN
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
-------------------------------------------------------------
-procedure insert_test_run
-is
-   l_wt_test_runs_recNULL  wt_test_runs%ROWTYPE;
-begin
-   if g_test_runs_rec.id is null
-   then
-      return;
-   end if;
-   g_test_runs_rec.end_dtm := systimestamp;
-   clear_last_run
-      (in_runner_owner  => g_test_runs_rec.runner_owner
-      ,in_runner_name   => g_test_runs_rec.runner_name
-      ,in_last_run_flag => IS_LAST_RUN_FLAG);
-   insert into wt_test_runs values g_test_runs_rec;
-   g_test_runs_rec := l_wt_test_runs_recNULL;
-end insert_test_run;
-
-$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
-$THEN
-   procedure t_insert_test_run
-   is
-      --------------------------------------  WTPLSQL Testing --
-      TYPE l_dbmsout_buff_type is table of varchar2(32767);
-      l_dbmsout_buff   l_dbmsout_buff_type;
-      l_test_runs_rec  wt_test_runs%ROWTYPE;
-      l_dbmsout_line   varchar2(32767);
-      l_dbmsout_stat   number;
-      l_num_recs       number;
-   begin
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'INSERT_TEST_RUN Happy Path 1';
-      wt_assert.eqqueryvalue (
-         msg_in           => 'Records Before Insert',
-         check_query_in   => 'select count(*) from wt_test_runs' ||
-                             ' where id = ' || g_test_runs_rec.id,
-         against_value_in => 0);
-      --------------------------------------  WTPLSQL Testing --
-      l_test_runs_rec := g_test_runs_rec;
-      insert_test_run;
-      g_test_runs_rec := l_test_runs_rec;
-      wt_assert.eqqueryvalue (
-         msg_in           => 'Number of Records',
-         check_query_in   => 'select count(*) from wt_test_runs' ||
-                             ' where id = ' || g_test_runs_rec.id,
-         against_value_in => 1);
-      --------------------------------------  WTPLSQL Testing --
-      delete from wt_test_runs
-       where id = l_test_runs_rec.id;
-      COMMIT;
-      wt_assert.eqqueryvalue (
-         msg_in           => 'Records After Delete',
-         check_query_in   => 'select count(*) from wt_test_runs' ||
-                             ' where id = ' || g_test_runs_rec.id,
-         against_value_in => 0);
-      --------------------------------------  WTPLSQL Testing --	
-      wt_assert.g_testcase := 'INSERT_TEST_RUN Happy Path 2';
-      l_test_runs_rec := g_test_runs_rec;
-      g_test_runs_rec.id := null;
-      insert_test_run;
-      g_test_runs_rec := l_test_runs_rec;
-      wt_assert.eqqueryvalue (
-         msg_in           => 'Records After Delete',
-         check_query_in   => 'select count(*) from wt_test_runs' ||
-                             ' where id = ' || g_test_runs_rec.id,
-         against_value_in => 0);
-   end t_insert_test_run;
-$END  ----------------%WTPLSQL_end_ignore_lines%----------------
-
-
 ---------------------
 --  Public Procedures
 ---------------------
@@ -229,7 +159,7 @@ procedure test_run
       (in_package_name  in  varchar2)
 is
    pragma AUTONOMOUS_TRANSACTION;  -- Required if called as Remote Procedure Call (RPC)
-   l_test_runs_rec_NULL   wt_test_runs%ROWTYPE;
+   l_test_runs_rec_NULL   wt_test_runs_vw%ROWTYPE;
    l_error_stack          varchar2(32000);
    procedure concat_err_message
          (in_err_msg  in varchar2)

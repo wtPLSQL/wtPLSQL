@@ -6,11 +6,11 @@
 create sequence wt_test_runners_seq order;
 
 create table wt_test_runners
-   (id      number(38)     constraint wt_test_runs_nn1 not null
-   ,owner   varchar2(128)  constraint wt_test_runs_nn2 not null
-   ,name    varchar2(128)  constraint wt_test_runs_nn3 not null
+   (id      number(38)     constraint wt_test_runners_nn1 not null
+   ,owner   varchar2(128)  constraint wt_test_runners_nn2 not null
+   ,name    varchar2(128)  constraint wt_test_runners_nn3 not null
    ,constraint wt_test_runners_pk primary key (id)
-   ,constraint wt_test_runners_nk1 unique (runner_owner, runner_name)
+   ,constraint wt_test_runners_nk1 unique (owner, name)
    ) pctfree 0;
 
 comment on table wt_test_runners is 'List of Test Runners.';

@@ -14,27 +14,32 @@ begin
       select tr.start_dtm
             ,tr.end_dtm
             ,tr.id
-            ,tr.runner_owner || '.' || tr.runner_name     SUITE_NAME
-            ,nvl(tr.dbout_owner, tr.runner_owner)         PACKAGE_NAME
+            ,tr.owner || '.' || tr.name      SUITE_NAME
+            ,tr.name
+            ,nvl(db.owner, tr.runner_owner)  PACKAGE_NAME
             ,case when tr.dbout_name || tr.dbout_type is null
                   then 'TEST_RUNNER'
                   else tr.dbout_name || ':' || tr.dbout_type
              end                                          CLASS_NAME
             ,count(distinct res.testcase_id)              TESTCASES
-            ,sum(case res.status when 'FAIL' then 1
-                                             else 0
+            ,sum(case res.status
+                 when wt_assert.C_FAIL then 1
+                                       else 0
                  end)                                     FAILURES
             ,extract(day from (tr.end_dtm -
                                tr.start_dtm) * 86400000)  TOT_INTERVAL_MSECS
             ,tr.error_message
        from  wt_test_runs  tr
+        left join wt_dbouts  db
+                  on  db.id = tr.dbout_id
         left join wt_results  res
                   on  res.test_run_id = tr.id
        where tr.is_last_run = wtplsql.get_last_run_flag
        group by tr.start_dtm
             ,tr.end_dtm
             ,tr.id
-            ,tr.runner_owner || '.' || tr.runner_name
+            ,tr.runner_owner
+            ,tr.runner_name
             ,nvl(tr.dbout_owner, tr.runner_owner)
             ,case when tr.dbout_name || tr.dbout_type is null
                   then 'TEST_RUNNER'
@@ -54,7 +59,7 @@ begin
                          '">' );
       for cases in (
          select tr.id 
-               ,res.name                                TESTCASE
+               ,nvl(res.name,suites.runner_name)        TESTCASE
                ,count(res.test_run_id)
                ,sum(case res.status when 'FAIL' then 1
                                                 else 0
@@ -73,11 +78,11 @@ begin
          if     nvl(cases.failures,1) = 0
             and suites.error_message is null
          then
-            p('    <testcase name="' || nvl(cases.testcase,'NULL') ||
+            p('    <testcase name="' || cases.testcase ||
                       '" classname="' || suites.suite_name ||
                       '" time="' || cases.tot_interval_msecs || '"/>');
          else
-            p('    <testcase name="' || nvl(cases.testcase,'NULL') ||
+            p('    <testcase name="' || cases.testcase ||
                       '" classname="' || suites.package_name || '.' || suites.class_name ||
                            '" time="' || cases.tot_interval_msecs || '">');
             p('      <error message="' || nvl(cases.failures,'No') || ' assertion failures. ' ||
@@ -95,7 +100,7 @@ begin
                  and  (   (cases.testcase is null
                            and   testcase is null)
                        or testcase = cases.testcase)
-                 and  status != wt_assert.C_PASS
+                 and  status = wt_assert.C_FAIL
                 order by result_seq )
             loop
                p(lpad(asrts.result_seq,4)     || ': '  ||

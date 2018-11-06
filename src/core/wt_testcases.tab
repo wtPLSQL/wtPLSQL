@@ -6,9 +6,9 @@
 create sequence wt_testcases_seq;
 
 create table wt_testcases
-   (id         number(38)       constraint wt_testcases_nn1 not null
-   ,name       varchar2(128)    constraint wt_testcases_nn2 not null
-   ,constraint wt_testcases_pk primary key (id)
+   (id               number(38)       constraint wt_testcases_nn1 not null
+   ,name             varchar2(128)    constraint wt_testcases_nn2 not null
+   ,constraint wt_testcases_pk  primary key (id)
    ,constraint wt_testcases_nk1 unique (name)
    );
 

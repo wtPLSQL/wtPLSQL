@@ -17,7 +17,7 @@ as
 
    g_keep_num_recs  number := 20;
 
-   g_test_runs_rec   wt_test_runs%ROWTYPE;
+   g_test_runs_rec   wt_test_runs_vw%ROWTYPE;
 
    procedure test_run
       (in_package_name  in  varchar2);

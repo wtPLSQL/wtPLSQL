@@ -15,7 +15,7 @@ create table wt_dbouts
    ) pctfree 0;
 
 create index wt_dbouts_ix1
-  on wt_dbouts (dbout_type, dbout_owner);
+  on wt_dbouts (type, owner);
 
 comment on table wt_dbouts is 'List of Database Objects Under Test (DBOUT).';
 comment on column wt_dbouts.id is 'Primary (Surrogate) Key for each Database Objects Under Test (DBOUT)';
