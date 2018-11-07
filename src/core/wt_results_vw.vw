@@ -14,6 +14,7 @@ select tr.test_runner_id
       ,tr.error_message
       ,res.result_seq    
       ,res.testcase_id   
+      ,tc.name               TESTCASE_NAME
       ,res.executed_dtm  
       ,res.interval_msecs
       ,res.assertion     
@@ -22,7 +23,9 @@ select tr.test_runner_id
       ,res.details       
  from  wt_results  res
        join wt_test_runs_vw  tr
-            on  tr.test_run_id = res.test_run_id;
+            on  tr.test_run_id = res.test_run_id
+       join wt_testcases  tc
+            on  tc.id = res.testcase_id;
 
 comment on table wt_results_vw is 'Results data from Test Runs.';
 comment on column wt_results_vw.test_runner_id is 'Surrogate Key the Test Runner package.';
@@ -35,6 +38,7 @@ comment on column wt_results_vw.end_dtm is 'Date/time (and fractional seconds) t
 comment on column wt_results_vw.error_message is 'Optional Error messages from this Test Run.';
 comment on column wt_results_vw.result_seq is 'Sequence number for this Result';
 comment on column wt_results_vw.testcase_id is 'Foreign Key for the Test Case.';
+comment on column wt_results_vw.testcase_name is 'The Test Case name';
 comment on column wt_results_vw.executed_dtm is 'Date/Time (with Fractional Seconds) this Result was captured';
 comment on column wt_results_vw.interval_msecs is 'Interval time in milliseonds since the previous Result or start ot the Test Run.';
 comment on column wt_results_vw.assertion is 'Name of the Assertion Test performed';

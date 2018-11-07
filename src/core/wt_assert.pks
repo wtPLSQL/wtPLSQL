@@ -12,7 +12,7 @@ is
 
    -- Testcase name for a series of assertions.
    --   Modify as required
-   g_testcase         wt_results.testcase%TYPE;
+   g_testcase         wt_results_vw.testcase%TYPE;
 
    function last_pass
    return boolean;
