@@ -17,7 +17,7 @@ as
       (in_assertion      in wt_results.assertion%TYPE
       ,in_status         in wt_results.status%TYPE
       ,in_details        in wt_results.details%TYPE
-      ,in_testcase       in wt_results.testcase%TYPE
+      ,in_testcase_name  in wt_testcases.name%TYPE
       ,in_message        in wt_results.message%TYPE
       ,in_interval_msecs in wt_results.interval_msecs%TYPE DEFAULT NULL)
    return varchar2;
@@ -26,7 +26,7 @@ as
       (in_assertion      in wt_results.assertion%TYPE
       ,in_status         in wt_results.status%TYPE
       ,in_details        in wt_results.details%TYPE
-      ,in_testcase       in wt_results.testcase%TYPE
+      ,in_testcase_name  in wt_testcases.name%TYPE
       ,in_message        in wt_results.message%TYPE);
 
 --  "in_detail_level" settings for DBMS_OUT procedure:
@@ -50,8 +50,8 @@ as
 --     * All profiled source lines.
 
    procedure dbms_out
-      (in_runner_owner   in  wt_test_runs.runner_owner%TYPE default USER
-      ,in_runner_name    in  wt_test_runs.runner_name%TYPE  default null
+      (in_runner_owner   in  wt_test_runners.owner%TYPE default USER
+      ,in_runner_name    in  wt_test_runners.name%TYPE  default null
       ,in_detail_level   in  number                         default 0
       ,in_summary_last   in  boolean                        default FALSE);
 

@@ -7,11 +7,11 @@ as
    procedure finalize;
 
    procedure save
-      (in_assertion      in wt_results.assertion%TYPE
-      ,in_status         in wt_results.status%TYPE
-      ,in_details        in wt_results.details%TYPE
-      ,in_testcase       in wt_results.testcase%TYPE
-      ,in_message        in wt_results.message%TYPE);
+      (in_assertion      in varchar2
+      ,in_status         in varchar2
+      ,in_details        in varchar2
+      ,in_testcase_name  in varchar2
+      ,in_message        in varchar2);
 
    procedure delete_records
       (in_test_run_id  in number);
