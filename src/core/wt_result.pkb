@@ -1,10 +1,6 @@
 create or replace package body wt_result
 as
 
-   TYPE results_nt_type is table of wt_results_vw%ROWTYPE;
-   g_results_nt      results_nt_type;
-   g_results_rec     wt_results_vw%ROWTYPE;
-
 ----------------------
 --  Private Procedures
 ----------------------

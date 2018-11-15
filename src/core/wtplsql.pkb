@@ -216,8 +216,9 @@ begin
    wt_hook.after_run_init
    -- Call the Test Runner
    begin
-      execute immediate 'BEGIN ' || in_package_name || '.' ||
-                      C_RUNNER_ENTRY_POINT || '; END;';
+      -- AUTHID CURRENT_USER is required for dynamic PL/SQL execution.
+      execute_test_runner ('BEGIN ' || in_package_name || '.' ||
+                                  C_RUNNER_ENTRY_POINT || '; END;');
    exception
       when OTHERS
       then
