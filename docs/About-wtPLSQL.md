@@ -106,10 +106,5 @@ In the wtPLSQL framework, integration testing of multiple database objects (no m
 
 Test fixtures and test suites are a part of the xUnit testing framework. At the core, wtPLSQL does not include test fixtures or test suites. If needed, these can be easily defined and implemented in a test runner package.
 
-## Test Driven Development
-With **TDD** (Test Driven Development), [you write a test before you write just enough production code to fulfill that test](http://agiledata.org/essays/tdd.html)
-
-The wtPLSQL framework is not intended for Test Driven Development.  Test isolation and test transience are welcomed mechanisms to assist in getting tests to pass quickly in **TDD**.  The wtPLSQL framework embraces 100% code coverage and does not require test isolation or test transience.
-
 ---
 [Website Home Page](README.md)
