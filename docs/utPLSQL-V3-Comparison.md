@@ -17,7 +17,7 @@ Abbreviations:
 ## Goals
 The "ut3" project ["follows industry standards and best patterns of modern Unit Testing frameworks like JUnit and RSpec"](https://github.com/utPLSQL/utPLSQL).
 
-The "wt" project avoids "unit testing" by adopting practices for ["white box testing"](https://github.com/DDieterich/wtPLSQL/wiki/About-wtPLSQL#white-box-testing).
+The "wt" project avoids "unit testing" by adopting practices for "white box testing".
 
 ## Customization
 The "ut3" project incorporates a wide variety of technologies and platforms. It also has a large and diverse set of capabilities that will reduce the need for customization.
@@ -25,7 +25,7 @@ The "ut3" project incorporates a wide variety of technologies and platforms. It 
 The "wt" project is centered on one platform with a very simple implementation. It is easier to customize smaller, simpler systems.
 
 ## Testing Methodologies
-There is a longer discussion about unit testing methodologies in the [About wtPSQL Page](https://github.com/DDieterich/wtPLSQL/wiki/About-wtPLSQL#unit-testing).
+There is a longer discussion about unit testing methodologies in the [About wtPSQL Page](About-wtPLSQL.md)
 
 Fundamentally, the Oracle database is a relational database. The relational database is based on transaction processing. Data is stored and shared in a precise manner between processes.
 

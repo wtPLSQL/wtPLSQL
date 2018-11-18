@@ -1,7 +1,7 @@
 <p><a href="../README.htm">Website Home Page</a></p>
 <h1 id="demonstrations-and-examples">Demonstrations and Examples</h1>
 <hr />
-<p>Demonstrations and examples assume successful connection to an <a href="http://www.oracle.com/technetwork/database/database-technologies/express-edition/overview/index.html">Oracle database</a> with wtPLSQL installed. <a href="https://github.com/DDieterich/wtPLSQL/releases">wtPLSQL Installation instructions</a> are available on the <a href="https://github.com/DDieterich/wtPLSQL/releases">wtPLSQL Releases page</a>.</p>
+<p>Demonstrations and examples assume successful connection to an <a href="http://www.oracle.com/technetwork/database/database-technologies/express-edition/overview/index.html">Oracle database</a> with wtPLSQL installed. wtPLSQL Installation instructions are available on the <a href="https://github.com/DDieterich/wtPLSQL/releases">wtPLSQL Releases page</a>.</p>
 <p>Test results from assertions can be queried from a set of wtPLSQL tables. The examples here will use the default reporting package called WT_TEXT_REPORT. This package displays test results using DBMS_OUTPUT.</p>
 <h2 id="the-basics">The Basics</h2>
 <p>A login, or database session, is required to interact with the Oracle database. The SQL below will create a user that can run these examples. If you already have a database login, this is not necessary.</p>
@@ -68,5 +68,29 @@ end;
 <li><a href="ut_truncit.htm">ut_truncit</a> - Test a Table Modification Procedure</li>
 <li><a href="ut_str.htm">ut_str</a> - Test a Simple Function</li>
 </ul>
+<h2 id="demo-installer">Demo Installer</h2>
+<p>To save some typing, there is an installer for the demonstrations and examples. This installer will:</p>
+<ul>
+<li>Prompt for a schema name (WT_DEMO is the default).</li>
+<li>Confirm the database user is SYS or SYSTEM.</li>
+<li>Create the schema.</li>
+<li>Load database objects in the schema.</li>
+</ul>
+<p>To run this installer:</p>
+<ol>
+<li>cd to &quot;src/demo&quot;</li>
+<li>login as SYS or SYSTEM using SQL*Plus</li>
+<li>Run the &quot;install.sql&quot; script</li>
+</ol>
+<p>To confirm a successful installation, review the newly created &quot;install.LST&quot; log file against the &quot;installO.LST&quot; example log file.</p>
+<h2 id="demo-un-install">Demo Un-Install</h2>
+<p>The &quot;uninstall.sql&quot; script provided in the &quot;src/demo&quot; directory drops the demo schema from the database, with cascade.</p>
+<p>To un-install:</p>
+<ol>
+<li>cd to &quot;src/demo&quot;</li>
+<li>login as SYS or SYSTEM using SQL*Plus</li>
+<li>Run the &quot;uninstall.sql&quot; script</li>
+</ol>
+<p>To confirm a successful un-install, review the &quot;uninstall.LST&quot; log file against the &quot;uninstallO.LST&quot; example log file.</p>
 <hr />
 <p><a href="../README.htm">Website Home Page</a></p>
