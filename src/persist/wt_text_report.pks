@@ -3,7 +3,7 @@ as
 
    --   To report the latest result details for test runner:
    -- begin
-   --    wt_text_report.dbms_out('TEST_RUNNER', FALSE, FALSE, TRUE, TRUE);
+   --    wt_text_report.dbms_out('RUNNER_OWNER', 'RUNNER', 30);
    -- end;
    -- /
 

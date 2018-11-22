@@ -25,7 +25,6 @@ is
       ,details          varchar2(4000)
       ,message          varchar2(200));
    TYPE results_nt_type is table of results_rec_type;
-   g_results_rec   results_rec_type;
    g_results_nt    results_nt_type;
    
    procedure init1

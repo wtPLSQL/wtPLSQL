@@ -183,7 +183,7 @@ insert into hooks (hook_name, seq, run_string)
 
 -- Run this report after testing because this is no storage
 insert into hooks (hook_name, seq, run_string)
-   values ('after_test_run', 1, 'begin wt_text_report.dbms_out(30, TRUE); end;');
+   values ('after_test_run', 1, 'begin wt_text_report.dbms_out(10); end;');
 
 -- This is the default ad-hoc result report
 insert into hooks (hook_name, seq, run_string)

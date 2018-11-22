@@ -4,9 +4,9 @@ as
 
    g_run_rec  core_data.run_rec_type;
 
-   --   To report the latest result details for test runner:
+   --   To report the latest result details:
    -- begin
-   --    wt_text_report.dbms_out('TEST_RUNNER', FALSE, FALSE, TRUE, TRUE);
+   --    wt_text_report.dbms_out(30, TRUE);
    -- end;
    -- /
 
@@ -23,6 +23,16 @@ as
    procedure ad_hoc_result;
 
    procedure show_result_header;
+
+--  "in_detail_level" settings for DBMS_OUT procedure:
+--  * Less than 10 (including null) - No Detail
+--     * Assertion results summary.
+--  * 10 to 19 - Minimal Detail
+--     * Assertion results summary.
+--     * Failed assertion result details.
+--  * 20 or more - Full Detail
+--     * Assertion results summary.
+--     * All assertion result details.
 
    function format_test_result
       (in_rec  in core_data.results_rec_type)
