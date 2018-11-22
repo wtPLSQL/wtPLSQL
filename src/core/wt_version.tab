@@ -3,20 +3,21 @@
 --  Version Table Installation
 --
 
-create table wt_version
+create table wt_versions
    (install_dtm    date
    ,action         varchar2(15)
    ,text           varchar2(15)
-   ,constraint wt_version_pk primary key (install_dtm)
+   ,constraint wt_versions_pk primary key (install_dtm)
    ) pctfree 0;
 
-comment on table wt_version is 'Records the installed and upgraded versions.';
-comment on column wt_version.install_dtm is 'Date/Time the version that was installed/upgraded';
-comment on column wt_version.text is 'Name of the version that was installed/upgraded';
+comment on table wt_versions is 'Records the installed and upgraded versions.';
+comment on column wt_versions.install_dtm is 'Date/Time the version that was installed/upgraded';
+comment on column wt_versions.text is 'Name of the version that was installed/upgraded';
 
-insert into wt_version (install_dtm, action, text)
+grant select on wt_versions to public;
+
+create or replace public synonym wt_version for &schema_owner..wt_versions;
+
+insert into wt_versions (install_dtm, action, text)
    values (sysdate, 'INSTALL', '1.2.0');
-
 commit;
-
-grant select on wt_version to public;

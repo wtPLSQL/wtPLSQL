@@ -10,9 +10,6 @@ spool install
 set showmode off
 set serveroutput on size unlimited format truncated
 
--- Shared Setup Script
-@common_setup.sql
-
 WHENEVER SQLERROR exit SQL.SQLCODE
 
 begin
@@ -24,6 +21,9 @@ begin
 end;
 /
 
+-- Shared Setup Script
+@../common_setup.sql
+
 WHENEVER SQLERROR continue
 
 -- Create the schema owner.
@@ -33,20 +33,24 @@ create user &schema_owner. identified by &schema_owner.
    quota unlimited on users
    temporary tablespace temp;
 
-grant create session       to &schema_owner.;
-grant create type          to &schema_owner.;
-grant create sequence      to &schema_owner.;
-grant create table         to &schema_owner.;
-grant create trigger       to &schema_owner.;
-grant create view          to &schema_owner.;
-grant create procedure     to &schema_owner.;
-grant create database link to &schema_owner.;
-grant create job           to &schema_owner.;
+grant create session        to &schema_owner.;
+grant create type           to &schema_owner.;
+grant create sequence       to &schema_owner.;
+grant create table          to &schema_owner.;
+grant create trigger        to &schema_owner.;
+grant create view           to &schema_owner.;
+grant create procedure      to &schema_owner.;
+grant create database link  to &schema_owner.;
+grant create job            to &schema_owner.;
+grant create public synonym to &schema_owner.;
 
--- This MUST be run by SYS.
+-- For DBOUT Check.
 grant select on dba_objects       to &schema_owner.;
-grant select on dba_source        to &schema_owner.;
+-- For Qualified Test Runners View
 grant select on dba_procedures    to &schema_owner.;
+-- For Profiler
+grant select on dba_source        to &schema_owner.;
+-- For GUI
 grant select on sys.gv_$parameter to &schema_owner.;
 
 begin
@@ -96,23 +100,6 @@ begin
 end;
 /
 
--- Public Synonyms
-
-create or replace public synonym wt_version        for &schema_owner..wt_version;
-create or replace public synonym wt_test_runs_seq  for &schema_owner..wt_test_runs_seq;
-create or replace public synonym wt_test_runs      for &schema_owner..wt_test_runs;
-create or replace public synonym wt_results        for &schema_owner..wt_results;
-create or replace public synonym wt_dbout_profiles for &schema_owner..wt_dbout_profiles;
-create or replace public synonym wt_test_run_stats for &schema_owner..wt_test_run_stats;
-create or replace public synonym wt_testcase_stats for &schema_owner..wt_testcase_stats;
-create or replace public synonym wt_self_test      for &schema_owner..wt_self_test;
-
-create or replace public synonym utassert       for &schema_owner..wt_assert;
-create or replace public synonym wt_assert      for &schema_owner..wt_assert;
-create or replace public synonym wt_text_report for &schema_owner..wt_text_report;
-create or replace public synonym wt_wtplsql     for &schema_owner..wtplsql;
-create or replace public synonym wtplsql        for &schema_owner..wtplsql;
-
 
 WHENEVER SQLERROR exit SQL.SQLCODE
 
@@ -131,64 +118,79 @@ end;
 
 WHENEVER SQLERROR continue
 
---
--- Run Oracle's Profiler Table Installation
---  Note1: Tables converted to Global Temporary
---  Note2: Includes "Drop Table" and "Drop Sequence" statements
---
-@proftab.sql
-@proftab_comments.sql
---
-create index plsql_profiler_runs_idx1
-   on plsql_profiler_runs (run_date);
 
 -- Core Tables
+@hooks.tab
+
 @wt_version.tab
-@wt_test_runs.tab
-@wt_results.tab
-@wt_dbout_profiles.tab
-@wt_test_run_stats.tab
-@wt_testcase_stats.tab
+
 @wt_self_test.tab
 
--- Install Views
-@wt_scheduler_jobs.vw
 
 -- Package Specifications
+@core_data.pks
+/
+
+@hook.pks
+/
+
 @wtplsql.pks
 /
-@wt_result.pks
-/
+grant execute on wtplsql to public;
+create or replace public synonym wtplsql    for wtplsql;
+create or replace public synonym wt_wtplsql for wtplsql;
+
 @wt_assert.pks
 /
-@wt_profiler.pks
-/
-@wt_test_run_stat.pks
-/
+grant execute on wt_assert to public;
+create or replace public synonym wt_assert for wt_assert;
+create or replace public synonym utassert  for wt_assert;
+
 @wt_text_report.pks
 /
-
-grant execute on wtplsql to public;
-grant execute on wt_assert to public;
 grant execute on wt_text_report to public;
+create or replace public synonym wt_text_report for wt_text_report;
+
 
 -- Procedures
-@clear_last_run.prc
+@wt_execute_test_runner.prc
 /
+grant execute on wt_execute_test_runner to public;
+create or replace public synonym wt_execute_test_runner for wt_execute_test_runner;
+
 
 -- Package Bodies
+@core_data.pkb
+/
+
+@hook.pkb
+/
+
 @wtplsql.pkb
 /
-@wt_result.pkb
-/
+
 @wt_assert.pkb
 /
-@wt_profiler.pkb
-/
-@wt_test_run_stat.pkb
-/
+
 @wt_text_report.pkb
 /
+
+-- Configuration Data
+
+-- This is the default test runner execution procedure
+insert into hooks (hook_name, seq, run_string)
+   values ('execute_test_runner', 1, 'begin wt_execute_test_runner; end;');
+
+-- Run this report after testing because this is no storage
+insert into hooks (hook_name, seq, run_string)
+   values ('after_test_run', 1, 'begin wt_text_report.dbms_out(30, TRUE); end;');
+
+-- This is the default ad-hoc result report
+insert into hooks (hook_name, seq, run_string)
+   values ('ad_hoc_report', 1, 'begin wt_text_report.ad_hoc_result; end;');
+
+commit;
+
 
 set showmode on
 spool off

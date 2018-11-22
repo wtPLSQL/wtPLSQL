@@ -35,6 +35,7 @@ An obvious drawback of this approach is running assertions when NLS settings mus
 * ORA-20009 - WT_RESULT Package: "in_test_run_id" cannot be NULL
 * ORA-20010 - WT_TEST_RUN_STAT Package: Unknown Result status
 * ORA-20011 - WT_TEST_RUN_STAT Package: Unknown Profile status
+* ORA-20012 - HOOK Package: Unknown HOOK_NAME Case
 
 ## WT_TEXT_REPORT Detail Levels
 * **Less than 10 (including null)** - No Detail

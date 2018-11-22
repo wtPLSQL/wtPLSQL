@@ -22,7 +22,7 @@ is
 begin
    -- These RAISEs can be captured because the Test Runs Record is set.
    --  Check for NULL Runner Name
-   if g_test_runs_rec.runner_name is null
+   if core_data.g_run_rec.runner_name is null
    then
       raise_application_error (-20001, 'RUNNER_NAME is null');
    end if;
@@ -30,55 +30,70 @@ begin
    select count(*) into l_package_check
     from  user_procedures
     where procedure_name = C_RUNNER_ENTRY_POINT
-     and  object_name    = g_test_runs_rec.runner_name
+     and  object_name    = core_data.g_run_rec.runner_name
      and  object_type    = 'PACKAGE';
    if l_package_check != 1
    then
       raise_application_error (-20002, 'RUNNER_NAME Procedure "' ||
-                                     g_test_runs_rec.runner_name ||
+                                     core_data.g_run_rec.runner_name ||
                                      '.' || C_RUNNER_ENTRY_POINT ||
                                                 '" is not valid' );
    end if;
 end check_runner;
 
-
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure t_check_runner
    is
-      l_save_test_runs_rec   wt_test_runs%ROWTYPE := g_test_runs_rec;
+      l_save_test_run_rec   core_data.run_rec_type;
       l_msg_in   varchar2(4000);
       l_err_in   varchar2(4000);
       --------------------------------------  WTPLSQL Testing --
       procedure l_test_sqlerrm is begin
-         -- Restore the G_TEST_RUNS_REC
-         g_test_runs_rec := l_save_test_runs_rec;
+         -- Restore the core_data.g_run_rec
+         core_data.g_run_rec := l_save_test_run_rec;
          wt_assert.eq
                   (msg_in          => l_msg_in
                   ,check_this_in   => SQLERRM
                   ,against_this_in => l_err_in);
       end l_test_sqlerrm;
    begin
+      -- Save CORE_DATA data
+      l_save_test_run_rec := core_data.g_run_rec;
       --------------------------------------  WTPLSQL Testing --
-      -- This Test Case runs in the EXECUTE IMMEDIATE in the TEST_RUN
-      --   procedure in this package.
-      wt_assert.g_testcase := 'CHECK_RUNNER Sad Path 1';
+      wt_assert.g_testcase := 'CHECK_RUNNER Happy Path 1';
+      wt_assert.eq
+               (msg_in          => 'Confirm RUNNER_OWNER'
+               ,check_this_in   => core_data.g_run_rec.runner_owner
+               ,against_this_in => USER);
+      core_data.g_run_rec.runner_name := 'WTPLSQL';
+      l_msg_in := 'Valid RUNNER_NAME';
+      l_err_in := 'ORA-0000: normal, successful completion';
       begin
-         g_test_runs_rec.runner_name := '';
-         l_msg_in := 'Null RUNNER_NAME';
-         l_err_in := 'ORA-20001: RUNNER_NAME is null';
          check_runner;
          l_test_sqlerrm;
       exception when others then
          l_test_sqlerrm;
       end;
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'CHECK_RUNNER Sad Path 2';
+      wt_assert.g_testcase := 'CHECK_RUNNER Sad Path 1';
+      core_data.g_run_rec.runner_name := '';
+      l_msg_in := 'Null RUNNER_NAME';
+      l_err_in := 'ORA-20001: RUNNER_NAME is null';
       begin
-         g_test_runs_rec.runner_name := 'BOGUS';
-         l_msg_in := 'Invalid RUNNER_NAME';
-         l_err_in := 'ORA-20002: RUNNER_NAME "BOGUS.' ||
-                     C_RUNNER_ENTRY_POINT || '" is not valid';
+         check_runner;
+         l_test_sqlerrm;
+      exception when others then
+         -- This test is expected to throw an error
+         l_test_sqlerrm;
+      end;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'CHECK_RUNNER Sad Path 2';
+      core_data.g_run_rec.runner_name := 'BOGUS';
+      l_msg_in := 'Invalid RUNNER_NAME';
+      l_err_in := 'ORA-20002: RUNNER_NAME Procedure "BOGUS.' ||
+                  C_RUNNER_ENTRY_POINT || '" is not valid';
+      begin
          check_runner;
          l_test_sqlerrm;
       exception when others then
@@ -88,18 +103,251 @@ $THEN
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
+------------------------------------------------------------
+procedure find_dbout
+is
+   --
+   -- https://docs.oracle.com/cd/E11882_01/server.112/e41084/sql_elements008.htm#SQLRF51129
+   -- Within a namespace, no two objects can have the same name.  The following
+   --   schema objects share one namespace:
+   --  -) Packages
+   --  -) Private synonyms
+   --  -) Sequences
+   --  -) Stand-alone procedures
+   --  -) Stand-alone stored functions
+   --  -) User-defined operators
+   --  -) User-defined types
+   --  -) Tables
+   --  -) Views
+   -- Each of the following schema objects has its own namespace:
+   --  -) Clusters
+   --  -) Constraints
+   --  -) Database triggers
+   --  -) Dimensions
+   --  -) Indexes
+   --  -) Materialized views (When you create a materialized view, the database
+   --     creates an internal table of the same name. This table has the same
+   --     namespace as the other tables in the schema. Therefore, a schema
+   --     cannot contain a table and a materialized view of the same name.)
+   --  -) Private database links
+   -- Because tables and sequences are in the same namespace, a table and a
+   --   sequence in the same schema cannot have the same name. However, tables
+   --   and indexes are in different namespaces. Therefore, a table and an index
+   --   in the same schema can have the same name.
+   -- Each schema in the database has its own namespaces for the objects it
+   --   contains. This means, for example, that two tables in different schemas
+   --   are in different namespaces and can have the same name.
+   -- Results are unknown if a Database Object Under Test has the same name in
+   --   different namespaces.
+   --
+   l_dot_pos   number;
+   l_cln_pos   number;
+begin
+   if g_DBOUT is null
+   then
+      return;
+   end if;
+   l_dot_pos := instr(g_DBOUT,'.');
+   l_cln_pos := instr(g_DBOUT,':');
+   begin
+      with q_main as (
+      select obj.owner
+            ,obj.object_name
+            ,obj.object_type
+       from  dba_objects  obj
+       where obj.owner = core_data.g_run_rec.runner_owner
+        and  (   ( -- No separators were given, assume USER is the owner.
+                   -- No object type was given. This could throw TOO_MANY_ROWS.
+                      l_dot_pos       = 0
+                  and l_cln_pos       = 0
+                  and obj.object_name = g_DBOUT  )
+              OR ( -- No object owner was given, assume USER is the owner.
+                      l_dot_pos       = 0
+                  and l_cln_pos      != 0
+                  and obj.object_name = substr(g_DBOUT, 1, l_cln_pos-1)
+                  and obj.object_type = substr(g_DBOUT, l_cln_pos+1, 512) ) )
+      UNION ALL
+      select obj.owner
+            ,obj.object_name
+            ,obj.object_type
+       from  dba_objects  obj
+       where ( -- No object type was given. This could throw TOO_MANY_ROWS.
+                  l_dot_pos      != 0
+              and l_cln_pos       = 0
+              and obj.owner       = substr(g_DBOUT, 1, l_dot_pos-1)
+              and obj.object_name = substr(g_DBOUT, l_dot_pos+1, 512) )
+         OR  ( -- All separators were given
+                  l_dot_pos      != 0
+              and l_cln_pos      != 0
+              and obj.owner       = substr(g_DBOUT, 1, l_dot_pos-1)
+              and obj.object_name = substr(g_DBOUT, l_dot_pos+1, l_cln_pos-l_dot_pos-1)
+              and obj.object_type = substr(g_DBOUT, l_cln_pos+1, 512) )
+      )
+      select owner
+            ,object_name
+            ,object_type
+       into  core_data.g_run_rec.dbout_owner
+            ,core_data.g_run_rec.dbout_name
+            ,core_data.g_run_rec.dbout_type
+       from  q_main;
+   exception
+      when NO_DATA_FOUND
+      then
+         core_data.run_error('Unable to find database object "' ||
+                                               g_DBOUT  || '".' );
+         return;
+      when TOO_MANY_ROWS
+      then
+         -- The SELECT INTO will load some values into these variables
+         --   when TOO_MANY_ROWS are selected.
+         core_data.g_run_rec.dbout_owner   := '';
+         core_data.g_run_rec.dbout_name    := '';
+         core_data.g_run_rec.dbout_type    := '';
+         core_data.run_error('Found too many database objects "' ||
+                                                 g_DBOUT || '".' );
+         return;
+   end;
+   --
+end find_dbout;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_find_dbout
+   is
+      l_save_test_run_rec   core_data.run_rec_type;
+      procedure clear_run_rec is begin
+         core_data.g_run_rec.dbout_owner   := '';
+         core_data.g_run_rec.dbout_name    := '';
+         core_data.g_run_rec.dbout_type    := '';
+         core_data.g_run_rec.error_message := '';
+      end clear_run_rec;
+   begin
+      -- Save CORE_DATA data
+      l_save_test_run_rec := core_data.g_run_rec;
+      --------------------------------------  WTPLSQL Testing --
+      -- These tests assume this package does not set a DBOUT
+      wt_assert.g_testcase := 'Find DBOUT Happy Path 1';
+      clear_run_rec;
+      g_DBOUT := '';
+      find_dbout;
+      wt_assert.isnull(
+         msg_in          => 'core_data.g_run_rec.dbout_owner',
+         check_this_in   =>  core_data.g_run_rec.dbout_owner);
+      wt_assert.isnull(
+         msg_in          => 'core_data.g_run_rec.dbout_name',
+         check_this_in   =>  core_data.g_run_rec.dbout_name);
+      wt_assert.isnull(
+         msg_in          => 'core_data.g_run_rec.dbout_type',
+         check_this_in   =>  core_data.g_run_rec.dbout_type);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Find DBOUT Happy Path 2';
+      clear_run_rec;
+      g_DBOUT := 'SYS.DUAL';
+      find_dbout;
+      wt_assert.eq(
+         msg_in          => 'core_data.g_run_rec.dbout_owner',
+         check_this_in   =>  core_data.g_run_rec.dbout_owner,
+         against_this_in =>  'SYS');
+      wt_assert.eq(
+         msg_in          => 'core_data.g_run_rec.dbout_name',
+         check_this_in   =>  core_data.g_run_rec.dbout_name,
+         against_this_in =>  'DUAL');
+      wt_assert.eq(
+         msg_in          => 'core_data.g_run_rec.dbout_type',
+         check_this_in   =>  core_data.g_run_rec.dbout_type,
+         against_this_in =>  'TABLE');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Find DBOUT Happy Path 3';
+      clear_run_rec;
+      g_DBOUT := 'WTPLSQL:PACKAGE BODY';
+      find_dbout;
+      wt_assert.eq(
+         msg_in          => 'core_data.g_run_rec.dbout_owner',
+         check_this_in   =>  core_data.g_run_rec.dbout_owner,
+         against_this_in =>  USER);
+      wt_assert.eq(
+         msg_in          => 'core_data.g_run_rec.dbout_name',
+         check_this_in   =>  core_data.g_run_rec.dbout_name,
+         against_this_in =>  'WTPLSQL');
+      wt_assert.eq(
+         msg_in          => 'core_data.g_run_rec.dbout_type',
+         check_this_in   =>  core_data.g_run_rec.dbout_type,
+         against_this_in =>  'PACKAGE BODY');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Find DBOUT Happy Path 4';
+      clear_run_rec;
+      g_DBOUT := 'WT_EXECUTE_TEST_RUNNER';
+      find_dbout;
+      wt_assert.eq(
+         msg_in          => 'core_data.g_run_rec.dbout_owner',
+         check_this_in   =>  core_data.g_run_rec.dbout_owner,
+         against_this_in =>  USER);
+      wt_assert.eq(
+         msg_in          => 'core_data.g_run_rec.dbout_name',
+         check_this_in   =>  core_data.g_run_rec.dbout_name,
+         against_this_in =>  'WT_EXECUTE_TEST_RUNNER');
+      wt_assert.eq(
+         msg_in          => 'core_data.g_run_rec.dbout_type',
+         check_this_in   =>  core_data.g_run_rec.dbout_type,
+         against_this_in =>  'PROCEDURE');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Find DBOUT Sad Path 1';
+      clear_run_rec;
+      g_DBOUT := 'someone.bogus:thingy';
+      find_dbout;
+      wt_assert.isnull(
+         msg_in          => 'core_data.g_run_rec.dbout_owner',
+         check_this_in   =>  core_data.g_run_rec.dbout_owner);
+      wt_assert.isnull(
+         msg_in          => 'core_data.g_run_rec.dbout_name',
+         check_this_in   =>  core_data.g_run_rec.dbout_name);
+      wt_assert.isnull(
+         msg_in          => 'core_data.g_run_rec.dbout_type',
+         check_this_in   =>  core_data.g_run_rec.dbout_type);
+      wt_assert.isnotnull(
+         msg_in          => 'core_data.g_run_rec.error_message',
+         check_this_in   =>  core_data.g_run_rec.error_message);
+      wt_assert.eqqueryvalue (
+         msg_in           => 'core_data.g_run_rec.error_message',
+         check_query_in   => 'select 1 from dual where ''' ||
+                              core_data.g_run_rec.error_message ||
+                              ''' like ''%Unable to find database object "' ||
+                              g_DBOUT || '".%''',
+         against_value_in => 1);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Find DBOUT Sad Path 2';
+      clear_run_rec;
+      g_DBOUT := 'WTPLSQL';
+      find_dbout;
+      wt_assert.isnull(
+         msg_in          => 'core_data.g_run_rec.dbout_owner',
+         check_this_in   =>  core_data.g_run_rec.dbout_owner);
+      wt_assert.isnull(
+         msg_in          => 'core_data.g_run_rec.dbout_name',
+         check_this_in   =>  core_data.g_run_rec.dbout_name);
+      wt_assert.isnull(
+         msg_in          => 'core_data.g_run_rec.dbout_type',
+         check_this_in   =>  core_data.g_run_rec.dbout_type);
+      wt_assert.eqqueryvalue (
+         msg_in           => 'core_data.g_run_rec.error_message',
+         check_query_in   => 'select 1 from dual where ''' ||
+                              core_data.g_run_rec.error_message ||
+                              ''' like ''%Found too many database objects "' ||
+                              g_DBOUT || '".%''',
+         against_value_in => 1);
+      --------------------------------------  WTPLSQL Testing --
+      -- Restore CORE_DATA data
+      core_data.g_run_rec := l_save_test_run_rec;
+      -- Reset package data
+      g_DBOUT := '';
+   end t_find_dbout;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
 ---------------------
 --  Public Procedures
 ---------------------
 
-
-------------------------------------------------------------
-function get_last_run_flag
-      return varchar2
-is
-begin
-   return IS_LAST_RUN_FLAG;
-end get_last_run_flag;
 
 ------------------------------------------------------------
 function get_runner_entry_point
@@ -159,19 +407,18 @@ procedure test_run
       (in_package_name  in  varchar2)
 is
    pragma AUTONOMOUS_TRANSACTION;  -- Required if called as Remote Procedure Call (RPC)
-   l_test_runs_rec_NULL   wt_test_runs_vw%ROWTYPE;
    l_error_stack          varchar2(32000);
    procedure concat_err_message
          (in_err_msg  in varchar2)
    is
    begin
-      if g_test_runs_rec.error_message is not null
+      if core_data.g_run_rec.error_message is not null
       then
-         g_test_runs_rec.error_message := substr(in_err_msg || CHR(10)||
-                                                 g_test_runs_rec.error_message
+         core_data.g_run_rec.error_message := substr(in_err_msg || CHR(10)||
+                                                 core_data.g_run_rec.error_message
                                                 ,1,4000);
       else
-         g_test_runs_rec.error_message := in_err_msg;
+         core_data.g_run_rec.error_message := in_err_msg;
       end if;
    end concat_err_message;
 begin
@@ -184,41 +431,19 @@ begin
          return;
       end if;
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
-   -- Reset the Test Runs Record before checking anything
-   g_test_runs_rec               := l_test_runs_rec_NULL;
-   g_test_runs_rec.id            := wt_test_runs_seq.nextval;
-   g_test_runs_rec.start_dtm     := systimestamp;
-   --g_test_runs_rec.runner_owner  := USER;
-   --g_test_runs_rec.runner_owner  := sys_context('userenv', 'current_schema');
-   select username into g_test_runs_rec.runner_owner from user_users;
-   g_test_runs_rec.runner_name   := in_package_name;
-   g_test_runs_rec.is_last_run   := IS_LAST_RUN_FLAG;
-   g_test_runs_rec.error_message := '';
-   check_runner;
+   -- Start a new Transaction
+   COMMIT;
    -- Initialize
-   delete_runs(in_runner_owner => g_test_runs_rec.runner_owner
-              ,in_runner_name  => g_test_runs_rec.runner_name);
-   COMMIT;   -- Start a new Transaction
-   wt_hook.before_run_init;
+   core_data.init1(in_package_name);
+   g_DBOUT := '';
    wt_assert.reset_globals;
-   wt_test_run_stat.initialize;
-   wt_result.initialize(g_test_runs_rec.id);
-   wt_profiler.initialize(in_test_run_id      => g_test_runs_rec.id,
-                          in_runner_owner     => g_test_runs_rec.runner_owner,
-                          in_runner_name      => g_test_runs_rec.runner_name,
-                          out_dbout_owner     => g_test_runs_rec.dbout_owner,
-                          out_dbout_name      => g_test_runs_rec.dbout_name,
-                          out_dbout_type      => g_test_runs_rec.dbout_type,
-                          out_trigger_offset  => g_test_runs_rec.trigger_offset,
-                          out_profiler_runid  => g_test_runs_rec.profiler_runid,
-                          out_error_message   => l_error_stack);
-   concat_err_message(l_error_stack);
-   wt_hook.after_run_init
+   -- Reset the Test Runs Record before checking anything
+   check_runner;
+   hook.before_test_run;
+   core_data.init2;
    -- Call the Test Runner
    begin
-      -- AUTHID CURRENT_USER is required for dynamic PL/SQL execution.
-      execute_test_runner ('BEGIN ' || in_package_name || '.' ||
-                                  C_RUNNER_ENTRY_POINT || '; END;');
+      hook.execute_test_runner;
    exception
       when OTHERS
       then
@@ -226,38 +451,15 @@ begin
                           dbms_utility.format_error_backtrace ;
          concat_err_message(l_error_stack);
    end;
-
    -- Finalize
-   insert_test_run;
-   wt_hook.before_run_final;
-   wt_profiler.finalize;
-   wt_result.finalize;
-   wt_test_run_stat.finalize;
-   wt_hook.after_run_final;
-   commit;  -- Required if called as Remote Procedure Call (RPC)
-
-exception
-   when OTHERS
-   then
-      l_error_stack := dbms_utility.format_error_stack     ||
-                       dbms_utility.format_error_backtrace ;
-      concat_err_message(l_error_stack);
-      begin
-         -- This is the only exception we can catch
-         --   with a full call stack
-         insert_test_run;
-      exception
-         when OTHERS
-         then
-            l_error_stack := dbms_utility.format_error_stack     ||
-                             dbms_utility.format_error_backtrace ;
-            concat_err_message(l_error_stack);
-            raise_application_error(-20000, substr(g_test_runs_rec.error_message
-                                                  ,1,2000         ));
-      end;
-      commit;  -- Required if called as Remote Procedure Call (RPC)
-
+   rollback;    -- Discard any pending transactions.
+   core_data.finalize;
+   find_dbout;
+   hook.after_test_run;
+   -- Required if called as Remote Procedure Call (RPC)
+   COMMIT;
 end test_run;
+
 
 --==============================================================--
 -- No Unit Test for TEST_RUN.
@@ -272,7 +474,7 @@ is
    TYPE runners_nt_type is table of varchar2(128);
    l_runners_nt      runners_nt_type;
 begin
-   wt_hook.before_test_all;
+   hook.before_test_all;
    select object_name
      bulk collect into l_runners_nt
     from  user_procedures  t1
@@ -284,7 +486,7 @@ begin
    loop
       test_run(l_runners_nt(i));
    end loop;
-   wt_hook.after_test_all;
+   hook.after_test_all;
 end test_all;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -308,229 +510,17 @@ $THEN
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
-------------------------------------------------------------
-procedure delete_runs
-      (in_test_run_id  in number)
-is
-   r_owner   varchar2(200);
-   r_name    varchar2(200);
-begin
-   wt_hook.before_delete_runs;
-   wt_test_run_stat.delete_records(in_test_run_id);
-   wt_profiler.delete_records(in_test_run_id);
-   wt_result.delete_records(in_test_run_id);
-   begin
-      --
-      select runner_owner, runner_name
-        into r_owner,      r_name
-       from  wt_test_runs
-       where id = in_test_run_id;
-      --
-      delete from wt_test_runs
-       where id = in_test_run_id;
-      --
-      set_last_run(in_runner_owner  => r_owner
-                  ,in_runner_name   => r_name
-                  ,in_last_run_flag => IS_LAST_RUN_FLAG);
-      --
-   exception when NO_DATA_FOUND
-   then
-      null;  -- Ignore Error
-   end;
-   wt_hook.after_delete_runs;
-end delete_runs;
-
-procedure delete_runs
-      (in_runner_owner  in varchar2
-      ,in_runner_name   in varchar2)
-is
-   num_recs    number;
-begin
-   num_recs := 1;
-   for buf2 in (select id from wt_test_runs
-                 where runner_owner = in_runner_owner
-                  and  runner_name  = in_runner_name
-                 order by start_dtm desc, id desc)
-   loop
-      -- Keep the last 20 rest runs for this USER
-      if num_recs > g_keep_num_recs
-      then
-       -- Autonomous Transaction COMMIT
-       delete_runs(buf2.id);
-      end if;
-      num_recs := num_recs + 1;
-   end loop;
-end delete_runs;
-
-$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
-$THEN
-   procedure t_delete_run_id
-   is
-      l_num_recs   number;
-      l_err_stack  varchar2(32000);
-   begin
-      --------------------------------------  WTPLSQL Testing --
-      --  DELETE_RECORDS has already run when we arrive here.
-      -- Cleanup from previous test
-      delete from wt_test_runs
-        where id between 0-g_keep_num_recs and 0-1;
-      commit;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'DELETE_RUNS Happy Path 1';
-      select count(*)
-       into  l_num_recs
-       from  wt_test_runs
-       where runner_owner = g_test_runs_rec.runner_owner
-        and  runner_name  = g_test_runs_rec.runner_name;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnotnull (
-         msg_in        => 'Number of Records Before Insert',
-         check_this_in => l_num_recs);
-      wt_assert.this (
-         msg_in        => 'Number of Records Before Insert <= ' || g_keep_num_recs,
-         check_this_in => l_num_recs <= g_keep_num_recs);
-      --------------------------------------  WTPLSQL Testing --
-      insert into wt_test_runs values g_test_runs_rec;
-      COMMIT;
-      wt_assert.eqqueryvalue (
-         msg_in           => 'Number of Records After Insert',
-         check_query_in   => 'select count(*) from wt_test_runs' ||
-                             ' where id = ' || g_test_runs_rec.id,
-         against_value_in => 1);
-      delete_runs(g_test_runs_rec.id);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eqqueryvalue (
-         msg_in           => 'Number of Records After Delete',
-         check_query_in   => 'select count(*) from wt_test_runs' ||
-                             ' where id = ' || g_test_runs_rec.id,
-         against_value_in => 0);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'DELETE_RUNS Happy Path 2';
-      wt_assert.eqqueryvalue (
-         msg_in           => 'Confirm number of records',
-         check_query_in   => 'select count(*) from wt_test_runs' ||
-                             ' where runner_owner = ''' || g_test_runs_rec.runner_owner ||
-                           ''' and runner_name = ''' || g_test_runs_rec.runner_name ||
-                           '''',
-         against_value_in => l_num_recs);
-      --------------------------------------  WTPLSQL Testing --
-      for i in 1 .. g_keep_num_recs
-      loop
-         insert into wt_test_runs
-               (id, start_dtm, runner_owner, runner_name)
-            values
-               (0-i, sysdate-7000-i, g_test_runs_rec.runner_owner, g_test_runs_rec.runner_name);
-      end loop;
-      commit;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eqqueryvalue (
-         msg_in           => 'Check Added ' || g_keep_num_recs || ' records',
-         check_query_in   => 'select count(*) from wt_test_runs' ||
-                             ' where runner_owner = ''' || g_test_runs_rec.runner_owner ||
-                           ''' and runner_name = ''' || g_test_runs_rec.runner_name ||
-                           '''',
-         against_value_in => l_num_recs + g_keep_num_recs);
-      delete_runs(g_test_runs_rec.runner_owner, g_test_runs_rec.runner_name);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eqqueryvalue (
-         msg_in           => 'Check number of records reduced',
-         check_query_in   => 'select count(*) from wt_test_runs' ||
-                             ' where runner_owner = ''' || g_test_runs_rec.runner_owner ||
-                           ''' and runner_name = ''' || g_test_runs_rec.runner_name ||
-                           '''',
-         against_value_in => g_keep_num_recs);
-      delete from wt_test_runs
-        where id between 0-g_keep_num_recs and 0-1;
-      commit;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eqqueryvalue (
-         msg_in           => 'Confirm original number of records',
-         check_query_in   => 'select count(*) from wt_test_runs' ||
-                             ' where runner_owner = ''' || g_test_runs_rec.runner_owner ||
-                           ''' and runner_name = ''' || g_test_runs_rec.runner_name ||
-                           '''',
-         against_value_in => l_num_recs);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'DELETE_RUNS Sad Path 1';
-      begin
-         delete_runs(-9995);  -- Should run without error
-         l_err_stack := dbms_utility.format_error_stack     ||
-                        dbms_utility.format_error_backtrace ;
-      exception when others then
-         l_err_stack := dbms_utility.format_error_stack     ||
-                        dbms_utility.format_error_backtrace ;
-      end;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull (
-         msg_in          => 'Delete Runs(-9995)',
-         check_this_in   => l_err_stack);
-   end t_delete_run_id;
-$END  ----------------%WTPLSQL_end_ignore_lines%----------------
-
-
 --==============================================================--
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure t_test_runs_rec_and_table
-   is
-   begin
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'TEST_RUNS_REC_AND_TABLE Happy Path';
-      -- This Test Case runs in the EXECUTE IMMEDAITE in the TEST_RUN
-      --   procedure in this package.
-      wt_assert.isnotnull
-               (msg_in        => 'g_test_runs_rec.id'
-               ,check_this_in => g_test_runs_rec.id);
-      wt_assert.isnotnull
-               (msg_in        => 'g_test_runs_rec.start_dtm'
-               ,check_this_in => g_test_runs_rec.start_dtm);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnotnull
-               (msg_in        => 'g_test_runs_rec.runner_owner'
-               ,check_this_in => g_test_runs_rec.runner_owner);
-      wt_assert.eq
-               (msg_in          => 'g_test_runs_rec.runner_name'
-               ,check_this_in   => g_test_runs_rec.runner_name
-               ,against_this_in => 'WTPLSQL');
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull
-               (msg_in        => 'g_test_runs_rec.dbout_owner'
-               ,check_this_in => g_test_runs_rec.dbout_owner);
-      wt_assert.isnull
-               (msg_in          => 'g_test_runs_rec.dbout_name'
-               ,check_this_in   => g_test_runs_rec.dbout_name);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull
-               (msg_in          => 'g_test_runs_rec.dbout_type'
-               ,check_this_in   => g_test_runs_rec.dbout_type);
-      wt_assert.isnull
-               (msg_in        => 'g_test_runs_rec.profiler_runid'
-               ,check_this_in => g_test_runs_rec.profiler_runid);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull
-               (msg_in        => 'g_test_runs_rec.end_dtm'
-               ,check_this_in => g_test_runs_rec.end_dtm);
-      wt_assert.isnull
-               (msg_in        => 'g_test_runs_rec.error_message'
-               ,check_this_in => g_test_runs_rec.error_message);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eqqueryvalue
-               (msg_in             => 'TEST_RUNS Record for this TEST_RUN'
-               ,check_query_in     => 'select count(*) from WT_TEST_RUNS' ||
-                                      ' where id = ''' || g_test_runs_rec.id || ''''
-               ,against_value_in   => 0);
-   end t_test_runs_rec_and_table;
-   ----------------------------------------
    procedure WTPLSQL_RUN
    is
    begin
       --------------------------------------  WTPLSQL Testing --
-      t_show_version;
       t_check_runner;
-      t_insert_test_run;
+      t_find_dbout;
+      t_show_version;
       t_test_all;
-      t_delete_run_id;
-      t_test_runs_rec_and_table;
    end;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--

@@ -6,35 +6,32 @@ is
    ASSERT_FAILURE_EXCEPTION  exception;
    PRAGMA EXCEPTION_INIT(ASSERT_FAILURE_EXCEPTION, -20003);
 
-   C_PASS  CONSTANT varchar2(10) := 'PASS';
-   C_FAIL  CONSTANT varchar2(10) := 'FAIL';
-
    -- See RESET_GLOBALS procedure for default global values
 
    -- Testcase name for a series of assertions.
    --   Modify as required
-   g_testcase_name          wt_testcases.name%TYPE;
+   g_testcase   core_data.long_name;
 
    -- See RESET_GLOBALS procedure for default global values
    TYPE g_rec_type is record
       (last_pass        boolean
       ,raise_exception  boolean
-      ,last_assert      wt_results.assertion%TYPE
-      ,last_msg         wt_results.message%TYPE
-      ,last_details     wt_results.details%TYPE);
+      ,last_assert      varchar2(15)
+      ,last_msg         varchar2(200)
+      ,last_details     varchar2(4000));
    g_rec  g_rec_type;
 
    function last_pass
    return boolean;
 
    function last_assert
-   return wt_results.assertion%TYPE;
+   return varchar2;
 
    function last_msg
-   return wt_results.message%TYPE;
+   return varchar2;
 
    function last_details
-   return wt_results.details%TYPE;
+   return varchar2;
 
    procedure reset_globals;
 
