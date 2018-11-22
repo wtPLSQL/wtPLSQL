@@ -1,0 +1,39 @@
+
+--
+--  Results Table Installation
+--
+
+create table wt_results
+   (test_run_id      number(38)     constraint wt_results_nn1 not null
+   ,result_seq       number(8)      constraint wt_results_nn2 not null
+   ,testcase_id      number(38)     constraint wt_results_nn3 not null
+   ,executed_dtm     timestamp(6)   constraint wt_results_nn4 not null
+   ,interval_msecs   number(10,3)   constraint wt_results_nn5 not null
+   ,assertion        varchar2(15)   constraint wt_results_nn6 not null
+   ,status           varchar2(4)    constraint wt_results_nn7 not null
+   ,message          varchar2(200)
+   ,details          varchar2(4000)
+   ,constraint wt_results_pk primary key (test_run_id, result_seq)
+   ,constraint wt_results_fk1 foreign key (test_run_id)
+       references wt_test_runs (id)
+   ,constraint wt_results_fk2 foreign key (testcase_id)
+       references wt_testcases (id)
+   ,constraint wt_results_ck1 check (status in ('PASS','FAIL'))
+   ) pctfree 0;
+
+create index wt_results_ix1
+   on wt_results(testcase_id, test_run_id);
+
+comment on table wt_results is 'Results data from Test Runs.';
+comment on column wt_results.test_run_id is 'Foreign Key for the Test Run, Primary Key part 1.';
+comment on column wt_results.result_seq is 'Sequence number for this Result, Primary Key part 2.';
+comment on column wt_results.testcase_id is 'Foreign Key for the Test Case.';
+comment on column wt_results.executed_dtm is 'Date/Time (with Fractional Seconds) this Result was captured';
+comment on column wt_results.interval_msecs is 'Interval time in milliseonds since the previous Result or start ot the Test Run.';
+comment on column wt_results.assertion is 'Name of the Assertion Test performed';
+comment on column wt_results.status is 'PASS/FAIL Status from the Assertion';
+comment on column wt_results.details is 'Assertion Details, i.e. Expected Value and Actual Value';
+comment on column wt_results.message is 'Optional test identifier that helps connect an Assertion to the Test Runner.';
+
+grant select on wt_results to public;
+grant delete on wt_results to public;

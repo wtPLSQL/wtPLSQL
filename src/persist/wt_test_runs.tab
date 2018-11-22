@@ -1,0 +1,51 @@
+
+--
+--  Test Runs Table Installation
+--
+
+create sequence wt_test_runs_seq order;
+
+grant select on wt_test_runs_seq to public;
+
+create table wt_test_runs
+   (id              number(38)     constraint wt_test_runs_nn1 not null
+   ,test_runner_id  number(38)     constraint wt_test_runs_nn2 not null
+   ,start_dtm       timestamp      constraint wt_test_runs_nn3 not null
+   ,end_dtm         timestamp
+   ,dbout_id        number(38)
+   ,trigger_offset  number(6)
+   ,profiler_runid  number
+   ,is_last_run     varchar2(1)
+   ,error_message   varchar2(4000)
+   ,constraint wt_test_runs_pk primary key (id)
+   ,constraint wt_test_runs_nk1 unique (test_runner_id, start_dtm)
+   ,constraint wt_test_runs_fk1 foreign key (test_runner_id)
+       references wt_test_runners (id)
+   ,constraint wt_test_runs_fk2 foreign key (dbout_id)
+       references wt_dbouts (id)
+   ,constraint wt_test_runs_fk3 foreign key (profiler_runid)
+       references plsql_profiler_runs (runid) disable
+   ,constraint wt_test_runs_ck1 check (trigger_offset >= 0)
+   ,constraint wt_test_runs_ck2 check (is_last_run = 'Y')
+   ) pctfree 0;
+
+create index wt_test_runs_ix1
+   on wt_test_runs(is_last_run, test_runner_id);
+
+create index wt_test_runs_ix2
+   on wt_test_runs(dbout_id, test_runner_id);
+
+comment on table wt_test_runs is 'Test Run data for each execution of a Test Runner.';
+comment on column wt_test_runs.id is 'Primary (Surrogate) Key for each Test Run';
+comment on column wt_test_runs.test_runner_id is 'Surrogate Key the Test Runner package. Natural Key 1 part 1';
+comment on column wt_test_runs.start_dtm is 'Date/time (and fractional seconds) this Test Run started. Natural Key 1 part 2';
+comment on column wt_test_runs.end_dtm is 'Date/time (and fractional seconds) this Test Run ended.';
+comment on column wt_test_runs.dbout_id is 'Optional Surrogate Key to the Database Object Under Test (DBOUT).';
+comment on column wt_test_runs.trigger_offset is 'Optional calculated offset from start of Trigger Source to start of Trigger PL/SQL Block.';
+comment on column wt_test_runs.profiler_runid is 'Optional DBMS_PROFILER unique run identifier from plsql_profiler_runnumber sequence';
+comment on column wt_test_runs.is_last_run is 'Optional Flag "Y" to indicate this is the most recent run for this package owner/name';
+comment on column wt_test_runs.error_message is 'Optional Error messages from this Test Run.';
+
+grant select on wt_test_runs to public;
+grant insert on wt_test_runs to public;
+grant delete on wt_test_runs to public;

@@ -1,0 +1,27 @@
+
+--
+--  Test Runs Statistics Table Installation
+--
+
+create sequence wt_dbouts_seq;
+
+create table wt_dbouts
+   (id       number(38)     constraint wt_dbouts_nn1 not null
+   ,owner    varchar2(128)  constraint wt_dbouts_nn2 not null
+   ,name     varchar2(128)  constraint wt_dbouts_nn3 not null
+   ,type     varchar2(20)   constraint wt_dbouts_nn4 not null
+   ,constraint wt_dbouts_pk primary key (id)
+   ,constraint wt_dbouts_nk1 unique (owner, name, type)
+   ) pctfree 0;
+
+create index wt_dbouts_ix1
+  on wt_dbouts (type, owner);
+
+comment on table wt_dbouts is 'List of Database Objects Under Test (DBOUT).';
+comment on column wt_dbouts.id is 'Primary (Surrogate) Key for each Database Objects Under Test (DBOUT)';
+comment on column wt_dbouts.owner is 'Owner of the Database Object Under Test (DBOUT).';
+comment on column wt_dbouts.name is 'Name of the Database Object Under Test (DBOUT).';
+comment on column wt_dbouts.type is 'Type of the Database Object Under Test (DBOUT).';
+
+grant select on wt_dbouts to public;
+grant delete on wt_dbouts to public;
