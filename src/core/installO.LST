@@ -2,217 +2,102 @@ old: showmode BOTH
 
 PL/SQL procedure successfully completed.
 
-old:create user &schema_owner. identified by &schema_owner.
-   default tablespace users
-   quota unlimited on users
-   temporary tablespace temp
-new:create user wtp identified by wtp
-   default tablespace users
-   quota unlimited on users
-   temporary tablespace temp
+old   1: create user &schema_owner. identified by &schema_owner.
+new   1: create user wtp identified by wtp
 
-User WTP created.
+User created.
 
-old:grant create session   to &schema_owner.
-new:grant create session   to wtp
+old   1: grant create session        to &schema_owner.
+new   1: grant create session        to wtp
 
 Grant succeeded.
 
-old:grant create type      to &schema_owner.
-new:grant create type      to wtp
+old   1: grant create type           to &schema_owner.
+new   1: grant create type           to wtp
 
 Grant succeeded.
 
-old:grant create sequence  to &schema_owner.
-new:grant create sequence  to wtp
+old   1: grant create sequence       to &schema_owner.
+new   1: grant create sequence       to wtp
 
 Grant succeeded.
 
-old:grant create table     to &schema_owner.
-new:grant create table     to wtp
+old   1: grant create table          to &schema_owner.
+new   1: grant create table          to wtp
 
 Grant succeeded.
 
-old:grant create trigger   to &schema_owner.
-new:grant create trigger   to wtp
+old   1: grant create trigger        to &schema_owner.
+new   1: grant create trigger        to wtp
 
 Grant succeeded.
 
-old:grant create view      to &schema_owner.
-new:grant create view      to wtp
+old   1: grant create view           to &schema_owner.
+new   1: grant create view           to wtp
 
 Grant succeeded.
 
-old:grant create procedure to &schema_owner.
-new:grant create procedure to wtp
+old   1: grant create procedure      to &schema_owner.
+new   1: grant create procedure      to wtp
 
 Grant succeeded.
 
-old:grant select on dba_source to &schema_owner.
-new:grant select on dba_source to wtp
+old   1: grant create database link  to &schema_owner.
+new   1: grant create database link  to wtp
 
 Grant succeeded.
 
-old:grant select on dba_objects to &schema_owner.
-new:grant select on dba_objects to wtp
+old   1: grant create job            to &schema_owner.
+new   1: grant create job            to wtp
 
 Grant succeeded.
 
-PLSQL_CCFLAGS Before: WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE
+old   1: grant create public synonym to &schema_owner.
+new   1: grant create public synonym to wtp
 
+Grant succeeded.
+
+old   1: grant select on dba_objects       to &schema_owner.
+new   1: grant select on dba_objects       to wtp
+
+Grant succeeded.
+
+old   1: grant select on dba_procedures    to &schema_owner.
+new   1: grant select on dba_procedures    to wtp
+
+Grant succeeded.
+
+old   1: grant select on dba_source        to &schema_owner.
+new   1: grant select on dba_source        to wtp
+
+Grant succeeded.
+
+old   1: grant select on sys.gv_$parameter to &schema_owner.
+new   1: grant select on sys.gv_$parameter to wtp
+
+Grant succeeded.
+
+PLSQL_CCFLAGS Before: WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE                
 
 PL/SQL procedure successfully completed.
 
 
 PL/SQL procedure successfully completed.
 
-PLSQL_CCFLAGS After: WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE
-
+PLSQL_CCFLAGS After: WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE                 
 
 PL/SQL procedure successfully completed.
-
-old:create or replace public synonym wt_version        for &schema_owner..wt_version
-new:create or replace public synonym wt_version        for wtp.wt_version
-
-Synonym WT_VERSION created.
-
-old:create or replace public synonym wt_test_runs_seq  for &schema_owner..wt_test_runs_seq
-new:create or replace public synonym wt_test_runs_seq  for wtp.wt_test_runs_seq
-
-Synonym WT_TEST_RUNS_SEQ created.
-
-old:create or replace public synonym wt_test_runs      for &schema_owner..wt_test_runs
-new:create or replace public synonym wt_test_runs      for wtp.wt_test_runs
-
-Synonym WT_TEST_RUNS created.
-
-old:create or replace public synonym wt_results        for &schema_owner..wt_results
-new:create or replace public synonym wt_results        for wtp.wt_results
-
-Synonym WT_RESULTS created.
-
-old:create or replace public synonym wt_dbout_profiles for &schema_owner..wt_dbout_profiles
-new:create or replace public synonym wt_dbout_profiles for wtp.wt_dbout_profiles
-
-Synonym WT_DBOUT_PROFILES created.
-
-old:create or replace public synonym wt_test_run_stats for &schema_owner..wt_test_run_stats
-new:create or replace public synonym wt_test_run_stats for wtp.wt_test_run_stats
-
-Synonym WT_TEST_RUN_STATS created.
-
-old:create or replace public synonym wt_testcase_stats for &schema_owner..wt_testcase_stats
-new:create or replace public synonym wt_testcase_stats for wtp.wt_testcase_stats
-
-Synonym WT_TESTCASE_STATS created.
-
-old:create or replace public synonym wt_self_test      for &schema_owner..wt_self_test
-new:create or replace public synonym wt_self_test      for wtp.wt_self_test
-
-Synonym WT_SELF_TEST created.
-
-old:create or replace public synonym utassert       for &schema_owner..wt_assert
-new:create or replace public synonym utassert       for wtp.wt_assert
-
-Synonym UTASSERT created.
-
-old:create or replace public synonym wt_assert      for &schema_owner..wt_assert
-new:create or replace public synonym wt_assert      for wtp.wt_assert
-
-Synonym WT_ASSERT created.
-
-old:create or replace public synonym wt_text_report for &schema_owner..wt_text_report
-new:create or replace public synonym wt_text_report for wtp.wt_text_report
-
-Synonym WT_TEXT_REPORT created.
-
-old:create or replace public synonym wt_wtplsql     for &schema_owner..wtplsql
-new:create or replace public synonym wt_wtplsql     for wtp.wtplsql
-
-Synonym WT_WTPLSQL created.
-
-old:create or replace public synonym wtplsql        for &schema_owner..wtplsql
-new:create or replace public synonym wtplsql        for wtp.wtplsql
-
-Synonym WTPLSQL created.
 
 Connected.
-old:begin
-   if USER != upper('&schema_owner')
-   then
-      raise_application_error (-20000,
-        'Not logged in as &schema_owner');
-   end if;
-end;
-
-new:begin
-   if USER != upper('wtp')
-   then
-      raise_application_error (-20000,
-        'Not logged in as wtp');
-   end if;
-end;
+old   2:    if USER != upper('&schema_owner')
+new   2:    if USER != upper('wtp')
+old   5:         'Not logged in as &schema_owner');
+new   5:         'Not logged in as wtp');
 
 PL/SQL procedure successfully completed.
 
 
-Error starting at line : 46 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\proftab.sql
-In command -
-drop table plsql_profiler_data cascade constraints
-Error report -
-ORA-00942: table or view does not exist
-00942. 00000 -  "table or view does not exist"
-*Cause:    
-*Action:
-
-Error starting at line : 47 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\proftab.sql
-In command -
-drop table plsql_profiler_units cascade constraints
-Error report -
-ORA-00942: table or view does not exist
-00942. 00000 -  "table or view does not exist"
-*Cause:    
-*Action:
-
-Error starting at line : 48 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\proftab.sql
-In command -
-drop table plsql_profiler_runs cascade constraints
-Error report -
-ORA-00942: table or view does not exist
-00942. 00000 -  "table or view does not exist"
-*Cause:    
-*Action:
-
-Error starting at line : 50 File @ C:\Users\Duane\Documents\GitHub\wtPLSQL\src\core\proftab.sql
-In command -
-drop sequence plsql_profiler_runnumber
-Error report -
-ORA-02289: sequence does not exist
-02289. 00000 -  "sequence does not exist"
-*Cause:    The specified sequence does not exist, or the user does
-           not have the required privilege to perform this operation.
-*Action:   Make sure the sequence name is correct, and that you have
-           the right to perform the desired operation on this sequence.
-
-Table PLSQL_PROFILER_RUNS created.
-
-
-Comment created.
-
-
-Table PLSQL_PROFILER_UNITS created.
-
-
-Comment created.
-
-
-Table PLSQL_PROFILER_DATA created.
-
-
-Comment created.
-
-
-Sequence PLSQL_PROFILER_RUNNUMBER created.
+Table created.
 
 
 Comment created.
@@ -230,7 +115,7 @@ Comment created.
 Comment created.
 
 
-Comment created.
+Table created.
 
 
 Comment created.
@@ -242,357 +127,23 @@ Comment created.
 Comment created.
 
 
-Comment created.
+Grant succeeded.
+
+old   1: create or replace public synonym wt_version for &schema_owner..wt_versions
+new   1: create or replace public synonym wt_version for wtp.wt_versions
+
+Synonym created.
 
 
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Index PLSQL_PROFILER_RUNS_IDX1 created.
-
-
-Table WT_VERSION created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-1 row inserted.
+1 row created.
 
 
 Commit complete.
 
 
-Grant succeeded.
+Table created.
 
 
-Sequence WT_TEST_RUNS_SEQ created.
-
-
-Grant succeeded.
-
-
-Table WT_TEST_RUNS created.
-
-
-Index WT_TEST_RUNS_IDX1 created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Grant succeeded.
-
-
-Grant succeeded.
-
-
-Grant succeeded.
-
-
-Table WT_RESULTS created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Grant succeeded.
-
-
-Grant succeeded.
-
-
-Table WT_DBOUT_PROFILES created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Grant succeeded.
-
-
-Grant succeeded.
-
-
-Table WT_TEST_RUN_STATS created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Grant succeeded.
-
-
-Grant succeeded.
-
-
-Table WT_TESTCASE_STATS created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Comment created.
-
-
-Grant succeeded.
-
-
-Grant succeeded.
-
-
-Table WT_SELF_TEST created.
-
-
 Comment created.
 
 
@@ -611,7 +162,7 @@ Comment created.
 Comment created.
 
 
-Trigger WT_SELF_TEST$TEST compiled
+Trigger created.
 
 
 PL/SQL procedure successfully completed.
@@ -620,48 +171,81 @@ PL/SQL procedure successfully completed.
 Commit complete.
 
 
-Package WTPLSQL compiled
+Package created.
 
 
-Package WT_RESULT compiled
+Package created.
 
 
-Package WT_ASSERT compiled
-
-
-Package WT_PROFILER compiled
-
-
-Package WT_TEST_RUN_STAT compiled
-
-
-Package WT_TEXT_REPORT compiled
+Package created.
 
 
 Grant succeeded.
 
 
-Grant succeeded.
+Synonym created.
+
+
+Synonym created.
+
+
+Package created.
 
 
 Grant succeeded.
 
 
-Package Body WTPLSQL compiled
+Synonym created.
 
 
-Package Body WT_RESULT compiled
+Synonym created.
 
 
-Package Body WT_ASSERT compiled
+Package created.
 
 
-Package Body WT_PROFILER compiled
+Grant succeeded.
 
 
-Package Body WT_TEST_RUN_STAT compiled
+Synonym created.
 
 
-Package Body WT_TEXT_REPORT compiled
+Procedure created.
+
+
+Procedure created.
+
+
+Grant succeeded.
+
+
+Synonym created.
+
+
+Package body created.
+
+
+Package body created.
+
+
+Package body created.
+
+
+Package body created.
+
+
+Package body created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
 
 new: showmode BOTH
