@@ -408,19 +408,6 @@ procedure test_run
 is
    pragma AUTONOMOUS_TRANSACTION;  -- Required if called as Remote Procedure Call (RPC)
    l_error_stack          varchar2(32000);
-   procedure concat_err_message
-         (in_err_msg  in varchar2)
-   is
-   begin
-      if core_data.g_run_rec.error_message is not null
-      then
-         core_data.g_run_rec.error_message := substr(in_err_msg || CHR(10)||
-                                                 core_data.g_run_rec.error_message
-                                                ,1,4000);
-      else
-         core_data.g_run_rec.error_message := in_err_msg;
-      end if;
-   end concat_err_message;
 begin
    $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
    $THEN
@@ -449,7 +436,7 @@ begin
       then
          l_error_stack := dbms_utility.format_error_stack     ||
                           dbms_utility.format_error_backtrace ;
-         concat_err_message(l_error_stack);
+         core_data.run_error(l_error_stack);
    end;
    -- Finalize
    rollback;    -- Discard any pending transactions.

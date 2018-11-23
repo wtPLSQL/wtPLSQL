@@ -38,27 +38,9 @@ $THEN
       l_run_recTEST      run_rec_type;
       l_results_ntTEST   results_nt_type;
       l_results_recTEST  results_rec_type;
-      num_recs           number;
    begin
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'INIT "One" Starting Point Confirmation';
-      wt_assert.isnotnull
-         (msg_in        => 'g_run_rec.runner_owner'
-         ,check_this_in =>  g_run_rec.runner_owner);
-      wt_assert.isnotnull
-         (msg_in        => 'g_run_rec.runner_name'
-         ,check_this_in =>  g_run_rec.runner_name);
-      wt_assert.isnotnull
-         (msg_in        => 'g_run_rec.start_dtm'
-         ,check_this_in =>  g_run_rec.start_dtm);
-      num_recs := g_results_nt.COUNT;
-      wt_assert.isnotnull
-         (msg_in        => 'Number of Records in g_results_nt'
-         ,check_this_in =>  num_recs);
-      wt_assert.isnotnull
-         (msg_in        => 'g_results_rec.pass'
-         ,check_this_in =>  g_results_rec.pass);
-      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'INIT "One" Happy Path 1';
       l_run_recSAVE     := g_run_rec;
       l_results_recSAVE := g_results_rec;
       l_results_ntSAVE  := g_results_nt;
@@ -70,10 +52,17 @@ $THEN
       g_results_rec     := l_results_recSAVE;
       g_results_nt      := l_results_ntSAVE;
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'INIT "One" Happy Path 1';
+      wt_assert.isnotnull
+         (msg_in          => 'l_results_ntSAVE.COUNT'
+         ,check_this_in   =>  l_results_ntSAVE.COUNT);
       wt_assert.eq
-         (msg_in          => 'l_run_recSAVE.runner_owner'
-         ,check_this_in   =>  l_run_recSAVE.runner_owner
+         (msg_in          => 'l_results_ntTEST.COUNT'
+         ,check_this_in   =>  l_results_ntTEST.COUNT
+         ,against_this_in =>  1);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq
+         (msg_in          => 'l_run_recTEST.runner_owner'
+         ,check_this_in   =>  l_run_recTEST.runner_owner
          ,against_this_in =>  USER);
       wt_assert.eq
          (msg_in          => 'l_run_recTEST.runner_name'
@@ -83,12 +72,8 @@ $THEN
          (msg_in          => 'l_run_recTEST.start_dtm'
          ,check_this_in   =>  l_run_recTEST.start_dtm);
       wt_assert.this
-         (msg_in          => 'l_run_recTEST.start_dtm > g_run_rec.start_dtm'
-         ,check_this_in   =>  l_run_recTEST.start_dtm > g_run_rec.start_dtm);
-      wt_assert.eq
-         (msg_in          => 'Number of Records in l_results_ntTEST'
-         ,check_this_in   =>  l_results_ntTEST.COUNT
-         ,against_this_in =>  1);
+         (msg_in          => 'l_run_recTEST.start_dtm > l_run_recSAVE.start_dtm'
+         ,check_this_in   =>  l_run_recTEST.start_dtm > l_run_recSAVE.start_dtm);
       wt_assert.isnull
          (msg_in          => 'l_results_recTEST.pass'
          ,check_this_in   =>  l_results_recTEST.pass);
@@ -175,11 +160,9 @@ $THEN
       l_run_recTEST      run_rec_type;
       l_results_ntTEST   results_nt_type;
       l_results_recTEST  results_rec_type;
-      num_recs           number;
    begin
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Add Happy Path';
-      num_recs := g_results_nt.COUNT;
+      wt_assert.g_testcase := 'Add Procedure Happy Path';
       l_run_recSAVE     := g_run_rec;
       l_results_recSAVE := g_results_rec;
       l_results_ntSAVE  := g_results_nt;
@@ -195,27 +178,22 @@ $THEN
       g_results_rec     := l_results_recSAVE;
       g_results_nt      := l_results_ntSAVE;
       --------------------------------------  WTPLSQL Testing --
-      -- Must use num_recs - 1 to find the previous record
-      --   num_recs is the test record added here
-      --   num_recs + 1 is a NULL record
       wt_assert.isnotnull
-         (msg_in          => 'Number of Records Before Test'
-         ,check_this_in   =>  num_recs);
+         (msg_in          => 'l_results_ntSAVE.COUNT'
+         ,check_this_in   =>  l_results_ntSAVE.COUNT);
       wt_assert.eq
-         (msg_in          => 'Confirm Records After Test'
+         (msg_in          => 'Confirm l_results_ntTEST.COUNT'
          ,check_this_in   =>  l_results_ntTEST.COUNT
-         ,against_this_in =>  num_recs + 1);
+         ,against_this_in =>  l_results_ntSAVE.COUNT + 1);
       wt_assert.isnotnull
          (msg_in          => 'l_results_recTEST.result_seq'
          ,check_this_in   =>  l_results_recTEST.result_seq);
-      wt_assert.isnotnull
-         (msg_in          => 'l_results_ntTEST(num_recs-1).result_seq'
-         ,check_this_in   =>  l_results_ntTEST(num_recs-1).result_seq);
       wt_assert.this
          (msg_in          => 'l_results_recTEST.result_seq = ' ||
-                             'l_results_ntTEST(num_recs-1).result_seq + 1'
+                             'l_results_recSAVE.result_seq + 1'
          ,check_this_in   =>  l_results_recTEST.result_seq =
-                              l_results_ntTEST(num_recs-1).result_seq + 1);
+                              l_results_recSAVE.result_seq + 1);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull
          (msg_in          => 'l_results_recTEST.interval_msecs'
          ,check_this_in   =>  l_results_recTEST.interval_msecs);
@@ -224,9 +202,10 @@ $THEN
          ,check_this_in   =>  l_results_recTEST.executed_dtm);
       wt_assert.this
          (msg_in          => 'l_results_recTEST.executed_dtm >= ' ||
-                             'l_results_ntTEST(num_recs-1).executed_dtm'
+                             'l_results_recSAVE.executed_dtm'
          ,check_this_in   =>  l_results_recTEST.executed_dtm >=
-                              l_results_ntTEST(num_recs-1).executed_dtm);
+                              l_results_recSAVE.executed_dtm);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq
          (msg_in          => 'l_results_recTEST.testcase'
          ,check_this_in   =>  l_results_recTEST.testcase
@@ -263,9 +242,38 @@ $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure t_finalize
    is
+      l_run_recSAVE      run_rec_type;
+      l_results_ntSAVE   results_nt_type;
+      l_results_recSAVE  results_rec_type;
+      l_run_recTEST      run_rec_type;
+      l_results_ntTEST   results_nt_type;
+      l_results_recTEST  results_rec_type;
    begin
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'TEST_ALL Happy Path';
+      wt_assert.g_testcase := 'Finalize Happy Path';
+      l_run_recSAVE     := g_run_rec;
+      l_results_recSAVE := g_results_rec;
+      l_results_ntSAVE  := g_results_nt;
+      finalize;
+      l_run_recTEST     := g_run_rec;
+      l_results_recTEST := g_results_rec;
+      l_results_ntTEST  := g_results_nt;
+      g_run_rec         := l_run_recSAVE;
+      g_results_rec     := l_results_recSAVE;
+      g_results_nt      := l_results_ntSAVE;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnull
+         (msg_in        => 'l_run_recSAVE.end_dtm'
+         ,check_this_in =>  l_run_recSAVE.end_dtm);
+      wt_assert.isnotnull
+         (msg_in        => 'l_run_recTEST.end_dtm'
+         ,check_this_in =>  l_run_recTEST.end_dtm);
+      wt_assert.isnotnull
+         (msg_in        => 'l_results_ntSAVE.COUNT'
+         ,check_this_in =>  l_results_ntSAVE.COUNT);
+      wt_assert.this
+         (msg_in        => 'l_results_ntTEST.COUNT = l_results_ntSAVE.COUNT - 1'
+         ,check_this_in =>  l_results_ntTEST.COUNT = l_results_ntSAVE.COUNT - 1);
    end t_finalize;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
@@ -274,7 +282,6 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 procedure run_error
       (in_error_message  in  varchar2)
 is
-      l_run_recSAVE   run_rec_type;
 begin
    if g_run_rec.error_message is null
    then
@@ -290,9 +297,63 @@ $THEN
    procedure t_run_error
    is
       l_run_recSAVE   run_rec_type;
+      l_run_recTEST   run_rec_type;
+      test_message    varchar2(32767);
    begin
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'TEST_ALL Happy Path';
+      wt_assert.g_testcase := 'RUN_ERROR Happy Path 1';
+      l_run_recSAVE := g_run_rec;
+      g_run_rec.error_message := '';
+      run_error('Simlple Message');
+      l_run_recTEST := g_run_rec;
+      g_run_rec     := l_run_recSAVE;
+      wt_assert.eq
+         (msg_in          => 'l_run_recTEST.error_message'
+         ,check_this_in   =>  l_run_recTEST.error_message
+         ,against_this_in => 'Simlple Message');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'RUN_ERROR Happy Path 2';
+      l_run_recSAVE := g_run_rec;
+      g_run_rec.error_message := '';
+      run_error('Message 1');
+      run_error('Message 2');
+      l_run_recTEST := g_run_rec;
+      g_run_rec     := l_run_recSAVE;
+      wt_assert.eq
+         (msg_in          => 'l_run_recTEST.error_message'
+         ,check_this_in   =>  l_run_recTEST.error_message
+         ,against_this_in => 'Message 1' || CHR(10) || 'Message 2');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'RUN_ERROR Happy Path 3';
+      for i in 1 .. 399
+      loop
+         test_message := test_message || '1234567890';
+      end loop;
+      l_run_recSAVE := g_run_rec;
+      g_run_rec.error_message := '';
+      run_error(test_message);
+      run_error('Longer than 10 characters.');
+      l_run_recTEST := g_run_rec;
+      g_run_rec     := l_run_recSAVE;
+      wt_assert.isnotnull
+         (msg_in          => 'substr(l_run_recTEST.error_message,3000)'
+         ,check_this_in   =>  substr(l_run_recTEST.error_message,3000));
+      wt_assert.this
+         (msg_in          => 'l_run_recTEST.error_message like ''%Longer th'''
+         ,check_this_in   =>  l_run_recTEST.error_message like '%Longer th');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'RUN_ERROR Happy Path 4';
+      l_run_recSAVE := g_run_rec;
+      g_run_rec.error_message := '';
+      run_error('');
+      run_error('Message');
+      run_error('');
+      l_run_recTEST := g_run_rec;
+      g_run_rec     := l_run_recSAVE;
+      wt_assert.eq
+         (msg_in          => 'l_run_recTEST.error_message'
+         ,check_this_in   =>  l_run_recTEST.error_message
+         ,against_this_in => 'Message' || CHR(10));
    end t_run_error;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 

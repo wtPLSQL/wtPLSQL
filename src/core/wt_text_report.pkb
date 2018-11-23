@@ -143,6 +143,7 @@ begin
          results_out(in_detail_level >= 20);
       end if;
    end if;
+   p('');
 end dbms_out;
 
 
