@@ -3864,7 +3864,7 @@ $THEN
    is
    begin
       wtplsql.g_DBOUT := 'WT_ASSERT:PACKAGE BODY';
-      hook.t_run_assert_hook := FALSE;
+      hook.g_run_assert_hook := FALSE;
       select temp_clob,  temp_nclob,  temp_xml,  temp_blob
        into  temp_clob1, temp_nclob1, temp_xml1, temp_blob1
        from  wt_self_test where id = 1;
@@ -3888,7 +3888,7 @@ $THEN
       t_object_exists;
       t_object_not_exists;
       --------------------------------------  WTPLSQL Testing --
-      hook.t_run_assert_hook := TRUE;
+      hook.g_run_assert_hook := TRUE;
    end WTPLSQL_RUN;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--

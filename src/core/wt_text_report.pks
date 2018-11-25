@@ -2,8 +2,6 @@ create or replace package wt_text_report
    authid definer
 as
 
-   g_run_rec  core_data.run_rec_type;
-
    --   To report the latest result details:
    -- begin
    --    wt_text_report.dbms_out(30, TRUE);

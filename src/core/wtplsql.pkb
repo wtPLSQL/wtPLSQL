@@ -32,7 +32,7 @@ begin
     where procedure_name = C_RUNNER_ENTRY_POINT
      and  object_name    = core_data.g_run_rec.runner_name
      and  object_type    = 'PACKAGE';
-   if l_package_check != 1
+   if l_package_check = 0
    then
       raise_application_error (-20002, 'RUNNER_NAME Procedure "' ||
                                      core_data.g_run_rec.runner_name ||
@@ -45,13 +45,13 @@ $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure t_check_runner
    is
-      l_save_test_run_rec   core_data.run_rec_type;
+      l_run_recSAVE   core_data.run_rec_type;
       l_msg_in   varchar2(4000);
       l_err_in   varchar2(4000);
       --------------------------------------  WTPLSQL Testing --
       procedure l_test_sqlerrm is begin
          -- Restore the core_data.g_run_rec
-         core_data.g_run_rec := l_save_test_run_rec;
+         core_data.g_run_rec := l_run_recSAVE;
          wt_assert.eq
                   (msg_in          => l_msg_in
                   ,check_this_in   => SQLERRM
@@ -59,7 +59,7 @@ $THEN
       end l_test_sqlerrm;
    begin
       -- Save CORE_DATA data
-      l_save_test_run_rec := core_data.g_run_rec;
+      l_run_recSAVE := core_data.g_run_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'CHECK_RUNNER Happy Path 1';
       wt_assert.eq
@@ -214,7 +214,8 @@ $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure t_find_dbout
    is
-      l_save_test_run_rec   core_data.run_rec_type;
+      l_run_recSAVE   core_data.run_rec_type;
+      l_run_recTEST   core_data.run_rec_type;
       procedure clear_run_rec is begin
          core_data.g_run_rec.dbout_owner   := '';
          core_data.g_run_rec.dbout_name    := '';
@@ -222,124 +223,140 @@ $THEN
          core_data.g_run_rec.error_message := '';
       end clear_run_rec;
    begin
-      -- Save CORE_DATA data
-      l_save_test_run_rec := core_data.g_run_rec;
       --------------------------------------  WTPLSQL Testing --
-      -- These tests assume this package does not set a DBOUT
       wt_assert.g_testcase := 'Find DBOUT Happy Path 1';
+      l_run_recSAVE := core_data.g_run_rec;
       clear_run_rec;
       g_DBOUT := '';
       find_dbout;
+      l_run_recTEST       := core_data.g_run_rec;
+      core_data.g_run_rec := l_run_recSAVE;
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull(
-         msg_in          => 'core_data.g_run_rec.dbout_owner',
-         check_this_in   =>  core_data.g_run_rec.dbout_owner);
+         msg_in          => 'l_run_recTEST.dbout_owner',
+         check_this_in   =>  l_run_recTEST.dbout_owner);
       wt_assert.isnull(
-         msg_in          => 'core_data.g_run_rec.dbout_name',
-         check_this_in   =>  core_data.g_run_rec.dbout_name);
+         msg_in          => 'l_run_recTEST.dbout_name',
+         check_this_in   =>  l_run_recTEST.dbout_name);
       wt_assert.isnull(
-         msg_in          => 'core_data.g_run_rec.dbout_type',
-         check_this_in   =>  core_data.g_run_rec.dbout_type);
+         msg_in          => 'l_run_recTEST.dbout_type',
+         check_this_in   =>  l_run_recTEST.dbout_type);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Find DBOUT Happy Path 2';
+      l_run_recSAVE := core_data.g_run_rec;
       clear_run_rec;
       g_DBOUT := 'SYS.DUAL';
       find_dbout;
+      l_run_recTEST       := core_data.g_run_rec;
+      core_data.g_run_rec := l_run_recSAVE;
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq(
-         msg_in          => 'core_data.g_run_rec.dbout_owner',
-         check_this_in   =>  core_data.g_run_rec.dbout_owner,
+         msg_in          => 'l_run_recTEST.dbout_owner',
+         check_this_in   =>  l_run_recTEST.dbout_owner,
          against_this_in =>  'SYS');
       wt_assert.eq(
-         msg_in          => 'core_data.g_run_rec.dbout_name',
-         check_this_in   =>  core_data.g_run_rec.dbout_name,
+         msg_in          => 'l_run_recTEST.dbout_name',
+         check_this_in   =>  l_run_recTEST.dbout_name,
          against_this_in =>  'DUAL');
       wt_assert.eq(
-         msg_in          => 'core_data.g_run_rec.dbout_type',
-         check_this_in   =>  core_data.g_run_rec.dbout_type,
+         msg_in          => 'l_run_recTEST.dbout_type',
+         check_this_in   =>  l_run_recTEST.dbout_type,
          against_this_in =>  'TABLE');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Find DBOUT Happy Path 3';
+      l_run_recSAVE := core_data.g_run_rec;
       clear_run_rec;
       g_DBOUT := 'WTPLSQL:PACKAGE BODY';
       find_dbout;
+      l_run_recTEST       := core_data.g_run_rec;
+      core_data.g_run_rec := l_run_recSAVE;
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq(
-         msg_in          => 'core_data.g_run_rec.dbout_owner',
-         check_this_in   =>  core_data.g_run_rec.dbout_owner,
+         msg_in          => 'l_run_recTEST.dbout_owner',
+         check_this_in   =>  l_run_recTEST.dbout_owner,
          against_this_in =>  USER);
       wt_assert.eq(
-         msg_in          => 'core_data.g_run_rec.dbout_name',
-         check_this_in   =>  core_data.g_run_rec.dbout_name,
+         msg_in          => 'l_run_recTEST.dbout_name',
+         check_this_in   =>  l_run_recTEST.dbout_name,
          against_this_in =>  'WTPLSQL');
       wt_assert.eq(
-         msg_in          => 'core_data.g_run_rec.dbout_type',
-         check_this_in   =>  core_data.g_run_rec.dbout_type,
+         msg_in          => 'l_run_recTEST.dbout_type',
+         check_this_in   =>  l_run_recTEST.dbout_type,
          against_this_in =>  'PACKAGE BODY');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Find DBOUT Happy Path 4';
+      l_run_recSAVE := core_data.g_run_rec;
       clear_run_rec;
       g_DBOUT := 'WT_EXECUTE_TEST_RUNNER';
       find_dbout;
+      l_run_recTEST       := core_data.g_run_rec;
+      core_data.g_run_rec := l_run_recSAVE;
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq(
-         msg_in          => 'core_data.g_run_rec.dbout_owner',
-         check_this_in   =>  core_data.g_run_rec.dbout_owner,
+         msg_in          => 'l_run_recTEST.dbout_owner',
+         check_this_in   =>  l_run_recTEST.dbout_owner,
          against_this_in =>  USER);
       wt_assert.eq(
-         msg_in          => 'core_data.g_run_rec.dbout_name',
-         check_this_in   =>  core_data.g_run_rec.dbout_name,
+         msg_in          => 'l_run_recTEST.dbout_name',
+         check_this_in   =>  l_run_recTEST.dbout_name,
          against_this_in =>  'WT_EXECUTE_TEST_RUNNER');
       wt_assert.eq(
-         msg_in          => 'core_data.g_run_rec.dbout_type',
-         check_this_in   =>  core_data.g_run_rec.dbout_type,
+         msg_in          => 'l_run_recTEST.dbout_type',
+         check_this_in   =>  l_run_recTEST.dbout_type,
          against_this_in =>  'PROCEDURE');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Find DBOUT Sad Path 1';
+      l_run_recSAVE := core_data.g_run_rec;
       clear_run_rec;
       g_DBOUT := 'someone.bogus:thingy';
       find_dbout;
+      l_run_recTEST       := core_data.g_run_rec;
+      core_data.g_run_rec := l_run_recSAVE;
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull(
-         msg_in          => 'core_data.g_run_rec.dbout_owner',
-         check_this_in   =>  core_data.g_run_rec.dbout_owner);
+         msg_in          => 'l_run_recTEST.dbout_owner',
+         check_this_in   =>  l_run_recTEST.dbout_owner);
       wt_assert.isnull(
-         msg_in          => 'core_data.g_run_rec.dbout_name',
-         check_this_in   =>  core_data.g_run_rec.dbout_name);
+         msg_in          => 'l_run_recTEST.dbout_name',
+         check_this_in   =>  l_run_recTEST.dbout_name);
       wt_assert.isnull(
-         msg_in          => 'core_data.g_run_rec.dbout_type',
-         check_this_in   =>  core_data.g_run_rec.dbout_type);
+         msg_in          => 'l_run_recTEST.dbout_type',
+         check_this_in   =>  l_run_recTEST.dbout_type);
       wt_assert.isnotnull(
-         msg_in          => 'core_data.g_run_rec.error_message',
-         check_this_in   =>  core_data.g_run_rec.error_message);
+         msg_in          => 'l_run_recTEST.error_message',
+         check_this_in   =>  l_run_recTEST.error_message);
       wt_assert.eqqueryvalue (
-         msg_in           => 'core_data.g_run_rec.error_message',
+         msg_in           => 'l_run_recTEST.error_message',
          check_query_in   => 'select 1 from dual where ''' ||
-                              core_data.g_run_rec.error_message ||
+                              l_run_recTEST.error_message ||
                               ''' like ''%Unable to find database object "' ||
                               g_DBOUT || '".%''',
          against_value_in => 1);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Find DBOUT Sad Path 2';
+      l_run_recSAVE := core_data.g_run_rec;
       clear_run_rec;
       g_DBOUT := 'WTPLSQL';
       find_dbout;
+      l_run_recTEST       := core_data.g_run_rec;
+      core_data.g_run_rec := l_run_recSAVE;
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull(
-         msg_in          => 'core_data.g_run_rec.dbout_owner',
-         check_this_in   =>  core_data.g_run_rec.dbout_owner);
+         msg_in          => 'l_run_recTEST.dbout_owner',
+         check_this_in   =>  l_run_recTEST.dbout_owner);
       wt_assert.isnull(
-         msg_in          => 'core_data.g_run_rec.dbout_name',
-         check_this_in   =>  core_data.g_run_rec.dbout_name);
+         msg_in          => 'l_run_recTEST.dbout_name',
+         check_this_in   =>  l_run_recTEST.dbout_name);
       wt_assert.isnull(
-         msg_in          => 'core_data.g_run_rec.dbout_type',
-         check_this_in   =>  core_data.g_run_rec.dbout_type);
+         msg_in          => 'l_run_recTEST.dbout_type',
+         check_this_in   =>  l_run_recTEST.dbout_type);
       wt_assert.eqqueryvalue (
-         msg_in           => 'core_data.g_run_rec.error_message',
+         msg_in           => 'l_run_recTEST.error_message',
          check_query_in   => 'select 1 from dual where ''' ||
-                              core_data.g_run_rec.error_message ||
+                              l_run_recTEST.error_message ||
                               ''' like ''%Found too many database objects "' ||
                               g_DBOUT || '".%''',
          against_value_in => 1);
-      --------------------------------------  WTPLSQL Testing --
-      -- Restore CORE_DATA data
-      core_data.g_run_rec := l_save_test_run_rec;
-      -- Reset package data
-      g_DBOUT := '';
    end t_find_dbout;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
@@ -437,6 +454,9 @@ begin
          l_error_stack := dbms_utility.format_error_stack     ||
                           dbms_utility.format_error_backtrace ;
          core_data.run_error(l_error_stack);
+         wt_assert.this
+            (msg_in        => 'Un-handled Exception from Test Runner'
+            ,check_this_in => FALSE);
    end;
    -- Finalize
    rollback;    -- Discard any pending transactions.

@@ -1,4 +1,4 @@
-create or replace procedure junit_report_all
+create or replace procedure junit_xml_persist_all
 is
    procedure p (in_line in varchar2) is
    begin
@@ -98,5 +98,5 @@ begin
    end loop;
    p('  </testsuite>');
    p('</testsuites>');
-end junit_report_all;
+end junit_xml_persist_all;
 /

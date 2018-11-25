@@ -18,49 +18,40 @@ end p;
 ------------------------------------------------------------
 procedure result_summary
 is
-   TYPE tcase_aa_type is table of varchar2(1)
-      index by varchar2(200);
-   tcase_aa     tcase_aa_type;
-   tot_cnt      number := 0;
-   fail_cnt     number := 0;
-   min_msec     number := 0;
-   max_msec     number := 0;
-   tot_msec     number := 0;
-   avg_msec     number := 0;
+   asrt_cnt     number;
+   run_sec      number;
+   tc_cnt       number;
+   tc_fail      number;
+   min_msec     number;
+   max_msec     number;
+   tot_msec     number;
+   avg_msec     number;
    l_yield_txt  varchar2(50);
 begin
-   tot_cnt := core_data.g_results_nt.COUNT;
-   for i in 1 .. tot_cnt
-   loop
-      tcase_aa(core_data.g_results_nt(i).testcase) := 'x';
-      if not core_data.g_results_nt(i).pass
-      then
-         fail_cnt := fail_cnt + 1;
-      end if;
-      min_msec := LEAST(min_msec, core_data.g_results_nt(i).interval_msecs);
-      max_msec := GREATEST(max_msec, core_data.g_results_nt(i).interval_msecs);
-      tot_msec := tot_msec + core_data.g_results_nt(i).interval_msecs;
-   end loop;
-   if nvl(tot_cnt,0) = 0
-   then
-      avg_msec := 0;
-      l_yield_txt := '(Divide by Zero)';
-   else
-      avg_msec := tot_msec / tot_cnt;
-      l_yield_txt := to_char(round(100*(1-(fail_cnt/tot_cnt)), 2)
-                            ,'9990.99') || '%';
-   end if;
-   p('  Minimum Elapsed msec: ' || to_char(min_msec,      '9999999') ||
-     '       Total Testcases: ' || to_char(tcase_aa.COUNT,'9999999') );
-   p('  Average Elapsed msec: ' || to_char(avg_msec,      '9999999') ||
-     '      Total Assertions: ' || to_char(tot_cnt,       '9999999') );
-   p('  Maximum Elapsed msec: ' || to_char(max_msec,      '9999999') ||
-     '     Failed Assertions: ' || to_char(fail_cnt,      '9999999') );
-   p('  Total Run Time (sec): ' ||
-      to_char(extract(day from (core_data.g_run_rec.end_dtm -
-                                core_data.g_run_rec.start_dtm) * 86400 * 100) / 100
-                                                         ,'99990.9') ||
-     '            Test Yield: ' || l_yield_txt                       );
+   asrt_cnt := core_data.g_run_rec.asrt_cnt;
+   run_sec  := core_data.g_run_rec.runner_sec;
+   tc_cnt   := core_data.g_run_rec.tc_cnt;
+   tc_fail  := core_data.g_run_rec.tc_fail;
+   min_msec := core_data.g_run_rec.asrt_min_msec;
+   max_msec := core_data.g_run_rec.asrt_max_msec;
+   tot_msec := core_data.g_run_rec.asrt_tot_msec;
+   case nvl(asrt_cnt,0)
+        when 0 then avg_msec := 0;
+               else avg_msec := tot_msec/asrt_cnt;
+   end case;
+   case nvl(tc_cnt,0)
+        when 0 then l_yield_txt := '(Divide by Zero)';
+               else l_yield_txt := to_char(100 * ( 1 - (tc_fail/tc_cnt) )
+                                          ,'9999999') || '%';
+   end case;
+   p('  Minimum Elapsed msec: ' || to_char(min_msec ,'9999999') ||
+     '      Total Assertions: ' || to_char(asrt_cnt ,'9999999') );
+   p('  Average Elapsed msec: ' || to_char(avg_msec ,'9999999') ||
+     '       Total Testcases: ' || to_char(tc_cnt   ,'9999999') );
+   p('  Maximum Elapsed msec: ' || to_char(max_msec ,'9999999') ||
+     '      Failed Testcases: ' || to_char(tc_fail  ,'9999999') );
+   p('  Total Run Time (sec): ' || to_char(run_sec  ,'99990.9') ||
+     '        Testcase Yield: ' || l_yield_txt                  );
 end result_summary;
 
 ------------------------------------------------------------
