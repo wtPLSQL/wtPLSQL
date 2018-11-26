@@ -1,0 +1,149 @@
+* {
+    font-family: Tahoma, Arial, Helvetica, Geneva, sans-serif;
+}
+
+body {
+    background-color: #fff;
+    margin: 0;
+}
+
+br {
+    clear: both
+}
+
+pre {
+    font-family : Courier;    
+}
+
+/* IMAGES */
+
+div.currentmasterreport img, div.currentchildreport img {
+    border: 0;
+}
+
+/* TABLES */
+
+div.currentmasterreport table, div.currentchildreport table {
+    border-spacing: 0px;
+    empty-cells: show;
+}
+
+div.currentmasterreport table th, div.currentchildreport table th {
+    color: #2b7c92;
+    white-space: nowrap;
+    padding: 2px 8px;
+    background-color: #cfe0f1;
+    background-image: none;
+    color: #2b7c92;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-decoration: underline;
+}
+
+div.currentmasterreport table td, div.currentchildreport table td {
+    background: none;
+    border-top: 1px #fff solid;
+    border-bottom: 1px #ccc solid;
+    font-size: 8pt;
+    padding: 3px 9px;
+    background-color: #f2f2f5;
+    border-collapse: collapse;
+}
+
+div.currentmasterreport table td.currentcell, div.currentchildreport table td.currentcell {
+    background-color: rgb(214,214,214);
+}
+
+/* TITLE BANNER */
+
+div.banner {
+    background-image: url(headerBg.jpg);
+    background-repeat: repeat-x;
+    padding: 5px 5px 0 5px;
+    margin: 0 0 15px 0;
+}
+
+h2.banner {
+    color: #fff;
+    font-size: 2em;
+}
+
+small.banner {
+    color: #fff;
+}
+
+/* REPORT TABS */
+
+div.currentmaintab, div.currentchildtab {
+    background-image: url(topDimTabL.gif);
+    display: block;
+    float: left;
+    height: 21px;
+    padding: 0;
+    margin: 0 5px 0 0;
+    background-repeat: no-repeat
+}
+
+div.maintab, div.childtab {
+    background-image: url(topTabL.gif);
+    display: block;
+    float: left;
+    height: 21px;
+    padding: 0;
+    margin: 0 5px 0 0;
+    background-repeat: no-repeat
+}
+
+div.currentmaintab div, div.currentchildtab div {
+    background-image: url(topDimTabR.gif);
+    background-repeat: no-repeat;
+    background-position: top right;
+    height: 21px;
+    float: left;
+    margin: 0;
+}
+
+div.maintab div, div.childtab div {
+    background-image: url(topTabR.gif);
+    background-repeat: no-repeat;
+    background-position: top right;
+    height: 21px;
+    float: left;
+    margin: 0;
+}
+
+div.currentmaintab div p, div.currentchildtab div p {
+    margin: 0 8px;
+    height: 21px;
+    line-height: 21px;
+    background-image: url(topDimTabBg.gif);
+    font-weight:bold;
+    display: block;
+    text-decoration: none;
+    vertical-align: middle;
+    float: left;
+    font-size: 9pt;
+}
+
+div.maintab div p, div.childtab div p {
+    margin: 0 8px;
+    height: 21px;
+    line-height: 21px;
+    background-image: url(topTabBg.gif);
+    display: block;
+    text-decoration: none;
+    vertical-align: middle;
+    float: left;
+    font-size: 9pt;
+}
+
+/* REPORTS */
+
+div.masterreport, div.childreport {
+    display:none;    
+}
+
+div.currentmasterreport, div.currentchildreport {
+    display:inline;
+}
+

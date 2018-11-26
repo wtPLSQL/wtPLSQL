@@ -1,9 +1,9 @@
 
 --
---  Test Runs Statistics Table Installation
+--  Test Case Runs Table Installation
 --
 
-create table wt_testcase_stats
+create table wt_testcase_runs
    (test_run_id         number(38)   constraint wt_testcase_stats_nn1 not null
    ,testcase_id         number(38)   constraint wt_testcase_stats_nn2 not null
    ,yield_pct           number(3)    constraint wt_testcase_stats_nn3 not null

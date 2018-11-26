@@ -1,0 +1,528 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=Cp1252" />
+<script src="WT_ASSERT/report.js" type="text/javascript"></script>
+<link href="WT_ASSERT/report.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div class="banner">
+<table width="98%"><tr>
+<td><h2 class="banner">WT_ASSERT</h2></td>
+</tr></table></div>
+<div id="maintabs">
+<div class="currentmaintab" onclick="onSelectMainTab(this, 0)">
+<div>
+<p>Doc</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 1)">
+<div>
+<p>Details</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 2)">
+<div>
+<p>Grants</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 3)">
+<div>
+<p>References</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 4)">
+<div>
+<p>Dependencies</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 5)">
+<div>
+<p>Code</p>
+</div>
+</div>
+</div>
+<br/>
+<div id="masterreports">
+<div id="Master.0">
+<div class="currentmasterreport">
+<TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
+<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE><HR><P> AUTHID CURRENT_USER is required for dynamic PL/SQL execution.</P><HR><P></P><A NAME="method_summary"></A><TABLE WIDTH="100%" CELLSPACING="0" CELLPADDING="3" BORDER="1"><TR CLASS="TableHeadingColor"><TD COLSPAN="2"><FONT SIZE="+2"><B>Method Summary</B></FONT></TD><TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#eq">eq</A></B>( msg_in in varchar2 , check_this_in in varchar2 , against_this_in in varchar2 , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#eq">eq</A></B>( msg_in in varchar2 , check_this_in in boolean , against_this_in in boolean , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#eq">eq</A></B>( msg_in in varchar2 , check_this_in in XMLTYPE , against_this_in in XMLTYPE , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#eq">eq</A></B>( msg_in in varchar2 , check_this_in in CLOB , against_this_in in CLOB , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Not Used, utPLSQL V1 API</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#eq">eq</A></B>( msg_in in varchar2 , check_this_in in BLOB , against_this_in in BLOB , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#eqquery">eqquery</A></B>( msg_in in varchar2 , check_query_in in varchar2 , against_query_in in varchar2 , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#eqqueryvalue">eqqueryvalue</A></B>( msg_in in varchar2 , check_query_in in varchar2 , against_value_in in varchar2 , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#eqqueryvalue">eqqueryvalue</A></B>( msg_in in varchar2 , check_query_in in varchar2 , against_value_in in XMLTYPE , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#eqqueryvalue">eqqueryvalue</A></B>( msg_in in varchar2 , check_query_in in varchar2 , against_value_in in CLOB , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Not Used, utPLSQL V1 API</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#eqqueryvalue">eqqueryvalue</A></B>( msg_in in varchar2 , check_query_in in varchar2 , against_value_in in BLOB , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#eqtabcount">eqtabcount</A></B>( msg_in in varchar2 , check_this_in in varchar2 , against_this_in in varchar2 , check_where_in in varchar2 : = null , against_where_in in varchar2 : = null , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#eqtable">eqtable</A></B>( msg_in in varchar2 , check_this_in in varchar2 , against_this_in in varchar2 , check_where_in in varchar2 : = null , against_where_in in varchar2 : = null , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#get_NLS_DATE_FORMAT">get_NLS_DATE_FORMAT</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date/Time Formats are configured at the Session Level</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#get_NLS_TIMESTAMP_FORMAT">get_NLS_TIMESTAMP_FORMAT</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#get_NLS_TIMESTAMP_TZ_FORMAT">get_NLS_TIMESTAMP_TZ_FORMAT</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#isnotnull">isnotnull</A></B>( msg_in in varchar2 , check_this_in in varchar2 , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#isnotnull">isnotnull</A></B>( msg_in in varchar2 , check_this_in in boolean , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Not Used, utPLSQL V1 API</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#isnotnull">isnotnull</A></B>( msg_in in varchar2 , check_this_in in CLOB , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Not Used, utPLSQL V1 API</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#isnotnull">isnotnull</A></B>( msg_in in varchar2 , check_this_in in BLOB , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Not Used, utPLSQL V1 API</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#isnull">isnull</A></B>( msg_in in varchar2 , check_this_in in varchar2 , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#isnull">isnull</A></B>( msg_in in varchar2 , check_this_in in boolean , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Not Used, utPLSQL V1 API</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#isnull">isnull</A></B>( msg_in in varchar2 , check_this_in in CLOB , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Not Used, utPLSQL V1 API</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#isnull">isnull</A></B>( msg_in in varchar2 , check_this_in in BLOB , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Not Used, utPLSQL V1 API</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#last_assert">last_assert</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#last_details">last_details</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#last_msg">last_msg</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#last_pass">last_pass</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   Modify as required</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#objexists">objexists</A></B>( msg_in in varchar2 , obj_owner_in in varchar2 , obj_name_in in varchar2 , obj_type_in in varchar2 default null , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#objexists">objexists</A></B>( msg_in in varchar2 , check_this_in in varchar2 , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#objnotexists">objnotexists</A></B>( msg_in in varchar2 , obj_owner_in in varchar2 , obj_name_in in varchar2 , obj_type_in in varchar2 default null , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#objnotexists">objnotexists</A></B>( msg_in in varchar2 , check_this_in in varchar2 , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#raises">raises</A></B>( msg_in varchar2 , check_call_in in varchar2 , against_exc_in in varchar2 ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#raises">raises</A></B>( msg_in varchar2 , check_call_in in varchar2 , against_exc_in in number ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#reset_globals">reset_globals</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#set_NLS_DATE_FORMAT">set_NLS_DATE_FORMAT</A></B>( in_format in varchar2 default 'DD-MON-YYYY HH24:MI:SS' ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#set_NLS_TIMESTAMP_FORMAT">set_NLS_TIMESTAMP_FORMAT</A></B>( in_format in varchar2 default 'DD-MON-YYYY HH24:MI:SS.FF6' ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#set_NLS_TIMESTAMP_TZ_FORMAT">set_NLS_TIMESTAMP_TZ_FORMAT</A></B>( in_format in varchar2 default 'DD-MON-YYYY HH24:MI:SS.FF6 TZH:TZM' ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#this">this</A></B>( msg_in in varchar2 , check_this_in in boolean , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#throws">throws</A></B>( msg_in varchar2 , check_call_in in varchar2 , against_exc_in in varchar2 ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#throws">throws</A></B>( msg_in varchar2 , check_call_in in varchar2 , against_exc_in in number ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#WTPLSQL_RUN">WTPLSQL_RUN</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+</TABLE>
+<P></P><A NAME="method_detail"></A><TABLE WIDTH="100%" CELLSPACING="0" CELLPADDING="3" BORDER="1"><TR CLASS="TableHeadingColor"><TD COLSPAN="2"><FONT SIZE="+2"><B>Method Detail</B></FONT></TD></TABLE><A NAME="eq"></A>
+<H3>eq</H3><PRE>          <B>eq</B>( msg_in in varchar2 , check_this_in in varchar2 , against_this_in in varchar2 , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="eq"></A>
+<H3>eq</H3><PRE>          <B>eq</B>( msg_in in varchar2 , check_this_in in boolean , against_this_in in boolean , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="eq"></A>
+<H3>eq</H3><PRE>          <B>eq</B>( msg_in in varchar2 , check_this_in in XMLTYPE , against_this_in in XMLTYPE , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="eq"></A>
+<H3>eq</H3><PRE>          <B>eq</B>( msg_in in varchar2 , check_this_in in CLOB , against_this_in in CLOB , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Not Used, utPLSQL V1 API<DD><DL></DL></DD></DL><HR><A NAME="eq"></A>
+<H3>eq</H3><PRE>          <B>eq</B>( msg_in in varchar2 , check_this_in in BLOB , against_this_in in BLOB , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="eqquery"></A>
+<H3>eqquery</H3><PRE>          <B>eqquery</B>( msg_in in varchar2 , check_query_in in varchar2 , against_query_in in varchar2 , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="eqqueryvalue"></A>
+<H3>eqqueryvalue</H3><PRE>          <B>eqqueryvalue</B>( msg_in in varchar2 , check_query_in in varchar2 , against_value_in in varchar2 , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="eqqueryvalue"></A>
+<H3>eqqueryvalue</H3><PRE>          <B>eqqueryvalue</B>( msg_in in varchar2 , check_query_in in varchar2 , against_value_in in XMLTYPE , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="eqqueryvalue"></A>
+<H3>eqqueryvalue</H3><PRE>          <B>eqqueryvalue</B>( msg_in in varchar2 , check_query_in in varchar2 , against_value_in in CLOB , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Not Used, utPLSQL V1 API<DD><DL></DL></DD></DL><HR><A NAME="eqqueryvalue"></A>
+<H3>eqqueryvalue</H3><PRE>          <B>eqqueryvalue</B>( msg_in in varchar2 , check_query_in in varchar2 , against_value_in in BLOB , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="eqtabcount"></A>
+<H3>eqtabcount</H3><PRE>          <B>eqtabcount</B>( msg_in in varchar2 , check_this_in in varchar2 , against_this_in in varchar2 , check_where_in in varchar2 : = null , against_where_in in varchar2 : = null , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="eqtable"></A>
+<H3>eqtable</H3><PRE>          <B>eqtable</B>( msg_in in varchar2 , check_this_in in varchar2 , against_this_in in varchar2 , check_where_in in varchar2 : = null , against_where_in in varchar2 : = null , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="get_NLS_DATE_FORMAT"></A>
+<H3>get_NLS_DATE_FORMAT</H3><PRE>          <B>get_NLS_DATE_FORMAT</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date/Time Formats are configured at the Session Level<DD><DL></DL></DD></DL><HR><A NAME="get_NLS_TIMESTAMP_FORMAT"></A>
+<H3>get_NLS_TIMESTAMP_FORMAT</H3><PRE>          <B>get_NLS_TIMESTAMP_FORMAT</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="get_NLS_TIMESTAMP_TZ_FORMAT"></A>
+<H3>get_NLS_TIMESTAMP_TZ_FORMAT</H3><PRE>          <B>get_NLS_TIMESTAMP_TZ_FORMAT</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="isnotnull"></A>
+<H3>isnotnull</H3><PRE>          <B>isnotnull</B>( msg_in in varchar2 , check_this_in in varchar2 , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="isnotnull"></A>
+<H3>isnotnull</H3><PRE>          <B>isnotnull</B>( msg_in in varchar2 , check_this_in in boolean , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Not Used, utPLSQL V1 API<DD><DL></DL></DD></DL><HR><A NAME="isnotnull"></A>
+<H3>isnotnull</H3><PRE>          <B>isnotnull</B>( msg_in in varchar2 , check_this_in in CLOB , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Not Used, utPLSQL V1 API<DD><DL></DL></DD></DL><HR><A NAME="isnotnull"></A>
+<H3>isnotnull</H3><PRE>          <B>isnotnull</B>( msg_in in varchar2 , check_this_in in BLOB , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Not Used, utPLSQL V1 API<DD><DL></DL></DD></DL><HR><A NAME="isnull"></A>
+<H3>isnull</H3><PRE>          <B>isnull</B>( msg_in in varchar2 , check_this_in in varchar2 , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="isnull"></A>
+<H3>isnull</H3><PRE>          <B>isnull</B>( msg_in in varchar2 , check_this_in in boolean , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Not Used, utPLSQL V1 API<DD><DL></DL></DD></DL><HR><A NAME="isnull"></A>
+<H3>isnull</H3><PRE>          <B>isnull</B>( msg_in in varchar2 , check_this_in in CLOB , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Not Used, utPLSQL V1 API<DD><DL></DL></DD></DL><HR><A NAME="isnull"></A>
+<H3>isnull</H3><PRE>          <B>isnull</B>( msg_in in varchar2 , check_this_in in BLOB , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Not Used, utPLSQL V1 API<DD><DL></DL></DD></DL><HR><A NAME="last_assert"></A>
+<H3>last_assert</H3><PRE>          <B>last_assert</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="last_details"></A>
+<H3>last_details</H3><PRE>          <B>last_details</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="last_msg"></A>
+<H3>last_msg</H3><PRE>          <B>last_msg</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="last_pass"></A>
+<H3>last_pass</H3><PRE>          <B>last_pass</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   Modify as required<DD><DL></DL></DD></DL><HR><A NAME="objexists"></A>
+<H3>objexists</H3><PRE>          <B>objexists</B>( msg_in in varchar2 , obj_owner_in in varchar2 , obj_name_in in varchar2 , obj_type_in in varchar2 default null , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="objexists"></A>
+<H3>objexists</H3><PRE>          <B>objexists</B>( msg_in in varchar2 , check_this_in in varchar2 , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="objnotexists"></A>
+<H3>objnotexists</H3><PRE>          <B>objnotexists</B>( msg_in in varchar2 , obj_owner_in in varchar2 , obj_name_in in varchar2 , obj_type_in in varchar2 default null , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="objnotexists"></A>
+<H3>objnotexists</H3><PRE>          <B>objnotexists</B>( msg_in in varchar2 , check_this_in in varchar2 , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="raises"></A>
+<H3>raises</H3><PRE>          <B>raises</B>( msg_in varchar2 , check_call_in in varchar2 , against_exc_in in varchar2 ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="raises"></A>
+<H3>raises</H3><PRE>          <B>raises</B>( msg_in varchar2 , check_call_in in varchar2 , against_exc_in in number ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="reset_globals"></A>
+<H3>reset_globals</H3><PRE>          <B>reset_globals</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="set_NLS_DATE_FORMAT"></A>
+<H3>set_NLS_DATE_FORMAT</H3><PRE>          <B>set_NLS_DATE_FORMAT</B>( in_format in varchar2 default 'DD-MON-YYYY HH24:MI:SS' ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="set_NLS_TIMESTAMP_FORMAT"></A>
+<H3>set_NLS_TIMESTAMP_FORMAT</H3><PRE>          <B>set_NLS_TIMESTAMP_FORMAT</B>( in_format in varchar2 default 'DD-MON-YYYY HH24:MI:SS.FF6' ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="set_NLS_TIMESTAMP_TZ_FORMAT"></A>
+<H3>set_NLS_TIMESTAMP_TZ_FORMAT</H3><PRE>          <B>set_NLS_TIMESTAMP_TZ_FORMAT</B>( in_format in varchar2 default 'DD-MON-YYYY HH24:MI:SS.FF6 TZH:TZM' ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="this"></A>
+<H3>this</H3><PRE>          <B>this</B>( msg_in in varchar2 , check_this_in in boolean , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="throws"></A>
+<H3>throws</H3><PRE>          <B>throws</B>( msg_in varchar2 , check_call_in in varchar2 , against_exc_in in varchar2 ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="throws"></A>
+<H3>throws</H3><PRE>          <B>throws</B>( msg_in varchar2 , check_call_in in varchar2 , against_exc_in in number ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="WTPLSQL_RUN"></A>
+<H3>WTPLSQL_RUN</H3><PRE>          <B>WTPLSQL_RUN</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
+<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE></div>
+</div>
+<div id="Master.1">
+<div class="masterreport">
+<table id="Table.0" cellpadding="0" cellspacing="0" summary="">
+<th>NAME</th>
+<th>VALUE</th>
+</tr>
+<tr>
+<td>OWNER</td>
+<td>WTP</td>
+</tr>
+<tr>
+<td>OBJECT_NAME</td>
+<td>WT_ASSERT</td>
+</tr>
+<tr>
+<td>SUBOBJECT_NAME</td>
+<td>null</td>
+</tr>
+<tr>
+<td>OBJECT_ID</td>
+<td>41927</td>
+</tr>
+<tr>
+<td>DATA_OBJECT_ID</td>
+<td>null</td>
+</tr>
+<tr>
+<td>OBJECT_TYPE</td>
+<td>PACKAGE</td>
+</tr>
+<tr>
+<td>CREATED</td>
+<td>29-JUN-2018&nbsp;15:09:15</td>
+</tr>
+<tr>
+<td>LAST_DDL_TIME</td>
+<td>29-JUN-2018&nbsp;15:21:16</td>
+</tr>
+<tr>
+<td>TIMESTAMP</td>
+<td>2018-06-29:15:21:15</td>
+</tr>
+<tr>
+<td>STATUS</td>
+<td>VALID</td>
+</tr>
+<tr>
+<td>TEMPORARY</td>
+<td>N</td>
+</tr>
+<tr>
+<td>GENERATED</td>
+<td>N</td>
+</tr>
+<tr>
+<td>SECONDARY</td>
+<td>N</td>
+</tr>
+<tr>
+<td>NAMESPACE</td>
+<td>1</td>
+</tr>
+<tr>
+<td>EDITION_NAME</td>
+<td>null</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.2">
+<div class="masterreport">
+<table id="Table.1" cellpadding="0" cellspacing="0" summary="">
+<tr>
+<th>PRIVILEGE</th>
+<th>GRANTEE</th>
+<th>GRANTABLE</th>
+<th>GRANTOR</th>
+<th>OBJECT_NAME</th>
+</tr>
+<tr onclick="table_onSelectMasterRow(this, 1, 0)" class="currentrow">
+<td class="currentcell">EXECUTE</td>
+<td class="currentcell">PUBLIC</td>
+<td class="currentcell">NO</td>
+<td class="currentcell">WTP</td>
+<td class="currentcell">WT_ASSERT</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.3">
+<div class="masterreport">
+<table id="Table.2" cellpadding="0" cellspacing="0" summary="">
+<tr>
+<th>NAME</th>
+<th>OWNER</th>
+<th>TYPE</th>
+<th>OBJECT_ID</th>
+<th>STATUS</th>
+<th>TYPE_LINK</th>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.4">
+<div class="masterreport">
+<table id="Table.3" cellpadding="0" cellspacing="0" summary="">
+<tr>
+<th>NAME</th>
+<th>OWNER</th>
+<th>TYPE</th>
+<th>OBJECT_ID</th>
+<th>STATUS</th>
+<th>TYPE_LINK</th>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.5">
+<div class="masterreport">
+<pre>
+package wt_assert authid current_user
+is
+   -- AUTHID CURRENT_USER is required for dynamic PL/SQL execution.
+
+   ASSERT_FAILURE_EXCEPTION  exception;
+   PRAGMA EXCEPTION_INIT(ASSERT_FAILURE_EXCEPTION, -20003);
+
+   C_PASS  CONSTANT varchar2(10) := 'PASS';
+   C_FAIL  CONSTANT varchar2(10) := 'FAIL';
+
+   -- See RESET_GLOBALS procedure for default global values
+
+   -- Testcase name for a series of assertions.
+   --   Modify as required
+   g_testcase         wt_results.testcase%TYPE;
+
+   function last_pass
+   return boolean;
+
+   function last_assert
+   return wt_results.assertion%TYPE;
+
+   function last_msg
+   return wt_results.message%TYPE;
+
+   function last_details
+   return wt_results.details%TYPE;
+
+   procedure reset_globals;
+
+   -- Date/Time Formats are configured at the Session Level
+   function get_NLS_DATE_FORMAT
+      return varchar2;
+   procedure set_NLS_DATE_FORMAT
+      (in_format in varchar2 default 'DD-MON-YYYY HH24:MI:SS');
+   function get_NLS_TIMESTAMP_FORMAT
+      return varchar2;
+   procedure set_NLS_TIMESTAMP_FORMAT
+      (in_format in varchar2 default 'DD-MON-YYYY HH24:MI:SS.FF6');
+   function get_NLS_TIMESTAMP_TZ_FORMAT
+       return varchar2;
+   procedure set_NLS_TIMESTAMP_TZ_FORMAT
+      (in_format in varchar2 default 'DD-MON-YYYY HH24:MI:SS.FF6 TZH:TZM');
+
+   ------------------------
+   --   Datatypes Supported
+   --     Oracle Data Type Families
+   --   https://docs.oracle.com/cd/E11882_01/appdev.112/e25519/predefined.htm#LNPLS2047
+   --
+   -- VARCHAR2 - Includes ROWID, LONG*, RAW, LONG RAW*, and NVARCHAR2
+   -- DATE** - Includes TIMESTAMP and INTERVAL
+   -- NUMBER** - Includes PLS_INTEGER
+   -- BOOLEAN
+   -- XMLTYPE
+   -- CLOB - Includes NCLOB
+   -- BLOB
+   --
+   -- *LONG and LONG RAW data length is limited to VARCHAR2 length in PL/SQL (32K).
+   -- **VARCHAR2 includes DATE and NUMBER using Implicit Data Conversions:
+   --   https://docs.oracle.com/cd/E11882_01/server.112/e41084/sql_elements002.htm#i163326
+   --
+
+   procedure this (
+      msg_in          in   varchar2,
+      check_this_in   in   boolean,
+      null_ok_in      in   boolean := false,   -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
+
+   --
+   procedure eq (
+      msg_in            in   varchar2,
+      check_this_in     in   varchar2,
+      against_this_in   in   varchar2,
+      null_ok_in        in   boolean := false,
+      raise_exc_in      in   boolean := false);
+
+   procedure eq (
+      msg_in            in   varchar2,
+      check_this_in     in   boolean,
+      against_this_in   in   boolean,
+      null_ok_in        in   boolean := false,
+      raise_exc_in      in   boolean := false);
+
+   procedure eq (
+      msg_in            in   varchar2,
+      check_this_in     in   XMLTYPE,
+      against_this_in   in   XMLTYPE,
+      null_ok_in        in   boolean := false,   -- Not Used, utPLSQL V1 API
+      raise_exc_in      in   boolean := false);
+
+   procedure eq (
+      msg_in            in   varchar2,
+      check_this_in     in   CLOB,
+      against_this_in   in   CLOB,
+      null_ok_in        in   boolean := false,
+      raise_exc_in      in   boolean := false);
+
+   procedure eq (
+      msg_in            in   varchar2,
+      check_this_in     in   BLOB,
+      against_this_in   in   BLOB,
+      null_ok_in        in   boolean := false,
+      raise_exc_in      in   boolean := false);
+
+   --
+   procedure isnotnull (
+      msg_in          in   varchar2,
+      check_this_in   in   varchar2,
+      null_ok_in      in   boolean := false,   -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
+
+   procedure isnotnull (
+      msg_in          in   varchar2,
+      check_this_in   in   boolean,
+      null_ok_in      in   boolean := false,   -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
+
+   procedure isnotnull (
+      msg_in          in   varchar2,
+      check_this_in   in   CLOB,
+      null_ok_in      in   boolean := false,   -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
+
+   procedure isnotnull (
+      msg_in          in   varchar2,
+      check_this_in   in   BLOB,
+      null_ok_in      in   boolean := false,   -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
+
+   --
+   procedure isnull (
+      msg_in          in   varchar2,
+      check_this_in   in   varchar2,
+      null_ok_in      in   boolean := false,   -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
+
+   procedure isnull (
+      msg_in          in   varchar2,
+      check_this_in   in   boolean,
+      null_ok_in      in   boolean := false,   -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
+
+   procedure isnull (
+      msg_in          in   varchar2,
+      check_this_in   in   CLOB,
+      null_ok_in      in   boolean := false,   -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
+
+   procedure isnull (
+      msg_in          in   varchar2,
+      check_this_in   in   BLOB,
+      null_ok_in      in   boolean := false,   -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
+
+   --
+   procedure raises (
+      msg_in                varchar2,
+      check_call_in    in   varchar2,
+      against_exc_in   in   varchar2);
+
+   procedure raises (
+      msg_in                varchar2,
+      check_call_in    in   varchar2,
+      against_exc_in   in   number);
+
+   procedure throws (
+      msg_in                varchar2,
+      check_call_in    in   varchar2,
+      against_exc_in   in   varchar2);
+
+   procedure throws (
+      msg_in                varchar2,
+      check_call_in    in   varchar2,
+      against_exc_in   in   number);
+
+   --
+   procedure eqqueryvalue (
+      msg_in             in   varchar2,
+      check_query_in     in   varchar2,
+      against_value_in   in   varchar2,
+      null_ok_in         in   boolean := false,
+      raise_exc_in       in   boolean := false);
+
+   procedure eqqueryvalue (
+      msg_in             in   varchar2,
+      check_query_in     in   varchar2,
+      against_value_in   in   XMLTYPE,
+      null_ok_in         in   boolean := false,  -- Not Used, utPLSQL V1 API
+      raise_exc_in       in   boolean := false);
+
+   procedure eqqueryvalue (
+      msg_in             in   varchar2,
+      check_query_in     in   varchar2,
+      against_value_in   in   CLOB,
+      null_ok_in         in   boolean := false,
+      raise_exc_in       in   boolean := false);
+
+   procedure eqqueryvalue (
+      msg_in             in   varchar2,
+      check_query_in     in   varchar2,
+      against_value_in   in   BLOB,
+      null_ok_in         in   boolean := false,
+      raise_exc_in       in   boolean := false);
+
+   --
+   procedure eqquery (
+      msg_in             in   varchar2,
+      check_query_in     in   varchar2,
+      against_query_in   in   varchar2,
+      raise_exc_in       in   boolean := false);
+
+   --
+   procedure eqtable (
+      msg_in             in   varchar2,
+      check_this_in      in   varchar2,
+      against_this_in    in   varchar2,
+      check_where_in     in   varchar2 := null,
+      against_where_in   in   varchar2 := null,
+      raise_exc_in       in   boolean := false);
+
+   --
+   procedure eqtabcount (
+      msg_in             in   varchar2,
+      check_this_in      in   varchar2,
+      against_this_in    in   varchar2,
+      check_where_in     in   varchar2 := null,
+      against_where_in   in   varchar2 := null,
+      raise_exc_in       in   boolean := false);
+
+   --
+   procedure objexists (
+      msg_in        in   varchar2,
+      obj_owner_in  in   varchar2,
+      obj_name_in   in   varchar2,
+      obj_type_in   in   varchar2 default null,
+      raise_exc_in  in   boolean := false);
+
+   procedure objexists (
+      msg_in          in   varchar2,
+      check_this_in   in   varchar2,
+      null_ok_in      in   boolean := false,  -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
+
+   --
+   procedure objnotexists (
+      msg_in        in   varchar2,
+      obj_owner_in  in   varchar2,
+      obj_name_in   in   varchar2,
+      obj_type_in   in   varchar2 default null,
+      raise_exc_in  in   boolean := false);
+
+   procedure objnotexists (
+      msg_in          in   varchar2,
+      check_this_in   in   varchar2,
+      null_ok_in      in   boolean := false,  -- Not Used, utPLSQL V1 API
+      raise_exc_in    in   boolean := false);
+
+   --   WtPLSQL Self Test Procedures
+   --
+   -- alter system set PLSQL_CCFLAGS = 
+   --    'WTPLSQL_SELFTEST:TRUE'
+   --    scope=BOTH;
+   --
+   $IF $$WTPLSQL_SELFTEST
+   $THEN
+      procedure WTPLSQL_RUN;
+   $END
+
+end wt_assert;</pre>
+</div>
+</div>
+</div>
+</body>
+</html>
