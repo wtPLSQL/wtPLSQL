@@ -338,6 +338,7 @@ $THEN
       clear_run_rec;
       g_DBOUT := 'WTPLSQL';
       find_dbout;
+      g_DBOUT := '';
       l_run_recTEST       := core_data.g_run_rec;
       core_data.g_run_rec := l_run_recSAVE;
       --------------------------------------  WTPLSQL Testing --
@@ -426,13 +427,10 @@ is
    pragma AUTONOMOUS_TRANSACTION;  -- Required if called as Remote Procedure Call (RPC)
    l_error_stack          varchar2(32000);
 begin
-   $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
-   $THEN
-      -- This will avoid running the TEST_RUN procedure for some self-tests
-      if wtplsql_skip_test
-      then
+   $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
+      if wtplsql_skip_test then
          test_all_aa(in_package_name) := 'X';
-         return;
+         return;  -- Avoid running the TEST_RUN procedure for some self-tests
       end if;
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    -- Start a new Transaction
@@ -454,9 +452,9 @@ begin
          l_error_stack := dbms_utility.format_error_stack     ||
                           dbms_utility.format_error_backtrace ;
          core_data.run_error(l_error_stack);
-         wt_assert.this
+         wt_assert.isnull
             (msg_in        => 'Un-handled Exception from Test Runner'
-            ,check_this_in => FALSE);
+            ,check_this_in => substr(core_data.g_run_rec.error_message,1,60));
    end;
    -- Finalize
    rollback;    -- Discard any pending transactions.
@@ -465,6 +463,9 @@ begin
    hook.after_test_run;
    -- Required if called as Remote Procedure Call (RPC)
    COMMIT;
+--exception
+--   when OTHERS
+--   then         Allow WTPLSQL exception (Unhandled)
 end test_run;
 
 
@@ -481,7 +482,11 @@ is
    TYPE runners_nt_type is table of varchar2(128);
    l_runners_nt      runners_nt_type;
 begin
-   hook.before_test_all;
+   $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
+      if NOT wtplsql_skip_test then
+         hook.before_test_all;  -- Avoid running the hook for some self-tests
+      end if;
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    select object_name
      bulk collect into l_runners_nt
     from  user_procedures  t1
@@ -493,7 +498,11 @@ begin
    loop
       test_run(l_runners_nt(i));
    end loop;
-   hook.after_test_all;
+   $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
+      if NOT wtplsql_skip_test then
+         hook.after_test_all;  -- Avoid running the hook for some self-tests
+      end if;
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 end test_all;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -512,7 +521,7 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       wt_assert.this (
          msg_in        => 'test_all_aa.EXISTS(''WTPLSQL'')',
-         check_this_in => test_all_aa.EXISTS('WTPLSQL'));
+         check_this_in =>  test_all_aa.EXISTS( 'WTPLSQL' ));
    end t_test_all;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 

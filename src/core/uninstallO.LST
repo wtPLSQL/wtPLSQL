@@ -1,4 +1,3 @@
-old: showmode BOTH
 old   1: drop user &schema_owner. cascade
 new   1: drop user wtp cascade
 
@@ -6,6 +5,13 @@ User dropped.
 
 old   6: 				  and  regexp_like(table_owner, '&schema_owner.', 'i') )
 new   6: 				  and  regexp_like(table_owner, 'wtp', 'i') )
+drop public synonym UTASSERT                                                    
+drop public synonym WTPLSQL                                                     
+drop public synonym WT_ASSERT                                                   
+drop public synonym WT_EXECUTE_TEST_RUNNER                                      
+drop public synonym WT_TEXT_REPORT                                              
+drop public synonym WT_VERSION                                                  
+drop public synonym WT_WTPLSQL                                                  
 
 PL/SQL procedure successfully completed.
 
