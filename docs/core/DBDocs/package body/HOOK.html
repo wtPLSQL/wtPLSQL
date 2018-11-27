@@ -1,0 +1,425 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=Cp1252" />
+<script src="HOOK/report.js" type="text/javascript"></script>
+<link href="HOOK/report.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div class="banner">
+<table width="98%"><tr>
+<td><h2 class="banner">HOOK</h2></td>
+</tr></table></div>
+<div id="maintabs">
+<div class="currentmaintab" onclick="onSelectMainTab(this, 0)">
+<div>
+<p>Doc</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 1)">
+<div>
+<p>Details</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 2)">
+<div>
+<p>Grants</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 3)">
+<div>
+<p>References</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 4)">
+<div>
+<p>Dependencies</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 5)">
+<div>
+<p>Code</p>
+</div>
+</div>
+</div>
+<br/>
+<div id="masterreports">
+<div id="Master.0">
+<div class="currentmasterreport">
+<TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
+<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE><HR><P>--------------------</P><HR><TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
+<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE></div>
+</div>
+<div id="Master.1">
+<div class="masterreport">
+<table id="Table.0" cellpadding="0" cellspacing="0" summary="">
+<th>NAME</th>
+<th>VALUE</th>
+</tr>
+<tr>
+<td>OWNER</td>
+<td>WTP</td>
+</tr>
+<tr>
+<td>OBJECT_NAME</td>
+<td>HOOK</td>
+</tr>
+<tr>
+<td>SUBOBJECT_NAME</td>
+<td>null</td>
+</tr>
+<tr>
+<td>OBJECT_ID</td>
+<td>42811</td>
+</tr>
+<tr>
+<td>DATA_OBJECT_ID</td>
+<td>null</td>
+</tr>
+<tr>
+<td>OBJECT_TYPE</td>
+<td>PACKAGE&nbsp;BODY</td>
+</tr>
+<tr>
+<td>CREATED</td>
+<td>25-NOV-2018&nbsp;19:55:40</td>
+</tr>
+<tr>
+<td>LAST_DDL_TIME</td>
+<td>25-NOV-2018&nbsp;19:55:40</td>
+</tr>
+<tr>
+<td>TIMESTAMP</td>
+<td>2018-11-25:19:55:40</td>
+</tr>
+<tr>
+<td>STATUS</td>
+<td>VALID</td>
+</tr>
+<tr>
+<td>TEMPORARY</td>
+<td>N</td>
+</tr>
+<tr>
+<td>GENERATED</td>
+<td>N</td>
+</tr>
+<tr>
+<td>SECONDARY</td>
+<td>N</td>
+</tr>
+<tr>
+<td>NAMESPACE</td>
+<td>2</td>
+</tr>
+<tr>
+<td>EDITION_NAME</td>
+<td>null</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.2">
+<div class="masterreport">
+<table id="Table.1" cellpadding="0" cellspacing="0" summary="">
+<tr>
+<th>PRIVILEGE</th>
+<th>GRANTEE</th>
+<th>GRANTABLE</th>
+<th>GRANTOR</th>
+<th>OBJECT_NAME</th>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.3">
+<div class="masterreport">
+<table id="Table.2" cellpadding="0" cellspacing="0" summary="">
+<tr>
+<th>NAME</th>
+<th>OWNER</th>
+<th>TYPE</th>
+<th>OBJECT_ID</th>
+<th>STATUS</th>
+<th>TYPE_LINK</th>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.4">
+<div class="masterreport">
+<table id="Table.3" cellpadding="0" cellspacing="0" summary="">
+<tr>
+<th>NAME</th>
+<th>OWNER</th>
+<th>TYPE</th>
+<th>OBJECT_ID</th>
+<th>STATUS</th>
+<th>TYPE_LINK</th>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.5">
+<div class="masterreport">
+<pre>
+package body hook
+as
+
+
+----------------------
+--  Private Procedures
+----------------------
+
+
+------------------------------------------------------------
+procedure run_hooks
+      (in_hook_name  in varchar2)
+is
+begin
+   for i in 1 .. g_run_aa(in_hook_name).COUNT
+   loop
+      execute immediate g_run_aa(in_hook_name)(i);
+   end loop;
+end run_hooks;
+
+
+---------------------
+--  Public Procedures
+---------------------
+
+
+------------------------------------------------------------
+procedure before_test_all
+is
+begin
+   if before_test_all_active
+   then
+      run_hooks('before_test_all');
+   end if;
+end before_test_all;
+
+------------------------------------------------------------
+procedure before_test_run
+is
+begin
+   if before_test_run_active
+   then
+      run_hooks('before_test_run');
+   end if;
+end before_test_run;
+
+------------------------------------------------------------
+procedure execute_test_runner
+is
+begin
+   if execute_test_runner_active
+   then
+      run_hooks('execute_test_runner');
+   end if;
+end execute_test_runner;
+
+------------------------------------------------------------
+procedure after_assertion
+is
+begin
+   --
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   if g_run_assert_hook
+   then
+$END  ------%WTPLSQL_end_ignore_lines%------
+   --
+   if after_assertion_active
+   then
+      run_hooks('after_assertion');
+   end if;
+   --
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   end if;
+$END  ------%WTPLSQL_end_ignore_lines%------
+   --
+end after_assertion;
+
+------------------------------------------------------------
+procedure after_test_run
+is
+begin
+   if after_test_run_active
+   then
+      run_hooks('after_test_run');
+   end if;
+end after_test_run;
+
+------------------------------------------------------------
+procedure after_test_all
+is
+begin
+   if after_test_all_active
+   then
+      run_hooks('after_test_all');
+   end if;
+end after_test_all;
+
+------------------------------------------------------------
+procedure ad_hoc_report
+is
+begin
+   if ad_hoc_report_active
+   then
+      run_hooks('ad_hoc_report');
+   end if;
+end ad_hoc_report;
+
+------------------------------------------------------------
+procedure init
+is
+   l_run_nt  run_nt_type;
+begin
+   before_test_all_active     := FALSE;
+   before_test_run_active     := FALSE;
+   execute_test_runner_active := FALSE;
+   after_assertion_active     := FALSE;
+   after_test_run_active      := FALSE;
+   after_test_all_active      := FALSE;
+   ad_hoc_report_active       := FALSE;
+   for buff in (
+      select hook_name
+       from  hooks
+       group by hook_name )
+   loop
+      select run_string bulk collect into l_run_nt
+       from  hooks
+       where hook_name = buff.hook_name
+       order by hooks.seq;
+      if SQL%FOUND
+      then
+         g_run_aa(buff.hook_name) := l_run_nt;
+         case buff.hook_name
+            when 'before_test_all'     then before_test_all_active     := TRUE;
+            when 'before_test_run'     then before_test_run_active     := TRUE;
+            when 'execute_test_runner' then execute_test_runner_active := TRUE;
+            when 'after_assertion'     then after_assertion_active     := TRUE;
+            when 'after_test_run'      then after_test_run_active      := TRUE;
+            when 'after_test_all'      then after_test_all_active      := TRUE;
+            when 'ad_hoc_report'       then ad_hoc_report_active       := TRUE;
+            else raise_application_error(-20012, 'Unknown HOOK_NAME Case' || buff.hook_name);
+          end case;
+      end if;
+   end loop;
+end init;
+
+
+--==============================================================--
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   --------------------------------------  WTPLSQL Testing --
+   procedure test_hook
+      (in_msg  in  varchar2)
+   is
+   begin
+      g_test_hook_msg := in_msg;
+   end test_hook;
+   --------------------------------------  WTPLSQL Testing --
+   procedure WTPLSQL_RUN
+   is
+      TYPE  hooks_nt_type is table of hooks%ROWTYPE;
+      l_hooks_ntSAVE  hooks_nt_type;
+      TYPE hname_nt_type is table of hooks.hook_name%TYPE;
+      l_hname_nt      hname_nt_type;
+      l_hooks_rec     hooks%ROWTYPE;
+      num_recs  number;
+   begin
+      wtplsql.g_DBOUT := 'HOOK:PACKAGE BODY';
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Setup';
+      g_run_assert_hook := FALSE;
+      select count(*) into num_recs from hooks;
+      wt_assert.isnotnull
+         (msg_in           => 'Number of records before setup'
+         ,check_this_in    => num_recs);
+      --------------------------------------  WTPLSQL Testing --
+      l_hname_nt := hname_nt_type('before_test_all'
+                                 ,'before_test_run'
+                                 ,'execute_test_runner'
+                                 ,'after_assertion'
+                                 ,'after_test_run'
+                                 ,'after_test_all'
+                                 ,'ad_hoc_report');
+      select * bulk collect into l_hooks_ntSAVE from hooks;
+      delete from hooks;
+      --------------------------------------  WTPLSQL Testing --
+      l_hooks_rec.seq         := 1;
+      l_hooks_rec.description := 'WTPSQL Self Test';
+      for i in 1 .. l_hname_nt.COUNT
+      loop
+         l_hooks_rec.hook_name  := l_hname_nt(i);
+         l_hooks_rec.run_string := 'begin hook.test_hook(''' ||
+                                    l_hname_nt(i) || '''); end;';
+         insert into hooks values l_hooks_rec;
+      end loop;
+      commit;
+      --------------------------------------  WTPLSQL Testing --
+      init;
+      wt_assert.eqqueryvalue
+         (msg_in           => 'Confirm number of test records'
+         ,check_query_in   => 'select count(*) from hooks'
+         ,against_value_in => l_hname_nt.COUNT);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'All Hooks On';
+      g_test_hook_msg := '';
+      for i in 1 .. l_hname_nt.COUNT
+      loop
+         g_run_assert_hook := TRUE;
+         execute immediate 'begin hook.' || l_hname_nt(i) || '; end;';
+         g_run_assert_hook := FALSE;
+         wt_assert.eq
+            (msg_in          => l_hname_nt(i) || ' is active'
+            ,check_this_in   => g_test_hook_msg
+            ,against_this_in => l_hname_nt(i));
+      end loop;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'All Hooks Off';
+      delete from hooks;
+      commit;
+      init;
+      wt_assert.eqqueryvalue
+         (msg_in           => 'Confirm number of test records 2'
+         ,check_query_in   => 'select count(*) from hooks'
+         ,against_value_in => 0);
+      --------------------------------------  WTPLSQL Testing --
+      g_test_hook_msg := '';
+      for i in 1 .. l_hname_nt.COUNT
+      loop
+         execute immediate 'begin hook.' || l_hname_nt(i) || '; end;';
+         wt_assert.isnull
+            (msg_in          => l_hname_nt(i) || ' is not active'
+            ,check_this_in   => g_test_hook_msg);
+      end loop;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Teardown';
+      delete from hooks;
+      forall i in 1 .. l_hooks_ntSAVE.COUNT
+         insert into hooks values l_hooks_ntSAVE(i);
+      commit;
+      init;
+      wt_assert.eqqueryvalue
+         (msg_in           => 'Number of records after teardown'
+         ,check_query_in   => 'select count(*) from hooks'
+         ,against_value_in => num_recs);
+      g_run_assert_hook := TRUE;
+   end;
+
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+--==============================================================--
+
+
+------------------------------------------------------------
+begin
+   init;
+end hook;</pre>
+</div>
+</div>
+</div>
+</body>
+</html>

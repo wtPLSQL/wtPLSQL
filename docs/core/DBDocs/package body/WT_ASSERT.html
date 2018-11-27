@@ -46,7 +46,7 @@
 <div id="Master.0">
 <div class="currentmasterreport">
 <TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
-<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE><HR><P> See (public) RESET_GLOBALS procedure for default global values</P><HR><TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
+<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE><HR><P></P><HR><TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
 <TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE></div>
 </div>
 <div id="Master.1">
@@ -69,7 +69,7 @@
 </tr>
 <tr>
 <td>OBJECT_ID</td>
-<td>41932</td>
+<td>42813</td>
 </tr>
 <tr>
 <td>DATA_OBJECT_ID</td>
@@ -81,15 +81,15 @@
 </tr>
 <tr>
 <td>CREATED</td>
-<td>29-JUN-2018&nbsp;15:09:16</td>
+<td>25-NOV-2018&nbsp;19:55:41</td>
 </tr>
 <tr>
 <td>LAST_DDL_TIME</td>
-<td>29-JUN-2018&nbsp;15:21:16</td>
+<td>25-NOV-2018&nbsp;19:55:41</td>
 </tr>
 <tr>
 <td>TIMESTAMP</td>
-<td>2018-06-29:15:21:16</td>
+<td>2018-11-25:19:55:41</td>
 </tr>
 <tr>
 <td>STATUS</td>
@@ -170,15 +170,6 @@
 <div class="masterreport">
 <pre>
 package body wt_assert is
-
-   -- See (public) RESET_GLOBALS procedure for default global values
-   TYPE g_rec_type is record
-      (last_pass        boolean
-      ,raise_exception  boolean
-      ,last_assert      wt_results.assertion%TYPE
-      ,last_msg         wt_results.message%TYPE
-      ,last_details     wt_results.details%TYPE);
-   g_rec  g_rec_type;
 
    $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
       temp_rowid1 CONSTANT rowid          := chartorowid('AAAFd1AAFAAAABSAA/');
@@ -265,33 +256,32 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 procedure process_assertion
 is
 begin
-
 $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
    if not wtplsql_skip_save then
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
-   wt_result.save
-      (in_assertion      => g_rec.last_assert
-      ,in_status         => case g_rec.last_pass
-                            when TRUE then C_PASS
-                                      else C_FAIL
-                            end
-      ,in_details        => g_rec.last_details
-      ,in_testcase       => g_testcase
-      ,in_message        => g_rec.last_msg);
+   if core_data.g_run_rec.runner_name is null
+   then
+      hook.ad_hoc_report;
+   else
+      core_data.add
+         (in_testcase  => g_testcase
+         ,in_assertion => g_rec.last_assert
+         ,in_pass      => g_rec.last_pass
+         ,in_details   => g_rec.last_details
+         ,in_message   => g_rec.last_msg);
+   end if;
 $IF $$WTPLSQL_SELFTEST $THEN   ------%WTPLSQL_begin_ignore_lines%------
    end if;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
-
-   if g_rec.raise_exception and not g_rec.last_pass
+   hook.after_assertion;
+   if     g_rec.raise_exception
+      and not g_rec.last_pass
    then
-      raise_application_error(-20003, wt_text_report.format_test_result
-                                         (in_assertion      => g_rec.last_assert
-                                         ,in_status         => C_FAIL
-                                         ,in_details        => g_rec.last_details
-                                         ,in_testcase       => g_testcase
-                                         ,in_message        => g_rec.last_msg) );
+      raise_application_error(-20003, g_rec.last_msg      || CHR(10) ||
+         ' Assertion ' || g_rec.last_assert || ' Failed.' || CHR(10) ||
+         ' Testcase: ' || g_testcase                      || CHR(10) ||
+                   ' ' || g_rec.last_details              );
    end if;
-
 end process_assertion;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -300,7 +290,7 @@ $THEN
    is
    begin
       --------------------------------------  WTPLSQL Testing --
-      g_testcase  := 'PROCESS_ASSERTION';
+      g_testcase            := 'PROCESS_ASSERTION';
       g_rec.last_assert     := 'THIS';
       g_rec.last_pass       := FALSE;
       g_rec.last_details    := 'Expected "PASS" and got "FAIL"';
@@ -340,7 +330,7 @@ begin
 'declare
    cursor cur is ' || l_qry_txt || ';
    rec cur%rowtype;
-begin     
+begin
    open cur;
    fetch cur into rec;
 	:ret_txt := case cur%FOUND when TRUE then ''FOUND''
@@ -425,21 +415,21 @@ begin
 end last_pass;
 
 function last_assert
-   return wt_results.assertion%TYPE
+   return varchar2
 is
 begin
    return g_rec.last_assert;
 end last_assert;
 
 function last_msg
-   return wt_results.message%TYPE
+   return varchar2
 is
 begin
    return g_rec.last_msg;
 end last_msg;
 
 function last_details
-   return wt_results.details%TYPE
+   return varchar2
 is
 begin
    return g_rec.last_details;
@@ -484,10 +474,10 @@ is
 begin
    g_testcase            := '';
    g_rec.last_pass       := NULL;
+   g_rec.raise_exception := FALSE;
    g_rec.last_assert     := '';
    g_rec.last_msg        := '';
    g_rec.last_details    := '';
-   g_rec.raise_exception := FALSE;
 end reset_globals;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -640,7 +630,7 @@ procedure this (
 is
 begin
    g_rec.last_assert  := 'THIS';
-   g_rec.last_msg     := msg_in;
+   g_rec.last_msg     := substr(msg_in,1,200);
    g_rec.last_pass    := nvl(check_this_in, FALSE);
    g_rec.last_details := 'Expected "TRUE" and got "' ||
                           boolean_to_status(check_this_in) || '"';
@@ -1092,14 +1082,14 @@ $THEN
          check_this_in   => (temp_rec.last_pass = FALSE));
       --------------------------------------  WTPLSQL Testing --
       -- VARCHAR2 includes Includes LONG RAW
-      wt_assert.g_testcase := 'EQ LANG RAW Happy Path 1';
+      wt_assert.g_testcase := 'EQ LONG RAW Happy Path 1';
       eq (
          msg_in          => 'Run Test',
          check_this_in   => temp_lraw1,
          against_this_in => temp_lraw1);
       --------------------------------------  WTPLSQL Testing --
       -- VARCHAR2 includes Includes LONG RAW
-      wt_assert.g_testcase := 'EQ LANG RAW Happy Path 1';
+      wt_assert.g_testcase := 'EQ LONG RAW Happy Path 1';
       wtplsql_skip_save := TRUE;
       eq (
          msg_in          => 'Not Used',
@@ -2533,7 +2523,7 @@ begin
    end if;
    if not g_rec.last_pass
    then
-      g_rec.last_details := 
+      g_rec.last_details :=
          substr(g_rec.last_details || ' Error Stack: ' || l_errstack, 1, 4000);
    end if;
    process_assertion;
@@ -4041,9 +4031,11 @@ $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    -- Can't profile this package because all the "assert" tests
    --   pause profiling before they execute.
-   procedure WTPLSQL_RUN  --% WTPLSQL SET DBOUT "WT_ASSERT:PACKAGE BODY" %--
+   procedure WTPLSQL_RUN
    is
    begin
+      wtplsql.g_DBOUT := 'WT_ASSERT:PACKAGE BODY';
+      hook.g_run_assert_hook := FALSE;
       select temp_clob,  temp_nclob,  temp_xml,  temp_blob
        into  temp_clob1, temp_nclob1, temp_xml1, temp_blob1
        from  wt_self_test where id = 1;
@@ -4056,9 +4048,9 @@ $THEN
       t_reset_globals;
       t_this;
       t_eq;
+      --------------------------------------  WTPLSQL Testing --
       t_isnotnull;
       t_isnull;
-      --------------------------------------  WTPLSQL Testing --
       t_raises;
       t_eqqueryvalue;
       t_eqquery;
@@ -4066,13 +4058,14 @@ $THEN
       t_eqtabcount;
       t_object_exists;
       t_object_not_exists;
+      --------------------------------------  WTPLSQL Testing --
+      hook.g_run_assert_hook := TRUE;
    end WTPLSQL_RUN;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--
 
 
-end wt_assert;
-</pre>
+end wt_assert;</pre>
 </div>
 </div>
 </div>

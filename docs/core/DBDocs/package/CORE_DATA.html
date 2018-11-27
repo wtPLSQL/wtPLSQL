@@ -1,0 +1,268 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=Cp1252" />
+<script src="CORE_DATA/report.js" type="text/javascript"></script>
+<link href="CORE_DATA/report.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div class="banner">
+<table width="98%"><tr>
+<td><h2 class="banner">CORE_DATA</h2></td>
+</tr></table></div>
+<div id="maintabs">
+<div class="currentmaintab" onclick="onSelectMainTab(this, 0)">
+<div>
+<p>Doc</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 1)">
+<div>
+<p>Details</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 2)">
+<div>
+<p>Grants</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 3)">
+<div>
+<p>References</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 4)">
+<div>
+<p>Dependencies</p>
+</div>
+</div>
+<div class="maintab" onclick="onSelectMainTab(this, 5)">
+<div>
+<p>Code</p>
+</div>
+</div>
+</div>
+<br/>
+<div id="masterreports">
+<div id="Master.0">
+<div class="currentmasterreport">
+<TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
+<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE><HR><P></P><HR><P></P><A NAME="type_summary"></A><TABLE WIDTH="100%" CELLSPACING="0" CELLPADDING="3" BORDER="1"><TR CLASS="TableHeadingColor"><TD COLSPAN="2"><FONT SIZE="+2"><B>Type Summary</B></FONT></TD><TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#long_name">long_name</A></B>( 128 ) ; </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#run_rec_type">run_rec_type</A></B>( runner_owner long_name , runner_name long_name , dbout_owner long_name , dbout_name long_name , dbout_type varchar2 ( 20 ) , start_dtm timestamp ( 3 ) with time zone , end_dtm timestamp ( 3 ) with time zone , error_message varchar2 ( 4000 ) , runner_sec number ( 6 , 1 ) default 0 , tc_cnt number ( 7 ) default 0 , tc_fail number ( 7 ) default 0 , asrt_cnt number ( 7 ) default 0 , asrt_fail number ( 7 ) default 0 , asrt_min_msec number ( 10 ) , asrt_max_msec number ( 10 ) , asrt_tot_msec number ( 10 ) default 0 , asrt_sos_msec number ( 20 ) default 0 ) ; </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#tcases_rec_type">tcases_rec_type</A></B>( asrt_cnt number ( 7 ) default 0 , asrt_fail number ( 7 ) default 0 , asrt_min_msec number ( 10 ) , asrt_max_msec number ( 10 ) , asrt_tot_msec number ( 10 ) default 0 , asrt_sos_msec number ( 20 ) default 0 ) ; </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+</TABLE><P></P><A NAME="method_summary"></A><TABLE WIDTH="100%" CELLSPACING="0" CELLPADDING="3" BORDER="1"><TR CLASS="TableHeadingColor"><TD COLSPAN="2"><FONT SIZE="+2"><B>Method Summary</B></FONT></TD><TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#add">add</A></B>( in_testcase in varchar2 , in_assertion in varchar2 , in_pass in boolean , in_details in varchar2 , in_message in varchar2 ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#finalize">finalize</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#init1">init1</A></B>( in_package_name in varchar2 ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Identifcation Message of the Assertion</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#init2">init2</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#run_error">run_error</A></B>( in_error_message in varchar2 ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#WTPLSQL_RUN">WTPLSQL_RUN</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+</TABLE>
+<P></P><A NAME="type_detail"></A><TABLE WIDTH="100%" CELLSPACING="0" CELLPADDING="3" BORDER="1"><TR CLASS="TableHeadingColor"><TD COLSPAN="2"><FONT SIZE="+2"><B>Type Detail</B></FONT></TD></TABLE><A NAME="long_name"></A>
+<H3>long_name</H3><PRE>          <B>long_name</B>( 128 ) ; </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="run_rec_type"></A>
+<H3>run_rec_type</H3><PRE>          <B>run_rec_type</B>( runner_owner long_name , runner_name long_name , dbout_owner long_name , dbout_name long_name , dbout_type varchar2 ( 20 ) , start_dtm timestamp ( 3 ) with time zone , end_dtm timestamp ( 3 ) with time zone , error_message varchar2 ( 4000 ) , runner_sec number ( 6 , 1 ) default 0 , tc_cnt number ( 7 ) default 0 , tc_fail number ( 7 ) default 0 , asrt_cnt number ( 7 ) default 0 , asrt_fail number ( 7 ) default 0 , asrt_min_msec number ( 10 ) , asrt_max_msec number ( 10 ) , asrt_tot_msec number ( 10 ) default 0 , asrt_sos_msec number ( 20 ) default 0 ) ; </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="tcases_rec_type"></A>
+<H3>tcases_rec_type</H3><PRE>          <B>tcases_rec_type</B>( asrt_cnt number ( 7 ) default 0 , asrt_fail number ( 7 ) default 0 , asrt_min_msec number ( 10 ) , asrt_max_msec number ( 10 ) , asrt_tot_msec number ( 10 ) default 0 , asrt_sos_msec number ( 20 ) default 0 ) ; </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><P></P><A NAME="method_detail"></A><TABLE WIDTH="100%" CELLSPACING="0" CELLPADDING="3" BORDER="1"><TR CLASS="TableHeadingColor"><TD COLSPAN="2"><FONT SIZE="+2"><B>Method Detail</B></FONT></TD></TABLE><A NAME="add"></A>
+<H3>add</H3><PRE>          <B>add</B>( in_testcase in varchar2 , in_assertion in varchar2 , in_pass in boolean , in_details in varchar2 , in_message in varchar2 ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="finalize"></A>
+<H3>finalize</H3><PRE>          <B>finalize</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="init1"></A>
+<H3>init1</H3><PRE>          <B>init1</B>( in_package_name in varchar2 ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Identifcation Message of the Assertion<DD><DL></DL></DD></DL><HR><A NAME="init2"></A>
+<H3>init2</H3><PRE>          <B>init2</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="run_error"></A>
+<H3>run_error</H3><PRE>          <B>run_error</B>( in_error_message in varchar2 ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="WTPLSQL_RUN"></A>
+<H3>WTPLSQL_RUN</H3><PRE>          <B>WTPLSQL_RUN</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
+<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE></div>
+</div>
+<div id="Master.1">
+<div class="masterreport">
+<table id="Table.0" cellpadding="0" cellspacing="0" summary="">
+<th>NAME</th>
+<th>VALUE</th>
+</tr>
+<tr>
+<td>OWNER</td>
+<td>WTP</td>
+</tr>
+<tr>
+<td>OBJECT_NAME</td>
+<td>CORE_DATA</td>
+</tr>
+<tr>
+<td>SUBOBJECT_NAME</td>
+<td>null</td>
+</tr>
+<tr>
+<td>OBJECT_ID</td>
+<td>42804</td>
+</tr>
+<tr>
+<td>DATA_OBJECT_ID</td>
+<td>null</td>
+</tr>
+<tr>
+<td>OBJECT_TYPE</td>
+<td>PACKAGE</td>
+</tr>
+<tr>
+<td>CREATED</td>
+<td>25-NOV-2018&nbsp;19:55:40</td>
+</tr>
+<tr>
+<td>LAST_DDL_TIME</td>
+<td>25-NOV-2018&nbsp;19:55:40</td>
+</tr>
+<tr>
+<td>TIMESTAMP</td>
+<td>2018-11-25:19:55:40</td>
+</tr>
+<tr>
+<td>STATUS</td>
+<td>VALID</td>
+</tr>
+<tr>
+<td>TEMPORARY</td>
+<td>N</td>
+</tr>
+<tr>
+<td>GENERATED</td>
+<td>N</td>
+</tr>
+<tr>
+<td>SECONDARY</td>
+<td>N</td>
+</tr>
+<tr>
+<td>NAMESPACE</td>
+<td>1</td>
+</tr>
+<tr>
+<td>EDITION_NAME</td>
+<td>null</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.2">
+<div class="masterreport">
+<table id="Table.1" cellpadding="0" cellspacing="0" summary="">
+<tr>
+<th>PRIVILEGE</th>
+<th>GRANTEE</th>
+<th>GRANTABLE</th>
+<th>GRANTOR</th>
+<th>OBJECT_NAME</th>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.3">
+<div class="masterreport">
+<table id="Table.2" cellpadding="0" cellspacing="0" summary="">
+<tr>
+<th>NAME</th>
+<th>OWNER</th>
+<th>TYPE</th>
+<th>OBJECT_ID</th>
+<th>STATUS</th>
+<th>TYPE_LINK</th>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.4">
+<div class="masterreport">
+<table id="Table.3" cellpadding="0" cellspacing="0" summary="">
+<tr>
+<th>NAME</th>
+<th>OWNER</th>
+<th>TYPE</th>
+<th>OBJECT_ID</th>
+<th>STATUS</th>
+<th>TYPE_LINK</th>
+</tr>
+</table>
+</div>
+</div>
+<div id="Master.5">
+<div class="masterreport">
+<pre>
+package core_data
+   authid definer
+is
+
+   SUBTYPE long_name is varchar2(128);
+
+   TYPE run_rec_type is record
+      (runner_owner   long_name                   -- Owner of the Test Runner
+      ,runner_name    long_name                   -- Name of the Test Runner
+      ,dbout_owner    long_name                   -- Owner of the Database Object Under Test
+      ,dbout_name     long_name                   -- Name of the Database Object Under Test
+      ,dbout_type     varchar2(20)                -- Type of the Database Object Under Test
+      ,start_dtm      timestamp(3) with time zone -- Test Runner Start Date/Time
+      ,end_dtm        timestamp(3) with time zone -- Test Runner End Date/Time
+      ,error_message  varchar2(4000)              -- Error Message
+      ,runner_sec     number(6,1)    default 0    -- Total Runtime for Test Runner in Seconds
+      ,tc_cnt         number(7)      default 0    -- Number of Test Cases
+      ,tc_fail        number(7)      default 0    -- Number of Failed Test Cases
+      ,asrt_cnt       number(7)      default 0    -- Number of Assertions across all Test Cases
+      ,asrt_fail      number(7)      default 0    -- Number of Assertion Failures across all Test Cases
+      ,asrt_min_msec  number(10)                  -- Minumum Assertion Interval in Milliseconds across all Test Cases
+      ,asrt_max_msec  number(10)                  -- Maximum Assertion Interval in Milliseconds across all Test Cases
+      ,asrt_tot_msec  number(10)     default 0    -- Total Assertion Intervals in Milliseconds across all Test Cases
+      ,asrt_sos_msec  number(20)     default 0    -- Sum of Squares of Assertion Interval in Milliseconds across all Test Cases
+      );
+   g_run_rec  run_rec_type;
+
+   TYPE tcases_rec_type is record
+      (asrt_cnt       number(7)      default 0    -- Number of Assertions in this Test Case
+      ,asrt_fail      number(7)      default 0    -- Number of Failed Assertsion in this Test Case
+      ,asrt_min_msec  number(10)                  -- Minumum Assertion Interval in Milliseconds in this Test Cases
+      ,asrt_max_msec  number(10)                  -- Maximum Assertion Interval in Milliseconds in this Test Cases
+      ,asrt_tot_msec  number(10)     default 0    -- Total Assertion Interval in Milliseconds in this Test Cases
+      ,asrt_sos_msec  number(20)     default 0    -- Sum of Squares Assertion Interval in Milliseconds in this Test Cases
+      );
+   TYPE tcases_aa_type is table of tcases_rec_type index by long_name;
+   g_tcases_aa   tcases_aa_type;
+
+   TYPE results_rec_type is record
+      (result_seq     number(8)      default 0    -- Sequence Number of the Assertion
+      ,executed_dtm   timestamp(6) with time zone -- Execution Date/Time of the Assertion
+      ,interval_msecs number(10,3)                -- Interval from Previous Assertion in Milliseconds
+      ,testcase       long_name                   -- Test Case Name of the Assertion
+      ,assertion      varchar2(15)                -- Name of the Assertion
+      ,pass           boolean                     -- Did the Assertion Pass? (TRUE/FALSE)
+      ,details        varchar2(4000)              -- Test Details of the Assertion
+      ,message        varchar2(200)               -- Identifcation Message of the Assertion
+      );
+   TYPE results_nt_type is table of results_rec_type;
+   g_results_nt    results_nt_type;
+
+   procedure init1
+      (in_package_name  in  varchar2);
+
+   procedure init2;
+
+   procedure add
+      (in_testcase   in varchar2
+      ,in_assertion  in varchar2
+      ,in_pass       in boolean
+      ,in_details    in varchar2
+      ,in_message    in varchar2);
+
+   procedure finalize;
+
+   procedure run_error
+      (in_error_message  in  varchar2);
+
+   --   WtPLSQL Self Test Procedures
+   --
+   -- alter system set PLSQL_CCFLAGS =
+   --    'WTPLSQL_SELFTEST:TRUE'
+   --    scope=BOTH;
+   --
+   $IF $$WTPLSQL_SELFTEST
+   $THEN
+      procedure WTPLSQL_RUN;
+   $END
+
+end core_data;</pre>
+</div>
+</div>
+</div>
+</body>
+</html>

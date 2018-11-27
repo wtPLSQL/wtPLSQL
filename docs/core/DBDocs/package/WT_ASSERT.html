@@ -72,7 +72,7 @@
 <TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#last_assert">last_assert</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
 <TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#last_details">last_details</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
 <TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#last_msg">last_msg</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
-<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#last_pass">last_pass</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   Modify as required</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#last_pass">last_pass</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; See RESET_GLOBALS procedure for default global values</TD></TR>
 <TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#objexists">objexists</A></B>( msg_in in varchar2 , obj_owner_in in varchar2 , obj_name_in in varchar2 , obj_type_in in varchar2 default null , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
 <TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#objexists">objexists</A></B>( msg_in in varchar2 , check_this_in in varchar2 , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
 <TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#objnotexists">objnotexists</A></B>( msg_in in varchar2 , obj_owner_in in varchar2 , obj_name_in in varchar2 , obj_type_in in varchar2 default null , raise_exc_in in boolean : = false ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
@@ -115,7 +115,7 @@
 <H3>last_assert</H3><PRE>          <B>last_assert</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="last_details"></A>
 <H3>last_details</H3><PRE>          <B>last_details</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="last_msg"></A>
 <H3>last_msg</H3><PRE>          <B>last_msg</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="last_pass"></A>
-<H3>last_pass</H3><PRE>          <B>last_pass</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   Modify as required<DD><DL></DL></DD></DL><HR><A NAME="objexists"></A>
+<H3>last_pass</H3><PRE>          <B>last_pass</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; See RESET_GLOBALS procedure for default global values<DD><DL></DL></DD></DL><HR><A NAME="objexists"></A>
 <H3>objexists</H3><PRE>          <B>objexists</B>( msg_in in varchar2 , obj_owner_in in varchar2 , obj_name_in in varchar2 , obj_type_in in varchar2 default null , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="objexists"></A>
 <H3>objexists</H3><PRE>          <B>objexists</B>( msg_in in varchar2 , check_this_in in varchar2 , null_ok_in in boolean : = false , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="objnotexists"></A>
 <H3>objnotexists</H3><PRE>          <B>objnotexists</B>( msg_in in varchar2 , obj_owner_in in varchar2 , obj_name_in in varchar2 , obj_type_in in varchar2 default null , raise_exc_in in boolean : = false ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="objnotexists"></A>
@@ -152,7 +152,7 @@
 </tr>
 <tr>
 <td>OBJECT_ID</td>
-<td>41927</td>
+<td>42807</td>
 </tr>
 <tr>
 <td>DATA_OBJECT_ID</td>
@@ -164,15 +164,15 @@
 </tr>
 <tr>
 <td>CREATED</td>
-<td>29-JUN-2018&nbsp;15:09:15</td>
+<td>25-NOV-2018&nbsp;19:55:40</td>
 </tr>
 <tr>
 <td>LAST_DDL_TIME</td>
-<td>29-JUN-2018&nbsp;15:21:16</td>
+<td>25-NOV-2018&nbsp;19:55:40</td>
 </tr>
 <tr>
 <td>TIMESTAMP</td>
-<td>2018-06-29:15:21:15</td>
+<td>2018-11-25:19:55:40</td>
 </tr>
 <tr>
 <td>STATUS</td>
@@ -252,33 +252,40 @@
 <div id="Master.5">
 <div class="masterreport">
 <pre>
-package wt_assert authid current_user
+package wt_assert
+   authid current_user
 is
    -- AUTHID CURRENT_USER is required for dynamic PL/SQL execution.
 
    ASSERT_FAILURE_EXCEPTION  exception;
    PRAGMA EXCEPTION_INIT(ASSERT_FAILURE_EXCEPTION, -20003);
 
-   C_PASS  CONSTANT varchar2(10) := 'PASS';
-   C_FAIL  CONSTANT varchar2(10) := 'FAIL';
-
    -- See RESET_GLOBALS procedure for default global values
 
    -- Testcase name for a series of assertions.
    --   Modify as required
-   g_testcase         wt_results.testcase%TYPE;
+   g_testcase   core_data.long_name;
+
+   -- See RESET_GLOBALS procedure for default global values
+   TYPE g_rec_type is record
+      (last_pass        boolean
+      ,raise_exception  boolean
+      ,last_assert      varchar2(15)
+      ,last_msg         varchar2(200)
+      ,last_details     varchar2(4000));
+   g_rec  g_rec_type;
 
    function last_pass
    return boolean;
 
    function last_assert
-   return wt_results.assertion%TYPE;
+   return varchar2;
 
    function last_msg
-   return wt_results.message%TYPE;
+   return varchar2;
 
    function last_details
-   return wt_results.details%TYPE;
+   return varchar2;
 
    procedure reset_globals;
 
@@ -511,7 +518,7 @@ is
 
    --   WtPLSQL Self Test Procedures
    --
-   -- alter system set PLSQL_CCFLAGS = 
+   -- alter system set PLSQL_CCFLAGS =
    --    'WTPLSQL_SELFTEST:TRUE'
    --    scope=BOTH;
    --

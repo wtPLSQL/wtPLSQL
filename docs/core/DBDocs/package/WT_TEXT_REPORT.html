@@ -46,14 +46,16 @@
 <div id="Master.0">
 <div class="currentmasterreport">
 <TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
-<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE><HR><P>   To report the latest result details for test runner:</P><HR><P></P><A NAME="method_summary"></A><TABLE WIDTH="100%" CELLSPACING="0" CELLPADDING="3" BORDER="1"><TR CLASS="TableHeadingColor"><TD COLSPAN="2"><FONT SIZE="+2"><B>Method Summary</B></FONT></TD><TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#ad_hoc_result">ad_hoc_result</A></B>( in_assertion in wt_results . assertion % TYPE , in_status in wt_results . status % TYPE , in_details in wt_results . details % TYPE , in_testcase in wt_results . testcase % TYPE , in_message in wt_results . message % TYPE ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
-<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#dbms_out">dbms_out</A></B>( in_runner_owner in wt_test_runs . runner_owner % TYPE default USER , in_runner_name in wt_test_runs . runner_name % TYPE default null , in_detail_level in number default 0 , in_summary_last in boolean default FALSE ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;       All profiled source lines.</TD></TR>
-<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#format_test_result">format_test_result</A></B>( in_assertion in wt_results . assertion % TYPE , in_status in wt_results . status % TYPE , in_details in wt_results . details % TYPE , in_testcase in wt_results . testcase % TYPE , in_message in wt_results . message % TYPE , in_interval_msecs in wt_results . interval_msecs % TYPE DEFAULT NULL ) return varchar2 ; </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE><HR><P>   To report the latest result details:</P><HR><P></P><A NAME="method_summary"></A><TABLE WIDTH="100%" CELLSPACING="0" CELLPADDING="3" BORDER="1"><TR CLASS="TableHeadingColor"><TD COLSPAN="2"><FONT SIZE="+2"><B>Method Summary</B></FONT></TD><TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#ad_hoc_result">ad_hoc_result</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#dbms_out">dbms_out</A></B>( in_detail_level in number default 0 , in_summary_last in boolean default FALSE ) </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#format_test_result">format_test_result</A></B>( in_rec in core_data . results_rec_type ) return varchar2 ; </CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;       All assertion result details.</TD></TR>
+<TR CLASS="TableRowColor"><TD WIDTH="1%" VALIGN="top" ALIGN="right"><FONT SIZE="-1"><CODE>&nbsp;</CODE></FONT></TD><TD><CODE><B><A HREF="#show_result_header">show_result_header</A></B></CODE><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD></TR>
 </TABLE>
 <P></P><A NAME="method_detail"></A><TABLE WIDTH="100%" CELLSPACING="0" CELLPADDING="3" BORDER="1"><TR CLASS="TableHeadingColor"><TD COLSPAN="2"><FONT SIZE="+2"><B>Method Detail</B></FONT></TD></TABLE><A NAME="ad_hoc_result"></A>
-<H3>ad_hoc_result</H3><PRE>          <B>ad_hoc_result</B>( in_assertion in wt_results . assertion % TYPE , in_status in wt_results . status % TYPE , in_details in wt_results . details % TYPE , in_testcase in wt_results . testcase % TYPE , in_message in wt_results . message % TYPE ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="dbms_out"></A>
-<H3>dbms_out</H3><PRE>          <B>dbms_out</B>( in_runner_owner in wt_test_runs . runner_owner % TYPE default USER , in_runner_name in wt_test_runs . runner_name % TYPE default null , in_detail_level in number default 0 , in_summary_last in boolean default FALSE ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;       All profiled source lines.<DD><DL></DL></DD></DL><HR><A NAME="format_test_result"></A>
-<H3>format_test_result</H3><PRE>          <B>format_test_result</B>( in_assertion in wt_results . assertion % TYPE , in_status in wt_results . status % TYPE , in_details in wt_results . details % TYPE , in_testcase in wt_results . testcase % TYPE , in_message in wt_results . message % TYPE , in_interval_msecs in wt_results . interval_msecs % TYPE DEFAULT NULL ) return varchar2 ; </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
+<H3>ad_hoc_result</H3><PRE>          <B>ad_hoc_result</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="dbms_out"></A>
+<H3>dbms_out</H3><PRE>          <B>dbms_out</B>( in_detail_level in number default 0 , in_summary_last in boolean default FALSE ) </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><A NAME="format_test_result"></A>
+<H3>format_test_result</H3><PRE>          <B>format_test_result</B>( in_rec in core_data . results_rec_type ) return varchar2 ; </PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;       All assertion result details.<DD><DL></DL></DD></DL><HR><A NAME="show_result_header"></A>
+<H3>show_result_header</H3><PRE>          <B>show_result_header</B></PRE><DL>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<DD><DL></DL></DD></DL><HR><TABLE CELLSPACING="0" CELLPADDING="1" WIDTH="100%" BORDER="0">
 <TR><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2">      SUMMARY:  <A HREF="#field_summary">FIELD</A> | <A HREF="#type_summary">TYPE</A> | <A HREF="#method_summary">METHOD</A></FONT></TD><TD CLASS="NavBarRow3" VALIGN="top"><FONT SIZE="-2"></TR></TABLE></div>
 </div>
 <div id="Master.1">
@@ -76,7 +78,7 @@
 </tr>
 <tr>
 <td>OBJECT_ID</td>
-<td>41929</td>
+<td>42808</td>
 </tr>
 <tr>
 <td>DATA_OBJECT_ID</td>
@@ -88,15 +90,15 @@
 </tr>
 <tr>
 <td>CREATED</td>
-<td>29-JUN-2018&nbsp;15:09:15</td>
+<td>25-NOV-2018&nbsp;19:55:40</td>
 </tr>
 <tr>
 <td>LAST_DDL_TIME</td>
-<td>29-JUN-2018&nbsp;15:21:16</td>
+<td>25-NOV-2018&nbsp;19:55:40</td>
 </tr>
 <tr>
 <td>TIMESTAMP</td>
-<td>2018-06-29:15:21:15</td>
+<td>2018-11-25:19:55:40</td>
 </tr>
 <tr>
 <td>STATUS</td>
@@ -176,12 +178,13 @@
 <div id="Master.5">
 <div class="masterreport">
 <pre>
-package wt_text_report authid definer
+package wt_text_report
+   authid definer
 as
 
-   --   To report the latest result details for test runner:
+   --   To report the latest result details:
    -- begin
-   --    wt_text_report.dbms_out('TEST_RUNNER', FALSE, FALSE, TRUE, TRUE);
+   --    wt_text_report.dbms_out(30, TRUE);
    -- end;
    -- /
 
@@ -191,47 +194,27 @@ as
    -- DATE data type format for Report Header
    g_date_format  varchar2(100) := 'DD-Mon-YYYY HH:MI:SS PM';
 
-   function format_test_result
-      (in_assertion      in wt_results.assertion%TYPE
-      ,in_status         in wt_results.status%TYPE
-      ,in_details        in wt_results.details%TYPE
-      ,in_testcase       in wt_results.testcase%TYPE
-      ,in_message        in wt_results.message%TYPE
-      ,in_interval_msecs in wt_results.interval_msecs%TYPE DEFAULT NULL)
-   return varchar2;
+   procedure dbms_out
+      (in_detail_level   in  number   default 0
+      ,in_summary_last   in  boolean  default FALSE);
 
-   procedure ad_hoc_result
-      (in_assertion      in wt_results.assertion%TYPE
-      ,in_status         in wt_results.status%TYPE
-      ,in_details        in wt_results.details%TYPE
-      ,in_testcase       in wt_results.testcase%TYPE
-      ,in_message        in wt_results.message%TYPE);
+   procedure ad_hoc_result;
+
+   procedure show_result_header;
 
 --  "in_detail_level" settings for DBMS_OUT procedure:
 --  * Less than 10 (including null) - No Detail
 --     * Assertion results summary.
---     * Profiled lines summary.
 --  * 10 to 19 - Minimal Detail
 --     * Assertion results summary.
---     * Profiled lines summary.
 --     * Failed assertion result details.
---     * Profiled source lines that were "not executed".
---  * 20 to 29 - Partial Full Detail
+--  * 20 or more - Full Detail
 --     * Assertion results summary.
---     * Profiled lines summary.
 --     * All assertion result details.
---     * Profiled source lines that were "not executed".
---  * 30 or more - Full Detail
---     * Assertion results summary.
---     * Profiled lines summary.
---     * All assertion result details.
---     * All profiled source lines.
 
-   procedure dbms_out
-      (in_runner_owner   in  wt_test_runs.runner_owner%TYPE default USER
-      ,in_runner_name    in  wt_test_runs.runner_name%TYPE  default null
-      ,in_detail_level   in  number                         default 0
-      ,in_summary_last   in  boolean                        default FALSE);
+   function format_test_result
+      (in_rec  in core_data.results_rec_type)
+   return varchar2;
 
 end wt_text_report;</pre>
 </div>
