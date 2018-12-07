@@ -246,7 +246,7 @@ begin
    then
       g_run_rec.asrt_min_msec := l_results_rec.interval_msecs;
    end if;
-   if l_results_rec.interval_msecs > nvl(g_run_rec.asrt_max_msec,0)
+   if l_results_rec.interval_msecs > nvl(g_run_rec.asrt_max_msec,-1)
    then
       g_run_rec.asrt_max_msec := l_results_rec.interval_msecs;
    end if;

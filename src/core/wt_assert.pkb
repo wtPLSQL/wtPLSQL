@@ -106,7 +106,7 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    if     g_rec.raise_exception
       and not g_rec.last_pass
    then
-      raise_application_error(-20003, g_rec.last_msg      || CHR(10) ||
+      raise_application_error(-20004, g_rec.last_msg      || CHR(10) ||
          ' Assertion ' || g_rec.last_assert || ' Failed.' || CHR(10) ||
          ' Testcase: ' || g_testcase                      || CHR(10) ||
                    ' ' || g_rec.last_details              );

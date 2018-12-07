@@ -139,7 +139,7 @@ begin
             when 'after_test_run'      then after_test_run_active      := TRUE;
             when 'after_test_all'      then after_test_all_active      := TRUE;
             when 'ad_hoc_report'       then ad_hoc_report_active       := TRUE;
-            else raise_application_error(-20012, 'Unknown HOOK_NAME Case' || buff.hook_name);
+            else raise_application_error(-20003, 'Unknown HOOK_NAME Case' || buff.hook_name);
           end case;
       end if;
    end loop;
@@ -244,7 +244,7 @@ $THEN
          ,check_query_in   => 'select count(*) from hooks'
          ,against_value_in => num_recs);
       g_run_assert_hook := TRUE;
-   end;
+   end WTPLSQL_RUN;
 
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--

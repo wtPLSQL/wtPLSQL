@@ -424,7 +424,6 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 procedure test_run
       (in_package_name  in  varchar2)
 is
-   pragma AUTONOMOUS_TRANSACTION;  -- Required if called as Remote Procedure Call (RPC)
    l_error_stack          varchar2(32000);
 begin
    $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
@@ -433,8 +432,6 @@ begin
          return;  -- Avoid running the TEST_RUN procedure for some self-tests
       end if;
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
-   -- Start a new Transaction
-   COMMIT;
    -- Initialize
    core_data.init1(in_package_name);
    g_DBOUT := '';
@@ -457,12 +454,9 @@ begin
             ,check_this_in => substr(core_data.g_run_rec.error_message,1,60));
    end;
    -- Finalize
-   rollback;    -- Discard any pending transactions.
    core_data.finalize;
    find_dbout;
    hook.after_test_run;
-   -- Required if called as Remote Procedure Call (RPC)
-   COMMIT;
 --exception
 --   when OTHERS
 --   then         Allow WTPLSQL exception (Unhandled)
@@ -474,6 +468,22 @@ end test_run;
 --   Too complicated because testing occurs while the TEST_RUN
 --   procedure is executing.  This also prevents 100% profiling.
 --==============================================================--
+
+
+------------------------------------------------------------
+procedure test_run_schema
+      (in_schema_name   in  varchar2
+      ,in_package_name  in  varchar2)
+is
+begin
+   dbms_scheduler.create_job
+      (job_name        => 'WT_RUN_SCHEMA_' ||
+                          substr(in_schema_name,1,100)
+      ,job_type        => 'PLSQL Block'
+      ,job_action      => 'begin wtplsql.test_run(' ||
+                           in_package_name || '); end;'
+      ,credential_name => in_schema_name);
+end test_run_schema;
 
 
 ------------------------------------------------------------
@@ -524,6 +534,38 @@ $THEN
          check_this_in =>  test_all_aa.EXISTS( 'WTPLSQL' ));
    end t_test_all;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
+------------------------------------------------------------
+procedure test_all_schema
+      (in_schema_name   in  varchar2)
+is
+begin
+   null;
+end test_all_schema;
+
+------------------------------------------------------------
+procedure test_all_schema_parallel
+is
+begin
+   null;
+end test_all_schema_parallel;
+
+------------------------------------------------------------
+procedure test_all_schema_sequential
+is
+begin
+   null;
+end test_all_schema_sequential;
+
+------------------------------------------------------------
+procedure wait_for_all_schema
+      (in_timeout_seconds         in number  default null
+      ,in_check_interval_seconds  in number  default 60)
+is
+begin
+   null;
+end wait_for_all_schema;
 
 
 --==============================================================--

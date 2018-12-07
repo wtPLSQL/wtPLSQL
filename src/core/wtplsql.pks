@@ -16,10 +16,38 @@ as
    --   Modify as required
    g_DBOUT    varchar2(128);
 
+   -- Run a single test runner in the current schema
+   -- Returns after test runner is complete
    procedure test_run
       (in_package_name  in  varchar2);
 
+   -- Run a single test runner in a different schema
+   -- Returns before test runner is complete
+   procedure test_run_schema
+      (in_schema_name   in  varchar2
+      ,in_package_name  in  varchar2);
+
+   -- Run all test runners in the current schema
+   -- Returns after all test runners are complete
    procedure test_all;
+
+   -- Run all test runners in a different schema
+   -- Returns before all test runners are complete
+   procedure test_all_schema
+      (in_schema_name   in  varchar2);
+
+   -- Run all test runners in all schema in sequence
+   -- Returns before all test runners are complete
+   procedure test_all_schema_sequential;
+
+   -- Run all test runners in all schema in parallel
+   -- Returns before all test runners are complete
+   procedure test_all_schema_parallel;
+
+   -- Waits for all test runners to complete
+   procedure wait_for_all_schema
+      (in_timeout_seconds         in number  default null
+      ,in_check_interval_seconds  in number  default 60);
 
    --   WtPLSQL Self Test Procedures
    --
