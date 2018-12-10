@@ -1,59 +1,56 @@
 
-   wtPLSQL 1.2.0 - Start Date/Time: 25-Nov-2018 07:58:12 PM
+   wtPLSQL 1.2.0 - Start Date/Time: 09-Dec-2018 08:21:47 PM
 
 Test Results for WTP.CORE_DATA
 Database Object Under Test is PACKAGE BODY WTP.CORE_DATA
 ----------------------------------------
-  Minimum Elapsed msec:        0      Total Assertions:       54
+  Minimum Elapsed msec:        0      Total Assertions:       64
   Average Elapsed msec:        0       Total Testcases:        8
-  Maximum Elapsed msec:        1      Failed Testcases:        0
-  Total Run Time (sec):      0.0        Testcase Yield:      100%
+  Maximum Elapsed msec:        3      Failed Testcases:        0
+  Total Run Time (sec):      0.2        Testcase Yield:      100%
 
 WTP.CORE_DATA Test Runner Details:
 ----------------------------------------
 
 
-   wtPLSQL 1.2.0 - Start Date/Time: 25-Nov-2018 07:58:12 PM
+   wtPLSQL 1.2.0 - Start Date/Time: 09-Dec-2018 08:21:47 PM
 
 Test Results for WTP.HOOK
 Database Object Under Test is PACKAGE BODY WTP.HOOK
 ----------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:       18
-  Average Elapsed msec:        2       Total Testcases:        4
-  Maximum Elapsed msec:       12      Failed Testcases:        0
-  Total Run Time (sec):      0.0        Testcase Yield:      100%
+  Average Elapsed msec:        1       Total Testcases:        4
+  Maximum Elapsed msec:        4      Failed Testcases:        0
+  Total Run Time (sec):      0.1        Testcase Yield:      100%
 
 WTP.HOOK Test Runner Details:
 ----------------------------------------
 
 
-   wtPLSQL 1.2.0 - Start Date/Time: 25-Nov-2018 07:58:12 PM
+   wtPLSQL 1.2.0 - Start Date/Time: 09-Dec-2018 08:21:47 PM
 
 Test Results for WTP.WTPLSQL
 ----------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:       26
-  Average Elapsed msec:       15       Total Testcases:       11
-  Maximum Elapsed msec:      125      Failed Testcases:        0
-  Total Run Time (sec):      0.4        Testcase Yield:      100%
+  Average Elapsed msec:       18       Total Testcases:       11
+  Maximum Elapsed msec:      173      Failed Testcases:        0
+  Total Run Time (sec):      0.5        Testcase Yield:      100%
 
 WTP.WTPLSQL Test Runner Details:
 ----------------------------------------
 
 
-   wtPLSQL 1.2.0 - Start Date/Time: 25-Nov-2018 07:58:12 PM
+   wtPLSQL 1.2.0 - Start Date/Time: 09-Dec-2018 08:21:48 PM
 
 Test Results for WTP.WT_ASSERT
 Database Object Under Test is PACKAGE BODY WTP.WT_ASSERT
 ----------------------------------------
-  Minimum Elapsed msec:        0      Total Assertions:      404
-  Average Elapsed msec:        6       Total Testcases:      150
-  Maximum Elapsed msec:      449      Failed Testcases:        0
-  Total Run Time (sec):      2.6        Testcase Yield:      100%
+  Minimum Elapsed msec:        0      Total Assertions:      405
+  Average Elapsed msec:        3       Total Testcases:      151
+  Maximum Elapsed msec:      111      Failed Testcases:        0
+  Total Run Time (sec):      1.4        Testcase Yield:      100%
 
 WTP.WT_ASSERT Test Runner Details:
 ----------------------------------------
 
-
-
-PL/SQL procedure successfully completed.
 

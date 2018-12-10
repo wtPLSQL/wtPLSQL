@@ -11,10 +11,25 @@ as
 procedure run_hooks
       (in_hook_name  in varchar2)
 is
+   l_error_stack          varchar2(32000);
 begin
    for i in 1 .. g_run_aa(in_hook_name).COUNT
    loop
-      execute immediate g_run_aa(in_hook_name)(i);
+      begin
+         execute immediate g_run_aa(in_hook_name)(i);
+      exception
+         when OTHERS
+         then
+            l_error_stack := 'Hook Error in ' || in_hook_name ||
+                                   '(' || i || ')' || CHR(10) ||
+                              dbms_utility.format_error_stack ||
+                              dbms_utility.format_error_backtrace;
+            core_data.run_error(l_error_stack);
+            wt_assert.isnull
+               (msg_in        => 'Un-handled Exception in ' ||
+                                  in_hook_name || ' Hook'
+               ,check_this_in => l_error_stack);
+      end;
    end loop;
 end run_hooks;
 

@@ -12,6 +12,8 @@ is
       ,dbout_type     varchar2(20)                -- Type of the Database Object Under Test
       ,start_dtm      timestamp(3) with time zone -- Test Runner Start Date/Time
       ,end_dtm        timestamp(3) with time zone -- Test Runner End Date/Time
+      ,fst_assrt_dtm  timestamp(3) with time zone -- Date/Time of First Assertion
+      ,lst_assrt_dtm  timestamp(3) with time zone -- Date/Time of Last Assertion
       ,error_message  varchar2(4000)              -- Error Message
       ,runner_sec     number(6,1)    default 0    -- Total Runtime for Test Runner in Seconds
       ,tc_cnt         number(7)      default 0    -- Number of Test Cases
@@ -61,7 +63,7 @@ is
       ,in_details    in varchar2
       ,in_message    in varchar2);
    
-   procedure finalize;
+   procedure final1;
    
    procedure run_error
       (in_error_message  in  varchar2);

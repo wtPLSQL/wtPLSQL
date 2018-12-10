@@ -117,7 +117,9 @@ $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure t_process_assertion
    is
+      l_msg  varchar2(100) := 'Check Exception Processing';
    begin
+      wt_assert.g_testcase := 'Test Process Assertion';
       --------------------------------------  WTPLSQL Testing --
       g_testcase            := 'PROCESS_ASSERTION';
       g_rec.last_assert     := 'THIS';
@@ -127,11 +129,31 @@ $THEN
       g_rec.raise_exception := TRUE;
       wtplsql_skip_save  := TRUE;
       process_assertion;  -- Should throw exception
+      --------------------------------------  WTPLSQL Testing --
       wtplsql_skip_save  := FALSE;
+      wt_assert.isnull
+         (msg_in        => l_msg
+         ,check_this_in => 'Exception missing, should not have arrived here');
       --------------------------------------  WTPLSQL Testing --
    exception
       when ASSERT_FAILURE_EXCEPTION then
          wtplsql_skip_save := FALSE;
+         wt_assert.eq
+            (msg_in        => l_msg
+            ,check_this_in => SQLERRM
+            ,against_this_in => 
+'ORA-20004: Process Assertion Forced Failure
+ Assertion THIS Failed.
+ Testcase: PROCESS_ASSERTION
+ Expected "PASS" and got "FAIL"');
+      when OTHERS then
+         wtplsql_skip_save := FALSE;
+         wt_assert.isnull
+            (msg_in        => l_msg
+            ,check_this_in => 'Incorrect Exception Thrown: ' ||
+                              substr(dbms_utility.format_error_stack  ||
+                                     dbms_utility.format_error_backtrace
+                                    ,1,3950)  );
    end t_process_assertion;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 

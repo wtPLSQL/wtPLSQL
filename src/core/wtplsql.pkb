@@ -28,14 +28,13 @@ begin
    end if;
    --  Check for Valid Runner Name
    select count(*) into l_package_check
-    from  user_procedures
-    where procedure_name = C_RUNNER_ENTRY_POINT
-     and  object_name    = core_data.g_run_rec.runner_name
-     and  object_type    = 'PACKAGE';
+    from  wt_qual_test_runners_vw
+    where owner        = core_data.g_run_rec.runner_owner
+     and  package_name = core_data.g_run_rec.runner_name;
    if l_package_check = 0
    then
       raise_application_error (-20002, 'RUNNER_NAME Procedure "' ||
-                                     core_data.g_run_rec.runner_name ||
+                                 core_data.g_run_rec.runner_name ||
                                      '.' || C_RUNNER_ENTRY_POINT ||
                                                 '" is not valid' );
    end if;
@@ -205,6 +204,13 @@ begin
          core_data.g_run_rec.dbout_type    := '';
          core_data.run_error('Found too many database objects "' ||
                                                  g_DBOUT || '".' );
+         return;
+      when OTHERS
+      then
+         core_data.g_run_rec.dbout_owner   := '';
+         core_data.g_run_rec.dbout_name    := '';
+         core_data.g_run_rec.dbout_type    := '';
+         core_data.run_error('Error finding database object: ' || SQLERRM);
          return;
    end;
    --
@@ -424,42 +430,51 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 procedure test_run
       (in_package_name  in  varchar2)
 is
-   l_error_stack          varchar2(32000);
 begin
+   --
    $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
       if wtplsql_skip_test then
          test_all_aa(in_package_name) := 'X';
          return;  -- Avoid running the TEST_RUN procedure for some self-tests
       end if;
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
-   -- Initialize
+   --
+   -- Primary Initialize
    core_data.init1(in_package_name);
    g_DBOUT := '';
    wt_assert.reset_globals;
    -- Reset the Test Runs Record before checking anything
    check_runner;
+   --
+   $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
+      if NOT wtplsql_skip_test then
+         -- This will avoid running the hook for some self-tests
+   --
    hook.before_test_run;
+   --
+      end if;
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
+   --
+   -- Secondary Initialize
    core_data.init2;
-   -- Call the Test Runner
-   begin
-      hook.execute_test_runner;
-   exception
-      when OTHERS
-      then
-         l_error_stack := dbms_utility.format_error_stack     ||
-                          dbms_utility.format_error_backtrace ;
-         core_data.run_error(l_error_stack);
-         wt_assert.isnull
-            (msg_in        => 'Un-handled Exception from Test Runner'
-            ,check_this_in => substr(core_data.g_run_rec.error_message,1,60));
-   end;
-   -- Finalize
-   core_data.finalize;
+   g_DBOUT := '';
+   --
+   hook.execute_test_runner;
+   --
+   -- Primary Finalize
    find_dbout;
+   core_data.final1;
+   g_DBOUT := '';
+   --
+   $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
+      if NOT wtplsql_skip_test then
+         -- This will avoid running the hook for some self-tests
+   --
    hook.after_test_run;
---exception
---   when OTHERS
---   then         Allow WTPLSQL exception (Unhandled)
+   --
+      end if;
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
+   --
 end test_run;
 
 
@@ -471,32 +486,21 @@ end test_run;
 
 
 ------------------------------------------------------------
-procedure test_run_schema
-      (in_schema_name   in  varchar2
-      ,in_package_name  in  varchar2)
-is
-begin
-   dbms_scheduler.create_job
-      (job_name        => 'WT_RUN_SCHEMA_' ||
-                          substr(in_schema_name,1,100)
-      ,job_type        => 'PLSQL Block'
-      ,job_action      => 'begin wtplsql.test_run(' ||
-                           in_package_name || '); end;'
-      ,credential_name => in_schema_name);
-end test_run_schema;
-
-
-------------------------------------------------------------
 procedure test_all
 is
    TYPE runners_nt_type is table of varchar2(128);
    l_runners_nt      runners_nt_type;
 begin
+   --
    $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
       if NOT wtplsql_skip_test then
-         hook.before_test_all;  -- Avoid running the hook for some self-tests
+         -- This will avoid running the hook for some self-tests
+   --
+   hook.before_test_all;
+   --
       end if;
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
+   --
    select object_name
      bulk collect into l_runners_nt
     from  user_procedures  t1
@@ -508,11 +512,16 @@ begin
    loop
       test_run(l_runners_nt(i));
    end loop;
+   --
    $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
       if NOT wtplsql_skip_test then
-         hook.after_test_all;  -- Avoid running the hook for some self-tests
+         -- This will avoid running the hook for some self-tests
+   --
+   hook.after_test_all;
+   --
       end if;
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
+   --
 end test_all;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -534,38 +543,6 @@ $THEN
          check_this_in =>  test_all_aa.EXISTS( 'WTPLSQL' ));
    end t_test_all;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
-
-
-------------------------------------------------------------
-procedure test_all_schema
-      (in_schema_name   in  varchar2)
-is
-begin
-   null;
-end test_all_schema;
-
-------------------------------------------------------------
-procedure test_all_schema_parallel
-is
-begin
-   null;
-end test_all_schema_parallel;
-
-------------------------------------------------------------
-procedure test_all_schema_sequential
-is
-begin
-   null;
-end test_all_schema_sequential;
-
-------------------------------------------------------------
-procedure wait_for_all_schema
-      (in_timeout_seconds         in number  default null
-      ,in_check_interval_seconds  in number  default 60)
-is
-begin
-   null;
-end wait_for_all_schema;
 
 
 --==============================================================--

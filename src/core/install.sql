@@ -45,13 +45,13 @@ grant create job            to &schema_owner.;
 grant create public synonym to &schema_owner.;
 
 -- For DBOUT Check.
-grant select on dba_objects       to &schema_owner.;
+grant select on dba_objects       to &schema_owner. with grant option;
 -- For Qualified Test Runners View
-grant select on dba_procedures    to &schema_owner.;
+grant select on dba_procedures    to &schema_owner. with grant option;
 -- For Profiler
-grant select on dba_source        to &schema_owner.;
+grant select on dba_source        to &schema_owner. with grant option;
 -- For GUI
-grant select on sys.gv_$parameter to &schema_owner.;
+grant select on sys.gv_$parameter to &schema_owner. with grant option;
 
 begin
    for buff in (select p.value PLSQL_CCFLAGS
@@ -175,6 +175,13 @@ create or replace public synonym wt_execute_test_runner for wt_execute_test_runn
 @wt_text_report.pkb
 /
 
+-- Views
+@wt_qual_test_runners_vw.vw
+/
+
+@wt_scheduler_jobs_vw.vw
+/
+
 -- Configuration Data
 
 -- This is the default test runner execution procedure
@@ -190,7 +197,6 @@ insert into hooks (hook_name, seq, run_string)
    values ('ad_hoc_report', 1, 'begin wt_text_report.ad_hoc_result; end;');
 
 commit;
-
 
 set showmode on
 spool off

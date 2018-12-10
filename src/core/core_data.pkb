@@ -28,9 +28,9 @@ begin
    g_run_rec  := l_run_recNULL;
    g_run_rec.start_dtm   := systimestamp;
    g_run_rec.runner_name := in_package_name;
-   --  These don't work:
-   --  g_run_rec.runner_owner := USER;
-   --  g_run_rec.runner_owner := sys_context('userenv', 'current_schema');
+   -- These don't always work:
+   --   g_run_rec.runner_owner := USER;
+   --   g_run_rec.runner_owner := sys_context('userenv', 'current_schema');
    select username into g_run_rec.runner_owner from user_users;
    -- Initialize Test Cases Array
    l_testcase := g_tcases_aa.LAST;
@@ -42,8 +42,6 @@ begin
    -- Initialize Test Results Array
    g_results_nt := results_nt_type(null);
    g_results_nt(1) := l_results_recNULL;
-   -- Set this for any "hook" that might run "add"
-   g_results_nt(1).executed_dtm := systimestamp;
 end init1;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -196,23 +194,27 @@ procedure add
 is
    l_results_rec      results_rec_type;
    l_tcases_rec       tcases_rec_type;
-   l_current_tstamp   timestamp(6);
+   l_current_tstamp   timestamp(6) := systimestamp;
    l_interval_buff    interval day(9) to second(6);
 begin
    ------------------------------------------------------------
-   --  Set "l_results_rec" and add a new "g_results_nt" element
-   --
-   if g_results_nt.COUNT != 1
+   --  Set and Update "l_results_rec"
+   if g_results_nt.COUNT = 1
    then
-      l_results_rec := g_results_nt(g_results_nt.COUNT-1);
-   else
-      -- g_results_nt should have only 1 element.
       l_results_rec := g_results_nt(1);
+   else
+      l_results_rec := g_results_nt(g_results_nt.COUNT-1);
    end if;
-   l_results_rec.result_seq     := l_results_rec.result_seq + 1;
-   -- g_results_rec.executed_dtm still has the last execution time
-   --   core_data.init also sets this during test runner startup
-   l_current_tstamp             := systimestamp;
+   l_results_rec.result_seq := l_results_rec.result_seq + 1;
+   l_results_rec.testcase   := nvl(in_testcase
+                                  ,substr(g_run_rec.runner_owner || '.' ||
+                                          g_run_rec.runner_name, 1, 128));
+   l_results_rec.assertion  := in_assertion;
+   l_results_rec.pass       := in_pass;
+   l_results_rec.details    := in_details;
+   l_results_rec.message    := in_message;
+   -- g_results_nt(N-1).executed_dtm has the last execution time
+   -- core_data.init2 also sets g_results_nt(1) during test runner startup
    l_interval_buff              := l_current_tstamp - l_results_rec.executed_dtm;
    l_results_rec.interval_msecs := (extract(second from l_interval_buff) +
                                     60 * ( extract(minute from l_interval_buff) +
@@ -220,18 +222,12 @@ begin
                                                 24 * ( extract(day from l_interval_buff)
                                    )     )     )     ) * 1000;
    l_results_rec.executed_dtm   := l_current_tstamp;
-   l_results_rec.testcase       := nvl(in_testcase
-                                      ,substr(g_run_rec.runner_owner || '.' ||
-                                              g_run_rec.runner_name, 1, 128));
-   l_results_rec.assertion      := in_assertion;
-   l_results_rec.pass           := in_pass;
-   l_results_rec.details        := in_details;
-   l_results_rec.message        := in_message;
+   ------------------------------------------------------------
+   --  Update "g_results_nt" Array and Add New Element
    g_results_nt(g_results_nt.COUNT) := l_results_rec;
    g_results_nt.extend;
    -----------------------------------------------
    --  Update "g_run_rec" based on "l_results_rec"
-   --
    g_run_rec.asrt_cnt      := g_run_rec.asrt_cnt +  1;
    if NOT l_results_rec.pass
    then
@@ -446,11 +442,12 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
-procedure finalize
+procedure final1
 is
    l_testcase         long_name;
    l_interval_buff    interval day(9) to second(6);
 begin
+   -- Update Test Case Data
    g_run_rec.tc_cnt  := g_tcases_aa.COUNT;
    g_run_rec.tc_fail := 0;
    if g_tcases_aa.COUNT > 0
@@ -465,19 +462,28 @@ begin
          l_testcase := g_tcases_aa.NEXT(l_testcase);
       end loop;
    end if;
-   g_run_rec.end_dtm    := systimestamp;
-   l_interval_buff      := g_run_rec.end_dtm - g_run_rec.start_dtm;
-   g_run_rec.runner_sec := (extract(second from l_interval_buff) +
-                            60 * ( extract(minute from l_interval_buff) +
-                                  60 * ( extract(hour from l_interval_buff) +
-                                        24 * ( extract(day from l_interval_buff)
-                           )     )     )     );
+   --
+   if g_results_nt.COUNT > 1
+   then
+      -- Need at least 2 elements because the last element is NULL.
+      g_run_rec.fst_assrt_dtm := g_results_nt(1).executed_dtm;
+      g_run_rec.lst_assrt_dtm := g_results_nt(g_results_nt.COUNT-1).executed_dtm;
+   end if;
+   -- Remove the Last (Empty) Array Element
    g_results_nt.delete(g_results_nt.COUNT);
-end finalize;
+   -- Update Test Run Data
+   g_run_rec.end_dtm       := systimestamp;
+   l_interval_buff         := g_run_rec.end_dtm - g_run_rec.start_dtm;
+   g_run_rec.runner_sec    := (extract(second from l_interval_buff) +
+                               60 * ( extract(minute from l_interval_buff) +
+                                     60 * ( extract(hour from l_interval_buff) +
+                                           24 * ( extract(day from l_interval_buff)
+                              )     )     )     );
+end final1;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure t_finalize
+   procedure t_final1
    is
       l_run_recSAVE      run_rec_type;
       l_tcases_aaSAVE    tcases_aa_type;
@@ -487,11 +493,11 @@ $THEN
       l_results_ntTEST   results_nt_type;
    begin
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Finalize Happy Path';
+      wt_assert.g_testcase := 'FINAL "One" Happy Path';
       l_run_recSAVE     := g_run_rec;
       l_tcases_aaSAVE   := g_tcases_aa;
       l_results_ntSAVE  := g_results_nt;
-      finalize;
+      final1;
       l_run_recTEST     := g_run_rec;
       l_tcases_aaTEST   := g_tcases_aa;
       l_results_ntTEST  := g_results_nt;
@@ -499,18 +505,55 @@ $THEN
       g_tcases_aa       := l_tcases_aaSAVE;
       g_results_nt      := l_results_ntSAVE;
       --------------------------------------  WTPLSQL Testing --
+      -- Update Test Case Data
+      wt_assert.isnotnull
+         (msg_in          => 'l_run_recTEST.tc_cnt'
+         ,check_this_in   =>  l_run_recTEST.tc_cnt);
+      wt_assert.this
+         (msg_in          => 'l_run_recTEST.tc_cnt > 0'
+         ,check_this_in   =>  l_run_recTEST.tc_cnt > 0);
+      wt_assert.isnotnull
+         (msg_in          => 'l_run_recTEST.tc_fail'
+         ,check_this_in   =>  l_run_recTEST.tc_fail);
+      wt_assert.this
+         (msg_in          => 'l_run_recTEST.tc_fail >= 0'
+         ,check_this_in   =>  l_run_recTEST.tc_fail >= 0);
+      --------------------------------------  WTPLSQL Testing --
+      -- Need at least 2 elements because the last element is NULL.
+      wt_assert.isnull
+         (msg_in          => 'l_run_recSAVE.fst_assrt_dtm'
+         ,check_this_in   =>  l_run_recSAVE.fst_assrt_dtm);
+      wt_assert.isnotnull
+         (msg_in          => 'l_run_recTEST.fst_assrt_dtm'
+         ,check_this_in   =>  l_run_recTEST.fst_assrt_dtm);
+      wt_assert.isnull
+         (msg_in          => 'l_run_recSAVE.lst_assrt_dtm'
+         ,check_this_in   =>  l_run_recSAVE.lst_assrt_dtm);
+      wt_assert.isnotnull
+         (msg_in          => 'l_run_recTEST.lst_assrt_dtm'
+         ,check_this_in   =>  l_run_recTEST.lst_assrt_dtm);
+      --------------------------------------  WTPLSQL Testing --
+      -- Remove the Last (Empty) Array Element
+      wt_assert.eq
+         (msg_in          => 'l_results_ntTEST.COUNT = ' ||
+                             'l_results_ntSAVE.COUNT - 1'
+         ,check_this_in   =>  l_results_ntTEST.COUNT
+         ,against_this_in =>  l_results_ntSAVE.COUNT - 1);
+      --------------------------------------  WTPLSQL Testing --
+      -- Update Test Run Data
       wt_assert.isnull
          (msg_in          => 'l_run_recSAVE.end_dtm'
          ,check_this_in   =>  l_run_recSAVE.end_dtm);
       wt_assert.isnotnull
          (msg_in          => 'l_run_recTEST.end_dtm'
          ,check_this_in   =>  l_run_recTEST.end_dtm);
-      wt_assert.eq
-         (msg_in          => 'l_results_ntTEST.COUNT = ' ||
-                             'l_results_ntSAVE.COUNT - 1'
-         ,check_this_in   =>  l_results_ntTEST.COUNT
-         ,against_this_in =>  l_results_ntSAVE.COUNT - 1);
-   end t_finalize;
+      wt_assert.isnotnull
+         (msg_in          => 'l_run_recTEST.runner_sec'
+         ,check_this_in   =>  l_run_recTEST.runner_sec);
+      wt_assert.this
+         (msg_in          => 'l_run_recTEST.runner_sec >= l_run_recSAVE.runner_sec'
+         ,check_this_in   =>  l_run_recTEST.runner_sec >= l_run_recSAVE.runner_sec);
+   end t_final1;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -605,7 +648,8 @@ $THEN
       t_init1;
       t_init2;
       t_add;
-      t_finalize;
+      t_final1;
+      --t_final2;
       t_run_error;
    end;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
