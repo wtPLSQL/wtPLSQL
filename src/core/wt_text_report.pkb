@@ -16,7 +16,7 @@ begin
 end p;
 
 ------------------------------------------------------------
-procedure result_summary
+procedure summary_out
 is
    asrt_cnt     number;
    run_sec      number;
@@ -28,6 +28,22 @@ is
    avg_msec     number;
    l_yield_txt  varchar2(50);
 begin
+   p('');
+   --
+   p('   wtPLSQL ' || wtplsql.show_version || ' - Start Date/Time: ' ||
+         to_char(core_data.g_run_rec.start_dtm, g_date_format) ||
+         CHR(10));
+   p('Test Results for ' || core_data.g_run_rec.runner_owner ||
+                     '.' || core_data.g_run_rec.runner_name  );
+   ----------------------------------------
+   if core_data.g_run_rec.dbout_name is not null
+   then
+      p('Database Object Under Test is ' || core_data.g_run_rec.dbout_type  ||
+                                     ' ' || core_data.g_run_rec.dbout_owner ||
+                                     '.' || core_data.g_run_rec.dbout_name  );
+   end if;
+   p('----------------------------------------');
+   --
    asrt_cnt := core_data.g_run_rec.asrt_cnt;
    run_sec  := core_data.g_run_rec.runner_sec;
    tc_cnt   := core_data.g_run_rec.tc_cnt;
@@ -44,6 +60,7 @@ begin
                else l_yield_txt := to_char(100 * ( 1 - (tc_fail/tc_cnt) )
                                           ,'9999999') || '%';
    end case;
+   --
    p('  Minimum Elapsed msec: ' || to_char(min_msec ,'9999999') ||
      '      Total Assertions: ' || to_char(asrt_cnt ,'9999999') );
    p('  Average Elapsed msec: ' || to_char(avg_msec ,'9999999') ||
@@ -52,59 +69,45 @@ begin
      '      Failed Testcases: ' || to_char(tc_fail  ,'9999999') );
    p('  Total Run Time (sec): ' || to_char(run_sec  ,'99990.9') ||
      '        Testcase Yield: ' || l_yield_txt                  );
-end result_summary;
-
-------------------------------------------------------------
-procedure summary_out
-is
-begin
-   p('');
-   p('   wtPLSQL ' || wtplsql.show_version || ' - Start Date/Time: ' ||
-         to_char(core_data.g_run_rec.start_dtm, g_date_format) ||
-         CHR(10));
-   p('Test Results for ' || core_data.g_run_rec.runner_owner ||
-                     '.' || core_data.g_run_rec.runner_name  );
-   ----------------------------------------
-   if core_data.g_run_rec.dbout_name is not null
-   then
-      p('Database Object Under Test is ' || core_data.g_run_rec.dbout_type  ||
-                                     ' ' || core_data.g_run_rec.dbout_owner ||
-                                     '.' || core_data.g_run_rec.dbout_name  );
-   end if;
-   p('----------------------------------------');
-   result_summary;
+   --
    if core_data.g_run_rec.error_message is not null
    then
       p('');
       p('  *** Test Runner Error ***');
       p(core_data.g_run_rec.error_message);
    end if;
+   --
 end summary_out;
 
 ------------------------------------------------------------
 procedure results_out
       (in_show_pass  in boolean)
 is
-   l_rec            core_data.results_rec_type;
-   l_last_testcase  core_data.long_name;
+   l_rec  core_data.results_rec_type;
 begin
-   show_result_header;
+   --
+   p('');
+   p(               core_data.g_run_rec.runner_owner ||
+             '.' || core_data.g_run_rec.runner_name  ||
+     ' Test Runner Details:' );
+   p('----------------------------------------');
+   --
    for i in 1 .. core_data.g_results_nt.COUNT
    loop
       if    in_show_pass
          OR NOT core_data.g_results_nt(i).pass
       then
-         if core_data.g_results_nt(i).testcase = l_last_testcase
+         if core_data.g_results_nt(i).testcase = l_rec.testcase
          then
             l_rec := core_data.g_results_nt(i);
             l_rec.testcase := '';
-            p(format_test_result(l_rec));
          else
-            p(format_test_result(core_data.g_results_nt(i)));
-            l_last_testcase := core_data.g_results_nt(i).testcase;
+            l_rec := core_data.g_results_nt(i);
          end if;
+         p(format_test_result(l_rec));
       end if;
    end loop;
+   --
 end results_out;
 
 
@@ -151,16 +154,6 @@ begin
      ' Testcase: ' || wt_assert.g_testcase        || CHR(10) ||
                ' ' || wt_assert.g_rec.last_details );
 end ad_hoc_result;
-
-
-------------------------------------------------------------
-procedure show_result_header is begin
-   p('');
-   p(               core_data.g_run_rec.runner_owner ||
-             '.' || core_data.g_run_rec.runner_name  ||
-     ' Test Runner Details:' );
-   p('----------------------------------------');
-end show_result_header;
 
 
 ------------------------------------------------------------

@@ -17,20 +17,17 @@ as
    procedure dbms_out
       (in_detail_level   in  number   default 0
       ,in_summary_last   in  boolean  default FALSE);
+      --  "in_detail_level" settings for DBMS_OUT procedure:
+      --  * Less than 10 (including null) - No Detail
+      --     * Assertion results summary.
+      --  * 10 to 19 - Minimal Detail
+      --     * Assertion results summary.
+      --     * Failed assertion result details.
+      --  * 20 or more - Full Detail
+      --     * Assertion results summary.
+      --     * All assertion result details.
 
    procedure ad_hoc_result;
-
-   procedure show_result_header;
-
---  "in_detail_level" settings for DBMS_OUT procedure:
---  * Less than 10 (including null) - No Detail
---     * Assertion results summary.
---  * 10 to 19 - Minimal Detail
---     * Assertion results summary.
---     * Failed assertion result details.
---  * 20 or more - Full Detail
---     * Assertion results summary.
---     * All assertion result details.
 
    function format_test_result
       (in_rec  in core_data.results_rec_type)

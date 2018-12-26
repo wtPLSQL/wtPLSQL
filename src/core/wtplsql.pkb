@@ -103,7 +103,7 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
-procedure find_dbout
+procedure check_dbout
 is
    --
    -- https://docs.oracle.com/cd/E11882_01/server.112/e41084/sql_elements008.htm#SQLRF51129
@@ -214,11 +214,11 @@ begin
          return;
    end;
    --
-end find_dbout;
+end check_dbout;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure t_find_dbout
+   procedure t_check_dbout
    is
       l_run_recSAVE   core_data.run_rec_type;
       l_run_recTEST   core_data.run_rec_type;
@@ -234,7 +234,7 @@ $THEN
       l_run_recSAVE := core_data.g_run_rec;
       clear_run_rec;
       g_DBOUT := '';
-      find_dbout;
+      check_dbout;
       l_run_recTEST       := core_data.g_run_rec;
       core_data.g_run_rec := l_run_recSAVE;
       --------------------------------------  WTPLSQL Testing --
@@ -252,7 +252,7 @@ $THEN
       l_run_recSAVE := core_data.g_run_rec;
       clear_run_rec;
       g_DBOUT := 'SYS.DUAL';
-      find_dbout;
+      check_dbout;
       l_run_recTEST       := core_data.g_run_rec;
       core_data.g_run_rec := l_run_recSAVE;
       --------------------------------------  WTPLSQL Testing --
@@ -273,7 +273,7 @@ $THEN
       l_run_recSAVE := core_data.g_run_rec;
       clear_run_rec;
       g_DBOUT := 'WTPLSQL:PACKAGE BODY';
-      find_dbout;
+      check_dbout;
       l_run_recTEST       := core_data.g_run_rec;
       core_data.g_run_rec := l_run_recSAVE;
       --------------------------------------  WTPLSQL Testing --
@@ -294,7 +294,7 @@ $THEN
       l_run_recSAVE := core_data.g_run_rec;
       clear_run_rec;
       g_DBOUT := 'WT_EXECUTE_TEST_RUNNER';
-      find_dbout;
+      check_dbout;
       l_run_recTEST       := core_data.g_run_rec;
       core_data.g_run_rec := l_run_recSAVE;
       --------------------------------------  WTPLSQL Testing --
@@ -315,7 +315,7 @@ $THEN
       l_run_recSAVE := core_data.g_run_rec;
       clear_run_rec;
       g_DBOUT := 'someone.bogus:thingy';
-      find_dbout;
+      check_dbout;
       l_run_recTEST       := core_data.g_run_rec;
       core_data.g_run_rec := l_run_recSAVE;
       --------------------------------------  WTPLSQL Testing --
@@ -343,7 +343,7 @@ $THEN
       l_run_recSAVE := core_data.g_run_rec;
       clear_run_rec;
       g_DBOUT := 'WTPLSQL';
-      find_dbout;
+      check_dbout;
       g_DBOUT := '';
       l_run_recTEST       := core_data.g_run_rec;
       core_data.g_run_rec := l_run_recSAVE;
@@ -364,7 +364,7 @@ $THEN
                               ''' like ''%Found too many database objects "' ||
                               g_DBOUT || '".%''',
          against_value_in => 1);
-   end t_find_dbout;
+   end t_check_dbout;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -462,7 +462,7 @@ begin
    hook.execute_test_runner;
    --
    -- Primary Finalize
-   find_dbout;
+   check_dbout;
    core_data.final1;
    g_DBOUT := '';
    --
@@ -553,7 +553,7 @@ $THEN
    begin
       --------------------------------------  WTPLSQL Testing --
       t_check_runner;
-      t_find_dbout;
+      t_check_dbout;
       t_show_version;
       t_test_all;
    end;

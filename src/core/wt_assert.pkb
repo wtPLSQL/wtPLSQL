@@ -91,14 +91,14 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    if core_data.g_run_rec.runner_name is null
    then
       hook.ad_hoc_report;
-   else
-      core_data.add
-         (in_testcase  => g_testcase
-         ,in_assertion => g_rec.last_assert
-         ,in_pass      => g_rec.last_pass
-         ,in_details   => g_rec.last_details
-         ,in_message   => g_rec.last_msg);
+      return;
    end if;
+   core_data.add
+      (in_testcase  => g_testcase
+      ,in_assertion => g_rec.last_assert
+      ,in_pass      => g_rec.last_pass
+      ,in_details   => g_rec.last_details
+      ,in_message   => g_rec.last_msg);
 $IF $$WTPLSQL_SELFTEST $THEN   ------%WTPLSQL_begin_ignore_lines%------
    end if;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------

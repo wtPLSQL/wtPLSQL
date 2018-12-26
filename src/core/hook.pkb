@@ -63,10 +63,8 @@ end before_test_run;
 procedure execute_test_runner
 is
 begin
-   if execute_test_runner_active
-   then
-      run_hooks('execute_test_runner');
-   end if;
+   -- At least 1 "execute_test_runner" must be loaded into the "g_run_aa" array.
+   run_hooks('execute_test_runner');
 end execute_test_runner;
 
 ------------------------------------------------------------
@@ -129,7 +127,6 @@ is
 begin
    before_test_all_active     := FALSE;
    before_test_run_active     := FALSE;
-   execute_test_runner_active := FALSE;
    after_assertion_active     := FALSE;
    after_test_run_active      := FALSE;
    after_test_all_active      := FALSE;
@@ -149,7 +146,7 @@ begin
          case buff.hook_name
             when 'before_test_all'     then before_test_all_active     := TRUE;
             when 'before_test_run'     then before_test_run_active     := TRUE;
-            when 'execute_test_runner' then execute_test_runner_active := TRUE;
+            when 'execute_test_runner' then NULL;
             when 'after_assertion'     then after_assertion_active     := TRUE;
             when 'after_test_run'      then after_test_run_active      := TRUE;
             when 'after_test_all'      then after_test_all_active      := TRUE;
