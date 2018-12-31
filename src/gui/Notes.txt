@@ -9,22 +9,3 @@ and dbl.db_link || ''.'' like dbl.username || ''.%'''||
 Page 2, p_process_name=> 'TEST_ALL_PAR':
 group by proc.owner'||
 order by proc.owner )'||
-
-
-Gui Demo
-
- 1) Demo Installation
- 2) Demo Review ???
- 3) GUI Installation
- 4) Setup DB Link and Job Queue Process Parameter
- 5) Run Demo Test (w/ Test Case, No DBOUT)
- 6) Review Test Run
- 7) Review Test Case
- 8) Run Demo Test (w/ DBOUT)
- 9) Review Test Run
-10) Search DBOUT
-11) Run Test All
-10) Dashboard
-
-A Relational Alternative to JUnit Testing
-White Box Testing for PLSQL

@@ -15,7 +15,7 @@ The wtPLSQL website has more information about how to use wtPLSQL and why it is 
 File Name            | Description
 ---------------------|------------
 docs                 | Directory for documentation. Also contains wtPLSQL website (GitHub.io) source.
-releases             | Directory for current and previous releases (zip files).
+releases             | Directory for release notes, upgrades, and downgrades.
 src                  | Directory for source code.
 LICENSE              | Open Source Terms and Conditions.
 README.md            | Top level Markdown file for the wtPLSQL repository on GitHub
