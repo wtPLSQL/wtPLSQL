@@ -387,11 +387,18 @@ function show_version
 is
    ret_str  wt_version.text%TYPE;
 begin
-   select max(t1.text) into ret_str
-    from  wt_version  t1
-    where t1.install_dtm = (select max(t2.install_dtm)
-                             from  wt_version  t2);
-   return ret_str;
+   for buff in (
+      select component, version
+       from  wt_version  t1
+       where t1.install_dtm = (select max(t2.install_dtm)
+                                from  wt_version  t2
+                                where t2.component = t2.component)
+        and  t1.action != 'REMOVE'
+       order by install_dtm )
+   loop
+      ret_str := ret_str || component || ' ' || version || ', ';
+   end loop;
+   return substr(ret_str, 1, length(ret_str)-2);
 exception when NO_DATA_FOUND
 then
    return '';
@@ -410,12 +417,14 @@ $THEN
          msg_in        => 'Test Existing Version',
          check_this_in => existing_version);
       --------------------------------------  WTPLSQL Testing --
-      insert into wt_version (install_dtm, action, text)
-         values (to_date('31-DEC-4000','DD-MON-YYYY'), 'TESTING', 'TESTING');
-      wt_assert.eq (
+      insert into wt_version (install_dtm, action, component, version)
+         values (to_date('31-DEC-4000','DD-MON-YYYY'), 'INSTALL', 'TESTING', 999);
+      wt_assert.isnotnull (
+         msg_in          => 'Show New Version',
+         check_this_in   => show_version);
+      wt_assert.this (
          msg_in          => 'Test New Version',
-         check_this_in   => show_version,
-         against_this_in => 'TESTING');
+         check_this_in   => regexp_like(show_version, 'TESTING.*999'));
       --------------------------------------  WTPLSQL Testing --
       rollback;
       wt_assert.eq (

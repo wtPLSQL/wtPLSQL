@@ -122,7 +122,7 @@ WHENEVER SQLERROR continue
 -- Core Tables
 @hooks.tab
 
-@wt_version.tab
+@wt_versions.tab
 
 @wt_self_test.tab
 

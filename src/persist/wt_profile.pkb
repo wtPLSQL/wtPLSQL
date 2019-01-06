@@ -349,7 +349,7 @@ begin
    if c_readable%NOTFOUND
    then
       if core_data.g_run_rec.dbout_type in ('FUNCTION', 'PROCEDURE', 'PACKAGE BODY',
-                              'TYPE BODY', 'TRIGGER')
+                                            'TRIGGER', 'TYPE BODY')
       then
          -- These object types should have PL/SQL source code available
          --%WTPLSQL_begin_ignore_lines%--  Untestable:

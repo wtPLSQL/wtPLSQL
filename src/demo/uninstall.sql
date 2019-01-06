@@ -1,6 +1,6 @@
 
 spool uninstall
-set serveroutput on size unlimited format wrapped
+set serveroutput on size unlimited format truncated
 
 @common_setup.sql
 

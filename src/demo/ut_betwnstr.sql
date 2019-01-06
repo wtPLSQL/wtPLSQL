@@ -102,7 +102,7 @@ IS
 END ut_betwnstr;
 /
 
-set serveroutput on size unlimited format word_wrapped
+set serveroutput on size unlimited format truncated
 
 begin
    wtplsql.test_run('UT_BETWNSTR');

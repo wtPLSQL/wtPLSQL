@@ -84,7 +84,7 @@ IS
 END ut_truncit;
 /
 
-set serveroutput on size unlimited format word_wrapped
+set serveroutput on size unlimited format truncated
 
 begin
    wtplsql.test_run('UT_TRUNCIT');

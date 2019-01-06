@@ -21,30 +21,40 @@ Much of the utPLSQL V2 functionality was centered on the UTL_FILE package. UTL_F
 The configuration of UTL_FILE was one of the difficult parts of installing utPLSQL V2. Removing UTL_FILE from wtPLSQL core allows for a much simpler installation. Also, much of the functionality performed by UTL_FILE can be done easier with modern reporting and development tools.  Comparing Files 
 
 ### Record Comparison
-In utPLSQL V2, the "utRecEq" package is used to to generate functions to compare record types. This package has not been included in the wtPSQL core to avoid problems. Generating the functions needed to make the comparison require special database permissions. Separating this package into a separate installation allows these special database permissions to be addressed directly.
+In utPLSQL V2, the "utRecEq" package is used to to generate functions to compare record types. To avoid problems, this functionality has not been included in the wtPSQL core. Generating the functions needed to make the comparison require special database permissions. Separating this package into a separate add-on allows these special database permissions to be addressed only if needed.
 
 ### Test Procedure Prefixes
-From the utPLSQL V2 documentation: "The unit test prefix is very important in utPLSQL; the utility uses the prefix to associate source code to be tested with the test package. The prefix also allows utPLSQL to automatically identify the programs within a test package that are to be executed as unit tests." In wtPLSQL, these prefixes are not required. The lack of these prefixes greatly simplifies the setup of test runners. However, the prefixes can be used with wtPLSQL by building them into test runner packages.
+From the utPLSQL V2 documentation: "The unit test prefix is very important in utPLSQL; the utility uses the prefix to associate source code to be tested with the test package. The prefix also allows utPLSQL to automatically identify the programs within a test package that are to be executed as unit tests."
+
+In wtPLSQL, these prefixes are not required. The lack of these prefixes greatly simplifies the setup of test runners. However, the prefixes can be used with wtPLSQL by building them into test runner packages.
 
 ### utPLSQL Trace
-utPLSQL V2 has a trace facility that could be turned on and off. Because the test runner in wtPLSQL is in control of testing and because the test runner is user written, any desired tracing can be added to the test runner as needed.  Additionally, the simplicity of wtPLSQL execution eliminates the need for tracing.
+utPLSQL V2 has a trace facility that can be turned on and off. Because the test runner in wtPLSQL is in control of testing and because the test runner is user written, any desired tracing can be added to the test runner.
 
 ### utConfig
 The utConfig package is no longer used in wtPLSQL. There are 29 settings in the utConfig package in utPLSQL V2. The only remaining settings are in the following packages.
-* WT_ASSERT Settings
-   * g_testcase - Name of the current test case
-   * set_NLS_DATE_FORMAT - Default format for date data type
-   * set_NLS_TIMESTAMP_FORMAT - Default format for timestamp data type
-   * set_NLS_TIMESTAMP_TZ_FORMAT - Default format for timestamp with time zone data type
-* WT_TEXT_REPORT Settings
-   * g_single_line_output - Remove/replace new line characters in test result output.
-   * g_date_format - Default format for date data type
+
+WT_ASSERT Setting           | Description
+----------------------------|------------
+g_testcase                  | Name of the current test case
+set_NLS_DATE_FORMAT         | Default format for date data type
+set_NLS_TIMESTAMP_FORMAT    | Default format for timestamp data type
+set_NLS_TIMESTAMP_TZ_FORMAT | Default format for timestamp with time zone data type
+
+<br>
+
+WT_TEXT_REPORT Setting | Description
+-----------------------|------------
+g_single_line_output   | Remove/replace new line characters in test result output
+g_date_format          | Default format for date data type
 
 ### utOutput
-utOutput in utPLSQL V2 has been replaced by WT_TEXT_REPORT in wtPLSQL. Unlike utOutput, WT_TEXT_REPORT is not called automatically, if assertions are executed as part of a test runner package.  Alternatively, WT_TEST_RPEORT is used to automatically produce output for as-hoc assertions that are executed outside of a test runner package.
+utOutput in utPLSQL V2 has been replaced by WT_TEXT_REPORT in wtPLSQL.  Like utPLSQL V2, wtPLSQL calls WT_TEXT_REPORT (using a hook) after each Test Runner is complete. Unlike utPLSQL V2, WT_TEXT_REPORT is not called automatically when the Persist add-on is installed.  However, a hook can be created to restore this functionality, if needed.
+
+WT_TEXT_REPORT is used to format the results of an ad-hoc assertion that is not part of a Test Runner call tree (call graph). The results of ad-hoc assertions are always sent to DBMS_OUTPUT.
 
 ### Custom Reporter
-There is no custom reporter. The definition of the wtPLSQL tables is defined so reporting tools can be used to create custom reports.
+wtPLSQL has no custom reporter. An alternative to the WT_TEXT_REPORTER is a user written PL/SQL program. If the Persist add-on is installed, all test results are available in database tables. Reporting tools can be used to create custom reports from database tables.
 
 ### Links
 * [utPLSQL V2.3.1 Website](https://utplsql.org/moving/2016/07/07/version-2-3-1-released.html)

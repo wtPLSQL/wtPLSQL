@@ -20,14 +20,14 @@ begin
 end;
 /
 
-set serveroutput on size unlimited format word_wrapped
+set serveroutput on size unlimited format truncated
 
 begin
    wt_text_report.dbms_out(USER,'SIMPLE_TEST_RUNNER');
 end;
 /
 
-set serveroutput on size unlimited format word_wrapped
+set serveroutput on size unlimited format truncated
 
 begin
    wt_text_report.dbms_out(in_runner_name  => 'SIMPLE_TEST_RUNNER'

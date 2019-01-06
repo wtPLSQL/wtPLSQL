@@ -47,7 +47,7 @@ There are no test results because the test results were not sent to DBMS_OUTPUT.
 To view the results, run this:
 
 ```
-set serveroutput on size unlimited format word_wrapped
+set serveroutput on size unlimited format truncated
 
 begin
    wt_text_report.dbms_out(USER,'SIMPLE_TEST_RUNNER');
@@ -77,7 +77,7 @@ This example shows all result details for the SIMPLE_TEST_RUNNER only.
 Run this:
 
 ```
-set serveroutput on size unlimited format word_wrapped
+set serveroutput on size unlimited format truncated
 
 begin
    wt_text_report.dbms_out(in_runner_name  => 'SIMPLE_TEST_RUNNER'

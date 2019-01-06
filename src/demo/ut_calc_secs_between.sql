@@ -84,7 +84,7 @@ IS
 END ut_calc_secs_between;
 /
 
-set serveroutput on size unlimited format word_wrapped
+set serveroutput on size unlimited format truncated
 
 begin
    wtplsql.test_run('UT_CALC_SECS_BETWEEN');

@@ -115,7 +115,7 @@ end test_simple_object;
 Run this:
 
 ```
-set serveroutput on size unlimited format word_wrapped
+set serveroutput on size unlimited format truncated
 
 begin
    wtplsql.test_run('TEST_SIMPLE_OBJECT');

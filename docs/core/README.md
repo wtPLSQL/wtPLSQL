@@ -1,7 +1,6 @@
 
 # wtPLSQL
-Whitebox Testing Framework for Oracle's PL/SQL Language
-
+Whitebox Test Server for Oracle's PL/SQL Language
 
 File Name              | Description
 -----------------------|------------

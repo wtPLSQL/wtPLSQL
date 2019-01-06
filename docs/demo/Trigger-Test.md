@@ -162,7 +162,7 @@ end trigger_test_pkg;
 Run this:
 
 ```
-set serveroutput on size unlimited format word_wrapped
+set serveroutput on size unlimited format truncated
 
 begin
    wtplsql.test_run('TRIGGER_TEST_PKG');

@@ -12,18 +12,10 @@ Because the test runner packages are user written, they can be used to test anyt
 - Table Constraints and Triggers
 - Types and Type Bodies
 
-## Built-in Code Coverage
-The Database Object Under Test, or DBOUT, is a database object that is the target of the test runner package.  An annotation is used to identify the DBOUT in a test runner package.  If the DBOUT annotation is missing from a test runner package, no code coverage data is collected.  If more than one annotation occurs in a test runner package, the first occurrence in the source code is used.
+## Plug-in Code Coverage
+The Database Object Under Test, or DBOUT, is a database object that is the target of the test runner package.  A global variable "g_DBOUT" in the "wtplsql" package is used to identify the DBOUT.  If the not set by the test runner package, no code coverage data is collected.  If more than one value of "g_DBOUT" is set by a test runner package, the last setting is used.
 
-**Regular Expression:**
-```
-    --% WTPLSQL SET DBOUT "[[:alnum:]._$#]+" %--
-```
-**Example:**
-```
-    --% WTPLSQL SET DBOUT "SCHEMA.TEST_ME" %--
-```
-"Ignore" annotations are used to indicate source code lines to ignore when calculating code coverage metrics.
+"Ignore" annotations are used to indicate which source code lines will be ignored when calculating code coverage metrics.
 
 **Regular Expression:**
 ```
@@ -36,7 +28,7 @@ The Database Object Under Test, or DBOUT, is a database object that is the targe
 Occasionally, DBMS_PROFILER does not capture the execution of some PL/SQL source.  Examples PL/SQL source that are reported incorrectly include "end if", "select", and "return".  wtPLSQL excludes some of these source lines when calculating code coverage metrics.  Use the "Ignore" annotations to ignore other lines of PL/SQL when calculating code coverage metrics.
 
 ## Built-in Schema-wide Testing
-wtPLSQL will locate and execute all test runner packages in a schema.  This is done by finding all packages with a WTPLSQL_RUN procedure that has no parameters.  There is no requirement to pre-define the test runners in a schema.
+wtPLSQL will locate and execute all test runner packages in a schema.  This is done by finding all packages with a WTPLSQL_RUN procedure that has no parameters.  There is no other requirement to predefine test runners in a schema.
 
 ## Test Result Capture
 Test results from assertions executed in a test runner package are automatically captured in WTPLSQL database tables.  Results are stored by test runner execution.  If specified in the test runner, test results are stored by test case.  If a DBOUT is specified in the test runner, code coverage data is also stored.  All captured data is automatically deleted except for the last 20 runs of any test runner.

@@ -160,7 +160,7 @@ wwv_flow_api.create_flow(
   p_login_url=> '',
   p_logout_url=> 'wwv_flow_custom_auth_std.logout?p_this_flow=&APP_ID.&amp;p_next_flow_page_sess=&APP_ID.:1',
   p_application_tab_set=> 1,
-  p_logo_image => 'TEXT:wtPLSQL - White Box Testing Framework',
+  p_logo_image => 'TEXT:wtPLSQL - White Box Test Server for PL/SQL',
   p_public_url_prefix => '',
   p_public_user=> 'APEX_PUBLIC_USER',
   p_dbauth_url_prefix => '',

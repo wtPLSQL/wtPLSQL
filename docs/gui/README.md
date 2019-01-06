@@ -1,6 +1,6 @@
 [Website Home Page](../README.md)
 
-# wtPLSQL GUI
+# wtPLSQL Graphical User Interface
 
 ---
 

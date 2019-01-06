@@ -8,7 +8,7 @@ Demonstrations and examples assume successful connection to an [Oracle database]
 
 Test results from assertions can be queried from a set of wtPLSQL tables. The examples here will use the default reporting package called WT_TEXT_REPORT.  This package displays test results using DBMS_OUTPUT.
 
-## The Basics
+## User Setup
 
 A login, or database session, is required to interact with the Oracle database.  The SQL below will create a user that can run these examples.  If you already have a database login, this is not necessary.
 
@@ -27,7 +27,9 @@ grant create view      to wtp_demo;
 grant create procedure to wtp_demo;
 ```
 
-The simplest check for a wtPLSQL installation is to select the "version from dual".
+## Confirm the Installation
+
+The simplest check for a wtPLSQL installation is to select the "version from dual".  If wtPSQL is installed, it will show which add-ons have been installed if any.
 
 Run this:
 
@@ -35,22 +37,16 @@ Run this:
 select wtplsql.show_version from dual;
 ```
 
-And get this:
+If the result is "Core 1.2, Persist 1.2", wtPSQL is installed with the Persist add-on. If the result is "Core 1.2", the Persist add-on has not been installed. In each exercise, there will be an indication if the results are different without the Persist add-on.
 
-```
-SHOW_VERSION
------------------------------------------------------------
-1.1.0
-```
+### Another simple test
 
-This shows the wtPLSQL version as 1.1.0.
-
-Another simple test is an ad-hoc assertion. This test requires DBMS_OUTPUT. The results of this test are not recorded.
+Another simple test is an ad-hoc assertion. The ad-hoc assertion requires DBMS_OUTPUT. The results of the ad-hoc assertions are not recorded by wtPLSQL.
 
 Run this:
 
 ```
-set serveroutput on size unlimited format word_wrapped
+set serveroutput on size unlimited format truncated
 
 begin
    wt_assert.eq(msg_in          => 'Ad-Hoc Test'
@@ -76,7 +72,11 @@ Note: This ad-hoc test also demonstrates implicit data type conversion.
 
 ## Create a Test Runner Package
 
-A test runner package is central to running tests in wtPLSQL.  The [Test Runner](Test-Runner.md) page covers all the basics of creating a test runner package.
+Creating a Test Runner package is central to using the wtPLSQL server. The Test Runner package contains all the assertion API calls used for testing. The package can also changes wtPSQL settings, like the name of the Database Object Under Test (DBOUT).
+
+The web page link below includes an exercise that shows how create a Test Runner package. The web page covers all the basics of creating a Test Runner package.
+
+[Create Test Runner Package](Test-Runner.md)
 
 ## Database Object Tests
 More interesting examples actually test database objects. Here are some examples.

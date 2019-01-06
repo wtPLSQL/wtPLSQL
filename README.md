@@ -2,21 +2,21 @@
 
 Welcome to the wtPLSQL source code repository on GitHub.
 
-The [wtPLSQL website](https://wtPLSQL.org) has more information about how to use wtPLSQL and why it is different.  It also includes wtPLSQL features, definitions, and best practices.  (The wtPLSQL website is hosted on GitHub.io using a custom domain.)
+The http://wtPLSQL.org website has more information about how to use wtPLSQL and why it is different.  It also includes wtPLSQL features, definitions, and best practices.  (The wtPLSQL website is hosted on GitHub.io using a custom domain.)
 
-[Get the latest release here.](https://github.com/DDieterich/wtPLSQL/releases)
+[Click here](https://github.com/DDieterich/wtPLSQL/releases/latest) for the latest release.
 
-[wtPLSQL compatability wiki page.](https://github.com/DDieterich/wtPLSQL/wiki/Compatibility)
+[Click here](https://github.com/DDieterich/wtPLSQL/wiki/Compatibility) for the compatibility wiki page.
+
 
 ### Participation
 
 See the "To Do" column in one of the [Projects](https://github.com/DDieterich/wtPLSQL/projects) for cards/issues that are ready to work.
 
-The [repository wiki](https://github.com/DDieterich/wtPLSQL/wiki) includes helpful procedures and discussions.
+The [repository wiki](https://github.com/DDieterich/wtPLSQL/wiki) includes helpful procedures and discussions for code development and repository maintenance.
 
-[DBDocs (like JavaDocs)](https://wtplsql.org/core/DBDocs/index.html)
+All software documentation is on the http://wtPLSQL.org website. The document repository is in the "docs" directory (see table below).
 
-[E-R Diagram](https://wtplsql.org/core/ER_Diagrams.pdf)
 
 ### Files and Directories
 

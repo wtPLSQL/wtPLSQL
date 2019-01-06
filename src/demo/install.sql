@@ -73,7 +73,7 @@ end;
 
 WHENEVER SQLERROR continue
 
-set serveroutput on size unlimited format word_wrapped
+set serveroutput on size unlimited format truncated
 
 select wtplsql.show_version from dual;
 

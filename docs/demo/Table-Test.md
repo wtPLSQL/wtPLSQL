@@ -94,7 +94,7 @@ end table_test_pkg;
 Run this:
 
 ```
-set serveroutput on size unlimited format word_wrapped
+set serveroutput on size unlimited format truncated
 
 begin
    wtplsql.test_run('TABLE_TEST_PKG');

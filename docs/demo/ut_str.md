@@ -155,7 +155,7 @@ Mid-way down the package body is the annotation "WTPLSQL_begin_ignore_lines".  T
 Run this:
 
 ```
-set serveroutput on size unlimited format word_wrapped
+set serveroutput on size unlimited format truncated
 
 begin
    wtplsql.test_run('STR');

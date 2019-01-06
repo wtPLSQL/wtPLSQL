@@ -1,76 +1,125 @@
 # wtPLSQL Home Page
 
 ---
-To install/upgrade, download the [latest Release](https://github.com/DDieterich/wtPLSQL/releases)
+wtPLSQL is a test automation server that uses an Oracle database to provide the following services for Test Runner packages written in PL/SQL.
+* Execution of one or groups of Test Runners
+* Assertion Results including Timing Between Assertions
+* Capture and Reporting of Assertion Results
 
-Also see the [compatibility page](https://github.com/DDieterich/wtPLSQL/wiki/Compatibility) in the wtPLSQL repository wiki.
+wtPLSQL includes add-ons that provide these additional services.
+* Storage and Reporting of Assertion Results
+* Source Code Coverage of Test Runner
+* Web Based Graphical User Interface
+* Trend Analysis
+
+wtPLSQL includes components that provide the following services.
+* JUnit XML Reporting
+* utPLSQL V2 Conversion
+
+[Click here](https://github.com/DDieterich/wtPLSQL/releases/latest) for the latest release on GitHub.
+
+[Click here](https://github.com/DDieterich/wtPLSQL/wiki/Compatibility) for the compatibility wiki page on GitHub.
 
 Use [GitHub "issues"](https://github.com/DDieterich/wtPLSQL/issues) for support.  A (free) GitHub account will be required to create a new issue.  Issues can be searched without an account.
 
-## Example wtPLSQL Test Results
+### wtPLSQL Components and Add-ons
 
-This is the summary from the WT_ASSERT package self-test.  It was created with the default DBMS_OUTPUT reporting package.  Because test results and code coverage is stored in Oracle tables, other report formats are simple to create.
+wtPLSQL functionality is contained in one or more components and add-ons.  Various combinations can be installed to achieve the desired results.
 
-<img src="images/Example wtPLSQL Test Results.PNG" alt="Sample DBMS_OUTPUT from wtPLSQL">
+Component                       | Description
+--------------------------------|------------
+[core](core/README)             | Required for all wtPLSQL functionality. Can be run stand-alone
+[conversion](conversion/README) | Used to convert Test Runner packages from utPLSQL to wtPLSQL
 
-To view the complete test results from the wtPLSQL self-test, go to the [test_allO.LST](https://github.com/DDieterich/wtPLSQL/blob/master/src/core/test_allO.LST) file in GitHub.  The [Demonstrations and Examples Page](demo/README.md) has more examples.
+<br>
 
-## What is wtPLSQL?
+Add-on                       | Description
+-----------------------------|------------
+[persist](persist/README.md) | Adds storage in tables and code coverage.
+[gui](gui/README.md)         | Adds Oracle APEX screens and reports. Requires persist add-on.
+[junit](junit/README.md)     | Adds JUnit XML reporting.
 
-wtPLSQL helps with white-box testing of Oracle database objects.  It is particularly well suited for unit testing and simple integration testing.  It is written in PL/SQL.  It contains a self-test which makes it easier to support and customize.
+To determine which components and add-ons have been installed, run this query:
 
-Like utPLSQL, wtPLSQL provides a set of assertion tests that can be used to determine how well an Oracle database object is performing. These assertions record the outcome (success or failure) of each test. These assertions also record the time between calls. A test runner (PL/SQL package) must be created with these assertion tests included. The [Core Features page](Core-Features.md) introduces the main functionality of wtPLSQL.
+```
+select wtplsql.show_version from dual;
+```
 
-A simple text based reporting package called "WT_TEXT_REPORT" is included with the core installation.  Custom reports are easy to create because the assertion outcomes and interval time between assertions are stored in the Oracle database.  A set of DBDocs and E-R diagrams are provided to assist with any reporting customization.
+### Core Component Example Test Results
 
-Because all testing with wtPLSQL is for driven by custom PL/SQL packages, a [Best Practices page](Best-Practices.md) has some guidance for creating test runner packages.
+Here is an example result summary from the core component.  Only core is needed to produce this result.
 
-The [About wtPLSQL page](About-wtPLSQL.md) has more information about the history and testing methodology of wtPLSQL.
+<img src="images/Core Example wtPLSQL Test Results.PNG" alt="Sample DBMS_OUTPUT from wtPLSQL core">
 
-The [Definitions page](Definitions.md) includes definitions from many sources to help define the terms used in various software testing methodologies.
+To view the complete test results from the wtPLSQL core self-test, go to the "[src/core/test_allO.LST](https://github.com/DDieterich/wtPLSQL/blob/master/src/core/test_allO.LST)" file in GitHub.
 
-## How does wtPLSQL compare to utPLSQL V3?
+### Persist Add-on Example Test Results
 
-utPLSQL V3 is an excellent choice for unit testing.  It is well supported and includes extensive functionality.
+Here is the summary from the WT_ASSERT package self-test.  It was created with the default DBMS_OUTPUT reporting package.  Because test results and code coverage are stored in Oracle tables, other report formats are simple to create.
 
-wtPLSQL has a different focus than utPLSQL V3.  More information is available [in this link](utPLSQL-V3-Comparison.md).
+<img src="images/Persist Example wtPLSQL Test Results.PNG" alt="Sample DBMS_OUTPUT from wtPLSQL Persist">
 
-## How does wtPLSQL compare to utPLSQL V1 or utPLSQL V2?
+To view the complete test results from the wtPLSQL persist self-test, go to the "[src/persist/test_allO.LST](https://github.com/DDieterich/wtPLSQL/blob/master/src/persist/test_allO.LST)" file in GitHub.
 
-utPLSQL V2 is an extension of utPLSQL V1. Since utPSQL V2 is being replaced by utPLSQL V3, neither utPLSQL V2 or utPLSQL V1 are good choices for starting a new software testing implementation.
+### GUI Add-on Example Test Results
 
-The goal of wtPLSQL has been to implement the basic/core functionality of utPLSQL V2 while preserving the the programming investment in the assertion API (utAssert.eq, utAssert.isnotnull, etc.). The additional functionality of utPLSQL V2 that is not included in the wtPLSQL core will be added through optionally installed modules (also known as add-ons).
+The GUI module uses the Oracle APEX to enhance the UI experience.  Many useful reports are available with the GUI module.  This is an example of ???
 
-More information is available [in this link](utPLSQL-V2-Comparison.md).
+<img src="images/GUI Example wtPLSQL Test Results.PNG" alt="Sample Graphical from wtPLSQL GUI">
 
-### Site Links
+### More Examples and Demonstrations
+* [Click here](demo/README.md) for more examples and demonstrations.
 
-User Help
-* [Demonstrations and Examples Page](demo/README.md)
-   * [Package Test](demo/Package-Test.md)
-   * [Table Constraints Test](demo/Table-Test.md)
-   * [Trigger Test](demo/Trigger-Test.md)
-   * [Type Test](demo/Type-Test.md)
-   * [ut_betwnstr](demo/ut_betwnstr.md) - Choose a program to test
-   * [ut_calc_secs_between](demo/ut_calc_secs_between.md) - Test a Simple Procedure
-   * [ut_truncit](demo/ut_truncit.md) - Test a Table Modification Procedure
-   * [ut_str](demo/ut_str.md) - Test a Simple Function
-* [Reference](Reference.md)
-* [Best Practices](Best-Practices.md)
-* [DB Docs from SQL*Developer](core/DBDocs/index.html)
-* [ER Diagram PDF](core/ER_Diagrams.pdf)
-* [Call Tree Diagrams PDF](core/Call_Tree_Diagrams.pdf)
+### General Documentation
 
-Background
-* [Definitions](Definitions.md)
 * [About wtPLSQL](About-wtPLSQL.md)
-* [Core Features](Core-Features.md)
-* [utPLSQL V3 Comparison](utPLSQL-V3-Comparison.md)
+* [Definitions](Definitions.md)
+* [Best Practices](Best-Practices.md)
+* [Reference](Reference.md)
 * [utPLSQL V1/V2 Comparison](utPLSQL-V2-Comparison.md)
+* [utPLSQL V3 Comparison](utPLSQL-V3-Comparison.md)
+* [OO Style Unit Testing is not for Databases](OO-Style-Unit-Testing.md)
+
+*Note: See the* **"wtPLSQL Components and Add-ons"** *above for documentation on individual components and add-ons.*
+
+### wtPLSQL Internals
+
+DB Docs                                   | E-R Diagrams                            | Call Tree Diags
+------------------------------------------|-----------------------------------------|----------------
+[core docs](core/DBDocs/index.html)       | [core ERDs](core/ER_Diagrams.pdf)       | [core trees](core/Call_Tree_Diagrams.pdf)
+[persist docs](persist/DBDocs/index.html) | [persist ERDs](persist/ER_Diagrams.pdf) | [persist trees](persist/Call_Tree_Diagrams.pdf)
+[gui docs](gui/DBDocs/index.html)         | [gui ERDs](gui/ER_Diagrams.pdf)         | [gui trees](gui/Call_Tree_Diagrams.pdf)
+
+* **DB Docs** has web pages similar to JavaDocs created by Oracle's SQL*Developer.
+* **E-R Diagrams** show relationships between tables (entities).
+* **Call Tree Diagrams** show the PL/SQL programs, tables, and common (global) memory structures called by all PL/SQL programs.
 
 ## Contribute
 
 Help us improve by joining us at the [wtPLSQL repository](https://github.com/DDieterich/wtPLSQL).
+
+---
+
+*The following applies to files and directories at this location in the documentation repository.*
+
+### Files and Directories
+
+File Name     | Description
+--------------|------------
+core          | Core Documentation Directory
+demo          | Demonstration Documentation Directory
+images        | Image Files referenced by MD and HTML
+_config.yml   | YAML Configuration File for this Website
+*.md          | Markdown files for "github.io"
+*.htm         | HTML files for local documentation
+md-to-htm.bat | MS-Dos Batch File to convert MD to HTML
+md-to-htm.lua | Lua script used by Pandoc for MD to HTML
+
+To view documentation use the URL "file://README.htm" or Double-click on the README.htm file.
+
+NOTE: All HTML files are sourced from Markdown files.
+  Modify the Markdown files, then build HTML from the
+  Markdown files using "md-to-htm.bat".
 
 ---
 

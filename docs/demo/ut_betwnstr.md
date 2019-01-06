@@ -115,7 +115,7 @@ It is not necessary to keep the ut_setup and ut_teardown procedures.  These were
 Run this:
 
 ```
-set serveroutput on size unlimited format word_wrapped
+set serveroutput on size unlimited format truncated
 
 begin
    wtplsql.test_run('UT_BETWNSTR');

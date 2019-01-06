@@ -1,0 +1,29 @@
+
+--
+--  Version Table Installation
+--
+
+create table wt_versions
+   (install_dtm    date           constraint wt_vesions_nn1 not null
+   ,action         varchar2(15)   constraint wt_vesions_nn2 not null
+   ,component      varchar2(15)   constraint wt_vesions_nn3 not null
+   ,version        number         constraint wt_vesions_nn4 not null
+   ,notes          varchar2(100)
+   ,constraint wt_versions_pk primary key (install_dtm)
+   ,constraint wt_versions_ck1 check (action in ('INSTALL','UPDATE','REMOVE')
+   ) pctfree 0;
+
+comment on table wt_versions is 'Records the installed and upgraded versions.';
+comment on column wt_versions.install_dtm is '(Required) Date/Time the action was taken';
+comment on column wt_versions.action is '(Required) One of INSTALL, UPDATE, or REMOVE';
+comment on column wt_versions.component is '(Required) Component or Add-on name';
+comment on column wt_versions.version is '(Required) Version number of the Component or Add-on';
+comment on column wt_versions.notes is 'Additional notes for the action taken';
+
+grant select on wt_versions to public;
+
+create or replace public synonym wt_version for &schema_owner..wt_versions;
+
+insert into wt_versions (install_dtm, action, component, version)
+   values (sysdate, 'INSTALL', 'Core', 1.2);
+commit;

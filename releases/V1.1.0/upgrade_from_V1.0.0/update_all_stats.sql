@@ -5,7 +5,7 @@
 --  Compute and Add statistics to V1.1.0 "stats" tables
 --
 
-set serveroutput on size unlimited format wrapped
+set serveroutput on size unlimited format truncated
 set linesize 1000
 set trimspool on
 
