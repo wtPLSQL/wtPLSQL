@@ -1,41 +1,40 @@
 # wtPLSQL Home Page
 
 ---
-wtPLSQL is a test automation server that uses an Oracle database to provide the following services for Test Runner packages written in PL/SQL.
-* Execution of one or groups of Test Runners
-* Assertion Results including Timing Between Assertions
-* Capture and Reporting of Assertion Results
-
-wtPLSQL includes add-ons that provide these additional services.
-* Storage and Reporting of Assertion Results
-* Source Code Coverage of Test Runner
-* Web Based Graphical User Interface
-* Trend Analysis
-
-wtPLSQL includes components that provide the following services.
-* JUnit XML Reporting
-* utPLSQL V2 Conversion
-
 [Click here](https://github.com/DDieterich/wtPLSQL/releases/latest) for the latest release on GitHub.
 
 [Click here](https://github.com/DDieterich/wtPLSQL/wiki/Compatibility) for the compatibility wiki page on GitHub.
 
 Use [GitHub "issues"](https://github.com/DDieterich/wtPLSQL/issues) for support.  A (free) GitHub account will be required to create a new issue.  Issues can be searched without an account.
 
-### wtPLSQL Components and Add-ons
+wtPLSQL is a test automation server that uses an Oracle database to provide the following services for Test Runner packages written in PL/SQL.
+* Execution of One or More Test Runners
+* Assertion Results including Timing Between Assertions
+* Capture/Storage/Reporting of Assertion Results
+* Source Code Coverage of Test Runner
+* Web Based Graphical User Interface (APEX)
 
-wtPLSQL functionality is contained in one or more components and add-ons.  Various combinations can be installed to achieve the desired results.
+### General Documentation
+
+* [About wtPLSQL](About-wtPLSQL.md)
+* [Examples and Documentation](demo/README.md)
+* [Definitions](Definitions.md)
+* [Best Practices](Best-Practices.md)
+* [Reference](Reference.md)
+* [utPLSQL V1/V2 Comparison](utPLSQL-V2-Comparison.md)
+* [utPLSQL V3 Comparison](utPLSQL-V3-Comparison.md)
+* [OO Style Unit Testing is not for Databases](OO-Style-Unit-Testing.md)
 
 Component                       | Description
 --------------------------------|------------
-[core](core/README)             | Required for all wtPLSQL functionality. Can be run stand-alone
-[conversion](conversion/README) | Used to convert Test Runner packages from utPLSQL to wtPLSQL
+[core](core/README)             | Required for all wtPLSQL functionality. Small and Fast.
+[conversion](conversion/README) | Convert Test Runner packages from utPLSQL V1/V2 to wtPLSQL
 
 <br>
 
 Add-on                       | Description
 -----------------------------|------------
-[persist](persist/README.md) | Adds storage in tables and code coverage.
+[persist](persist/README.md) | Adds storage in tables. Adds code coverage.
 [gui](gui/README.md)         | Adds Oracle APEX screens and reports. Requires persist add-on.
 [junit](junit/README.md)     | Adds JUnit XML reporting.
 
@@ -67,22 +66,11 @@ The GUI module uses the Oracle APEX to enhance the UI experience.  Many useful r
 
 <img src="images/GUI Example wtPLSQL Test Results.PNG" alt="Sample Graphical from wtPLSQL GUI">
 
-### More Examples and Demonstrations
-* [Click here](demo/README.md) for more examples and demonstrations.
-
-### General Documentation
-
-* [About wtPLSQL](About-wtPLSQL.md)
-* [Definitions](Definitions.md)
-* [Best Practices](Best-Practices.md)
-* [Reference](Reference.md)
-* [utPLSQL V1/V2 Comparison](utPLSQL-V2-Comparison.md)
-* [utPLSQL V3 Comparison](utPLSQL-V3-Comparison.md)
-* [OO Style Unit Testing is not for Databases](OO-Style-Unit-Testing.md)
-
-*Note: See the* **"wtPLSQL Components and Add-ons"** *above for documentation on individual components and add-ons.*
-
 ### wtPLSQL Internals
+
+The web pages in this website contain information about the wtPLSQL software. Documentation on design and usage are included here. This website is version specific. Each release includes its own version of this website. The "master" branch (latest release) is always displayed at Github.io. Un-released updates are not displayed here.
+
+For project information, see the [wtPLSQL wiki](https://github.com/DDieterich/wtPLSQL/wiki).  Documentation on procedures and compatibility are included in the wiki.  The wiki includes information for all releases of wtPLSQL. Any updates are immediately displayed.
 
 DB Docs                                   | E-R Diagrams                            | Call Tree Diags
 ------------------------------------------|-----------------------------------------|----------------
@@ -108,8 +96,10 @@ File Name     | Description
 --------------|------------
 core          | Core Documentation Directory
 demo          | Demonstration Documentation Directory
+gui           | Graphical User Interface Documentation
 images        | Image Files referenced by MD and HTML
-_config.yml   | YAML Configuration File for this Website
+persist       | Persist Documentation Directory
+_config.yml   | YAML Configuration File for Markdown
 *.md          | Markdown files for "github.io"
 *.htm         | HTML files for local documentation
 md-to-htm.bat | MS-Dos Batch File to convert MD to HTML

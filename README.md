@@ -2,7 +2,7 @@
 
 Welcome to the wtPLSQL source code repository on GitHub.
 
-The http://wtPLSQL.org website has more information about how to use wtPLSQL and why it is different.  It also includes wtPLSQL features, definitions, and best practices.  (The wtPLSQL website is hosted on GitHub.io using a custom domain.)
+The http://wtPLSQL.org website (hosted on GitHub.io) has more information about how to use wtPLSQL and why it is different.
 
 [Click here](https://github.com/DDieterich/wtPLSQL/releases/latest) for the latest release.
 

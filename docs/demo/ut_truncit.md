@@ -128,5 +128,8 @@ Source               TotTime MinTime   MaxTime
      8 EXEC      1         2       2         2 END;
 ```
 
+If the Persist add-on is not installed, the code coverage results will not be displayed.
+
+
 ---
 [Demos and Examples](README.md)

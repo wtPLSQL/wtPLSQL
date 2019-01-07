@@ -12,7 +12,7 @@ The syntax diagram in Oracle's "Database SQL Language Reference" (11.2) gives th
 * References (Foreign Key)
 * Check
 
-Typical unit testing (or white box testing) does not include the testing of constraints.  In large part, these constraints are assumed to work without testing.  Confirmation of continued function of these constraints is a reason to test them.
+Typical, these constraints are assumed to work without testing.  Here we create a Test Runner to test the constraints on a table.
 
 ## Table with Constraints
 
@@ -126,7 +126,7 @@ And Get This:
 
 This is report level 30, the most detailed level of reporting.  Starting from the top, we find the test runner executed 1 test case and 2 assertions.  All tests passed for a 100% yield.  There is no code coverage for the constraints.
 
-This is not a complete test.  More test cases are needed to confirm other constraints and sad path .
+This is not a complete test.  More test cases are needed to confirm other constraints and sad path testing.
 
 ---
 [Demos and Examples](README.md)

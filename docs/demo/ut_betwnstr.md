@@ -10,7 +10,7 @@ The [original "ut_betwnstr" example](https://utplsql.org/utPLSQL/v2.3.1/fourstep
 
 ## Test Package Conversion
 
-Conversion of this test package into a test runner package requires the addition of the "wtPLSQL_run" procedure in the package specification.
+Conversion of this test package into a Test Runner package requires the addition of the "wtPLSQL_run" procedure in the package specification.
 
 Run this:
 
@@ -107,7 +107,7 @@ END ut_betwnstr;
 /
 ```
 
-It is not necessary to keep the ut_setup and ut_teardown procedures.  These were kept to indicate how to incorporate those procedures into a test runner package.  The SET DBOUT annotation was also added to gather code coverage data.
+It is not necessary to keep the ut_setup and ut_teardown procedures.  These were kept to indicate how to incorporate those procedures into a Test Runner package.  The SET DBOUT annotation was also added to gather code coverage data.
 
 
 ## Check the Results
@@ -151,6 +151,8 @@ Source               TotTime MinTime   MaxTime
      8 EXEC      5        19       1        12    return (
     15 EXEC      5         1       0         1 end;
 ```
+
+If the Persist add-on is not installed, the code coverage results will not be displayed.
 
 ---
 [Demos and Examples](README.md)

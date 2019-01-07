@@ -4,11 +4,11 @@
 
 ---
 
-A majority of wtPLSQL testing is done with the test runner packages.  In this example, a test runner package will be created to test the DBMS_OUTPUT package.  For brevity, only PUT_LINE and GET_LINE will be tested.
+A majority of wtPLSQL testing is done with a Test Runner package.  In this example, we will create a Test Runner package that will test the DBMS_OUTPUT package.  The DBMS_OUTPUT package is a part of every Oracle database.  For brevity, only PUT_LINE and GET_LINE will be tested in the DBMS_OUTPUT package.
 
 ## Test Runner Package Specification
 
-The specification for a test runner package is brutally simple.  It only needs one procedure.
+The specification for a Test Runner package is brutally simple.  It only needs one procedure.  Here, we create a package specification for the Test Runner.
 
 Run this:
 
@@ -24,6 +24,8 @@ end test_dbms_output;
 
 Create a package body with the needed procedure.  Add a call to enable DBMS_OUTPUT for testing.  Setup and teardown will be handled later.
 
+Run this:
+
 ```
 create or replace package body test_dbms_output
 as
@@ -35,8 +37,6 @@ as
 end test_dbms_output;
 /
 ```
-
-Procedures will be added to this package body.  These procedures will run the assertions that will test the DBMS_OUTPUT package.
 
 ## Testing Put Line and Get Line
 
@@ -67,7 +67,7 @@ end test_dbms_output;
 /
 ```
 
-Run this:
+Then, run this:
 
 ```
 begin
@@ -83,9 +83,9 @@ And get this:
 
 A successful test.  Notice that the value of the C_TEST1 constant is displayed in the test result details.
 
-## Leaving Something Behind
+## Catching an Exception
 
-In the previous example, everything worked correctly.  If a problem occurs during testing, things can be left behind.  Here is an example of GET_LINE not working, leaving the value of C_TEST1 in the DBMS_OUTPUT buffer.  For testing purposes, an exception will be thrown between the PUT_LINE and GET_LINE call.
+In the previous example, everything worked correctly.  Here is an example of GET_LINE not working.  For testing purposes, an exception will be thrown between the PUT_LINE and GET_LINE call.
 
 Run this:
 
@@ -122,11 +122,13 @@ end;
 /
 ```
 
-And get this:
+You might get this:
 
 ```
 Test 1
 ```
+
+Your results should include the above results, if DBMS_OUTPUT is enabled.  There may be addition results due to a different wtPSQL configuration.
 
 Notice there was no exception raised.  wtPLSQL captured the exception and logged it.  Also, the value of C_TEST1 shows in the output.  It was left behind in the DBMS_OUTPUT buffer.
 
@@ -211,7 +213,7 @@ end test_dbms_output;
 /
 ```
 
-The test runner package is quite large now.  To review, the test runner will
+The Test Runner package is quite large now.  To review, the Test Runner will
 * Capture the current DBMS_OUPUT buffer.
 * Run a procedure that adds to the DBMS_OUPUT buffer.
 * Catch an exception raised by the procedure.
@@ -219,7 +221,7 @@ The test runner package is quite large now.  To review, the test runner will
 * Clear the current DBMS_OUPUT buffer.
 * Restore the original DBMS_OUPUT buffer.
 
-In order to ensure it is restoring the original DBMS_OUPUT buffer, the message "This should be preserved." is added to the buffer.  That message should be available after the test runner completes.
+In order to ensure it is restoring the original DBMS_OUPUT buffer, the message "This should be preserved." is added to the buffer.  That message should be available after the Test Runner completes.
 
 Run this:
 
@@ -253,7 +255,7 @@ And get this:
 
 The exception handler preserved the error stack before calling teardown.  Also, there is an extra "ORA-20000:" at the front of the error stack displayed, but all the error information is preserved.
 
-These are all the basic tools needed to successfully create and run test runner packages in wtPLSQL.
+These are all the basic tools needed to successfully create and run Test Runner packages in wtPLSQL.
 
 ---
 [Demos and Examples](README.md)

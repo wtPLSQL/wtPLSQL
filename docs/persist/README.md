@@ -1,5 +1,5 @@
 # wtPLSQL
-Whitebox Test Server for Oracle's PL/SQL Language
+Whitebox Testing for PL/SQL
 
 
 File Name              | Description

@@ -105,7 +105,7 @@ end;
 
 ## Create a Simple Test Runner
 
-All test runners are written as a PL/SQL package. A simple package is created first.  A DBOUT is also identified.
+All Test Runners are written as a PL/SQL package. A simple package is created first.  A DBOUT is also identified.
 
 Run this:
 
@@ -209,7 +209,9 @@ Source               TotTime MinTime   MaxTime
     10 EXEC      1         2       2         2 end;
 ```
 
-This is report level 30, the most detailed level of reporting.  Starting from the top, we find the test runner executed 1 test case and 3 assertions.  All tests passed for a 100% yield.  The code coverage for the trigger shows 5 profiles, 4 executed, and a code coverage of 100%.  Notice the trigger offset of 3 which aligns the source code with the profiled lines.
+If the Persist add-on is not installed, the code coverage results will not be displayed.
+
+This is report level 30, the most detailed level of reporting.  Starting from the top, we find the Test Runner executed 1 test case and 3 assertions.  All tests passed for a 100% yield.  The code coverage for the trigger shows 5 profiles, 4 executed, and a code coverage of 100%.  Notice the trigger offset of 3 which aligns the source code with the profiled lines.
 
 This is not a complete test.  More test cases are needed to confirm various values are handled correctly when inserted.
 

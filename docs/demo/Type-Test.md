@@ -67,7 +67,7 @@ end;
 
 ## Create a Simple Test Runner
 
-All test runners are written as a PL/SQL package. A simple package is created first.  A DBOUT is also identified.
+All Test Runners are written as a PL/SQL package. A simple package is created first.  A DBOUT is also identified.
 
 Run this:
 
@@ -166,7 +166,9 @@ Source               TotTime MinTime   MaxTime
     20 EXCL      0         0       0         0     end add_observation;
 ```
 
-This is report level 30, the most detailed level of reporting.  Starting from the top, we find the test runner executed 1 test case, 2 assertions, and no failed assertions, which resulted in 100% yield (all tests passed).  The next section shows the type body tested had 10 lines profiled, 4 were executed, and 4 were not executed, which resulted in a code coverage of 50%.  Additional testing is required to achieve 100% code coverage.  For brevity, this additional testing will not be included.
+If the Persist add-on is not installed, the code coverage results will not be displayed.
+
+This is report level 30, the most detailed level of reporting.  Starting from the top, we find the Test Runner executed 1 test case, 2 assertions, and no failed assertions, which resulted in 100% yield (all tests passed).  The next section shows the type body tested had 10 lines profiled, 4 were executed, and 4 were not executed, which resulted in a code coverage of 50%.  Additional testing is required to achieve 100% code coverage.  For brevity, this additional testing will not be included.
 
 
 ## Testing Private Object Methods and Self-Testing

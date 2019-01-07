@@ -10,7 +10,7 @@ The [original "ut_str" example](https://utplsql.org/utPLSQL/v2.3.1/testfunc.html
 
 ## Test Package Conversion
 
-Conversion of this test package into a test runner package requires the addition of the "wtPLSQL_run" procedure in the package specification.
+Conversion of this test package into a Test Runner package requires the addition of the "wtPLSQL_run" procedure in the package specification.
 
 Run this:
 
@@ -224,6 +224,8 @@ Source               TotTime MinTime   MaxTime
 ------ ---- ------ --------- ------- --------- ------------
     93 IGNR      1         0       0         0    END wtplsql_run;
 ```
+
+If the Persist add-on is not installed, the code coverage results will not be displayed.
 
 ---
 [Demos and Examples](README.md)
