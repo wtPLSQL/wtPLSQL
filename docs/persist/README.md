@@ -1,6 +1,5 @@
-# wtPLSQL
-Whitebox Testing for PL/SQL
 
+### Files and Directories
 
 File Name              | Description
 -----------------------|------------

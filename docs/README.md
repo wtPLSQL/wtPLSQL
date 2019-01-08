@@ -7,42 +7,14 @@
 
 Use [GitHub "issues"](https://github.com/DDieterich/wtPLSQL/issues) for support.  A (free) GitHub account will be required to create a new issue.  Issues can be searched without an account.
 
-wtPLSQL is a test automation server that uses an Oracle database to provide the following services for Test Runner packages written in PL/SQL.
+### Overview
+
+wtPLSQL is a test automation server that runs in an Oracle database to provide the following services for Test Runner packages written in PL/SQL.
 * Execution of One or More Test Runners
 * Assertion Results including Timing Between Assertions
 * Capture/Storage/Reporting of Assertion Results
 * Source Code Coverage of Test Runner
 * Web Based Graphical User Interface (APEX)
-
-### General Documentation
-
-* [About wtPLSQL](About-wtPLSQL.md)
-* [Examples and Documentation](demo/README.md)
-* [Definitions](Definitions.md)
-* [Best Practices](Best-Practices.md)
-* [Reference](Reference.md)
-* [utPLSQL V1/V2 Comparison](utPLSQL-V2-Comparison.md)
-* [utPLSQL V3 Comparison](utPLSQL-V3-Comparison.md)
-* [OO Style Unit Testing is not for Databases](OO-Style-Unit-Testing.md)
-
-Component                       | Description
---------------------------------|------------
-[core](core/README)             | Required for all wtPLSQL functionality. Small and Fast.
-[conversion](conversion/README) | Convert Test Runner packages from utPLSQL V1/V2 to wtPLSQL
-
-<br>
-
-Add-on                       | Description
------------------------------|------------
-[persist](persist/README.md) | Adds storage in tables. Adds code coverage.
-[gui](gui/README.md)         | Adds Oracle APEX screens and reports. Requires persist add-on.
-[junit](junit/README.md)     | Adds JUnit XML reporting.
-
-To determine which components and add-ons have been installed, run this query:
-
-```
-select wtplsql.show_version from dual;
-```
 
 ### Core Component Example Test Results
 
@@ -66,11 +38,31 @@ The GUI module uses the Oracle APEX to enhance the UI experience.  Many useful r
 
 <img src="images/GUI Example wtPLSQL Test Results.PNG" alt="Sample Graphical from wtPLSQL GUI">
 
-### wtPLSQL Internals
+### General Documentation
 
-The web pages in this website contain information about the wtPLSQL software. Documentation on design and usage are included here. This website is version specific. Each release includes its own version of this website. The "master" branch (latest release) is always displayed at Github.io. Un-released updates are not displayed here.
+* [About wtPLSQL](About-wtPLSQL.md)
+* [Examples and Documentation](demo/README.md)
+* [Definitions](Definitions.md)
+* [Best Practices](Best-Practices.md)
+* [Reference](Reference.md)
+* [utPLSQL V1/V2 Comparison](utPLSQL-V2-Comparison.md)
+* [utPLSQL V3 Comparison](utPLSQL-V3-Comparison.md)
+* [OO Style Unit Testing is not for Databases](OO-Style-Unit-Testing.md)
 
-For project information, see the [wtPLSQL wiki](https://github.com/DDieterich/wtPLSQL/wiki).  Documentation on procedures and compatibility are included in the wiki.  The wiki includes information for all releases of wtPLSQL. Any updates are immediately displayed.
+Component                             | Description
+--------------------------------------|------------
+[core](core-component.md)             | Required for all wtPLSQL functionality. Small and Fast.
+[conversion](conversion-component.md) | Convert Test Runner packages from utPLSQL V1/V2 to wtPLSQL
+
+<br>
+
+Add-on                       | Description
+-----------------------------|------------
+[persist](persist-add-on.md) | Adds storage in tables. Adds code coverage.
+[gui](gui-add-on.md)         | Adds Oracle APEX screens and reports. Requires persist add-on.
+[junit](junit-add-on.md)     | Adds JUnit XML reporting.
+
+<br>
 
 DB Docs                                   | E-R Diagrams                            | Call Tree Diags
 ------------------------------------------|-----------------------------------------|----------------
@@ -82,9 +74,19 @@ DB Docs                                   | E-R Diagrams                        
 * **E-R Diagrams** show relationships between tables (entities).
 * **Call Tree Diagrams** show the PL/SQL programs, tables, and common (global) memory structures called by all PL/SQL programs.
 
+To determine which components and add-ons have been installed, run this query:
+
+```
+select wtplsql.show_version from dual;
+```
+
 ## Contribute
 
 Help us improve by joining us at the [wtPLSQL repository](https://github.com/DDieterich/wtPLSQL).
+
+The web pages in this website contain information about the wtPLSQL software. Documentation on design and usage are included here. This website is version specific. Each release includes its own version of this website. The "master" branch (latest release) is always displayed at Github.io. Un-released updates are not displayed here.
+
+For project information, see the [wtPLSQL wiki](https://github.com/DDieterich/wtPLSQL/wiki).  Documentation on procedures and compatibility are included in the wiki.  The wiki includes information for all releases of wtPLSQL. Any updates are immediately displayed.
 
 ---
 

@@ -25,11 +25,19 @@ There is a balance to strike between simplicity and localization. Many data type
 
 An obvious drawback of this approach is running assertions when NLS settings must be set to something other than the setting that is needed for comparison. In this case, an explicit conversion can be made in the Test Runnner using the needed format.
 
-## Custom Error Codes
+## Core Error Codes
 * ORA-20001 - WTPLSQL Package: RUNNER_NAME is NULL
 * ORA-20002 - WTPLSQL Package: RUNNER_NAME (name) is not valid
 * ORA-20003 - HOOK Package: Unknown HOOK_NAME Case
 * ORA-20004 - WT_ASSERT Package: User Test Result is FAIL (g_raise_exception is TRUE)
+
+## Persist Error Codes
+* ORA-20009 ORA-20011 - WT_RESULT Package: "in_test_run_id" cannot be NULL
+* ORA-20004 ORA-20012 - WT_PROFILER Package: in_test_run_id is NULL
+* ORA-20005 ORA-20013 - WT_PROFILER Package: dbms_profiler.INTERNAL_VERSION_CHECK returned (error)
+* ORA-20006 ORA-20014 - WT_PROFILER Package: dbms_profiler.START_PROFILER returned (error)
+* ORA-20010 ORA-20015 - WT_TEST_RUN_STAT Package: Unknown Result status
+* ORA-20011 ORA-20016 - WT_TEST_RUN_STAT Package: Unknown Profile status
 
 ## WT_TEXT_REPORT Detail Levels
 * **Less than 10 (including null)** - No Detail

@@ -120,4 +120,23 @@ To un-install:
 To confirm a successful un-install, review the "uninstall.LST" log file against the "uninstallO.LST" example log file.
 
 ---
+
+*The following applies to files and directories at this location in the documentation repository.*
+
+File Name     | Description
+--------------|------------
+DBDocs        | SQL Developer DBDocs Files
+*.md          | Markdown files for "github.io"
+*.htm         | HTML files for local documentation
+images        | Image Files referenced by MD and HTML
+md-to-htm.bat | MS-Dos Batch File to convert MD to HTML
+md-to-htm.lua | Lua script used by Pandoc for MD to HTML
+
+To view documentation use the URL "file://README.htm" or Double-click on the README.htm file.
+
+NOTE: All HTML files are sourced from Markdown files.
+  Modify the Markdown files, then build HTML from the
+  Markdown files using "md-to-htm.bat".
+
+---
 [Website Home Page](../README.md)
