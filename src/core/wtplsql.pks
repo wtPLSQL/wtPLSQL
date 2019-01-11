@@ -10,8 +10,6 @@ as
    function show_version
       return varchar2;
 
-   g_keep_num_recs  number := 10;
-
    -- Database Object Under Test.
    --   Modify as required
    g_DBOUT    varchar2(128);

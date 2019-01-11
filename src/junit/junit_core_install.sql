@@ -3,6 +3,12 @@
 --  JUnit Core Report Installation
 --
 
+--
+-- NOTE: Must be run using "wtPLSQL.test_all".
+--       "wtPLSQL.test_run" will not provide
+--       a complete JUnit XML document.
+--
+
 -- Capture output
 spool junit_core_install
 
