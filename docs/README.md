@@ -51,7 +51,7 @@ The GUI module uses the Oracle APEX to enhance the UI experience.  Many useful r
 
 Component                             | Description
 --------------------------------------|------------
-[core](core-component.md)             | Required for all wtPLSQL functionality. Small and Fast.
+[core](core-component.md)             | Required for all wtPLSQL functionality. Small, fast, and maintenance free.
 [conversion](conversion-component.md) | Convert Test Runner packages from utPLSQL V1/V2 to wtPLSQL
 
 <br>

@@ -4,13 +4,13 @@
 
 ---
 ### Overview
-The Core component is built to be very small and very fast.  It has 5 packages and 1 procedure.  During execution of a Test Runner, it stores all assertion results in memory.  It can be run without any add-ons.  It is the backbone of the wtPLSQL whitebox testing server.
+The Core component is built to be very small and very fast.  It has 5 packages, 3 tables, 1 view, and 1 procedure.  During execution of a Test Runner, it stores all assertion results in memory.  It can be run without any add-ons.  It is the backbone of the wtPLSQL whitebox testing server.
 
 ### Assertion Storage
-The core component stores all assertion results in the CORE_DATA package.  All assertion results are cleared before the execution of a Test Runner.  The average assertion record is about 256 bytes.  4,000 assertion results will consume about a Megabyte of memory.  Detailed results from the last assertion are alos published as global variables in the CORE_DATA package.
+The core component stores all assertion results in the CORE_DATA package.  Previous assertion results are erased before the execution of the next Test Runner.  The average assertion record is about 256 bytes.  4,000 assertion results will require about a Megabyte of memory.  Detailed results from the last assertion are also available as global variables in the CORE_DATA package.
 
 ### Assertions
-The WT_ASSERT package contains the assertion API.  It contains 10 basic assertions.  Each assertion works with most all possible Oracle database data types.
+The WT_ASSERT package contains the assertion API.  There are 10 basic assertions.
    * eq
    * isnotnull
    * isnull
@@ -51,17 +51,17 @@ Without any add-ons, the Core package automatically writes test results to the D
 Ad-hoc assertions (executed outside a Test Runner) always report results to DBMS_OUTPUT.
 
 ### Hooks
-The HOOKS table provides a mechanism for add-ons and customization.  The table makes various execution points available via unnamed PL/SQL blocks.  The following locations are available for hooks.
+The HOOKS table provides a mechanism for add-ons and customization.  The table makes various execution points available via unnamed PL/SQL blocks.  The following execution points are available in HOOKS.
    * Before test_all
    * Before test_run
    * Execute Test Runner
-   * After assertion
+   * After Assertion
    * After test_run
    * After test_all
-   * Ad hoc report
+   * Ad Hoc Report
 
 ### Important Note:
-No Test Runner will be executed if there is no "execute_test_runner" hook in the hooks table.
+No Test Runner will be executed if there is no "execute_test_runner" hook in the HOOKS table.
 
 hook_name           | run_string
 --------------------|-----------
