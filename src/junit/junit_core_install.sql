@@ -25,11 +25,12 @@ set serveroutput on size unlimited format truncated
 
 -- Install Hooks
 insert into hooks (hook_name, seq, run_string)
-   values ('before_test_all', 1, 'begin junit_core_report.before_test_all; end;');
+   values ('before_test_all', 20, 'begin junit_core_report.before_test_all; end;');
 update hooks set run_string = 'begin junit_core_report.show_current; end;'
- where hook_name = 'after_test_run' and seq = 1;
+ where hook_name = 'after_test_run'
+  and  run_string = 'begin wt_text_report.dbms_out(10); end;';
 insert into hooks (hook_name, seq, run_string)
-   values ('after_test_all', 1, 'begin junit_core_report.after_test_all; end;');
+   values ('after_test_all', 20, 'begin junit_core_report.after_test_all; end;');
 commit;
 begin
    hook.init;

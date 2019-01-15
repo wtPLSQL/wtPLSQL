@@ -7,14 +7,10 @@ is
    TYPE run_rec_type is record
       (runner_owner   long_name                   -- Owner of the Test Runner
       ,runner_name    long_name                   -- Name of the Test Runner
-      ,dbout_owner    long_name                   -- Owner of the Database Object Under Test
-      ,dbout_name     long_name                   -- Name of the Database Object Under Test
-      ,dbout_type     varchar2(20)                -- Type of the Database Object Under Test
       ,start_dtm      timestamp(3) with time zone -- Test Runner Start Date/Time
       ,end_dtm        timestamp(3) with time zone -- Test Runner End Date/Time
       ,fst_assrt_dtm  timestamp(3) with time zone -- Date/Time of First Assertion
       ,lst_assrt_dtm  timestamp(3) with time zone -- Date/Time of Last Assertion
-      ,error_message  varchar2(4000)              -- Error Message
       ,runner_sec     number(6,1)    default 0    -- Total Runtime for Test Runner in Seconds
       ,tc_cnt         number(7)      default 0    -- Number of Test Cases
       ,tc_fail        number(7)      default 0    -- Number of Failed Test Cases
@@ -24,6 +20,10 @@ is
       ,asrt_max_msec  number(10)                  -- Maximum Assertion Interval in Milliseconds across all Test Cases
       ,asrt_tot_msec  number(10)     default 0    -- Total Assertion Intervals in Milliseconds across all Test Cases
       ,asrt_sos_msec  number(20)     default 0    -- Sum of Squares of Assertion Interval in Milliseconds across all Test Cases
+      ,dbout_owner    long_name                   -- Owner of the Database Object Under Test
+      ,dbout_name     long_name                   -- Name of the Database Object Under Test
+      ,dbout_type     varchar2(20)                -- Type of the Database Object Under Test
+      ,error_message  varchar2(4000)              -- Error Message
       );
    g_run_rec  run_rec_type;
 

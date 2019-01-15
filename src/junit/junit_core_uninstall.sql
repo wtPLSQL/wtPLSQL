@@ -16,13 +16,12 @@ set serveroutput on size unlimited format truncated
 -- Un-Install Hooks
 delete from hooks
  where hook_name  = 'before_test_all'
-  and  seq        = 1
   and  run_string = 'begin junit_core_report.before_test_all; end;';
 update hooks set run_string = 'begin wt_text_report.dbms_out(10); end;'
- where hook_name = 'after_test_run' and seq = 1;
+ where hook_name = 'after_test_run'
+  and  run_string = 'begin junit_core_report.show_current; end;';
 delete from hooks
  where hook_name  = 'after_test_all'
-  and  seq        = 1
   and  run_string = 'begin junit_core_report.after_test_all; end;';
 commit;
 begin

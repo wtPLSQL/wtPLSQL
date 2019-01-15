@@ -9,6 +9,12 @@ The http://wtPLSQL.org website (hosted on GitHub.io) has more information about 
 [Click here](https://github.com/DDieterich/wtPLSQL/wiki/Compatibility) for the compatibility wiki page.
 
 
+### Versions
+
+* The "master" branch contains this website, other documentation, and source code for the latest release
+* The default "V1.2" branch contains the website, other documentation, and source code that is under development for the next release.  
+
+
 ### Participation
 
 See the "To Do" column in one of the [Projects](https://github.com/DDieterich/wtPLSQL/projects) for cards/issues that are ready to work.

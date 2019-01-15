@@ -119,14 +119,6 @@ end;
 WHENEVER SQLERROR continue
 
 
--- Core Tables
-@hooks.tab
-
-@wt_versions.tab
-
-@wt_self_test.tab
-
-
 -- Package Specifications
 @core_data.pks
 /
@@ -150,6 +142,14 @@ create or replace public synonym utassert  for wt_assert;
 /
 grant execute on wt_text_report to public;
 create or replace public synonym wt_text_report for wt_text_report;
+
+
+-- Core Tables
+@hooks.tab
+
+@wt_versions.tab
+
+@wt_self_test.tab
 
 
 -- Procedures
@@ -182,19 +182,20 @@ create or replace public synonym wt_execute_test_runner for wt_execute_test_runn
 @wt_scheduler_jobs_vw.vw
 /
 
+
 -- Configuration Data
 
 -- This is the default test runner execution procedure
 insert into hooks (hook_name, seq, run_string)
-   values ('execute_test_runner', 1, 'begin wt_execute_test_runner; end;');
+   values ('execute_test_runner', 20, 'begin wt_execute_test_runner; end;');
 
 -- Run this report after testing because this is no storage
 insert into hooks (hook_name, seq, run_string)
-   values ('after_test_run', 1, 'begin wt_text_report.dbms_out(10); end;');
+   values ('after_test_run', 20, 'begin wt_text_report.dbms_out(10); end;');
 
 -- This is the default ad-hoc result report
 insert into hooks (hook_name, seq, run_string)
-   values ('ad_hoc_report', 1, 'begin wt_text_report.ad_hoc_result; end;');
+   values ('ad_hoc_report', 20, 'begin wt_text_report.ad_hoc_result; end;');
 
 commit;
 

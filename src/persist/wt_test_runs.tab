@@ -8,21 +8,26 @@ create sequence wt_test_runs_seq order;
 grant select on wt_test_runs_seq to public;
 
 create table wt_test_runs
-   (id                  number(38)  constraint wt_test_runs_nn1  not null
-   ,test_runner_id      number(38)  constraint wt_test_runs_nn2  not null
-   ,start_dtm           timestamp   constraint wt_test_runs_nn3  not null
-   ,end_dtm             timestamp   constraint wt_test_runs_nn4  not null
-   ,yield_pct           number(3)   constraint wt_test_runs_nn5  not null
-   ,testcases           number(7)   constraint wt_test_runs_nn6  not null
-   ,failures            number(7)   constraint wt_test_runs_nn7  not null
-   ,assertions          number(7)   constraint wt_test_runs_nn8  not null
-   ,min_interval_msecs  number(10)  constraint wt_test_runs_nn9  not null
-   ,avg_interval_msecs  number(10)  constraint wt_test_runs_nn10 not null
-   ,max_interval_msecs  number(10)  constraint wt_test_runs_nn11 not null
-   ,tot_interval_msecs  number(10)  constraint wt_test_runs_nn12 not null
+   (id                  number(38)
+   ,test_runner_id      number(38)
+   ,start_dtm           timestamp(3) with time zone
+   ,end_dtm             timestamp(3) with time zone
+   ,fst_assrt_dtm       timestamp(3) with time zone
+   ,lst_assrt_dtm       timestamp(3) with time zone
+   ,runner_sec          number(6,1)
+   ,tc_cnt              number(7)
+   ,tc_fail             number(7)
+   ,tc_yield_pct        number(4,1)
+   ,asrt_cnt            number(7)
+   ,asrt_fail           number(7)
+   ,asrt_yield_pct      number(4,1)
+   ,asrt_min_msec       number(10)
+   ,asrt_max_msec       number(10)
+   ,asrt_tot_msec       number(10)
+   ,asrt_sos_msec       number(20)
    ,dbout_id            number(38)
    ,trigger_offset      number(6)
-   ,profiler_runid      number
+   ,profiler_runid      number(38)
    ,coverage_pct        number(3)
    ,profiled_lines      number(6)
    ,executed_lines      number(6)
@@ -44,26 +49,6 @@ create table wt_test_runs
        references wt_dbouts (id)
    ,constraint wt_test_runs_fk3 foreign key (profiler_runid)
        references plsql_profiler_runs (runid) disable
-   ,constraint wt_test_runs_ck1 check (yield_pct = trunc(100*passes/testcases))
-   ,constraint wt_test_runs_ck2 check (testcases = passes + failures)
-   ,constraint wt_test_runs_ck3 check (passes   >= 0)
-   ,constraint wt_test_runs_ck4 check (failures >= 0)
-   ,constraint wt_test_runs_ck5 check (min_interval_msecs >= 0)
-   ,constraint wt_test_runs_ck6 check (avg_interval_msecs >= min_interval_msecs)
-   ,constraint wt_test_runs_ck7 check (max_interval_msecs >= avg_interval_msecs)
-   ,constraint wt_test_runs_ck8 check (tot_interval_msecs >= max_interval_msecs)
-   ,constraint wt_test_runs_ck1 check (trigger_offset >= 0)
-   ,constraint wt_profiler_ck2  check (coverage_pct between 0 and 100)
-   ,constraint wt_profiler_ck3  check (profiled_lines >= 0)
-   ,constraint wt_profiler_ck4  check (executed_lines >= 0)
-   ,constraint wt_profiler_ck5  check (ignored_lines  >= 0)
-   ,constraint wt_profiler_ck6  check (excluded_lines >= 0)
-   ,constraint wt_profiler_ck7  check (notexec_lines  >= 0)
-   ,constraint wt_profiler_ck8  check (unknown_lines  >= 0)
-   ,constraint wt_profiler_ck9  check (min_executed_usecs >= 0)
-   ,constraint wt_profiler_ck10 check (avg_executed_usecs >= min_executed_usecs)
-   ,constraint wt_profiler_ck11 check (max_executed_usecs >= avg_executed_usecs)
-   ,constraint wt_profiler_ck11 check (tot_executed_usecs >= max_executed_usecs)
    ,constraint wt_test_runs_ck2 check (is_last_run = 'Y')
    ) pctfree 0;
 
@@ -78,30 +63,35 @@ comment on column wt_test_runs.id is 'Primary (Surrogate) Key for each Test Run'
 comment on column wt_test_runs.test_runner_id is 'Surrogate Key the Test Runner package. Natural Key 1 part 1';
 comment on column wt_test_runs.start_dtm is 'Date/time (and fractional seconds) this Test Run started. Natural Key 1 part 2';
 comment on column wt_test_runs.end_dtm is 'Date/time (and fractional seconds) this Test Run ended.';
-comment on column wt_test_runs.yield_pct is 'Percentage of successful test cases to total Test Cases.';
-comment on column wt_test_runs.testcases is 'Total number of Test Cases.';
-comment on column wt_test_runs.failures is 'Number of failed Test Cases.';
-comment on column wt_test_runs.passes is 'Number of Test Assertions.';
-comment on column wt_test_runs.min_interval_msecs is 'Minimum tot_interval_msecs between assertions across all Test Cases';
-comment on column wt_test_runs.avg_interval_msecs is 'Average tot_interval_msecs between assertions across all Test Cases';
-comment on column wt_test_runs.max_interval_msecs is 'Maximum tot_interval_msecs between assertions across all Test Cases';
-comment on column wt_test_runs.tot_interval_msecs is 'Total (sum) of tot_interval_msecs between assertions across all Test Cases';
-comment on column wt_test_runs.dbout_id is 'Optional Surrogate Key to the Database Object Under Test (DBOUT).';
-comment on column wt_test_runs.trigger_offset is 'Optional calculated offset from start of Trigger Source to start of Trigger PL/SQL Block.';
-comment on column wt_test_runs.profiler_runid is 'Optional DBMS_PROFILER unique run identifier from plsql_profiler_runnumber sequence';
-comment on column wt_profiler.coverage_pct is 'Percentage of executed source lines to valid executable source lines.';
-comment on column wt_profiler.profiled_lines is 'Total number of source lines as counted by DBMS_PROFILER';
-comment on column wt_profiler.executed_lines is 'Number of source lines executed';
-comment on column wt_profiler.ignored_lines is 'Number of source lines ignored as uncountable';
-comment on column wt_profiler.excluded_lines is 'Number of source lines excluded due to unexplained DBMS_PROFILER metrics';
-comment on column wt_profiler.notexec_lines is 'Number of source lines not executed';
-comment on column wt_profiler.unknown_lines is 'Number of source lines that have unexplained DBMS_PROFILER metrics';
-comment on column wt_profiler.min_executed_usecs is 'Minumum execution time for a line of source in microseconds';
-comment on column wt_profiler.avg_executed_usecs is 'Average execution time for a line of source in microseconds';
-comment on column wt_profiler.max_executed_usecs is 'Maximum execution time for a line of source in microseconds';
-comment on column wt_profiler.tot_executed_usecs is 'Total (Sum) of execution times for a line of source in microseconds';
-comment on column wt_test_runs.is_last_run is 'Optional Flag "Y" to indicate this is the most recent run for this package owner/name';
-comment on column wt_test_runs.error_message is 'Optional Error messages from this Test Run.';
+comment on column wt_test_runs.fst_assrt_dtm is 'Date/Time of First Assertion';
+comment on column wt_test_runs.lst_assrt_dtm is 'Date/Time of Last Assertion';
+comment on column wt_test_runs.runner_sec is 'Total Runtime for Test Runner in Seconds'
+comment on column wt_test_runs.tc_cnt is 'Number of Test Cases'
+comment on column wt_test_runs.tc_fail is 'Number of Failed Test Cases'
+comment on column wt_test_runs.tc_yield_pct is 'Percentage of successful test cases to total Test Cases.';
+comment on column wt_test_runs.asrt_cnt is 'Number of Assertions across all Test Cases'
+comment on column wt_test_runs.asrt_fail is 'Number of Assertion Failures across all Test Cases'
+comment on column wt_test_runs.asrt_yield_pct is 'Percentage of successful assertions to total assertions.';
+comment on column wt_test_runs.asrt_min_msec is 'Minumum Assertion Interval in Milliseconds across all Test Cases'
+comment on column wt_test_runs.asrt_max_msec is 'Maximum Assertion Interval in Milliseconds across all Test Cases'
+comment on column wt_test_runs.asrt_tot_msec is 'Total Assertion Intervals in Milliseconds across all Test Cases'
+comment on column wt_test_runs.asrt_sos_msec is 'Sum of Squares of Assertion Interval in Milliseconds across all Test Cases'
+comment on column wt_test_runs.dbout_id is 'Surrogate Key to the Database Object Under Test (DBOUT).';
+comment on column wt_test_runs.trigger_offset is 'Calculated offset from start of Trigger Source to start of Trigger PL/SQL Block.';
+comment on column wt_test_runs.profiler_runid is 'DBMS_PROFILER unique run identifier from plsql_profiler_runnumber sequence';
+comment on column wt_test_runs.coverage_pct is 'Percentage of executed lines to non-ignored, non-excluded lines';
+comment on column wt_test_runs.profiled_lines is 'Total number of source lines as counted by DBMS_PROFILER';
+comment on column wt_test_runs.executed_lines is 'Number of source lines executed';
+comment on column wt_test_runs.ignored_lines is 'Number of source lines ignored as uncountable';
+comment on column wt_test_runs.excluded_lines is 'Number of declaration source lines (non-executable) excluded';
+comment on column wt_test_runs.notexec_lines is 'Number of source lines not executed';
+comment on column wt_test_runs.unknown_lines is 'Number of source lines with unknown DBMS_PROFILER metrics';
+comment on column wt_test_runs.exec_min_usecs is 'Minumum execution time for a line of source in microseconds';
+comment on column wt_test_runs.exec_avg_usecs is 'Average execution time for a line of source in microseconds';
+comment on column wt_test_runs.exec_max_usecs is 'Maximum execution time for a line of source in microseconds';
+comment on column wt_test_runs.exec_tot_usecs is 'Total (Sum) of execution times for a line of source in microseconds';
+comment on column wt_test_runs.is_last_run is 'Flag "Y" to indicate this is the most recent run for this package owner/name';
+comment on column wt_test_runs.error_message is 'Error messages from this Test Run.';
 
 grant select on wt_test_runs to public;
 grant insert on wt_test_runs to public;
