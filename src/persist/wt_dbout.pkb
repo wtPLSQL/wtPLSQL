@@ -17,7 +17,7 @@ function get_id
 is
    l_id  number;
 begin
-   select id into rec.id from wt_testcases
+   select id into rec.id from wt_dbouts
     where owner = in_owner
      and  name  = in_name
      and  type  = in_type;
@@ -25,7 +25,7 @@ begin
 exception
    when NO_DATA_FOUND
    then
-      return l_id;
+      return NULL;
 end get_id;
 
 ------------------------------------------------------------
@@ -35,6 +35,7 @@ function dim_id
       ,in_type   in varchar2)
    return number
 is
+   PRAGMA AUTONOMOUS_TRANSACTION
    rec  wt_dbouts%ROWTYPE;
 begin
    rec.id := get_id (in_owner, in_name, in_type);
@@ -45,6 +46,7 @@ begin
       rec.name  := in_name;
       rec.type  := in_type;
       insert into wt_dbouts values rec;
+      commit;
    end if;
    return rec.id;
 end get_id;

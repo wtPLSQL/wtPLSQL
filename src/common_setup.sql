@@ -9,6 +9,7 @@ set echo on
 set define "&"
 set concat "."
 define schema_owner="wtp"
+define demo_owner="wtp_demo"
 define connect_string=""
 -- Common Setup Done.
 set echo off

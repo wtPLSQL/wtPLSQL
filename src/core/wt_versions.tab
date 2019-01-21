@@ -10,7 +10,7 @@ create table wt_versions
    ,version        number         constraint wt_vesions_nn4 not null
    ,notes          varchar2(100)
    ,constraint wt_versions_pk primary key (install_dtm)
-   ,constraint wt_versions_ck1 check (action in ('INSTALL','UPDATE','REMOVE')
+   ,constraint wt_versions_ck1 check (action in ('INSTALL','UPDATE','REMOVE'))
    ) pctfree 0;
 
 comment on table wt_versions is 'Records the installed and upgraded versions.';

@@ -25,6 +25,7 @@ IS
    PROCEDURE wtplsql_run;
 END str;
 /
+show errors
 
 /* Formatted on 2001/11/19 15:15 (Formatter Plus v4.5.2) */
 CREATE OR REPLACE PACKAGE BODY str
@@ -123,6 +124,7 @@ IS
 
 END str;
 /
+show errors
 
 set serveroutput on size unlimited format truncated
 

@@ -29,39 +29,60 @@ begin
      and  name  = in_name;
    return l_id;
 exception when NO_DATA_FOUND then
-   return null;
+   return NULL;
 end get_id;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure t_get_id
    is
-      l_id  number;
+      l_id           number;
    begin
-      wt_assert.g_testcase := 't_get_id Happy Path 1';
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_get_id Setup';
       delete from wt_test_runners
        where owner = C_OWNER
         and  name  = C_NAME;
+      wt_assert.isnotnull
+         (msg_in           => 'Number of Rows deleted'  
+         ,check_query_in   => SQL%ROWCOUNT);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eqqueryvalue
+         (msg_in           => 'Number of Rows should be 0'
+         ,check_query_in   => 'select count(*) from wt_test_runners' || 
+                              ' where owner = ' || C_OWNER ||
+                              ' and name  = ' || C_NAME
+         ,against_value_in => 0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_get_id Happy Path 1';
       wt_assert.isnull
          (msg_in            => 'Check for Null return'
          ,check_this_in     => get_id(C_OWNER, C_NAME));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_get_id Happy Path 2';
       insert into wt_test_runners (id, owner, name)
          values (wt_test_runners_seq.nextval, C_OWNER, C_NAME)
          returning id into l_id;
       wt_assert.eq
-         (msg_in           => 'Check for Not Null return'
+         (msg_in           => 'Check ID return'
          ,check_this_in    => get_id(C_OWNER, C_NAME)
          ,against_this_in  => l_id);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_get_id Teardown';
       delete from wt_test_runners
-       where id = l_id;
+       where owner = C_OWNER
+        and  name  = C_NAME;
+      wt_assert.eq
+         (msg_in           => 'Number of Rows deleted'
+         ,check_query_in   => SQL%ROWCOUNT
+         ,against_this_in  => 1);
+      commit;
    end t_get_id;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
-function load_dim
+function dim_id
       (in_owner  in varchar2
       ,in_name   in varchar2)
    return number
@@ -78,32 +99,51 @@ begin
       insert into wt_dbouts values rec;
    end if;
    return rec.id;
-end load_dim;
+end dim_id;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure t_dim_id
    is
-      l_id  number;
+      l_id           number;
    begin
-      wt_assert.g_testcase := 't_get_id Happy Path 1';
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_dim_id Setup';
       delete from wt_test_runners
        where owner = C_OWNER
         and  name  = C_NAME;
-      wt_assert.isnull
-         (msg_in            => 'Check for Null return'
-         ,check_this_in     => get_id(C_OWNER, C_NAME));
+      wt_assert.isnotnull
+         (msg_in           => 'Number of Rows deleted'  
+         ,check_query_in   => SQL%ROWCOUNT);
       --------------------------------------  WTPLSQL Testing --
-      insert into wt_test_runners (id, owner, name)
-         values (wt_test_runners_seq.nextval, C_OWNER, C_NAME)
-         returning id into l_id;
+      wt_assert.eqqueryvalue
+         (msg_in           => 'Number of Rows should be 0'
+         ,check_query_in   => 'select count(*) from wt_test_runners' || 
+                              ' where owner = ' || C_OWNER ||
+                              ' and name  = ' || C_NAME
+         ,against_value_in => 0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_dim_id Happy Path 1';
+      l_id := dim_id(C_OWNER, C_NAME);
+      wt_assert.isnotnull
+         (msg_in            => 'Check ID return 1'
+         ,check_this_in     => l_id);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_dim_id Happy Path 2';
       wt_assert.eq
-         (msg_in           => 'Check for Not Null return'
-         ,check_this_in    => get_id(C_OWNER, C_NAME)
-         ,against_this_in  => l_id);
+         (msg_in            => 'Check ID return 2'
+         ,check_this_in     => dim_id(C_OWNER, C_NAME)
+         ,against_this_in   => l_id);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_dim_id Teardown';
       delete from wt_test_runners
-       where id = l_id;
+       where owner = C_OWNER
+        and  name  = C_NAME;
+      wt_assert.eq
+         (msg_in           => 'Number of Rows deleted'  
+         ,check_query_in   => SQL%ROWCOUNT
+         ,against_this_in  => 1);
+      commit;
    end t_dim_id;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
@@ -117,6 +157,55 @@ begin
     where id = in_test_runner_id;
 end delete_records;
 
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_delete_records
+   is
+      l_id   number;
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_delete_records Setup';
+      delete from wt_test_runners
+       where owner = C_OWNER
+        and  name  = C_NAME;
+      wt_assert.isnotnull
+         (msg_in           => 'Number of Rows deleted'  
+         ,check_query_in   => SQL%ROWCOUNT);
+      --------------------------------------  WTPLSQL Testing --
+      insert into wt_test_runners (id, owner, name)
+         values (wt_test_runners_seq.nextval, C_OWNER, C_NAME)
+         returning id into l_id;
+      wt_assert.isnotnull
+         (msg_in           => 'Check for ID'
+         ,check_this_in    => l_id);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eqqueryvalue
+         (msg_in           => 'Number of Rows should be 1'
+         ,check_query_in   => 'select count(*) from wt_test_runners' || 
+                              ' where owner = ' || C_OWNER ||
+                              ' and name  = ' || C_NAME
+         ,against_value_in => 1);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_delete_records Happy Path 1';
+      delete_records(l_id);
+      wt_assert.eqqueryvalue
+         (msg_in           => 'Number of Rows should be 0'
+         ,check_query_in   => 'select count(*) from wt_test_runners' || 
+                              ' where owner = ' || C_OWNER ||
+                              ' and name  = ' || C_NAME
+         ,against_value_in => 0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_delete_records Happy Path 2';
+      delete_records(l_id);
+      wt_assert.eqqueryvalue
+         (msg_in           => 'Number of Rows should still be 0'
+         ,check_query_in   => 'select count(*) from wt_test_runners' || 
+                              ' where owner = ' || C_OWNER ||
+                              ' and name  = ' || C_NAME
+         ,against_value_in => 0);
+      commit;
+   end t_dim_id;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 --==============================================================--
@@ -128,7 +217,7 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       t_get_id;
       t_dim_id;
-      delete_records;
+      t_delete_records;
    end;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--

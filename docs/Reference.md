@@ -39,6 +39,16 @@ An obvious drawback of this approach is running assertions when NLS settings mus
 * ORA-20010 ORA-20015 - WT_TEST_RUN_STAT Package: Unknown Result status
 * ORA-20011 ORA-20016 - WT_TEST_RUN_STAT Package: Unknown Profile status
 
+## WT_CORE_REPORT Detail Levels
+* **Less than 10 (including null)** - No Detail
+   * Assertion results summary.
+* **10 to 19** - Minimal Detail
+   * Assertion results summary.
+   * Failed assertion result details.
+* **20 or more** - Full Detail
+   * Assertion results summary.
+   * All assertion result details.
+
 ## WT_TEXT_REPORT Detail Levels
 * **Less than 10 (including null)** - No Detail
    * Assertion results summary.

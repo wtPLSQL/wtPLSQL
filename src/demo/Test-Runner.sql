@@ -4,6 +4,7 @@ as
    procedure wtplsql_run;
 end simple_test_runner;
 /
+show errors
 
 create or replace package body simple_test_runner
 as
@@ -14,6 +15,7 @@ as
    end wtplsql_run;
 end simple_test_runner;
 /
+show errors
 
 begin
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
@@ -55,6 +57,7 @@ as
    end wtplsql_run;
 end simple_test_runner;
 /
+show errors
 
 begin
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
@@ -73,6 +76,7 @@ as
    end wtplsql_run;
 end simple_test_runner;
 /
+show errors
 
 begin
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
@@ -97,6 +101,7 @@ as
    end wtplsql_run;    --%WTPLSQL_end_ignore_lines%--
 end simple_test_runner;
 /
+show errors
 
 begin
    wtplsql.test_run('SIMPLE_TEST_RUNNER');

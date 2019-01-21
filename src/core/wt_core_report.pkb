@@ -1,4 +1,4 @@
-create or replace package body wt_text_report
+create or replace package body wt_core_report
 as
 
 
@@ -30,9 +30,10 @@ is
 begin
    p('');
    --
-   p('   wtPLSQL ' || wtplsql.show_version || ' - Start Date/Time: ' ||
-         to_char(core_data.g_run_rec.start_dtm, g_date_format) ||
-         CHR(10));
+   p('   wtPLSQL ' || wtplsql.show_version);
+   p('   Start Date/Time: ' ||
+         to_char(core_data.g_run_rec.start_dtm, g_date_format));
+   p('');
    p('Test Results for ' || core_data.g_run_rec.runner_owner ||
                      '.' || core_data.g_run_rec.runner_name  );
    ----------------------------------------
@@ -83,27 +84,36 @@ end summary_out;
 procedure results_out
       (in_show_pass  in boolean)
 is
-   l_rec  core_data.results_rec_type;
+   l_rec         core_data.results_rec_type;
+   old_testcase  core_data.long_name;
+   show_header   boolean := TRUE;
 begin
-   --
-   p('');
-   p(               core_data.g_run_rec.runner_owner ||
-             '.' || core_data.g_run_rec.runner_name  ||
-     ' Test Runner Details:' );
-   p('----------------------------------------');
-   --
+   -- Loop through all results
    for i in 1 .. core_data.g_results_nt.COUNT
    loop
+      -- Determine if this should be displayed
       if    in_show_pass
          OR NOT core_data.g_results_nt(i).pass
       then
-         if core_data.g_results_nt(i).testcase = l_rec.testcase
+         l_rec := core_data.g_results_nt(i);
+         -- Remove Consecutive Testcases
+         if core_data.g_results_nt(i).testcase = old_testcase
          then
-            l_rec := core_data.g_results_nt(i);
             l_rec.testcase := '';
          else
-            l_rec := core_data.g_results_nt(i);
+            old_testcase := l_rec.testcase;
          end if;
+         -- Display header if needed
+         if show_header
+         then
+            p('');
+            p(               core_data.g_run_rec.runner_owner ||
+                      '.' || core_data.g_run_rec.runner_name  ||
+              ' Test Runner Details:' );
+            p('----------------------------------------');
+            show_header := FALSE;
+         end if;
+         -- Display the result
          p(format_test_result(l_rec));
       end if;
    end loop;
@@ -145,14 +155,17 @@ end dbms_out;
 procedure ad_hoc_result
 is
 begin
-   p(wt_assert.g_rec.last_msg                     || CHR(10) ||
-     ' Assertion ' || wt_assert.g_rec.last_assert ||
+   p(wt_assert.g_rec.last_msg);
+   p(' Assertion ' || wt_assert.g_rec.last_assert ||
                      case wt_assert.last_pass
                      when TRUE then ' PASSED.'
                                else ' FAILED.'
-                     end                          || CHR(10) ||
-     ' Testcase: ' || wt_assert.g_testcase        || CHR(10) ||
-               ' ' || wt_assert.g_rec.last_details );
+                     end);
+   if wt_assert.g_testcase is not null
+   then
+      p(' Testcase: ' || wt_assert.g_testcase);
+   end if;
+   p(          ' ' || wt_assert.g_rec.last_details);
 end ad_hoc_result;
 
 
@@ -196,4 +209,4 @@ begin
 end format_test_result;
 
 
-end wt_text_report;
+end wt_core_report;

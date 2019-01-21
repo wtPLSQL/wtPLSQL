@@ -2,18 +2,23 @@ create or replace package wt_test_runner
    authid definer
 as
 
+   -- Return a Test Runner Surrogate Key.
+   -- Return NULL is the Test Runner does not exist.
    function get_id
       (in_owner  in varchar2
       ,in_name   in varchar2)
    return number;
 
-   function load_dim
+   -- Return a Test Runner Surrogate Key.
+   -- Add the Test Runner if it does not exist.
+   function dim_id
       (in_owner  in varchar2
       ,in_name   in varchar2)
    return number;
 
+   -- Delete all records for this Test Runner
    procedure delete_records
-      (in_id  in number);
+      (in_test_runner_id  in number);
    
    --   WtPLSQL Self Test Procedures
    --

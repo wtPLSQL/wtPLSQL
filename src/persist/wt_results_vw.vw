@@ -3,7 +3,7 @@
 --  Results View Installation
 --
 
-create view wt_results_vw as
+create or replace force view wt_results_vw as
 select tr.test_runner_id 
       ,tr.test_runner_owner
       ,tr.test_runner_name

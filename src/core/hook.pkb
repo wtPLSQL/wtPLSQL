@@ -20,8 +20,8 @@ begin
       exception
          when OTHERS
          then
-            l_error_stack := 'Hook Error in ' || in_hook_name ||
-                                   '(' || i || ')' || CHR(10) ||
+            l_error_stack := 'Hook Error in "' || in_hook_name ||
+                              '", index ' || i || '.' || CHR(10) ||
                               dbms_utility.format_error_stack ||
                               dbms_utility.format_error_backtrace;
             core_data.run_error(l_error_stack);
@@ -63,8 +63,10 @@ end before_test_run;
 procedure execute_test_runner
 is
 begin
-   -- At least 1 "execute_test_runner" must be loaded into the "g_run_aa" array.
-   run_hooks('execute_test_runner');
+   if execute_test_runner_active
+   then
+      run_hooks('execute_test_runner');
+   end if;
 end execute_test_runner;
 
 ------------------------------------------------------------
@@ -127,6 +129,7 @@ is
 begin
    before_test_all_active     := FALSE;
    before_test_run_active     := FALSE;
+   execute_test_runner_active := FALSE;
    after_assertion_active     := FALSE;
    after_test_run_active      := FALSE;
    after_test_all_active      := FALSE;
@@ -146,7 +149,7 @@ begin
          case buff.hook_name
             when 'before_test_all'     then before_test_all_active     := TRUE;
             when 'before_test_run'     then before_test_run_active     := TRUE;
-            when 'execute_test_runner' then NULL;
+            when 'execute_test_runner' then execute_test_runner_active := TRUE;
             when 'after_assertion'     then after_assertion_active     := TRUE;
             when 'after_test_run'      then after_test_run_active      := TRUE;
             when 'after_test_all'      then after_test_all_active      := TRUE;
@@ -215,9 +218,9 @@ $THEN
          ,against_value_in => l_hname_nt.COUNT);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'All Hooks On';
-      g_test_hook_msg := '';
       for i in 1 .. l_hname_nt.COUNT
       loop
+         g_test_hook_msg := '';
          g_run_assert_hook := TRUE;
          execute immediate 'begin hook.' || l_hname_nt(i) || '; end;';
          g_run_assert_hook := FALSE;
@@ -236,9 +239,9 @@ $THEN
          ,check_query_in   => 'select count(*) from hooks'
          ,against_value_in => 0);
       --------------------------------------  WTPLSQL Testing --
-      g_test_hook_msg := '';
       for i in 1 .. l_hname_nt.COUNT
       loop
+         g_test_hook_msg := '';
          execute immediate 'begin hook.' || l_hname_nt(i) || '; end;';
          wt_assert.isnull
             (msg_in          => l_hname_nt(i) || ' is not active'

@@ -11,6 +11,7 @@ create or replace type simple_test_obj_type authid definer
           ,in_observation  number)
    );
 /
+show errors
 
 create or replace type body simple_test_obj_type is
     CONSTRUCTOR FUNCTION simple_test_obj_type
@@ -34,12 +35,14 @@ create or replace type body simple_test_obj_type is
     end add_observation;
 end;
 /
+show errors
 
 create or replace package test_simple_object authid definer
 as
    procedure wtplsql_run;
 end test_simple_object;
 /
+show errors
 
 create or replace package body test_simple_object
 as
@@ -63,6 +66,7 @@ as
    end wtplsql_run;
 end test_simple_object;
 /
+show errors
 
 set serveroutput on size unlimited format truncated
 

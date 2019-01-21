@@ -385,18 +385,20 @@ end get_runner_entry_point;
 function show_version
    return varchar2
 is
-   ret_str  wt_version.text%TYPE;
+   ret_str  varchar2(4000);
 begin
    for buff in (
       select component, version
        from  wt_version  t1
-       where t1.install_dtm = (select max(t2.install_dtm)
-                                from  wt_version  t2
-                                where t2.component = t2.component)
-        and  t1.action != 'REMOVE'
+       where (component, install_dtm) in (
+              select t2.component, max(t2.install_dtm)
+               from  wt_version  t2
+               group by t2.component)
+        and  action != 'REMOVE'
        order by install_dtm )
    loop
-      ret_str := ret_str || component || ' ' || version || ', ';
+      ret_str := ret_str || buff.component || ' ' ||
+                            buff.version   || ', ';
    end loop;
    return substr(ret_str, 1, length(ret_str)-2);
 exception when NO_DATA_FOUND
@@ -408,7 +410,7 @@ $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure t_show_version
    is
-      existing_version   wt_version.text%TYPE;
+      existing_version   varchar2(4000);
    begin
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Show Version Happy Path';

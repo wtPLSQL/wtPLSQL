@@ -12,6 +12,7 @@ BEGIN
    secs := (date2 - date1) * 24 * 60 * 60;
 END;
 /
+show errors
 
 CREATE OR REPLACE PACKAGE ut_calc_secs_between
 IS
@@ -23,6 +24,7 @@ IS
    PROCEDURE wtplsql_run;
 END ut_calc_secs_between;
 /
+show errors
 
 CREATE OR REPLACE PACKAGE BODY ut_calc_secs_between
 IS
@@ -83,6 +85,7 @@ IS
 
 END ut_calc_secs_between;
 /
+show errors
 
 set serveroutput on size unlimited format truncated
 

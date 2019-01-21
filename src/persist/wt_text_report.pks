@@ -14,20 +14,13 @@ as
    g_date_format  varchar2(100) := 'DD-Mon-YYYY HH:MI:SS PM';
 
    function format_test_result
-      (in_assertion      in wt_results.assertion%TYPE
-      ,in_status         in wt_results.status%TYPE
-      ,in_details        in wt_results.details%TYPE
-      ,in_testcase_name  in wt_testcases.name%TYPE
-      ,in_message        in wt_results.message%TYPE
-      ,in_interval_msecs in wt_results.interval_msecs%TYPE DEFAULT NULL)
+      (in_assertion      in varchar2
+      ,in_status         in varchar2
+      ,in_details        in varchar2
+      ,in_testcase_name  in varchar2
+      ,in_message        in varchar2
+      ,in_interval_msecs in number)
    return varchar2;
-
-   procedure ad_hoc_result
-      (in_assertion      in wt_results.assertion%TYPE
-      ,in_status         in wt_results.status%TYPE
-      ,in_details        in wt_results.details%TYPE
-      ,in_testcase_name  in wt_testcases.name%TYPE
-      ,in_message        in wt_results.message%TYPE);
 
 --  "in_detail_level" settings for DBMS_OUT procedure:
 --  * Less than 10 (including null) - No Detail
@@ -50,9 +43,9 @@ as
 --     * All profiled source lines.
 
    procedure dbms_out
-      (in_runner_owner   in  wt_test_runners.owner%TYPE default USER
-      ,in_runner_name    in  wt_test_runners.name%TYPE  default null
-      ,in_detail_level   in  number                         default 0
-      ,in_summary_last   in  boolean                        default FALSE);
+      (in_runner_owner   in  varchar2  default USER
+      ,in_runner_name    in  varchar2  default null
+      ,in_detail_level   in  number    default 0
+      ,in_summary_last   in  boolean   default FALSE);
 
 end wt_text_report;

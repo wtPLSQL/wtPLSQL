@@ -3,10 +3,10 @@ create or replace package wt_profile
 as
 
    TYPE rec_type is record
-      (test_run_id     wt_test_runs.id%TYPE
-      ,dbout_owner     wt_test_runs.dbout_owner%TYPE
-      ,dbout_name      wt_test_runs.dbout_name%TYPE
-      ,dbout_type      wt_test_runs.dbout_type%TYPE
+      (test_run_id     number
+      ,dbout_owner     varchar2
+      ,dbout_name      varchar2
+      ,dbout_type      varchar2
       ,prof_runid      binary_integer
       ,trigger_offset  binary_integer
       ,error_message   varchar2(4000));

@@ -28,6 +28,7 @@ begin
    l_junk := 1;
 end;
 /
+show errors
 
 set define off
 

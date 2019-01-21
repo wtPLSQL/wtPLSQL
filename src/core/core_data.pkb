@@ -466,8 +466,8 @@ begin
    if g_results_nt.COUNT > 1
    then
       -- Need at least 2 elements because the last element is NULL.
-      g_run_rec.fst_assrt_dtm := g_results_nt(1).executed_dtm;
-      g_run_rec.lst_assrt_dtm := g_results_nt(g_results_nt.COUNT-1).executed_dtm;
+      g_run_rec.asrt_fst_dtm := g_results_nt(1).executed_dtm;
+      g_run_rec.asrt_lst_dtm := g_results_nt(g_results_nt.COUNT-1).executed_dtm;
    end if;
    -- Remove the Last (Empty) Array Element
    g_results_nt.delete(g_results_nt.COUNT);
@@ -521,17 +521,17 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       -- Need at least 2 elements because the last element is NULL.
       wt_assert.isnull
-         (msg_in          => 'l_run_recSAVE.fst_assrt_dtm'
-         ,check_this_in   =>  l_run_recSAVE.fst_assrt_dtm);
+         (msg_in          => 'l_run_recSAVE.asrt_fst_dtm'
+         ,check_this_in   =>  l_run_recSAVE.asrt_fst_dtm);
       wt_assert.isnotnull
-         (msg_in          => 'l_run_recTEST.fst_assrt_dtm'
-         ,check_this_in   =>  l_run_recTEST.fst_assrt_dtm);
+         (msg_in          => 'l_run_recTEST.asrt_fst_dtm'
+         ,check_this_in   =>  l_run_recTEST.asrt_fst_dtm);
       wt_assert.isnull
-         (msg_in          => 'l_run_recSAVE.lst_assrt_dtm'
-         ,check_this_in   =>  l_run_recSAVE.lst_assrt_dtm);
+         (msg_in          => 'l_run_recSAVE.asrt_lst_dtm'
+         ,check_this_in   =>  l_run_recSAVE.asrt_lst_dtm);
       wt_assert.isnotnull
-         (msg_in          => 'l_run_recTEST.lst_assrt_dtm'
-         ,check_this_in   =>  l_run_recTEST.lst_assrt_dtm);
+         (msg_in          => 'l_run_recTEST.asrt_lst_dtm'
+         ,check_this_in   =>  l_run_recTEST.asrt_lst_dtm);
       --------------------------------------  WTPLSQL Testing --
       -- Remove the Last (Empty) Array Element
       wt_assert.eq

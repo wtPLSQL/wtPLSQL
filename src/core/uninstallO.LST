@@ -1,3 +1,12 @@
+.
+SQL> -- Running Common Setup
+SQL> set define "&"
+SQL> set concat "."
+SQL> define schema_owner="wtp"
+SQL> define connect_string=""
+SQL> -- Common Setup Done.
+SQL> set echo off
+.
 old   1: drop user &schema_owner. cascade
 new   1: drop user wtp cascade
 

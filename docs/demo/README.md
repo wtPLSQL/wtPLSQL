@@ -6,7 +6,7 @@
 
 Demonstrations and examples assume successful connection to an [Oracle database](http://www.oracle.com/technetwork/database/database-technologies/express-edition/overview/index.html) with wtPLSQL installed. wtPLSQL Installation instructions are available on the [wtPLSQL Releases page](https://github.com/DDieterich/wtPLSQL/releases).
 
-Test results from assertions can be queried from a set of wtPLSQL tables. The examples here will use the default reporting package called WT_TEXT_REPORT.  This package displays test results using DBMS_OUTPUT.
+Demonstrations and examples requires the Persist add-on.  Test results from assertions can be queried from a set of wtPLSQL tables. The examples here will use the default reporting package called WT_TEXT_REPORT.  This package displays test results using DBMS_OUTPUT.
 
 ## User Setup
 
@@ -37,7 +37,7 @@ Run this:
 select wtplsql.show_version from dual;
 ```
 
-If the result is "Core 1.2, Persist 1.2", wtPSQL is installed with the Persist add-on. If the result is "Core 1.2", the Persist add-on has not been installed. In each exercise, there will be an indication if the results are different without the Persist add-on.
+If the result is something like "Core 1.2, Persist 1.2", wtPSQL is installed with the Persist add-on. If the result is "Core 1.2", the Persist add-on has not been installed. For simplicity, the adjustments required to make the demonstrations and exercises work without the Persist add-on are not included.
 
 ### Another simple test
 

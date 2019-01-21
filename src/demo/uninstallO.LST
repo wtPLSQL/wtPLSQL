@@ -1,5 +1,0 @@
-old:drop user &schema_owner. cascade
-new:drop user wtp_demo cascade
-
-User WTP_DEMO dropped.
-

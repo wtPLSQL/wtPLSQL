@@ -26,4 +26,4 @@ as
       procedure WTPLSQL_RUN;
    $END
 
-end wt_testcase;
+end wt_test_run;

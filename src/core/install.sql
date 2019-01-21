@@ -5,7 +5,9 @@
 --   Run as SYS
 --
 
--- Capture output
+prompt
+prompt Capture output
+
 spool install
 set showmode off
 set serveroutput on size unlimited format truncated
@@ -26,7 +28,9 @@ end;
 
 WHENEVER SQLERROR continue
 
--- Create the schema owner.
+
+prompt
+prompt Create the schema owner.
 
 create user &schema_owner. identified by &schema_owner.
    default tablespace users
@@ -52,6 +56,10 @@ grant select on dba_procedures    to &schema_owner. with grant option;
 grant select on dba_source        to &schema_owner. with grant option;
 -- For GUI
 grant select on sys.gv_$parameter to &schema_owner. with grant option;
+
+
+prompt
+prompt Checking PLSQL_CCFLAGS
 
 begin
    for buff in (select p.value PLSQL_CCFLAGS
@@ -101,9 +109,11 @@ end;
 /
 
 
+prompt
+prompt Connect as SCHEMA_OWNER
+
 WHENEVER SQLERROR exit SQL.SQLCODE
 
--- Connect as SCHEMA_OWNER
 connect &schema_owner./&schema_owner.&connect_string.
 set serveroutput on size unlimited format truncated
 
@@ -119,32 +129,41 @@ end;
 WHENEVER SQLERROR continue
 
 
--- Package Specifications
+prompt
+prompt Install Package Specifications
+
 @core_data.pks
 /
+show errors
 
 @hook.pks
 /
+show errors
 
 @wtplsql.pks
 /
+show errors
 grant execute on wtplsql to public;
 create or replace public synonym wtplsql    for wtplsql;
 create or replace public synonym wt_wtplsql for wtplsql;
 
 @wt_assert.pks
 /
+show errors
 grant execute on wt_assert to public;
 create or replace public synonym wt_assert for wt_assert;
 create or replace public synonym utassert  for wt_assert;
 
 @wt_text_report.pks
 /
+show errors
 grant execute on wt_text_report to public;
 create or replace public synonym wt_text_report for wt_text_report;
 
 
--- Core Tables
+prompt
+prompt Install Tables
+
 @hooks.tab
 
 @wt_versions.tab
@@ -152,50 +171,60 @@ create or replace public synonym wt_text_report for wt_text_report;
 @wt_self_test.tab
 
 
--- Procedures
+prompt
+prompt Install Views
+@wt_qual_test_runners_vw.vw
+/
+
+
+prompt
+prompt Install Procedures
+
 @wt_execute_test_runner.prc
 /
+show errors
 grant execute on wt_execute_test_runner to public;
 create or replace public synonym wt_execute_test_runner for wt_execute_test_runner;
 
 
--- Package Bodies
+prompt
+prompt Install Package Bodies
+
 @core_data.pkb
 /
+show errors
 
 @hook.pkb
 /
+show errors
 
 @wtplsql.pkb
 /
+show errors
 
 @wt_assert.pkb
 /
+show errors
 
 @wt_text_report.pkb
 /
-
--- Views
-@wt_qual_test_runners_vw.vw
-/
-
-@wt_scheduler_jobs_vw.vw
-/
+show errors
 
 
--- Configuration Data
+prompt
+prompt Configuration Data
 
 -- This is the default test runner execution procedure
 insert into hooks (hook_name, seq, run_string)
    values ('execute_test_runner', 20, 'begin wt_execute_test_runner; end;');
 
--- Run this report after testing because this is no storage
+-- Run this report after testing because there is no storage
 insert into hooks (hook_name, seq, run_string)
-   values ('after_test_run', 20, 'begin wt_text_report.dbms_out(10); end;');
+   values ('after_test_run', 20, 'begin wt_core_report.dbms_out(10); end;');
 
 -- This is the default ad-hoc result report
 insert into hooks (hook_name, seq, run_string)
-   values ('ad_hoc_report', 20, 'begin wt_text_report.ad_hoc_result; end;');
+   values ('ad_hoc_report', 20, 'begin wt_core_report.ad_hoc_result; end;');
 
 commit;
 

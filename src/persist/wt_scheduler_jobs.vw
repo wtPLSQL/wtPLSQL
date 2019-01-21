@@ -3,7 +3,7 @@
 --  User Scheduler Jobs View Installation
 --
 
-create view wt_scheduler_jobs_vw as
+create or replace force view wt_scheduler_jobs_vw as
 select round(log_id)                  LOG_ID
       ,systimestamp - elapsed_time    START_DATE
       ,job_name

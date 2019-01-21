@@ -8,39 +8,41 @@ create sequence wt_test_runs_seq order;
 grant select on wt_test_runs_seq to public;
 
 create table wt_test_runs
-   (id                  number(38)
-   ,test_runner_id      number(38)
-   ,start_dtm           timestamp(3) with time zone
-   ,end_dtm             timestamp(3) with time zone
-   ,fst_assrt_dtm       timestamp(3) with time zone
-   ,lst_assrt_dtm       timestamp(3) with time zone
-   ,runner_sec          number(6,1)
-   ,tc_cnt              number(7)
-   ,tc_fail             number(7)
-   ,tc_yield_pct        number(4,1)
-   ,asrt_cnt            number(7)
-   ,asrt_fail           number(7)
-   ,asrt_yield_pct      number(4,1)
-   ,asrt_min_msec       number(10)
-   ,asrt_max_msec       number(10)
-   ,asrt_tot_msec       number(10)
-   ,asrt_sos_msec       number(20)
-   ,dbout_id            number(38)
-   ,trigger_offset      number(6)
-   ,profiler_runid      number(38)
-   ,coverage_pct        number(3)
-   ,profiled_lines      number(6)
-   ,executed_lines      number(6)
-   ,ignored_lines       number(6)
-   ,excluded_lines      number(6)
-   ,notexec_lines       number(6)
-   ,unknown_lines       number(6)
-   ,min_executed_usecs  number(11)
-   ,avg_executed_usecs  number(11)
-   ,max_executed_usecs  number(11)
-   ,tot_executed_usecs  number(11)
-   ,is_last_run         varchar2(1)
-   ,error_message       varchar2(4000)
+   (id                number(38)
+   ,test_runner_id    number(38)
+   ,start_dtm         timestamp(3) with local time zone
+   ,end_dtm           timestamp(3) with local time zone
+   ,runner_sec        number(6,1)
+   ,is_last_run       varchar2(1)
+   ,error_message     varchar2(4000)
+   ,tc_cnt            number(7)
+   ,tc_fail           number(7)
+   ,tc_yield_pct      number(4,1)
+   ,asrt_fst_dtm      timestamp(3) with local time zone
+   ,asrt_lst_dtm      timestamp(3) with local time zone
+   ,asrt_cnt          number(7)
+   ,asrt_fail         number(7)
+   ,asrt_yield_pct    number(4,1)
+   ,asrt_min_msec     number(10)
+   ,asrt_max_msec     number(10)
+   ,asrt_avg_msec     number(10)
+   ,asrt_tot_msec     number(10)
+   ,asrt_sos_msec     number(20)
+   ,asrt_std_msec     number(20)
+   ,dbout_id          number(38)
+   ,trigger_offset    number(6)
+   ,profiler_runid    number(38)
+   ,coverage_pct      number(3)
+   ,profiled_lines    number(6)
+   ,executed_lines    number(6)
+   ,ignored_lines     number(6)
+   ,excluded_lines    number(6)
+   ,notexec_lines     number(6)
+   ,unknown_lines     number(6)
+   ,exec_min_usecs    number(11)
+   ,exec_avg_usecs    number(11)
+   ,exec_max_usecs    number(11)
+   ,exec_tot_usecs    number(11)
    ,constraint wt_test_runs_pk primary key (id)
    ,constraint wt_test_runs_nk1 unique (test_runner_id, start_dtm)
    ,constraint wt_test_runs_fk1 foreign key (test_runner_id)
@@ -49,7 +51,6 @@ create table wt_test_runs
        references wt_dbouts (id)
    ,constraint wt_test_runs_fk3 foreign key (profiler_runid)
        references plsql_profiler_runs (runid) disable
-   ,constraint wt_test_runs_ck2 check (is_last_run = 'Y')
    ) pctfree 0;
 
 create index wt_test_runs_ix1
@@ -63,18 +64,22 @@ comment on column wt_test_runs.id is 'Primary (Surrogate) Key for each Test Run'
 comment on column wt_test_runs.test_runner_id is 'Surrogate Key the Test Runner package. Natural Key 1 part 1';
 comment on column wt_test_runs.start_dtm is 'Date/time (and fractional seconds) this Test Run started. Natural Key 1 part 2';
 comment on column wt_test_runs.end_dtm is 'Date/time (and fractional seconds) this Test Run ended.';
-comment on column wt_test_runs.fst_assrt_dtm is 'Date/Time of First Assertion';
-comment on column wt_test_runs.lst_assrt_dtm is 'Date/Time of Last Assertion';
 comment on column wt_test_runs.runner_sec is 'Total Runtime for Test Runner in Seconds'
+comment on column wt_test_runs.is_last_run is 'Flag "Y" to indicate this is the most recent run for this package owner/name';
+comment on column wt_test_runs.error_message is 'Error messages from this Test Run.';
 comment on column wt_test_runs.tc_cnt is 'Number of Test Cases'
 comment on column wt_test_runs.tc_fail is 'Number of Failed Test Cases'
 comment on column wt_test_runs.tc_yield_pct is 'Percentage of successful test cases to total Test Cases.';
+comment on column wt_test_runs.asrt_fst_dtm is 'Date/Time of First Assertion';
+comment on column wt_test_runs.asrt_lst_dtm is 'Date/Time of Last Assertion';
 comment on column wt_test_runs.asrt_cnt is 'Number of Assertions across all Test Cases'
 comment on column wt_test_runs.asrt_fail is 'Number of Assertion Failures across all Test Cases'
 comment on column wt_test_runs.asrt_yield_pct is 'Percentage of successful assertions to total assertions.';
 comment on column wt_test_runs.asrt_min_msec is 'Minumum Assertion Interval in Milliseconds across all Test Cases'
+comment on column wt_test_runs.asrt_avg_msec is 'Average Assertion Interval in Milliseconds across all Test Cases'
 comment on column wt_test_runs.asrt_max_msec is 'Maximum Assertion Interval in Milliseconds across all Test Cases'
 comment on column wt_test_runs.asrt_tot_msec is 'Total Assertion Intervals in Milliseconds across all Test Cases'
+comment on column wt_test_runs.asrt_std_msec is 'Standard Deviation of Assertion Interval in Milliseconds across all Test Cases'
 comment on column wt_test_runs.asrt_sos_msec is 'Sum of Squares of Assertion Interval in Milliseconds across all Test Cases'
 comment on column wt_test_runs.dbout_id is 'Surrogate Key to the Database Object Under Test (DBOUT).';
 comment on column wt_test_runs.trigger_offset is 'Calculated offset from start of Trigger Source to start of Trigger PL/SQL Block.';
@@ -90,8 +95,6 @@ comment on column wt_test_runs.exec_min_usecs is 'Minumum execution time for a l
 comment on column wt_test_runs.exec_avg_usecs is 'Average execution time for a line of source in microseconds';
 comment on column wt_test_runs.exec_max_usecs is 'Maximum execution time for a line of source in microseconds';
 comment on column wt_test_runs.exec_tot_usecs is 'Total (Sum) of execution times for a line of source in microseconds';
-comment on column wt_test_runs.is_last_run is 'Flag "Y" to indicate this is the most recent run for this package owner/name';
-comment on column wt_test_runs.error_message is 'Error messages from this Test Run.';
 
 grant select on wt_test_runs to public;
 grant insert on wt_test_runs to public;

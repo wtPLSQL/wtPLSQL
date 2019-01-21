@@ -24,12 +24,14 @@ begin
   :new.created_dtm := sysdate;
 end;
 /
+show errors
 
 create or replace package trigger_test_pkg authid definer
 as
    procedure wtplsql_run;
 end trigger_test_pkg;
 /
+show errors
 
 create or replace package body trigger_test_pkg
 as
@@ -61,6 +63,7 @@ as
    end wtplsql_run;
 end trigger_test_pkg;
 /
+show errors
 
 set serveroutput on size unlimited format truncated
 

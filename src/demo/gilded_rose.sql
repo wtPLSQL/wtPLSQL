@@ -45,6 +45,7 @@ as
 
 end gilded_rose;
 /
+show errors
 
 
 create or replace package body gilded_rose
@@ -132,3 +133,4 @@ $END
 
 end gilded_rose;
 /
+show errors

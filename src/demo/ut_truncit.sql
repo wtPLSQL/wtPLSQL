@@ -9,6 +9,7 @@ BEGIN
    EXECUTE IMMEDIATE 'truncate table ' || NVL (sch, USER) || '.' || tab;
 END;
 /
+show errors
 
 /*file tabcount.sf */
 CREATE OR REPLACE FUNCTION tabcount (
@@ -28,6 +29,7 @@ EXCEPTION
        RETURN NULL; 
 END;
 /
+show errors
 
 CREATE OR REPLACE PACKAGE ut_truncit
 IS
@@ -39,6 +41,7 @@ IS
    PROCEDURE wtplsql_run;
 END ut_truncit;
 /
+show errors
 
 /*file ut_truncit.pkb */
 CREATE OR REPLACE PACKAGE BODY ut_truncit
@@ -83,6 +86,7 @@ IS
    END wtplsql_run;
 END ut_truncit;
 /
+show errors
 
 set serveroutput on size unlimited format truncated
 

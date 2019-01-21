@@ -231,12 +231,12 @@ end profile_out;
 
 ------------------------------------------------------------
 function format_test_result
-      (in_assertion       in wt_results.assertion%TYPE
-      ,in_status          in wt_results.status%TYPE
-      ,in_details         in wt_results.details%TYPE
-      ,in_testcase        in wt_results.testcase%TYPE
-      ,in_message         in wt_results.message%TYPE
-      ,in_interval_msecs  in wt_results.interval_msecs%TYPE DEFAULT NULL)
+      (in_assertion       in varchar2
+      ,in_status          in varchar2
+      ,in_details         in varchar2
+      ,in_testcase        in varchar2
+      ,in_message         in varchar2
+      ,in_interval_msecs  in number DEFAULT NULL)
    return varchar2
 is
    l_out_str  varchar2(32000) := '';
@@ -269,29 +269,13 @@ begin
    return l_out_str;
 end format_test_result;
 
-------------------------------------------------------------
-procedure ad_hoc_result
-      (in_assertion      in wt_results.assertion%TYPE
-      ,in_status         in wt_results.status%TYPE
-      ,in_details        in wt_results.details%TYPE
-      ,in_testcase       in wt_results.testcase%TYPE
-      ,in_message        in wt_results.message%TYPE)
-is
-begin
-   p(format_test_result
-        (in_assertion  => in_assertion
-        ,in_status     => in_status
-        ,in_details    => in_details
-        ,in_testcase   => in_testcase
-        ,in_message    => in_message));
-end ad_hoc_result;
 
 ------------------------------------------------------------
 procedure dbms_out
-      (in_runner_owner   in  wt_test_runs.runner_owner%TYPE default USER
-      ,in_runner_name    in  wt_test_runs.runner_name%TYPE  default null
-      ,in_detail_level   in  number                         default 0
-      ,in_summary_last   in  boolean                        default FALSE)
+      (in_runner_owner   in  varchar2   default USER
+      ,in_runner_name    in  varchar2   default null
+      ,in_detail_level   in  number     default 0
+      ,in_summary_last   in  boolean    default FALSE)
 is
 
    cursor c_main(in_test_run_id  in number) is

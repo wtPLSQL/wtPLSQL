@@ -4,6 +4,7 @@ as
    procedure wtplsql_run;
 end test_dbms_output;
 /
+show errors
 
 create or replace package body test_dbms_output
 as
@@ -14,6 +15,7 @@ as
    end wtplsql_run;
 end test_dbms_output;
 /
+show errors
 
 create or replace package body test_dbms_output
 as
@@ -35,12 +37,14 @@ as
    end wtplsql_run;
 end test_dbms_output;
 /
+show errors
 
 begin
    wtplsql.test_run('TEST_DBMS_OUTPUT');
    wt_text_report.dbms_out(USER,'TEST_DBMS_OUTPUT',30);
 end;
 /
+show errors
 
 create or replace package body test_dbms_output
 as
@@ -63,16 +67,20 @@ as
    end wtplsql_run;
 end test_dbms_output;
 /
+show errors
 
 begin
    wtplsql.test_run('TEST_DBMS_OUTPUT');
 end;
 /
+show errors
 
 begin
    wt_text_report.dbms_out(USER,'TEST_DBMS_OUTPUT',30);
+   end if;
 end;
 /
+show errors
 
 create or replace package body test_dbms_output
 as
@@ -131,13 +139,16 @@ as
    --
 end test_dbms_output;
 /
+show errors
 
 begin
    wtplsql.test_run('TEST_DBMS_OUTPUT');
 end;
 /
+show errors
 
 begin
    wt_text_report.dbms_out(USER,'TEST_DBMS_OUTPUT',30);
 end;
 /
+show errors

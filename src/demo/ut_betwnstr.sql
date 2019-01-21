@@ -16,6 +16,7 @@ BEGIN
    );
 END;
 /
+show errors
 
 CREATE OR REPLACE PACKAGE ut_betwnstr
 IS
@@ -26,6 +27,7 @@ IS
    PROCEDURE wtplsql_run;
 END ut_betwnstr;
 /
+show errors
 
 CREATE OR REPLACE PACKAGE BODY ut_betwnstr
 IS
@@ -101,6 +103,7 @@ IS
    
 END ut_betwnstr;
 /
+show errors
 
 set serveroutput on size unlimited format truncated
 

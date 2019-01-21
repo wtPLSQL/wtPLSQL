@@ -3,16 +3,9 @@
 --  Demo Installation
 --
 
-----------------------------------------
--- Setup
-----------------------------------------
-
 -- Capture output
 spool install
 set serveroutput on size unlimited format truncated
-
--- Shared Setup Script
-@common_setup.sql
 
 WHENEVER SQLERROR exit SQL.SQLCODE
 
@@ -25,24 +18,28 @@ begin
 end;
 /
 
+prompt
+prompt Shared Setup Script
+@../common_setup.sql
+
 WHENEVER SQLERROR continue
 
-----------------------------------------
--- Create the schema owner.
-----------------------------------------
 
-create user &schema_owner. identified by &schema_owner.
+prompt
+prompt Create Demo owner
+
+create user &demo_owner. identified by &demo_owner.
    default tablespace users
    quota 1M on users
    temporary tablespace temp;
 
-grant create session   to &schema_owner.;
-grant create type      to &schema_owner.;
-grant create sequence  to &schema_owner.;
-grant create table     to &schema_owner.;
-grant create trigger   to &schema_owner.;
-grant create view      to &schema_owner.;
-grant create procedure to &schema_owner.;
+grant create session   to &demo_owner.;
+grant create type      to &demo_owner.;
+grant create sequence  to &demo_owner.;
+grant create table     to &demo_owner.;
+grant create trigger   to &demo_owner.;
+grant create view      to &demo_owner.;
+grant create procedure to &demo_owner.;
 
 begin
    $IF $$WTPLSQL_ENABLE
@@ -55,18 +52,18 @@ end;
 
 WHENEVER SQLERROR exit SQL.SQLCODE
 
-----------------------------------------
--- Connect as SCHEMA_OWNER
-----------------------------------------
 
-connect &schema_owner./&schema_owner.&connect_string.
+prompt
+prompt Connect as DEMO_OWNER
+
+connect &demo_owner./&demo_owner.&connect_string.
 set serveroutput on size unlimited format truncated
 
 begin
-   if USER != upper('&schema_owner')
+   if USER != upper('&demo_owner')
    then
       raise_application_error (-20000,
-        'Not logged in as &schema_owner');
+        'Not logged in as &demo_owner');
    end if;
 end;
 /
@@ -84,9 +81,9 @@ begin
 end;
 /
 
-----------------------------------------
--- Test Installation
-----------------------------------------
+
+prompt
+prompt Test Installation
 
 prompt Install Package Test
 @Package-Test.sql

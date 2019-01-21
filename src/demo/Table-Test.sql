@@ -14,6 +14,7 @@ as
    procedure wtplsql_run;
 end table_test_pkg;
 /
+show errors
 
 create or replace package body table_test_pkg
 as
@@ -49,6 +50,7 @@ as
    end wtplsql_run;
 end table_test_pkg;
 /
+show errors
 
 set serveroutput on size unlimited format truncated
 

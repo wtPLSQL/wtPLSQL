@@ -1,10 +1,10 @@
-create or replace package wt_text_report
+create or replace package wt_core_report
    authid definer
 as
 
    --   To report the latest result details:
    -- begin
-   --    wt_text_report.dbms_out(30, TRUE);
+   --    wt_core_report.dbms_out(30, TRUE);
    -- end;
    -- /
 
@@ -33,4 +33,4 @@ as
       (in_rec  in core_data.results_rec_type)
    return varchar2;
 
-end wt_text_report;
+end wt_core_report;
