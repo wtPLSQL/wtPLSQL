@@ -1,4 +1,4 @@
-create or replace package body wt_text_report
+create or replace package body wt_persist_report
 as
 
    g_test_runs_rec       wt_test_runs%ROWTYPE;
@@ -333,4 +333,4 @@ begin
 end dbms_out;
 
 
-end wt_text_report;
+end wt_persist_report;

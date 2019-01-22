@@ -59,8 +59,8 @@ is
    l_classname       varchar2(4000);
    single_line_save  boolean;
 begin
-   single_line_save := wt_text_report.g_single_line_output;
-   wt_text_report.g_single_line_output := TRUE;
+   single_line_save := wt_core_report.g_single_line_output;
+   wt_core_report.g_single_line_output := TRUE;
    if core_data.g_run_rec.dbout_name is not null
    then
       l_classname := xe(core_data.g_run_rec.dbout_owner) ||
@@ -117,7 +117,7 @@ begin
                then
                   l_rec := core_data.g_results_nt(i);
                   l_rec.testcase := '';
-                  p(wt_text_report.format_test_result(l_rec));
+                  p(wt_core_report.format_test_result(l_rec));
                end if;
             end loop;
             ----------------------
@@ -141,7 +141,7 @@ begin
       p('  </testsuite>');
       ---------------------
    end if;
-   wt_text_report.g_single_line_output := single_line_save;
+   wt_core_report.g_single_line_output := single_line_save;
 end xml_body;
 
 

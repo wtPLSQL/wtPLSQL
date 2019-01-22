@@ -49,7 +49,7 @@ begin
                ,nvl(tc.tot_interval_msecs
                    ,suites.tot_interval_msecs) TOT_INTERVAL_MSECS
           from  wt_test_runs  tr
-           left join wt_testcase_stats  tc
+           left join wt_testcase_runs  tc
                      on  tc.test_run_id = tr.id
           where tr.id = suites.id
           order by testcase )

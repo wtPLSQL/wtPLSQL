@@ -5,25 +5,25 @@ is
    SUBTYPE long_name is varchar2(128);
 
    TYPE run_rec_type is record
-      (runner_owner   long_name                         -- Owner of the Test Runner
-      ,runner_name    long_name                         -- Name of the Test Runner
-      ,start_dtm      timestamp(3) with local time zone -- Test Runner Start Date/Time
-      ,end_dtm        timestamp(3) with local time zone -- Test Runner End Date/Time
-      ,runner_sec     number(6,1)    default 0          -- Total Runtime for Test Runner in Seconds
-      ,error_message  varchar2(4000)                    -- Error Message
-      ,tc_cnt         number(7)      default 0          -- Number of Test Cases
-      ,tc_fail        number(7)      default 0          -- Number of Failed Test Cases
-      ,asrt_fst_dtm   timestamp(3) with local time zone -- Date/Time of First Assertion
-      ,asrt_lst_dtm   timestamp(3) with local time zone -- Date/Time of Last Assertion
-      ,asrt_cnt       number(7)      default 0          -- Number of Assertions across all Test Cases
-      ,asrt_fail      number(7)      default 0          -- Number of Assertion Failures across all Test Cases
-      ,asrt_min_msec  number(10)                        -- Minumum Assertion Interval in Milliseconds across all Test Cases
-      ,asrt_max_msec  number(10)                        -- Maximum Assertion Interval in Milliseconds across all Test Cases
-      ,asrt_tot_msec  number(10)     default 0          -- Total Assertion Intervals in Milliseconds across all Test Cases
-      ,asrt_sos_msec  number(20)     default 0          -- Sum of Squares of Assertion Interval in Milliseconds across all Test Cases
-      ,dbout_owner    long_name                         -- Owner of the Database Object Under Test
-      ,dbout_name     long_name                         -- Name of the Database Object Under Test
-      ,dbout_type     varchar2(20)                      -- Type of the Database Object Under Test
+      (test_runner_owner  long_name                         -- Owner of the Test Runner
+      ,test_runner_name   long_name                         -- Name of the Test Runner
+      ,start_dtm          timestamp(3) with local time zone -- Test Runner Start Date/Time
+      ,end_dtm            timestamp(3) with local time zone -- Test Runner End Date/Time
+      ,runner_sec         number(6,1)    default 0          -- Total Runtime for Test Runner in Seconds
+      ,error_message      varchar2(4000)                    -- Error Message
+      ,tc_cnt             number(7)      default 0          -- Number of Test Cases
+      ,tc_fail            number(7)      default 0          -- Number of Failed Test Cases
+      ,asrt_fst_dtm       timestamp(3) with local time zone -- Date/Time of First Assertion
+      ,asrt_lst_dtm       timestamp(3) with local time zone -- Date/Time of Last Assertion
+      ,asrt_cnt           number(7)      default 0          -- Number of Assertions across all Test Cases
+      ,asrt_fail          number(7)      default 0          -- Number of Assertion Failures across all Test Cases
+      ,asrt_min_msec      number(10)                        -- Minumum Assertion Interval in Milliseconds across all Test Cases
+      ,asrt_max_msec      number(10)                        -- Maximum Assertion Interval in Milliseconds across all Test Cases
+      ,asrt_tot_msec      number(10)     default 0          -- Total Assertion Intervals in Milliseconds across all Test Cases
+      ,asrt_sos_msec      number(20)     default 0          -- Sum of Squares of Assertion Interval in Milliseconds across all Test Cases
+      ,dbout_owner        long_name                         -- Owner of the Database Object Under Test
+      ,dbout_name         long_name                         -- Name of the Database Object Under Test
+      ,dbout_type         varchar2(20)                      -- Type of the Database Object Under Test
       );
    g_run_rec  run_rec_type;
 

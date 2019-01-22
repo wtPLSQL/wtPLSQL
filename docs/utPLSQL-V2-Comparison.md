@@ -43,18 +43,25 @@ set_NLS_TIMESTAMP_TZ_FORMAT | Default format for timestamp with time zone data t
 
 <br>
 
-WT_TEXT_REPORT Setting | Description
+WT_CORE_REPORT Setting | Description
 -----------------------|------------
 g_single_line_output   | Remove/replace new line characters in test result output
 g_date_format          | Default format for date data type
 
+<br>
+
+WT_PERSIST_REPORT Setting | Description
+--------------------------|------------
+g_single_line_output      | Remove/replace new line characters in test result output
+g_date_format             | Default format for date data type
+
 ### utOutput
-utOutput in utPLSQL V2 has been replaced by WT_TEXT_REPORT in wtPLSQL.  Like utPLSQL V2, wtPLSQL calls WT_TEXT_REPORT (using a hook) after each Test Runner is complete. Unlike utPLSQL V2, WT_TEXT_REPORT is not called automatically when the Persist add-on is installed.  However, a hook can be created to restore this functionality, if needed.
+utOutput in utPLSQL V2 has been replaced by WT_CORE_REPORT and WT_PERSIST_REPORT in wtPLSQL.  Like utPLSQL V2, wtPLSQL Core calls WT_CORE_REPORT (using a hook) after each Test Runner is complete. Unlike utPLSQL V2, neither WT_CORE_REPORT or WT_PERSIST_REPORT are called automatically after the Persist add-on is installed.  However, the WT_CORE_REPORT hook can be recreated to restore this functionality.
 
 WT_TEXT_REPORT is used to format the results of an ad-hoc assertion that is not part of a Test Runner call tree (call graph). The results of ad-hoc assertions are always sent to DBMS_OUTPUT.
 
 ### Custom Reporter
-wtPLSQL has no custom reporter. An alternative to the WT_TEXT_REPORTER is a user written PL/SQL program. If the Persist add-on is installed, all test results are available in database tables. Reporting tools can be used to create custom reports from database tables.
+wtPLSQL has no custom reporter. An alternative to the WT_CORE_REPORTer or the WT_PERSIST_REPORTer is a user written PL/SQL program. If the Persist add-on is installed, all test results are available in database tables. Reporting tools can be used to create custom reports from database tables.
 
 ### Links
 * [utPLSQL V2.3.1 Website](https://utplsql.org/moving/2016/07/07/version-2-3-1-released.html)

@@ -63,7 +63,7 @@ end get_last_run_flag;
 
 ------------------------------------------------------------
 procedure insert_test_run
-      (in_test_runs_rec  in wt_test_runs_vw%ROWTYPE)
+      (in_test_runs_rec  in core_data.run_rec_type)
 is
 begin
    if core_data.g_run_rec.runner_name is null

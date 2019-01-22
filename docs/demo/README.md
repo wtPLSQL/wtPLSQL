@@ -6,7 +6,7 @@
 
 Demonstrations and examples assume successful connection to an [Oracle database](http://www.oracle.com/technetwork/database/database-technologies/express-edition/overview/index.html) with wtPLSQL installed. wtPLSQL Installation instructions are available on the [wtPLSQL Releases page](https://github.com/DDieterich/wtPLSQL/releases).
 
-Demonstrations and examples requires the Persist add-on.  Test results from assertions can be queried from a set of wtPLSQL tables. The examples here will use the default reporting package called WT_TEXT_REPORT.  This package displays test results using DBMS_OUTPUT.
+Demonstrations and examples requires the Persist add-on.  Test results from assertions can be queried from a set of wtPLSQL tables. The examples here will use the default reporting package called WT_PERSIST_REPORT.  This package displays test results using DBMS_OUTPUT.
 
 ## User Setup
 

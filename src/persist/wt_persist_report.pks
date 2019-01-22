@@ -1,9 +1,9 @@
-create or replace package wt_text_report authid definer
+create or replace package wt_persist_report authid definer
 as
 
    --   To report the latest result details for test runner:
    -- begin
-   --    wt_text_report.dbms_out('RUNNER_OWNER', 'RUNNER', 30);
+   --    wt_persist_report.dbms_out('RUNNER_OWNER', 'RUNNER', 30);
    -- end;
    -- /
 
@@ -17,7 +17,7 @@ as
       (in_assertion      in varchar2
       ,in_status         in varchar2
       ,in_details        in varchar2
-      ,in_testcase_name  in varchar2
+      ,in_testcase       in varchar2
       ,in_message        in varchar2
       ,in_interval_msecs in number)
    return varchar2;
@@ -48,4 +48,4 @@ as
       ,in_detail_level   in  number    default 0
       ,in_summary_last   in  boolean   default FALSE);
 
-end wt_text_report;
+end wt_persist_report;

@@ -92,7 +92,7 @@ set serveroutput on size unlimited format truncated
 
 begin
    wtplsql.test_run('UT_TRUNCIT');
-   wt_text_report.dbms_out(in_runner_name  => 'UT_TRUNCIT'
-                          ,in_detail_level => 30);
+   wt_persist_report.dbms_out(in_runner_name  => 'UT_TRUNCIT'
+                             ,in_detail_level => 30);
 end;
 /

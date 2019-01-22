@@ -10,11 +10,11 @@ procedure adhoc_report
       (in_assertion       in varchar2
       ,in_status          in varchar2
       ,in_details         in varchar2
-      ,in_testcase_name   in varchar2
+      ,in_testcase   in varchar2
       ,in_message         in varchar2)
 is
 begin
-   g_results_rec.testcase_name := in_testcase_name;
+   g_results_rec.testcase := in_testcase;
    g_results_rec.message       := in_message;
    g_results_rec.status        := in_status;
    g_results_rec.assertion     := in_assertion;
@@ -28,7 +28,7 @@ end adhoc_report;
 
 ------------------------------------------------------------
 procedure initialize
-      (in_test_run_id   in wt_test_runs.id%TYPE)
+      (in_test_run_id   in number)
 is
    l_results_recNULL  wt_results_vw%ROWTYPE;
 begin
@@ -63,7 +63,7 @@ $THEN
       l_results_ntTEST  := g_results_nt;
       g_results_nt      := l_results_ntSAVE;
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase_name := 'Initialize Happy Path';
+      wt_assert.g_testcase := 'Initialize Happy Path';
       wt_assert.eq (
          msg_in          => 'l_results_recTEST.test_run_id',
          check_this_in   => l_results_recTEST.test_run_id,
@@ -156,7 +156,7 @@ $THEN
       l_num_recs           number;
    begin
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase_name := '   ';
+      wt_assert.g_testcase := '   ';
       l_results_ntSAVE     := g_results_nt;    -- Capture Original Values
       l_results_recSAVE    := g_results_rec;   -- Capture Original Values
       --------------------------------------  WTPLSQL Testing --
@@ -207,7 +207,7 @@ $THEN
       delete from wt_test_runs where id = -99;
       commit;      -- UNDO all database changes
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase_name := 'Finalize Happy Path';
+      wt_assert.g_testcase := 'Finalize Happy Path';
       -- Restore values so we can test
       g_results_rec := l_results_recSAVE;
       g_results_nt  := l_results_ntSAVE;
@@ -241,7 +241,7 @@ procedure save
       (in_assertion      in varchar2
       ,in_status         in varchar2
       ,in_details        in varchar2
-      ,in_testcase_name  in varchar2
+      ,in_testcase  in varchar2
       ,in_message        in varchar2)
 is
    l_current_tstamp  timestamp;
@@ -251,7 +251,7 @@ begin
       adhoc_report(in_assertion
                   ,in_status
                   ,in_details
-                  ,in_testcase_name
+                  ,in_testcase
                   ,in_message);
       return;
    end if;
@@ -265,7 +265,7 @@ begin
    g_results_rec.assertion     := in_assertion;
    g_results_rec.status        := in_status;
    g_results_rec.details       := substr(in_details,1,4000);
-   g_results_rec.testcase_name := substr(in_testcase_name,1,128);
+   g_results_rec.testcase := substr(in_testcase,1,128);
    g_results_rec.message       := substr(in_message,1,200);
    -- Increment, Load, and Extend
    g_results_rec.result_seq    := g_results_rec.result_seq + 1;
@@ -287,7 +287,7 @@ $THEN
       l_nt_count       number;
    begin
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase_name := 'Ad Hoc Save Happy Path Setup';
+      wt_assert.g_testcase := 'Ad Hoc Save Happy Path Setup';
       dbms_output.enable;
       -- Save/Clear the DBMS_OUPTUT Buffer
       loop
@@ -302,14 +302,14 @@ $THEN
          msg_in        => 'l_dbmsout_buff.COUNT - 1',
          check_this_in => l_dbmsout_buff.COUNT - 1);
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase_name := 'Ad Hoc Save Testing Happy Path';
+      wt_assert.g_testcase := 'Ad Hoc Save Testing Happy Path';
       l_test_run_id  := g_results_rec.test_run_id;
       g_results_rec.test_run_id := NULL;
       wt_result.save (
          in_assertion     => 'SELFTEST1',
          in_status        => wt_assert.C_PASS,
          in_details       => 't_save_testing Details',
-         in_testcase_name => wt_assert.g_testcase_name,
+         in_testcase => wt_assert.g_testcase,
          in_message       => 't_save_testing Message');
       g_results_rec.test_run_id := l_test_run_id;
       --------------------------------------  WTPLSQL Testing --
@@ -328,7 +328,7 @@ $THEN
             check_this_in => l_dbmsout_line);
          wt_assert.this (
             msg_in        => 'Save Testing NULL Test DBMS_OUTPUT 3 Message',
-            check_this_in => (l_dbmsout_line like '%' || wt_assert.g_testcase_name ||
+            check_this_in => (l_dbmsout_line like '%' || wt_assert.g_testcase ||
                              '%t_save_testing %'));
       --------------------------------------  WTPLSQL Testing --
          if not wt_assert.last_pass
@@ -338,7 +338,7 @@ $THEN
          end if;
       end if;
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase_name := 'Ad Hoc Save Happy Path Teardown';
+      wt_assert.g_testcase := 'Ad Hoc Save Happy Path Teardown';
       -- Restore the DBMS_OUPTUT Buffer
       for i in 1 .. l_dbmsout_buff.COUNT - 1
       loop
@@ -348,13 +348,13 @@ $THEN
          msg_in        => 'l_dbmsout_buff.COUNT - 1',
          check_this_in =>  l_dbmsout_buff.COUNT - 1);
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase_name := 'Save Testing Happy Path';
+      wt_assert.g_testcase := 'Save Testing Happy Path';
       l_nt_count     := g_results_nt.COUNT;
       wt_result.save (
          in_assertion     => 'SELFTEST2',
          in_status        => wt_assert.C_PASS,
          in_details       => 't_save_testing Testing Details',
-         in_testcase_name => wt_assert.g_testcase_name,
+         in_testcase => wt_assert.g_testcase,
          in_message       => 't_save_testing Testing Message');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
@@ -380,9 +380,9 @@ $THEN
          check_this_in   => g_results_nt(l_nt_count).details,
          against_this_in => 't_save_testing Testing Details');
       wt_assert.eq (
-         msg_in          => 'g_results_nt(' || l_nt_count || ').testcase_name',
-         check_this_in   => g_results_nt(l_nt_count).testcase_name,
-         against_this_in => wt_assert.g_testcase_name);
+         msg_in          => 'g_results_nt(' || l_nt_count || ').testcase',
+         check_this_in   => g_results_nt(l_nt_count).testcase,
+         against_this_in => wt_assert.g_testcase);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in          => 'g_results_nt(' || l_nt_count || ').message',
@@ -424,7 +424,7 @@ $THEN
       l_num_recs       number;
    begin
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase_name := 'Delete Records Happy Path';
+      wt_assert.g_testcase := 'Delete Records Happy Path';
       select count(*) into l_num_recs
        from  wt_results
        where test_run_id = -99;

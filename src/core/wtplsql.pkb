@@ -22,19 +22,19 @@ is
 begin
    -- These RAISEs can be captured because the Test Runs Record is set.
    --  Check for NULL Runner Name
-   if core_data.g_run_rec.runner_name is null
+   if core_data.g_run_rec.test_runner_name is null
    then
-      raise_application_error (-20001, 'RUNNER_NAME is null');
+      raise_application_error (-20001, 'TEST_RUNNER_NAME is null');
    end if;
    --  Check for Valid Runner Name
    select count(*) into l_package_check
     from  wt_qual_test_runners_vw
-    where owner        = core_data.g_run_rec.runner_owner
-     and  package_name = core_data.g_run_rec.runner_name;
+    where owner        = core_data.g_run_rec.test_runner_owner
+     and  package_name = core_data.g_run_rec.test_runner_name;
    if l_package_check = 0
    then
-      raise_application_error (-20002, 'RUNNER_NAME Procedure "' ||
-                                 core_data.g_run_rec.runner_name ||
+      raise_application_error (-20002, 'TEST_RUNNER_NAME Procedure "' ||
+                                 core_data.g_run_rec.test_runner_name ||
                                      '.' || C_RUNNER_ENTRY_POINT ||
                                                 '" is not valid' );
    end if;
@@ -62,11 +62,11 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'CHECK_RUNNER Happy Path 1';
       wt_assert.eq
-               (msg_in          => 'Confirm RUNNER_OWNER'
-               ,check_this_in   => core_data.g_run_rec.runner_owner
+               (msg_in          => 'Confirm TEST_RUNNER_OWNER'
+               ,check_this_in   => core_data.g_run_rec.test_runner_owner
                ,against_this_in => USER);
-      core_data.g_run_rec.runner_name := 'WTPLSQL';
-      l_msg_in := 'Valid RUNNER_NAME';
+      core_data.g_run_rec.test_runner_name := 'WTPLSQL';
+      l_msg_in := 'Valid TEST_RUNNER_NAME';
       l_err_in := 'ORA-0000: normal, successful completion';
       begin
          check_runner;
@@ -76,9 +76,9 @@ $THEN
       end;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'CHECK_RUNNER Sad Path 1';
-      core_data.g_run_rec.runner_name := '';
-      l_msg_in := 'Null RUNNER_NAME';
-      l_err_in := 'ORA-20001: RUNNER_NAME is null';
+      core_data.g_run_rec.test_runner_name := '';
+      l_msg_in := 'Null TEST_RUNNER_NAME';
+      l_err_in := 'ORA-20001: TEST_RUNNER_NAME is null';
       begin
          check_runner;
          l_test_sqlerrm;
@@ -88,9 +88,9 @@ $THEN
       end;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'CHECK_RUNNER Sad Path 2';
-      core_data.g_run_rec.runner_name := 'BOGUS';
-      l_msg_in := 'Invalid RUNNER_NAME';
-      l_err_in := 'ORA-20002: RUNNER_NAME Procedure "BOGUS.' ||
+      core_data.g_run_rec.test_runner_name := 'BOGUS';
+      l_msg_in := 'Invalid TEST_RUNNER_NAME';
+      l_err_in := 'ORA-20002: TEST_RUNNER_NAME Procedure "BOGUS.' ||
                   C_RUNNER_ENTRY_POINT || '" is not valid';
       begin
          check_runner;
@@ -154,7 +154,7 @@ begin
             ,obj.object_name
             ,obj.object_type
        from  dba_objects  obj
-       where obj.owner = core_data.g_run_rec.runner_owner
+       where obj.owner = core_data.g_run_rec.test_runner_owner
         and  (   ( -- No separators were given, assume USER is the owner.
                    -- No object type was given. This could throw TOO_MANY_ROWS.
                       l_dot_pos       = 0

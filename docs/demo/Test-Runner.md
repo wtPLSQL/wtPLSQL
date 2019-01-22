@@ -50,7 +50,7 @@ To view the results, run this:
 set serveroutput on size unlimited format truncated
 
 begin
-   wt_text_report.dbms_out(USER,'SIMPLE_TEST_RUNNER');
+   wt_persist_report.dbms_out(USER,'SIMPLE_TEST_RUNNER');
 end;
 /
 ```
@@ -70,7 +70,7 @@ And get this:
 
 This is the test result summary from the last execution of the SIMPLE_TEST_RUNNER package.  The interval time shown here is the elapsed time from starting the Test Runner package until the first assertion was executed.  The total run time is the elapsed time from start to finish for the Test Runner package.  The report confirms that one assertion was executed for SIMPLE_TEST_RUNNER and it passed.  All tests passed, so the test yield is 100%.
 
-## WT_TEXT_REPORT Display Levels
+## WT_PERSIST_REPORT Display Levels
 
 This example shows all result details for the SIMPLE_TEST_RUNNER only.
 
@@ -80,7 +80,7 @@ Run this:
 set serveroutput on size unlimited format truncated
 
 begin
-   wt_text_report.dbms_out(in_runner_name  => 'SIMPLE_TEST_RUNNER'
+   wt_persist_report.dbms_out(in_runner_name  => 'SIMPLE_TEST_RUNNER'
                           ,in_detail_level => 30);
 end;
 /
@@ -103,7 +103,7 @@ And get this:
  PASS   56ms Ad-Hoc Test. EQ - Expected "1" and got "1"
 ```
 
-This shows the latest test result summary with test results details.  A detail level of 30 shows summary and detailed test results for a Test Runner package.  In this case, the summary and the detailed results of the EQ assertion are shown.  These detail levels are explained in the [Reference Page](../Reference.md#wt_text_report-detail-levels).
+This shows the latest test result summary with test results details.  A detail level of 30 shows summary and detailed test results for a Test Runner package.  In this case, the summary and the detailed results of the EQ assertion are shown.  These detail levels are explained in the [Reference Page](../Reference.md#wt_persist_report-detail-levels).
 
 The detailed results shown are the same as the ad-hoc result, with a "56ms" added.  The 56 in the detailed results shows the elapsed time between assertions, or elapsed time from Test Runner package startup to the first assertion.
 
@@ -143,7 +143,7 @@ Run this:
 ```
 begin
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
-   wt_text_report.dbms_out(in_runner_name  => 'SIMPLE_TEST_RUNNER'
+   wt_persist_report.dbms_out(in_runner_name  => 'SIMPLE_TEST_RUNNER'
                           ,in_detail_level => 30);
 end;
 /
@@ -201,7 +201,7 @@ Run this:
 ```
 begin
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
-   wt_text_report.dbms_out(USER,'SIMPLE_TEST_RUNNER');
+   wt_persist_report.dbms_out(USER,'SIMPLE_TEST_RUNNER');
 end;
 /
 ```
@@ -266,7 +266,7 @@ Run this:
 ```
 begin
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
-   wt_text_report.dbms_out(USER,'SIMPLE_TEST_RUNNER',30);
+   wt_persist_report.dbms_out(USER,'SIMPLE_TEST_RUNNER',30);
 end;
 /
 ```
@@ -310,7 +310,7 @@ Source               TotTime MinTime   MaxTime
     15 IGNR      1         0       0         0    end wtplsql_run;    --%WTPLSQL_end_ignore_lines%--
 ```
 
-This is a very large report from the WT_TEXT_REPORT package.  The detail level of 30 displays the full detail of the Test Runner execution with code coverage.
+This is a very large report from the WT_PERSIST_REPORT package.  The detail level of 30 displays the full detail of the Test Runner execution with code coverage.
 
 Close to the middle of the output, is the "Code Coverage Details" title for the final section.  This section contains results from DBMS_PROFILER.  Each line of source code is matched with that output.  Some interesting points.
 

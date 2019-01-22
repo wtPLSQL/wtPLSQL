@@ -98,7 +98,7 @@ set serveroutput on size unlimited format truncated
 
 begin
    wtplsql.test_run('TABLE_TEST_PKG');
-   wt_text_report.dbms_out(USER,'TABLE_TEST_PKG',30);
+   wt_persist_report.dbms_out(USER,'TABLE_TEST_PKG',30);
 end;
 /
 ```

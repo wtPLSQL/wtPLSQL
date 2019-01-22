@@ -34,8 +34,8 @@ begin
    p('   Start Date/Time: ' ||
          to_char(core_data.g_run_rec.start_dtm, g_date_format));
    p('');
-   p('Test Results for ' || core_data.g_run_rec.runner_owner ||
-                     '.' || core_data.g_run_rec.runner_name  );
+   p('Test Results for ' || core_data.g_run_rec.test_runner_owner ||
+                     '.' || core_data.g_run_rec.test_runner_name  );
    ----------------------------------------
    if core_data.g_run_rec.dbout_name is not null
    then
@@ -107,8 +107,8 @@ begin
          if show_header
          then
             p('');
-            p(               core_data.g_run_rec.runner_owner ||
-                      '.' || core_data.g_run_rec.runner_name  ||
+            p(               core_data.g_run_rec.test_runner_owner ||
+                      '.' || core_data.g_run_rec.test_runner_name  ||
               ' Test Runner Details:' );
             p('----------------------------------------');
             show_header := FALSE;

@@ -12,8 +12,8 @@ function get_testcase
 is
 begin
    return nvl(wt_assert.g_testcase
-             ,substr(core_data.g_run_rec.runner_owner || '.' ||
-                     core_data.g_run_rec.runner_name, 1, 128));
+             ,substr(core_data.g_run_rec.test_runner_owner || '.' ||
+                     core_data.g_run_rec.test_runner_name, 1, 128));
 end get_testcase;
 
 ------------------------------------------------------------
@@ -26,12 +26,12 @@ is
 begin
    -- Initialize Test Run Record
    g_run_rec  := l_run_recNULL;
-   g_run_rec.start_dtm   := systimestamp;
-   g_run_rec.runner_name := in_package_name;
+   g_run_rec.start_dtm        := systimestamp;
+   g_run_rec.test_runner_name := in_package_name;
    -- These don't always work:
-   --   g_run_rec.runner_owner := USER;
-   --   g_run_rec.runner_owner := sys_context('userenv', 'current_schema');
-   select username into g_run_rec.runner_owner from user_users;
+   --   g_run_rec.test_runner_owner := USER;
+   --   g_run_rec.test_runner_owner := sys_context('userenv', 'current_schema');
+   select username into g_run_rec.test_runner_owner from user_users;
    -- Initialize Test Cases Array
    l_testcase := g_tcases_aa.LAST;
    while l_testcase is not null
@@ -69,12 +69,12 @@ $THEN
       g_results_nt      := l_results_ntSAVE;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq
-         (msg_in          => 'l_run_recTEST.runner_owner'
-         ,check_this_in   =>  l_run_recTEST.runner_owner
+         (msg_in          => 'l_run_recTEST.test_runner_owner'
+         ,check_this_in   =>  l_run_recTEST.test_runner_owner
          ,against_this_in =>  USER);
       wt_assert.eq
-         (msg_in          => 'l_run_recTEST.runner_name'
-         ,check_this_in   =>  l_run_recTEST.runner_name
+         (msg_in          => 'l_run_recTEST.test_runner_name'
+         ,check_this_in   =>  l_run_recTEST.test_runner_name
          ,against_this_in => 'WTPLSQL');
       wt_assert.isnotnull
          (msg_in          => 'l_run_recTEST.start_dtm'
@@ -207,8 +207,8 @@ begin
    end if;
    l_results_rec.result_seq := l_results_rec.result_seq + 1;
    l_results_rec.testcase   := nvl(in_testcase
-                                  ,substr(g_run_rec.runner_owner || '.' ||
-                                          g_run_rec.runner_name, 1, 128));
+                                  ,substr(g_run_rec.test_runner_owner || '.' ||
+                                          g_run_rec.test_runner_name, 1, 128));
    l_results_rec.assertion  := in_assertion;
    l_results_rec.pass       := in_pass;
    l_results_rec.details    := in_details;

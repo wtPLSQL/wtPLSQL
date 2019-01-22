@@ -71,10 +71,6 @@ show errors
 /
 show errors
 
-@wt_test_run_stat.pks
-/
-show errors
-
 @wt_test_runner.pks
 /
 show errors
@@ -83,7 +79,7 @@ show errors
 /
 show errors
 
-@wt_text_report.pks
+@wt_persist_report.pks
 /
 show errors
 
@@ -97,7 +93,7 @@ prompt Install Tables - Must be ordered for foreign keys
 @wt_test_runs.tab
 @wt_results.tab
 @wt_profiles.tab
-@wt_testcase_stats.tab
+@wt_testcase_runs.tab
 
 
 prompt
@@ -114,11 +110,11 @@ prompt Install Views
 prompt
 prompt Install Package Bodies
 
-@wtdbout.pkb
+@wt_dbout.pkb
 /
 show errors
 
-@wtjob.pkb
+@wt_job.pkb
 /
 show errors
 
@@ -134,10 +130,6 @@ show errors
 /
 show errors
 
-@wt_test_run_stat.pkb
-/
-show errors
-
 @wt_test_runner.pkb
 /
 show errors
@@ -146,7 +138,7 @@ show errors
 /
 show errors
 
-@wt_text_report.pkb
+@wt_persist_report.pkb
 /
 show errors
 

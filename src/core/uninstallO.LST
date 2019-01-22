@@ -3,6 +3,7 @@ SQL> -- Running Common Setup
 SQL> set define "&"
 SQL> set concat "."
 SQL> define schema_owner="wtp"
+SQL> define demo_owner="wtp_demo"
 SQL> define connect_string=""
 SQL> -- Common Setup Done.
 SQL> set echo off

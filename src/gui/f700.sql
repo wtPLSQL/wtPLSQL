@@ -303,7 +303,7 @@ p:=p||'  where id = :P0_TEST_RUN_ID;'||chr(10)||
 '      -- Group function will not raise NO_DATA_FOUND'||chr(10)||
 '      select count(*)'||chr(10)||
 '       into  num_recs'||chr(10)||
-'       from  wt_testcase_stats'||chr(10)||
+'       from  wt_testcase_runs'||chr(10)||
 '       where test_run_id = :P0_TEST_RUN_ID'||chr(10)||
 '        and  testcase    = :P0_TES';
 
@@ -313,7 +313,7 @@ p:=p||'T_CASE;'||chr(10)||
 '         -- Group function will not raise NO_DATA_FOUND'||chr(10)||
 '         select min(testcase)'||chr(10)||
 '          into  :P0_TEST_CASE'||chr(10)||
-'          from  wt_testcase_stats'||chr(10)||
+'          from  wt_testcase_runs'||chr(10)||
 '          where test_run_id = :P0_TEST_RUN_ID;'||chr(10)||
 '      end if;'||chr(10)||
 '   end set_test_case;'||chr(10)||
@@ -1113,7 +1113,7 @@ wwv_flow_api.create_page_item(
   p_display_as=> 'NATIVE_POPUP_LOV',
   p_lov=> 'select testcase    DISPLAY'||chr(10)||
 '      ,testcase    RETURN'||chr(10)||
-' from  wt_testcase_stats'||chr(10)||
+' from  wt_testcase_runs'||chr(10)||
 ' where test_run_id = :P0_TEST_RUN_ID'||chr(10)||
 ' order by testcase',
   p_lov_display_null=> 'YES',
@@ -1542,7 +1542,7 @@ s:=s||'e'||chr(10)||
 '   with q1 as ('||chr(10)||
 '   select runner_owner, runner_name, testcase'||chr(10)||
 '    from  wt_test_runs  run'||chr(10)||
-'          join wt_testcase_stats  case'||chr(10)||
+'          join wt_testcase_runs  case'||chr(10)||
 '               on  case.test_run_id = run.id'||chr(10)||
 '    where :P0_TEST_OWNER is NULL'||chr(10)||
 '      or  :P0_TEST_OWNER = runner_owner'||chr(10)||
@@ -2879,7 +2879,7 @@ a1:=a1||'  '':'' || run.id                || '','' ||'||chr(10)||
 '       tc.testcase                        LABEL'||chr(10)||
 '      ,tc.failures                        VALUE'||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
-'       join wt_testcase_stats  tc'||chr(10)||
+'       join wt_testcase_runs  tc'||chr(10)||
 '            on  tc.test_run_';
 
 a1:=a1||'id = run.id'||chr(10)||
@@ -5388,7 +5388,7 @@ s:=s||'declare'||chr(10)||
 s:=s||'e'||chr(10)||
 '            ,count(tc.testcase)           NUM_TESTCASES'||chr(10)||
 '       from  wt_test_runs  tr'||chr(10)||
-'        left join wt_testcase_stats  tc'||chr(10)||
+'        left join wt_testcase_runs  tc'||chr(10)||
 '             on  tc.test_run_id = tr.id'||chr(10)||
 '       where tr.id = :P0_TEST_RUN_ID'||chr(10)||
 '      group by round(extract(day from (tr.end_dtm -'||chr(10)||
@@ -6410,7 +6410,7 @@ a1:=a1||'  '':'' || tc.test_run_id        || '','' ||'||chr(10)||
 '       tc.testcase                        LABEL'||chr(10)||
 '      ,tc.failures                        VALUE'||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
-'       join wt_testcase_stats  tc'||chr(10)||
+'       join wt_testcase_runs  tc'||chr(10)||
 '            on  tc.test_run_';
 
 a1:=a1||'id = run.id'||chr(10)||
@@ -6991,7 +6991,7 @@ a1:=a1||'  '':'' || test_run_id           || '','' ||'||chr(10)||
 '          '':'' || V(''PRINTER_FRIENDLY'')    LINK'||chr(10)||
 '      ,testcase                           LABEL'||chr(10)||
 '      ,tot_interval_msecs                 VALUE'||chr(10)||
-' from  wt_testcase_stats'||chr(10)||
+' from  wt_testcase_runs'||chr(10)||
 ' where test_run_id = :P0_TEST_RUN_ID'||chr(10)||
 ' order by tot_interval_msecs desc'||chr(10)||
 '';
@@ -8464,7 +8464,7 @@ p:=p||'declare'||chr(10)||
 '   procedure load_msg is begin'||chr(10)||
 '      :P3_ROWS_DELETED_MSG := num_runs  || '' WT_TEST_RUNS, ''      ||'||chr(10)||
 '                              num_stats || '' WT_TEST_RUN_STATS, '' ||'||chr(10)||
-'                              num_tcase || '' WT_TESTCASE_STATS, '' ||'||chr(10)||
+'                              num_tcase || '' wt_testcase_runs, '' ||'||chr(10)||
 '                   ';
 
 p:=p||'           num_res   || '' WT_RESULTS, ''        ||'||chr(10)||
@@ -8484,7 +8484,7 @@ p:=p||'           num_res   || '' WT_RESULTS, ''        ||'||chr(10)||
 
 p:=p||'= num_stats + SQL%ROWCOUNT;'||chr(10)||
 '      --'||chr(10)||
-'      delete from wt_testcase_stats'||chr(10)||
+'      delete from wt_testcase_runs'||chr(10)||
 '       where test_run_id = buff.id;'||chr(10)||
 '      num_tcase := num_tcase + SQL%ROWCOUNT;'||chr(10)||
 '      --'||chr(10)||
@@ -10042,7 +10042,7 @@ s:=s||'declare'||chr(10)||
 '   --'||chr(10)||
 '   select max(tot_interval_msecs)  -- Need Group Function for NULL'||chr(10)||
 '     into total_elapsed'||chr(10)||
-'    from  wt_testcase_stats'||chr(10)||
+'    from  wt_testcase_runs'||chr(10)||
 '    where test_run_id = :P0_TEST_RUN_ID'||chr(10)||
 '     and  testcase    = :P0_TEST_CASE;'||chr(10)||
 '   --'||chr(10)||
@@ -10794,7 +10794,7 @@ a1:=a1||'with q1 as ('||chr(10)||
 '      ,''PASS''           LABEL'||chr(10)||
 '      ,sum(res.passes)  VALUE'||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
-'       join wt_testcase_stats  res'||chr(10)||
+'       join wt_testcase_runs  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
 '            and res.testcase = :P0_TEST_CASE'||chr(10)||
 ' where id = :P0_TEST_RUN_ID'||chr(10)||
@@ -10805,7 +10805,7 @@ a1:=a1||'with q1 as ('||chr(10)||
 ' from  wt_test_runs';
 
 a1:=a1||'  run'||chr(10)||
-'       join wt_testcase_stats  res'||chr(10)||
+'       join wt_testcase_runs  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
 '            and res.testcase = :P0_TEST_CASE'||chr(10)||
 ' where id = :P0_TEST_RUN_ID'||chr(10)||
@@ -10814,7 +10814,7 @@ a1:=a1||'  run'||chr(10)||
 '      ,''ERR''            LABEL'||chr(10)||
 '      ,sum(res.errors)  VALUE'||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
-'       join wt_testcase_stats  res'||chr(10)||
+'       join wt_testcase_runs  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
 '            and res.testcase = :P0_TEST_CASE'||chr(10)||
 '';
@@ -10999,7 +10999,7 @@ a1:=a1||'with q1 as ('||chr(10)||
 '      ,res.errors                         ERR'||chr(10)||
 '      ,rownum                             RNUM'||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
-'       join wt_testcase_stats  res'||chr(10)||
+'       join wt_testcase_runs  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
 '    ';
 
@@ -11189,7 +11189,7 @@ a1:=a1||'with q1 as ('||chr(10)||
 '      ,res.tot_interval_msecs             MILLISECONDS'||chr(10)||
 '      ,rownum                             RNUM'||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
-'       join wt_testcase_stats  res'||chr(10)||
+'       join wt_testcase_runs  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
 '            and res.testcase = :P0_TEST_CASE'||chr(10)||
 ' where run.runner_owner = :P0_TEST_OWNER'||chr(10)||

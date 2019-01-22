@@ -72,6 +72,6 @@ set serveroutput on size unlimited format truncated
 
 begin
    wtplsql.test_run('TEST_SIMPLE_OBJECT');
-   wt_text_report.dbms_out(USER,'TEST_SIMPLE_OBJECT',30);
+   wt_persist_report.dbms_out(USER,'TEST_SIMPLE_OBJECT',30);
 end;
 /

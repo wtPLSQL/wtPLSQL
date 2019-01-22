@@ -72,7 +72,7 @@ Then, run this:
 ```
 begin
    wtplsql.test_run('TEST_DBMS_OUTPUT');
-   wt_text_report.dbms_out(USER,'TEST_DBMS_OUTPUT',30);
+   wt_persist_report.dbms_out(USER,'TEST_DBMS_OUTPUT',30);
 end;
 /
 ```
@@ -136,7 +136,7 @@ Run this:
 
 ```
 begin
-   wt_text_report.dbms_out(USER,'TEST_DBMS_OUTPUT',30);
+   wt_persist_report.dbms_out(USER,'TEST_DBMS_OUTPUT',30);
 end;
 /
 ```
@@ -244,7 +244,7 @@ Run this:
 
 ```
 begin
-   wt_text_report.dbms_out(USER,'TEST_DBMS_OUTPUT',30);
+   wt_persist_report.dbms_out(USER,'TEST_DBMS_OUTPUT',30);
 end;
 /
 ```

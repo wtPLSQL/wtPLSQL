@@ -3,7 +3,7 @@ create or replace package wt_result
 as
 
    procedure initialize
-      (in_test_run_id   in wt_test_runs.id%TYPE);
+      (in_test_run_id   in number);
 
    procedure save_results;
 

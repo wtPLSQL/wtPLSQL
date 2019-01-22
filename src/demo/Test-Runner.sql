@@ -25,14 +25,14 @@ end;
 set serveroutput on size unlimited format truncated
 
 begin
-   wt_text_report.dbms_out(USER,'SIMPLE_TEST_RUNNER');
+   wt_persist_report.dbms_out(USER,'SIMPLE_TEST_RUNNER');
 end;
 /
 
 set serveroutput on size unlimited format truncated
 
 begin
-   wt_text_report.dbms_out(in_runner_name  => 'SIMPLE_TEST_RUNNER'
+   wt_persist_report.dbms_out(in_runner_name  => 'SIMPLE_TEST_RUNNER'
                           ,in_detail_level => 30);
 end;
 /
@@ -61,7 +61,7 @@ show errors
 
 begin
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
-   wt_text_report.dbms_out(in_runner_name  => 'SIMPLE_TEST_RUNNER'
+   wt_persist_report.dbms_out(in_runner_name  => 'SIMPLE_TEST_RUNNER'
                           ,in_detail_level => 30);
 end;
 /
@@ -80,7 +80,7 @@ show errors
 
 begin
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
-   wt_text_report.dbms_out(USER,'SIMPLE_TEST_RUNNER');
+   wt_persist_report.dbms_out(USER,'SIMPLE_TEST_RUNNER');
 end;
 /
 
@@ -105,6 +105,6 @@ show errors
 
 begin
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
-   wt_text_report.dbms_out(USER,'SIMPLE_TEST_RUNNER',30);
+   wt_persist_report.dbms_out(USER,'SIMPLE_TEST_RUNNER',30);
 end;
 /

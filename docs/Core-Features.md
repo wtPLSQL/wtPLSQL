@@ -35,7 +35,7 @@ Test results from assertions executed in a test runner package are automatically
 
 ## Test Result Reporting
 Reporting of the assertion test results is not a included with the execution of the test runner package(s).  Some other mechanism, like the reporting package, must be used to display the assertion test results.  This allows the following choices during test execution:
-- **Run the WT_TEXT_REPORT.DBMS_OUT Report** - This is the default Reporting Package to report test results using DBMS_OUTPUT.  Several parameter options are available to change level of detail and report sequencing.
+- **Run the WT_CORE_REPORT.DBMS_OUT Report** - This is the default Reporting Package to report test results using DBMS_OUTPUT.  Several parameter options are available to change level of detail and report sequencing.
 - **Run an Add-On Reporting Package** - Bespoke reporting packages can be created or downloaded to provide for the exact requirements of test result reporting.
 - **Copy Test Results** - Create or download bespoke storage and reporting systems that copy the test result data from the WTPLSQL database tables for more complex test result reporting.
 - **No Action** - Test results remain in the WTPLSQL database tables until they are automatically deleted.

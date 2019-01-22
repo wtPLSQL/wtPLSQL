@@ -88,7 +88,7 @@ begin
 $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
    if not wtplsql_skip_save then
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
-   if core_data.g_run_rec.runner_name is null
+   if core_data.g_run_rec.test_runner_name is null
    then
       hook.ad_hoc_report;
       return;

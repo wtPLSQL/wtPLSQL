@@ -36,20 +36,20 @@ comment on column wt_test_runs_vw.test_runner_owner is 'Owner of the Test Runner
 comment on column wt_test_runs_vw.test_runner_name is 'Name of the Test Runner package.';
 comment on column wt_test_runs_vw.start_dtm is 'Date/time (and fractional seconds) this Test Run started.';
 comment on column wt_test_runs_vw.end_dtm is 'Date/time (and fractional seconds) this Test Run ended.';
-comment on column wt_test_runs_vw.runner_sec is 'Total Runtime for Test Runner in Seconds'
+comment on column wt_test_runs_vw.runner_sec is 'Total Runtime for Test Runner in Seconds';
 comment on column wt_test_runs_vw.is_last_run is 'Optional Flag "Y" to indicate this is the most recent run for this package owner/name';
 comment on column wt_test_runs_vw.error_message is 'Optional Error messages from this Test Run.';
-comment on column wt_test_runs_vw.tc_cnt is 'Number of Test Cases'
-comment on column wt_test_runs_vw.tc_fail is 'Number of Failed Test Cases'
+comment on column wt_test_runs_vw.tc_cnt is 'Number of Test Cases';
+comment on column wt_test_runs_vw.tc_fail is 'Number of Failed Test Cases';
 comment on column wt_test_runs_vw.tc_yield_pct is 'Percentage of successful test cases to total Test Cases.';
 comment on column wt_test_runs_vw.asrt_fst_dtm is 'Date/Time of First Assertion';
 comment on column wt_test_runs_vw.asrt_lst_dtm is 'Date/Time of Last Assertion';
-comment on column wt_test_runs_vw.asrt_cnt is 'Number of Assertions across all Test Cases'
-comment on column wt_test_runs_vw.asrt_fail is 'Number of Assertion Failures across all Test Cases'
+comment on column wt_test_runs_vw.asrt_cnt is 'Number of Assertions across all Test Cases';
+comment on column wt_test_runs_vw.asrt_fail is 'Number of Assertion Failures across all Test Cases';
 comment on column wt_test_runs_vw.asrt_yield_pct is 'Percentage of successful assertions to total assertions.';
-comment on column wt_test_runs_vw.asrt_min_msec is 'Minumum Assertion Interval in Milliseconds across all Test Cases'
-comment on column wt_test_runs_vw.asrt_max_msec is 'Maximum Assertion Interval in Milliseconds across all Test Cases'
-comment on column wt_test_runs_vw.asrt_tot_msec is 'Total Assertion Intervals in Milliseconds across all Test Cases'
-comment on column wt_test_runs_vw.asrt_sos_msec is 'Sum of Squares of Assertion Interval in Milliseconds across all Test Cases'
+comment on column wt_test_runs_vw.asrt_min_msec is 'Minumum Assertion Interval in Milliseconds across all Test Cases';
+comment on column wt_test_runs_vw.asrt_max_msec is 'Maximum Assertion Interval in Milliseconds across all Test Cases';
+comment on column wt_test_runs_vw.asrt_tot_msec is 'Total Assertion Intervals in Milliseconds across all Test Cases';
+comment on column wt_test_runs_vw.asrt_sos_msec is 'Sum of Squares of Assertion Interval in Milliseconds across all Test Cases';
 
 grant select on wt_test_runs_vw to public;

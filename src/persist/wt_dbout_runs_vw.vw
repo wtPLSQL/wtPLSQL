@@ -20,7 +20,7 @@ select run.id                TEST_RUN_ID
       ,run.trigger_offset 
       ,run.coverage_pct
       ,run.profiled_lines
-      ,run.execute_lines
+      ,run.executed_lines
       ,run.ignored_lines
       ,run.excluded_lines
       ,run.notexec_lines

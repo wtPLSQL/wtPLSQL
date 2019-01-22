@@ -7,10 +7,10 @@ as
    function get_last_run_flag
       return varchar2 deterministic;
 
-   g_test_runs_rec  wt_test_runs_vw%ROWTYPE;
+   g_test_runs_rec  core_data.run_rec_type;
 
    procedure insert_test_run
-      (in_test_runs_rec  in wt_test_runs_vw%ROWTYPE);
+      (in_test_runs_rec  in core_data.run_rec_type);
 
    procedure delete_runs
       (in_test_run_id  in number);

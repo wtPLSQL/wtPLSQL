@@ -49,7 +49,7 @@ An obvious drawback of this approach is running assertions when NLS settings mus
    * Assertion results summary.
    * All assertion result details.
 
-## WT_TEXT_REPORT Detail Levels
+## WT_PERSIST_REPORT Detail Levels
 * **Less than 10 (including null)** - No Detail
    * Assertion results summary.
    * Profiled lines summary.

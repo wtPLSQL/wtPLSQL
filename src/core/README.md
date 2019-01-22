@@ -30,7 +30,7 @@ wt_test_run_stat.pkb   | WT_TEST_RUN_STAT package body.
 wt_test_run_stat.pks   | WT_TEST_RUN_STAT package specification.
 wt_test_run_stats.tab  | WT_TEST_RUN_STATS table.
 wt_test_runs.tab       | WT_TEST_RUNS table.
-wt_testcase_stats.tab  | WT_TESTCASE_STATS table. 
+wt_testcase_runs.tab   | WT_TESTCASE_RUNS table. 
 wt_version.tab         | WT_VERSION table.
 wtplsql.pkb            | WTPLSQL package body.
 wtplsql.pks            | WTPLSQL package specification.

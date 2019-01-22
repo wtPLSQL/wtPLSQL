@@ -130,7 +130,7 @@ set serveroutput on size unlimited format truncated
 
 begin
    wtplsql.test_run('STR');
-   wt_text_report.dbms_out(in_runner_name  => 'STR'
-                          ,in_detail_level => 30);
+   wt_persist_report.dbms_out(in_runner_name  => 'STR'
+                             ,in_detail_level => 30);
 end;
 /

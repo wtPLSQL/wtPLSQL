@@ -154,11 +154,11 @@ grant execute on wt_assert to public;
 create or replace public synonym wt_assert for wt_assert;
 create or replace public synonym utassert  for wt_assert;
 
-@wt_text_report.pks
+@wt_core_report.pks
 /
 show errors
-grant execute on wt_text_report to public;
-create or replace public synonym wt_text_report for wt_text_report;
+grant execute on wt_core_report to public;
+create or replace public synonym wt_core_report for wt_core_report;
 
 
 prompt
@@ -206,7 +206,7 @@ show errors
 /
 show errors
 
-@wt_text_report.pkb
+@wt_core_report.pkb
 /
 show errors
 

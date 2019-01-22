@@ -109,6 +109,6 @@ set serveroutput on size unlimited format truncated
 
 begin
    wtplsql.test_run('UT_BETWNSTR');
-   wt_text_report.dbms_out(USER,'UT_BETWNSTR',30);
+   wt_persist_report.dbms_out(USER,'UT_BETWNSTR',30);
 end;
 /
