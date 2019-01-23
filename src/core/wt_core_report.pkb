@@ -97,7 +97,7 @@ begin
       then
          l_rec := core_data.g_results_nt(i);
          -- Remove Consecutive Testcases
-         if core_data.g_results_nt(i).testcase = old_testcase
+         if l_rec.testcase = old_testcase
          then
             l_rec.testcase := '';
          else

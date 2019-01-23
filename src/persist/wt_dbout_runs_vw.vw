@@ -25,10 +25,10 @@ select run.id                TEST_RUN_ID
       ,run.excluded_lines
       ,run.notexec_lines
       ,run.unknown_lines
-      ,run.exec_tot_usecs
       ,run.exec_min_usecs
-      ,run.exec_max_usecs
       ,run.exec_avg_usecs
+      ,run.exec_max_usecs
+      ,run.exec_tot_usecs
  from  wt_test_runs  run
        join wt_dbouts  db
             on  db.id = run.dbout_id

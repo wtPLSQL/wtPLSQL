@@ -1,0 +1,318 @@
+
+PL/SQL procedure successfully completed.
+
+.
+SQL> -- Running Common Setup
+SQL> set define "&"
+SQL> set concat "."
+SQL> define schema_owner="wtp"
+SQL> define demo_owner="wtp_demo"
+SQL> define connect_string=""
+SQL> -- Common Setup Done.
+SQL> set echo off
+.
+
+Create the schema owner.
+old   1: create user &schema_owner. identified by &schema_owner.
+new   1: create user wtp identified by wtp
+
+User created.
+
+old   1: grant create session        to &schema_owner.
+new   1: grant create session        to wtp
+
+Grant succeeded.
+
+old   1: grant create type           to &schema_owner.
+new   1: grant create type           to wtp
+
+Grant succeeded.
+
+old   1: grant create sequence       to &schema_owner.
+new   1: grant create sequence       to wtp
+
+Grant succeeded.
+
+old   1: grant create table          to &schema_owner.
+new   1: grant create table          to wtp
+
+Grant succeeded.
+
+old   1: grant create trigger        to &schema_owner.
+new   1: grant create trigger        to wtp
+
+Grant succeeded.
+
+old   1: grant create view           to &schema_owner.
+new   1: grant create view           to wtp
+
+Grant succeeded.
+
+old   1: grant create procedure      to &schema_owner.
+new   1: grant create procedure      to wtp
+
+Grant succeeded.
+
+old   1: grant create database link  to &schema_owner.
+new   1: grant create database link  to wtp
+
+Grant succeeded.
+
+old   1: grant create job            to &schema_owner.
+new   1: grant create job            to wtp
+
+Grant succeeded.
+
+old   1: grant create public synonym to &schema_owner.
+new   1: grant create public synonym to wtp
+
+Grant succeeded.
+
+old   1: grant select on dba_objects       to &schema_owner. with grant option
+new   1: grant select on dba_objects       to wtp with grant option
+
+Grant succeeded.
+
+old   1: grant select on dba_procedures    to &schema_owner. with grant option
+new   1: grant select on dba_procedures    to wtp with grant option
+
+Grant succeeded.
+
+old   1: grant select on dba_source        to &schema_owner. with grant option
+new   1: grant select on dba_source        to wtp with grant option
+
+Grant succeeded.
+
+old   1: grant select on sys.gv_$parameter to &schema_owner. with grant option
+new   1: grant select on sys.gv_$parameter to wtp with grant option
+
+Grant succeeded.
+
+
+Checking PLSQL_CCFLAGS
+PLSQL_CCFLAGS Before: WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE                
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+PLSQL_CCFLAGS After: WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE                 
+
+PL/SQL procedure successfully completed.
+
+
+Connect as SCHEMA_OWNER
+Connected.
+old   2:    if USER != upper('&schema_owner')
+new   2:    if USER != upper('wtp')
+old   5:         'Not logged in as &schema_owner');
+new   5:         'Not logged in as wtp');
+
+PL/SQL procedure successfully completed.
+
+
+Install Package Specifications
+
+Package created.
+
+No errors.
+
+Package created.
+
+No errors.
+
+Package created.
+
+No errors.
+
+Grant succeeded.
+
+
+Synonym created.
+
+
+Synonym created.
+
+
+Package created.
+
+No errors.
+
+Grant succeeded.
+
+
+Synonym created.
+
+
+Synonym created.
+
+
+Package created.
+
+No errors.
+
+Grant succeeded.
+
+
+Synonym created.
+
+
+Install Tables
+
+Table created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Table created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+old   1: create or replace public synonym wt_version for &schema_owner..wt_versions
+new   1: create or replace public synonym wt_version for wtp.wt_versions
+
+Synonym created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Table created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Trigger created.
+
+No errors.
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Install Views
+
+View created.
+
+No errors.
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Install Procedures
+
+Procedure created.
+
+
+Procedure created.
+
+No errors.
+
+Grant succeeded.
+
+
+Synonym created.
+
+
+Install Package Bodies
+
+Package body created.
+
+No errors.
+
+Package body created.
+
+No errors.
+
+Package body created.
+
+No errors.
+
+Package body created.
+
+No errors.
+
+Package body created.
+
+No errors.
+
+Configuration Data
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+new: showmode BOTH

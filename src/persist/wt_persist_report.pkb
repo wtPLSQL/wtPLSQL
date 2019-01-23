@@ -1,8 +1,8 @@
 create or replace package body wt_persist_report
 as
 
-   g_test_runs_rec       wt_test_runs%ROWTYPE;
-   g_test_run_stats_rec  wt_test_run_stats%ROWTYPE;
+   g_test_runs_rec       wt_test_runs_vw%ROWTYPE;
+   g_dbout_runs_rec      wt_dbout_runs_vw%ROWTYPE;
 
 
 ----------------------
@@ -18,59 +18,32 @@ begin
 end p;
 
 ------------------------------------------------------------
-procedure result_summary
-is
-begin
-   p('       Total Test Cases: ' || to_char(nvl(g_test_run_stats_rec.testcases         ,0),'9999999') ||
-     '       Total Assertions: ' || to_char(nvl(g_test_run_stats_rec.asserts           ,0),'9999999') );
-   p('  Minimum Interval msec: ' || to_char(nvl(g_test_run_stats_rec.min_interval_msecs,0),'9999999') ||
-     '      Failed Assertions: ' || to_char(nvl(g_test_run_stats_rec.failures          ,0),'9999999') );
-   p('  Average Interval msec: ' || to_char(nvl(g_test_run_stats_rec.avg_interval_msecs,0),'9999999') ||
-     '       Error Assertions: ' || to_char(nvl(g_test_run_stats_rec.errors            ,0),'9999999') );
-   p('  Maximum Interval msec: ' || to_char(nvl(g_test_run_stats_rec.max_interval_msecs,0),'9999999') ||
-     '             Test Yield: ' || to_char(    g_test_run_stats_rec.test_yield * 100     ,'9990.99') ||
-                                                                                                  '%' );
-   p('   Total Run Time (sec): ' || to_char(extract(day from (g_test_runs_rec.end_dtm -
-                                                g_test_runs_rec.start_dtm)*86400*100)/100 ,'99990.9') );
-end result_summary;
-
-------------------------------------------------------------
-procedure profile_summary
-is
-begin
-   p('          Ignored Lines: ' || to_char(nvl(g_test_run_stats_rec.ignored_lines     ,0),'9999999') ||
-     '   Total Profiled Lines: ' || to_char(nvl(g_test_run_stats_rec.profiled_lines    ,0),'9999999') );
-   p('         Excluded Lines: ' || to_char(nvl(g_test_run_stats_rec.excluded_lines    ,0),'9999999') ||
-     '   Total Executed Lines: ' || to_char(nvl(g_test_run_stats_rec.executed_lines    ,0),'9999999') );
-   p('  Minimum LineExec usec: ' || to_char(nvl(g_test_run_stats_rec.min_executed_usecs,0),'9999999') ||
-     '     Not Executed Lines: ' || to_char(nvl(g_test_run_stats_rec.notexec_lines     ,0),'9999999') );
-   p('  Average LineExec usec: ' || to_char(nvl(g_test_run_stats_rec.avg_executed_usecs,0),'9999999') ||
-     '          Unknown Lines: ' || to_char(nvl(g_test_run_stats_rec.unknown_lines     ,0),'9999999') );
-   p('  Maximum LineExec usec: ' || to_char(nvl(g_test_run_stats_rec.max_executed_usecs,0),'9999999') ||
-     '          Code Coverage: ' || to_char(    g_test_run_stats_rec.code_coverage * 100  ,'9990.99') ||
-                                                                                                  '%' );
-   p('  Trigger Source Offset: ' || to_char(    g_test_runs_rec.trigger_offset            ,'9999999') );
-end profile_summary;
-
-------------------------------------------------------------
 procedure summary_out
 is
 begin
    p('');
-   p('    wtPLSQL ' || wtplsql.show_version ||
-       ' - Run ID ' || g_test_runs_rec.id   ||
-               ': ' || to_char(g_test_runs_rec.start_dtm, g_date_format) ||
-            CHR(10) );
-   p('  Test Results for ' || g_test_runs_rec.runner_owner ||
-                       '.' || g_test_runs_rec.runner_name  );
-   result_summary;
-   if     g_test_runs_rec.dbout_name is not null
-      AND g_test_runs_rec.profiler_runid is null
+   p('    wtPLSQL ' || wtplsql.show_version);
+   p('    Run ID ' || g_test_runs_rec.test_run_id ||
+              ': ' || to_char(g_test_runs_rec.start_dtm
+                             ,wt_core_report.g_date_format));
+   p('----------------------------------------');
+   p('  Test Results for ' || g_test_runs_rec.test_runner_owner ||
+                       '.' || g_test_runs_rec.test_runner_name  );
+   p('  Minimum Elapsed msec: ' || to_char(g_test_runs_rec.asrt_min_msec, '9999999') ||
+     '      Total Assertions: ' || to_char(g_test_runs_rec.asrt_cnt,      '9999999') );
+   p('  Average Elapsed msec: ' || to_char(g_test_runs_rec.asrt_avg_msec, '9999999') ||
+     '       Total Testcases: ' || to_char(g_test_runs_rec.tc_cnt,        '9999999') );
+   p('  Maximum Elapsed msec: ' || to_char(g_test_runs_rec.asrt_max_msec, '9999999') ||
+     '      Failed Testcases: ' || to_char(g_test_runs_rec.tc_fail,       '9999999') );
+   p('  Total Run Time (sec): ' || to_char(g_test_runs_rec.runner_sec,    '99990.9') ||
+     '        Testcase Yield: ' || to_char(g_test_runs_rec.tc_yield_pct,  '99990.9') || '%');
+   if     g_dbout_runs_rec.dbout_name is not null
+      AND g_dbout_runs_rec.profiler_runid is null
    then
       p('');
-      p('  Note: ' || g_test_runs_rec.dbout_type  || ' ' ||
-                      g_test_runs_rec.dbout_owner || '.' ||
-                      g_test_runs_rec.dbout_name  || ' was not profiled.');
+      p('  Note: ' || g_dbout_runs_rec.dbout_type  || ' ' ||
+                      g_dbout_runs_rec.dbout_owner || '.' ||
+                      g_dbout_runs_rec.dbout_name  || ' was not profiled.');
    end if;
    if g_test_runs_rec.error_message is not null
    then
@@ -79,33 +52,35 @@ begin
       p(g_test_runs_rec.error_message);
    end if;
    ----------------------------------------
-   if g_test_runs_rec.profiler_runid is null
+   if g_dbout_runs_rec.profiler_runid is null
    then
       return;
    end if;
    p('');
-   p('  Code Coverage for ' || g_test_runs_rec.dbout_type  ||
-                        ' ' || g_test_runs_rec.dbout_owner ||
-                        '.' || g_test_runs_rec.dbout_name  );
-   profile_summary;
+   p('  Code Coverage for ' || g_dbout_runs_rec.dbout_type  ||
+                        ' ' || g_dbout_runs_rec.dbout_owner ||
+                        '.' || g_dbout_runs_rec.dbout_name  );
+   p('          Ignored Lines: ' || to_char(g_dbout_runs_rec.ignored_lines,  '9999999') ||
+     '   Total Profiled Lines: ' || to_char(g_dbout_runs_rec.profiled_lines, '9999999') );
+   p('         Excluded Lines: ' || to_char(g_dbout_runs_rec.excluded_lines, '9999999') ||
+     '   Total Executed Lines: ' || to_char(g_dbout_runs_rec.executed_lines, '9999999') );
+   p('  Minimum LineExec usec: ' || to_char(g_dbout_runs_rec.exec_min_usecs, '9999999') ||
+     '     Not Executed Lines: ' || to_char(g_dbout_runs_rec.notexec_lines,  '9999999') );
+   p('  Average LineExec usec: ' || to_char(g_dbout_runs_rec.exec_avg_usecs, '9999999') ||
+     '          Unknown Lines: ' || to_char(g_dbout_runs_rec.unknown_lines,  '9999999') );
+   p('  Maximum LineExec usec: ' || to_char(g_dbout_runs_rec.exec_max_usecs, '9999999') ||
+     '          Code Coverage: ' || to_char(g_dbout_runs_rec.coverage_pct,   '9990.99') || '%');
+   p('  Trigger Source Offset: ' || to_char(g_dbout_runs_rec.trigger_offset, '9999999') );
 end summary_out;
 
 ------------------------------------------------------------
 procedure results_out
       (in_show_pass  in boolean)
 is
-   l_last_testcase  wt_results.testcase%TYPE;
+   l_rec            core_data.results_rec_type;
    l_show_pass_txt  varchar2(1);
-   header_shown     boolean;
-   procedure l_show_header is begin
-      p('');
-      p(' - ' || g_test_runs_rec.runner_owner  ||
-          '.' || g_test_runs_rec.runner_name   || 
-          ' Test Result Details (Test Run ID ' ||
-                 g_test_runs_rec.id            ||
-          ')' );
-      p('-----------------------------------------------------------');
-   end l_show_header;
+   old_testcase     core_data.long_name;
+   show_header      boolean := TRUE;
 begin
    if in_show_pass
    then
@@ -113,46 +88,44 @@ begin
    else
       l_show_pass_txt := 'N';
    end if;
-   header_shown := FALSE;
    for buff in (
-      select status
-            ,interval_msecs
-            ,testcase
-            ,assertion
-            ,details
-            ,message
-       from  wt_results
-       where test_run_id = g_test_runs_rec.id
+      select * from wt_results
+       where test_run_id = g_test_runs_rec.test_run_id
        and  (   l_show_pass_txt = 'Y'
              or status         != 'PASS')
        order by result_seq )
    loop
-      if not header_shown
+      -- Load l_rec
+      l_rec.assertion       := buff.assertion;
+
+There is a problem with status here, then copy wt_test_runner.package to wt_testcase and wt_dbout
+
+      l_rec.status          := buff.status;
+      l_rec.details         := buff.details;
+      l_rec.testcase        := buff.testcase;
+      l_rec.message         := buff.message;
+      l_rec.interval_msecs  := buff.interval_msecs;
+      -- Remove Consecutive Testcases
+      if l_rec.testcase = old_testcase
       then
-         l_show_header;
-         header_shown := TRUE;
-      end if;
-      if    buff.testcase = l_last_testcase
-         OR (      buff.testcase is null
-             AND l_last_testcase is null )
-      then
-         p(format_test_result
-                        (in_assertion       => buff.assertion
-                        ,in_status          => buff.status
-                        ,in_details         => buff.details
-                        ,in_testcase        => NULL
-                        ,in_message         => buff.message
-                        ,in_interval_msecs  => buff.interval_msecs) );
+         l_rec.testcase := '';
       else
-         p(format_test_result
-                        (in_assertion       => buff.assertion
-                        ,in_status          => buff.status
-                        ,in_details         => buff.details
-                        ,in_testcase        => buff.testcase
-                        ,in_message         => buff.message
-                        ,in_interval_msecs  => buff.interval_msecs) );
-         l_last_testcase := buff.testcase;
+         old_testcase := l_rec.testcase;
       end if;
+      -- Display header if needed
+      if show_header
+      then
+         p('');
+         p(' - ' || g_test_runs_rec.runner_owner  ||
+             '.' || g_test_runs_rec.runner_name   || 
+             ' Test Result Details (Test Run ID ' ||
+                    g_test_runs_rec.id            ||
+             ')' );
+         p('-----------------------------------------------------------');
+         show_header := FALSE;
+      end if;
+      -- Display the result
+      p(wt_core_report.format_test_result(l_rec));
    end loop;
 end results_out;
 
@@ -230,47 +203,6 @@ end profile_out;
 ---------------------
 
 ------------------------------------------------------------
-function format_test_result
-      (in_assertion       in varchar2
-      ,in_status          in varchar2
-      ,in_details         in varchar2
-      ,in_testcase        in varchar2
-      ,in_message         in varchar2
-      ,in_interval_msecs  in number DEFAULT NULL)
-   return varchar2
-is
-   l_out_str  varchar2(32000) := '';
-begin
-   if in_testcase is not null
-   then
-      l_out_str := ' ---- Test Case: ' || in_testcase || CHR(10);
-   end if;
-   if in_status = wt_assert.C_PASS
-   then
-      l_out_str := l_out_str || ' ' || rpad(in_status,4) || ' ';
-   else
-      l_out_str := l_out_str || '#' || rpad(in_status,4) || '#';
-   end if;
-   if in_interval_msecs is not null
-   then
-      l_out_str := l_out_str || lpad(in_interval_msecs,4) || 'ms ';
-   end if;
-   if in_message is not null
-   then
-      l_out_str := l_out_str || in_message  || '. ';
-   end if;
-   l_out_str := l_out_str || in_assertion || ' - ';
-   if g_single_line_output
-   then
-      l_out_str := l_out_str || replace(replace(in_details,CHR(13),'\r'),CHR(10),'\n');
-   else
-      l_out_str := l_out_str || in_details;
-   end if;
-   return l_out_str;
-end format_test_result;
-
-
-------------------------------------------------------------
 procedure dbms_out
       (in_runner_owner   in  varchar2   default USER
       ,in_runner_name    in  varchar2   default null
@@ -278,16 +210,13 @@ procedure dbms_out
       ,in_summary_last   in  boolean    default FALSE)
 is
 
-   cursor c_main(in_test_run_id  in number) is
-      select * from wt_test_run_stats
-       where test_run_id = in_test_run_id;
-   g_test_run_statsNULL   wt_test_run_stats%ROWTYPE;
+   g_dbout_runs_recNULL   wt_dbout_runs_vw%ROWTYPE;
 
 begin
 
    for buff in (
       -- MAX(t2.start_dtm) is a fail-safe if IS_LAST_RUN is not set.
-      select * from wt_test_runs
+      select * from wt_test_runs_vw
        where (          runner_name,        start_dtm) in
              (select t2.runner_name, max(t2.start_dtm)
                from  wt_test_runs  t2
@@ -302,11 +231,15 @@ begin
       --  Load Test Run Record
       g_test_runs_rec := buff;
 
-      --  Load the Stats Record
-      g_test_run_stats_rec := g_test_run_statsNULL;
-      open c_main(buff.id);
-      fetch c_main into g_test_run_stats_rec;
-      close c_main;
+      --  Load the DBOUT Record
+      begin
+         select * into g_dbout_runs_rec
+          from  wt_dbout_runs_vw
+          where test_run_id = buff.test_run_id;
+      exception when NO_DATA_FOUND
+      then
+         g_dbout_runs_rec := g_dbout_runs_recNULL;
+      end;
 
       --  Setup Display Order
       if in_summary_last

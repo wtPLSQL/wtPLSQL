@@ -17,8 +17,8 @@ is
       ,asrt_lst_dtm       timestamp(3) with local time zone -- Date/Time of Last Assertion
       ,asrt_cnt           number(7)      default 0          -- Number of Assertions across all Test Cases
       ,asrt_fail          number(7)      default 0          -- Number of Assertion Failures across all Test Cases
-      ,asrt_min_msec      number(10)                        -- Minumum Assertion Interval in Milliseconds across all Test Cases
-      ,asrt_max_msec      number(10)                        -- Maximum Assertion Interval in Milliseconds across all Test Cases
+      ,asrt_min_msec      number(10)     default 0          -- Minumum Assertion Interval in Milliseconds across all Test Cases
+      ,asrt_max_msec      number(10)     default 0          -- Maximum Assertion Interval in Milliseconds across all Test Cases
       ,asrt_tot_msec      number(10)     default 0          -- Total Assertion Intervals in Milliseconds across all Test Cases
       ,asrt_sos_msec      number(20)     default 0          -- Sum of Squares of Assertion Interval in Milliseconds across all Test Cases
       ,dbout_owner        long_name                         -- Owner of the Database Object Under Test
@@ -30,8 +30,8 @@ is
    TYPE tcases_rec_type is record
       (asrt_cnt       number(7)      default 0          -- Number of Assertions in this Test Case
       ,asrt_fail      number(7)      default 0          -- Number of Failed Assertsion in this Test Case
-      ,asrt_min_msec  number(10)                        -- Minumum Assertion Interval in Milliseconds in this Test Cases
-      ,asrt_max_msec  number(10)                        -- Maximum Assertion Interval in Milliseconds in this Test Cases
+      ,asrt_min_msec  number(10)     default 0          -- Minumum Assertion Interval in Milliseconds in this Test Cases
+      ,asrt_max_msec  number(10)     default 0          -- Maximum Assertion Interval in Milliseconds in this Test Cases
       ,asrt_tot_msec  number(10)     default 0          -- Total Assertion Interval in Milliseconds in this Test Cases
       ,asrt_sos_msec  number(20)     default 0          -- Sum of Squares Assertion Interval in Milliseconds in this Test Cases
       );
@@ -42,10 +42,10 @@ is
       (result_seq     number(8)      default 0          -- Sequence Number of the Assertion
       ,testcase       long_name                         -- Test Case Name of the Assertion
       ,executed_dtm   timestamp(6) with local time zone -- Execution Date/Time of the Assertion
-      ,interval_msecs number(10,3)                      -- Interval from Previous Assertion in Milliseconds
+      ,interval_msecs number(10,3)   default 0          -- Interval from Previous Assertion in Milliseconds
       ,assertion      varchar2(15)                      -- Name of the Assertion
       ,pass           boolean                           -- Did the Assertion Pass? (TRUE/FALSE)
-      ,message        varchar2(200)                     -- Identifcation Message of the Assertion
+      ,message        varchar2(200)                     -- Identification Message of the Assertion
       ,details        varchar2(4000)                    -- Test Details of the Assertion
       );
    TYPE results_nt_type is table of results_rec_type;

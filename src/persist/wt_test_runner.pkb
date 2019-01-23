@@ -1,5 +1,4 @@
 create or replace package body wt_test_runner
-   authid definer
 as
 
 
@@ -44,8 +43,8 @@ $THEN
        where owner = C_OWNER
         and  name  = C_NAME;
       wt_assert.isnotnull
-         (msg_in           => 'Number of Rows deleted'  
-         ,check_query_in   => SQL%ROWCOUNT);
+         (msg_in          => 'Number of Rows deleted'  
+         ,check_this_in   => SQL%ROWCOUNT);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue
          (msg_in           => 'Number of Rows should be 0'
@@ -74,7 +73,7 @@ $THEN
         and  name  = C_NAME;
       wt_assert.eq
          (msg_in           => 'Number of Rows deleted'
-         ,check_query_in   => SQL%ROWCOUNT
+         ,check_this_in    => SQL%ROWCOUNT
          ,against_this_in  => 1);
       commit;
    end t_get_id;
@@ -96,7 +95,7 @@ begin
       rec.id    := wt_test_runners_seq.nextval;
       rec.owner := in_owner;
       rec.name  := in_name;
-      insert into wt_dbouts values rec;
+      insert into wt_test_runners values rec;
    end if;
    return rec.id;
 end dim_id;
@@ -113,8 +112,8 @@ $THEN
        where owner = C_OWNER
         and  name  = C_NAME;
       wt_assert.isnotnull
-         (msg_in           => 'Number of Rows deleted'  
-         ,check_query_in   => SQL%ROWCOUNT);
+         (msg_in          => 'Number of Rows deleted'  
+         ,check_this_in   => SQL%ROWCOUNT);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue
          (msg_in           => 'Number of Rows should be 0'
@@ -141,7 +140,7 @@ $THEN
         and  name  = C_NAME;
       wt_assert.eq
          (msg_in           => 'Number of Rows deleted'  
-         ,check_query_in   => SQL%ROWCOUNT
+         ,check_this_in    => SQL%ROWCOUNT
          ,against_this_in  => 1);
       commit;
    end t_dim_id;
@@ -169,8 +168,8 @@ $THEN
        where owner = C_OWNER
         and  name  = C_NAME;
       wt_assert.isnotnull
-         (msg_in           => 'Number of Rows deleted'  
-         ,check_query_in   => SQL%ROWCOUNT);
+         (msg_in          => 'Number of Rows deleted'  
+         ,check_this_in   => SQL%ROWCOUNT);
       --------------------------------------  WTPLSQL Testing --
       insert into wt_test_runners (id, owner, name)
          values (wt_test_runners_seq.nextval, C_OWNER, C_NAME)
@@ -204,7 +203,7 @@ $THEN
                               ' and name  = ' || C_NAME
          ,against_value_in => 0);
       commit;
-   end t_dim_id;
+   end t_delete_records;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 

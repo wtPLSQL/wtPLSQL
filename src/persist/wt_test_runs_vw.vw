@@ -22,8 +22,10 @@ select run.id                 TEST_RUN_ID
       ,run.asrt_fail
       ,run.asrt_yield_pct
       ,run.asrt_min_msec
+      ,run.asrt_avg_msec
       ,run.asrt_max_msec
       ,run.asrt_tot_msec
+      ,run.asrt_std_msec
       ,run.asrt_sos_msec
  from  wt_test_runs  run
        join wt_test_runners  tr

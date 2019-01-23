@@ -2,7 +2,7 @@ create or replace package wt_core_report
    authid definer
 as
 
-   --   To report the latest result details:
+   --   To report the latest Test Runner results:
    -- begin
    --    wt_core_report.dbms_out(30, TRUE);
    -- end;

@@ -1,0 +1,33 @@
+.
+SQL> -- Running Common Setup
+SQL> set define "&"
+SQL> set concat "."
+SQL> define schema_owner="wtp"
+SQL> define demo_owner="wtp_demo"
+SQL> define connect_string=""
+SQL> -- Common Setup Done.
+SQL> set echo off
+.
+old   1: drop user &schema_owner. cascade
+new   1: drop user wtp cascade
+
+User dropped.
+
+old   6: 				  and  regexp_like(table_owner, '&schema_owner.', 'i') )
+new   6: 				  and  regexp_like(table_owner, 'wtp', 'i') )
+drop public synonym UTASSERT                                                    
+drop public synonym WTPLSQL                                                     
+drop public synonym WT_ASSERT                                                   
+drop public synonym WT_CORE_REPORT                                              
+drop public synonym WT_EXECUTE_TEST_RUNNER                                      
+drop public synonym WT_VERSION                                                  
+drop public synonym WT_WTPLSQL                                                  
+
+PL/SQL procedure successfully completed.
+
+Remove "WTPLSQL_ENABLE" from PLSQL_CCFLAGS                                      
+  *) "WTPLSQL_ENABLE:TRUE, WTPLSQL_SELFTEST:TRUE"                               
+
+PL/SQL procedure successfully completed.
+
+new: showmode BOTH

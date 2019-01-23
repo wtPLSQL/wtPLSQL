@@ -1,0 +1,1132 @@
+.
+SQL> -- Running Common Setup
+SQL> set define "&"
+SQL> set concat "."
+SQL> define schema_owner="wtp"
+SQL> define demo_owner="wtp_demo"
+SQL> define connect_string=""
+SQL> -- Common Setup Done.
+SQL> set echo off
+.
+
+Connect as SCHEMA_OWNER
+Connected.
+old   2:    if USER != upper('&schema_owner')
+new   2:    if USER != upper('wtp')
+old   5:         'Not logged in as &schema_owner');
+new   5:         'Not logged in as wtp');
+
+PL/SQL procedure successfully completed.
+
+
+Run Oracle's Profiler Table Installation
+Note1: Tables converted to Global Temporary
+Note2: Includes "Drop Table" and "Drop Sequence" statements
+drop table plsql_profiler_data cascade constraints
+           *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+drop table plsql_profiler_units cascade constraints
+           *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+drop table plsql_profiler_runs cascade constraints
+           *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+drop sequence plsql_profiler_runnumber
+              *
+ERROR at line 1:
+ORA-02289: sequence does not exist 
+
+
+
+Table created.
+
+
+Comment created.
+
+
+Table created.
+
+
+Comment created.
+
+
+Table created.
+
+
+Comment created.
+
+
+Sequence created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Index created.
+
+
+Install Package Specifications
+
+Package created.
+
+No errors.
+
+Package created.
+
+No errors.
+
+Package created.
+
+No errors.
+
+Package created.
+
+No errors.
+
+Package created.
+
+No errors.
+
+Package created.
+
+No errors.
+
+Package created.
+
+No errors.
+
+Package created.
+
+No errors.
+
+Install Tables - Must be ordered for foreign keys
+
+Sequence created.
+
+
+Table created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Sequence created.
+
+
+Table created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Sequence created.
+
+
+Table created.
+
+
+Index created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Sequence created.
+
+
+Grant succeeded.
+
+
+Table created.
+
+
+Index created.
+
+
+Index created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Table created.
+
+
+Index created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Table created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Table created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Install Views
+
+View created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+View created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+View created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+View created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+View created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+View created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Install Package Bodies
+
+Warning: Package Body created with compilation errors.
+
+Errors for PACKAGE BODY WT_DBOUT:
+
+LINE/COL ERROR                                                                  
+-------- -----------------------------------------------------------------      
+2/4      PLS-00103: Encountered the symbol "AUTHID" when expecting one of       
+         the following:                                                         
+         is as compress compiled wrapped                                        
+                                                                                
+
+Warning: Package Body created with compilation errors.
+
+Errors for PACKAGE BODY WT_JOB:
+
+LINE/COL ERROR                                                                  
+-------- -----------------------------------------------------------------      
+79/5     PLS-00113: END identifier 'WTPLSQL' must match 'WT_JOB' at line        
+         1, column 14                                                           
+                                                                                
+
+Warning: Package Body created with compilation errors.
+
+Errors for PACKAGE BODY WT_PROFILE:
+
+LINE/COL ERROR                                                                  
+-------- -----------------------------------------------------------------      
+210/4    PL/SQL: Item ignored                                                   
+211/22   PLS-00201: identifier 'WT_DBOUT_PROFILES' must be declared             
+360/10   PL/SQL: Statement ignored                                              
+360/30   PLS-00302: component 'PROF_RUNID' must be declared                     
+379/10   PL/SQL: Statement ignored                                              
+379/10   PLS-00306: wrong number or types of arguments in call to               
+         'FIND_DBOUT'                                                           
+                                                                                
+880/16   PL/SQL: Item ignored                                                   
+880/16   PLS-00201: identifier 'WT_DBOUT_PROFILES' must be declared             
+883/7    PL/SQL: Statement ignored                                              
+
+LINE/COL ERROR                                                                  
+-------- -----------------------------------------------------------------      
+883/27   PLS-00320: the declaration of the type of this expression is           
+         incomplete or malformed                                                
+                                                                                
+889/7    PL/SQL: Statement ignored                                              
+889/10   PLS-00320: the declaration of the type of this expression is           
+         incomplete or malformed                                                
+                                                                                
+895/7    PL/SQL: Statement ignored                                              
+895/13   PLS-00320: the declaration of the type of this expression is           
+         incomplete or malformed                                                
+                                                                                
+
+LINE/COL ERROR                                                                  
+-------- -----------------------------------------------------------------      
+916/7    PL/SQL: Statement ignored                                              
+916/7    PLS-00320: the declaration of the type of this expression is           
+         incomplete or malformed                                                
+                                                                                
+930/4    PL/SQL: Statement ignored                                              
+930/4    PLS-00320: the declaration of the type of this expression is           
+         incomplete or malformed                                                
+                                                                                
+952/7    PL/SQL: Statement ignored                                              
+952/7    PLS-00320: the declaration of the type of this expression is           
+         incomplete or malformed                                                
+
+LINE/COL ERROR                                                                  
+-------- -----------------------------------------------------------------      
+                                                                                
+
+Warning: Package Body created with compilation errors.
+
+Errors for PACKAGE BODY WT_RESULT:
+
+LINE/COL ERROR                                                                  
+-------- -----------------------------------------------------------------      
+17/4     PL/SQL: Statement ignored                                              
+17/4     PLS-00201: identifier 'G_RESULTS_REC.TESTCASE' must be declared        
+18/4     PL/SQL: Statement ignored                                              
+18/4     PLS-00201: identifier 'G_RESULTS_REC.MESSAGE' must be declared         
+19/4     PL/SQL: Statement ignored                                              
+19/4     PLS-00201: identifier 'G_RESULTS_REC.STATUS' must be declared          
+20/4     PL/SQL: Statement ignored                                              
+20/4     PLS-00201: identifier 'G_RESULTS_REC.ASSERTION' must be declared       
+21/4     PL/SQL: Statement ignored                                              
+21/4     PLS-00201: identifier 'G_RESULTS_REC.DETAILS' must be declared         
+39/4     PL/SQL: Statement ignored                                              
+
+LINE/COL ERROR                                                                  
+-------- -----------------------------------------------------------------      
+39/4     PLS-00201: identifier 'G_RESULTS_REC' must be declared                 
+40/4     PL/SQL: Statement ignored                                              
+40/4     PLS-00201: identifier 'G_RESULTS_REC.TEST_RUN_ID' must be              
+         declared                                                               
+                                                                                
+41/4     PL/SQL: Statement ignored                                              
+41/4     PLS-00201: identifier 'G_RESULTS_REC.RESULT_SEQ' must be declared      
+42/4     PL/SQL: Statement ignored                                              
+42/4     PLS-00201: identifier 'G_RESULTS_REC.EXECUTED_DTM' must be             
+         declared                                                               
+                                                                                
+
+LINE/COL ERROR                                                                  
+-------- -----------------------------------------------------------------      
+43/4     PL/SQL: Statement ignored                                              
+43/4     PLS-00201: identifier 'G_RESULTS_NT' must be declared                  
+
+Warning: Package Body created with compilation errors.
+
+Errors for PACKAGE BODY WT_TESTCASE:
+
+LINE/COL ERROR                                                                  
+-------- -----------------------------------------------------------------      
+14/4     PL/SQL: SQL Statement ignored                                          
+17/11    PL/SQL: ORA-00904: "RUNNER_NAME": invalid identifier                   
+31/17    PL/SQL: SQL Statement ignored                                          
+33/24    PL/SQL: ORA-00904: "RUNNER_NAME": invalid identifier                   
+39/4     PL/SQL: SQL Statement ignored                                          
+42/11    PL/SQL: ORA-00904: "RUNNER_NAME": invalid identifier                   
+61/4     PL/SQL: Statement ignored                                              
+61/11    PLS-00201: identifier 'IS_LAST_RUN_FLAG' must be declared              
+69/4     PL/SQL: Statement ignored                                              
+69/27    PLS-00302: component 'RUNNER_NAME' must be declared                    
+73/4     PL/SQL: Statement ignored                                              
+
+LINE/COL ERROR                                                                  
+-------- -----------------------------------------------------------------      
+73/24    PLS-00302: component 'ID' must be declared                             
+74/4     PL/SQL: Statement ignored                                              
+75/28    PLS-00201: identifier 'G_TEST_RUNS_REC.RUNNER_OWNER' must be           
+         declared                                                               
+                                                                                
+78/4     PL/SQL: SQL Statement ignored                                          
+78/36    PL/SQL: ORA-00904: "G_TEST_RUNS_REC": invalid identifier               
+95/7     PL/SQL: Statement ignored                                              
+98/48    PLS-00201: identifier 'G_TEST_RUNS_REC.ID' must be declared            
+101/7    PL/SQL: Statement ignored                                              
+101/26   PLS-00201: identifier 'G_TEST_RUNS_REC' must be declared               
+
+Warning: Package Body created with compilation errors.
+
+Errors for PACKAGE BODY WT_TEST_RUNNER:
+
+LINE/COL ERROR                                                                  
+-------- -----------------------------------------------------------------      
+2/4      PLS-00103: Encountered the symbol "AUTHID" when expecting one of       
+         the following:                                                         
+         is as compress compiled wrapped                                        
+                                                                                
+
+Warning: Package Body created with compilation errors.
+
+Errors for PACKAGE BODY WT_TESTCASE:
+
+LINE/COL ERROR                                                                  
+-------- -----------------------------------------------------------------      
+2/4      PLS-00103: Encountered the symbol "AUTHID" when expecting one of       
+         the following:                                                         
+         is as compress compiled wrapped                                        
+                                                                                
+
+Warning: Package Body created with compilation errors.
+
+Errors for PACKAGE BODY WT_PERSIST_REPORT:
+
+LINE/COL ERROR                                                                  
+-------- -----------------------------------------------------------------      
+5/26     PL/SQL: Item ignored                                                   
+5/26     PLS-00201: identifier 'WT_TEST_RUN_STATS' must be declared             
+24/4     PL/SQL: Statement ignored                                              
+24/49    PLS-00320: the declaration of the type of this expression is           
+         incomplete or malformed                                                
+                                                                                
+26/4     PL/SQL: Statement ignored                                              
+26/49    PLS-00320: the declaration of the type of this expression is           
+         incomplete or malformed                                                
+                                                                                
+28/4     PL/SQL: Statement ignored                                              
+
+LINE/COL ERROR                                                                  
+-------- -----------------------------------------------------------------      
+28/49    PLS-00320: the declaration of the type of this expression is           
+         incomplete or malformed                                                
+                                                                                
+30/4     PL/SQL: Statement ignored                                              
+30/49    PLS-00320: the declaration of the type of this expression is           
+         incomplete or malformed                                                
+                                                                                
+41/4     PL/SQL: Statement ignored                                              
+41/49    PLS-00320: the declaration of the type of this expression is           
+         incomplete or malformed                                                
+                                                                                
+
+LINE/COL ERROR                                                                  
+-------- -----------------------------------------------------------------      
+43/4     PL/SQL: Statement ignored                                              
+43/49    PLS-00320: the declaration of the type of this expression is           
+         incomplete or malformed                                                
+                                                                                
+45/4     PL/SQL: Statement ignored                                              
+45/49    PLS-00320: the declaration of the type of this expression is           
+         incomplete or malformed                                                
+                                                                                
+47/4     PL/SQL: Statement ignored                                              
+47/49    PLS-00320: the declaration of the type of this expression is           
+         incomplete or malformed                                                
+
+LINE/COL ERROR                                                                  
+-------- -----------------------------------------------------------------      
+                                                                                
+49/4     PL/SQL: Statement ignored                                              
+49/49    PLS-00320: the declaration of the type of this expression is           
+         incomplete or malformed                                                
+                                                                                
+
+Configuration Data
+
+1 row deleted.
+
+
+Commit complete.
+
+new: showmode BOTH
