@@ -153,23 +153,17 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 procedure delete_records
 is
 begin
-   with q1 as (
-   select id
-    from  wt_test_runners
-   MINUS
-   select tes_runner_id ID
-    from  wt_test_runs
-    group by test_runner_id
-   )
    delete from wt_test_runners
-    where id in (select id from q1);
+    where id in (
+          select id from wt_test_runners
+          MINUS
+          select distinct test_runner_id ID from wt_test_runs);
 end delete_records;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure t_delete_records
    is
-      l_id   number;
    begin
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 't_delete_records Setup';
@@ -181,12 +175,7 @@ $THEN
          ,check_this_in   => SQL%ROWCOUNT);
       --------------------------------------  WTPLSQL Testing --
       insert into wt_test_runners (id, owner, name)
-         values (wt_test_runners_seq.nextval, C_OWNER, C_NAME)
-         returning id into l_id;
-      wt_assert.isnotnull
-         (msg_in           => 'Check for ID'
-         ,check_this_in    => l_id);
-      --------------------------------------  WTPLSQL Testing --
+         values (wt_test_runners_seq.nextval, C_OWNER, C_NAME);
       wt_assert.eqqueryvalue
          (msg_in           => 'Number of Rows should be 1'
          ,check_query_in   => 'select count(*) from wt_test_runners' || 
@@ -195,7 +184,7 @@ $THEN
          ,against_value_in => 1);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 't_delete_records Happy Path 1';
-      delete_records(l_id);
+      delete_records;
       wt_assert.eqqueryvalue
          (msg_in           => 'Number of Rows should be 0'
          ,check_query_in   => 'select count(*) from wt_test_runners' || 
@@ -204,7 +193,7 @@ $THEN
          ,against_value_in => 0);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 't_delete_records Happy Path 2';
-      delete_records(l_id);
+      delete_records;
       wt_assert.eqqueryvalue
          (msg_in           => 'Number of Rows should still be 0'
          ,check_query_in   => 'select count(*) from wt_test_runners' || 

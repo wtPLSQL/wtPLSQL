@@ -6,15 +6,15 @@
 create sequence wt_testcases_seq;
 
 create table wt_testcases
-   (id               number(38)       constraint wt_testcases_nn1 not null
-   ,name             varchar2(128)    constraint wt_testcases_nn2 not null
+   (id         number(38)       constraint wt_testcases_nn1 not null
+   ,testcase   varchar2(128)    constraint wt_testcases_nn2 not null
    ,constraint wt_testcases_pk  primary key (id)
-   ,constraint wt_testcases_nk1 unique (name)
+   ,constraint wt_testcases_nk1 unique (testcase)
    );
 
 comment on table wt_testcases is 'Test Cases Used by Test Runners.';
 comment on column wt_testcases.id is 'Primary (Surrogate) Key for each Test Case';
-comment on column wt_testcases.name is 'Natural Key. The Test Case name';
+comment on column wt_testcases.testcase is 'Natural Key. The Test Case name';
 
 grant select on wt_testcases to public;
 grant delete on wt_testcases to public;

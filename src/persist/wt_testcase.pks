@@ -10,13 +10,12 @@ as
 
    -- Return a Testcase Surrogate Key.
    -- Add the Testcase if it does not exist.
-   function load_dim
+   function dim_id
       (in_testcase   in varchar2)
    return number;
 
    -- Delete all records with no child records
-   procedure delete_records
-      (in_testcase_id  in number);
+   procedure delete_records;
    
    --   WtPLSQL Self Test Procedures
    --

@@ -1,5 +1,4 @@
 create or replace package body wt_testcase
-   authid definer
 as
 
 
@@ -144,16 +143,13 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 procedure delete_records
 is
 begin
-   with q1 as (
-   select id
-    from  wt_testcases
-   MINUS
-   select testcase_id ID
-    from  wt_test_runs
-    group by testcase_id
-   )
    delete from wt_testcases
-    where id in (select id from q1);
+    where id in (
+          select id from wt_testcases
+          MINUS
+          select distinct testcase_id ID from wt_results
+          MINUS
+          select distinct testcase_id ID from wt_testcase_runs);
 end delete_records;
 
 

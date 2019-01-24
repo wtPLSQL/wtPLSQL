@@ -17,8 +17,7 @@ as
    return number;
 
    -- Delete all records with no child records
-   procedure delete_records
-      (in_test_runner_id  in number);
+   procedure delete_records;
    
    --   WtPLSQL Self Test Procedures
    --
