@@ -27,7 +27,8 @@ begin
     where owner = in_owner
      and  name  = in_name;
    return l_id;
-exception when NO_DATA_FOUND then
+exception when NO_DATA_FOUND
+then
    return NULL;
 end get_id;
 
@@ -49,8 +50,8 @@ $THEN
       wt_assert.eqqueryvalue
          (msg_in           => 'Number of Rows should be 0'
          ,check_query_in   => 'select count(*) from wt_test_runners' || 
-                              ' where owner = ' || C_OWNER ||
-                              ' and name  = ' || C_NAME
+                              ' where owner = ''' || C_OWNER ||
+                              ''' and name  = ''' || C_NAME  || ''''
          ,against_value_in => 0);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 't_get_id Happy Path 1';
@@ -97,6 +98,7 @@ begin
       rec.name  := in_name;
       insert into wt_test_runners values rec;
    end if;
+   commit;
    return rec.id;
 end dim_id;
 
@@ -118,8 +120,8 @@ $THEN
       wt_assert.eqqueryvalue
          (msg_in           => 'Number of Rows should be 0'
          ,check_query_in   => 'select count(*) from wt_test_runners' || 
-                              ' where owner = ' || C_OWNER ||
-                              ' and name  = ' || C_NAME
+                              ' where owner = ''' || C_OWNER ||
+                              ''' and name  = ''' || C_NAME  || ''''
          ,against_value_in => 0);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 't_dim_id Happy Path 1';
@@ -149,11 +151,18 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 ------------------------------------------------------------
 procedure delete_records
-      (in_test_runner_id  in number)
 is
 begin
+   with q1 as (
+   select id
+    from  wt_test_runners
+   MINUS
+   select tes_runner_id ID
+    from  wt_test_runs
+    group by test_runner_id
+   )
    delete from wt_test_runners
-    where id = in_test_runner_id;
+    where id in (select id from q1);
 end delete_records;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -181,8 +190,8 @@ $THEN
       wt_assert.eqqueryvalue
          (msg_in           => 'Number of Rows should be 1'
          ,check_query_in   => 'select count(*) from wt_test_runners' || 
-                              ' where owner = ' || C_OWNER ||
-                              ' and name  = ' || C_NAME
+                              ' where owner = ''' || C_OWNER ||
+                              ''' and name  = ''' || C_NAME  || ''''
          ,against_value_in => 1);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 't_delete_records Happy Path 1';
@@ -190,8 +199,8 @@ $THEN
       wt_assert.eqqueryvalue
          (msg_in           => 'Number of Rows should be 0'
          ,check_query_in   => 'select count(*) from wt_test_runners' || 
-                              ' where owner = ' || C_OWNER ||
-                              ' and name  = ' || C_NAME
+                              ' where owner = ''' || C_OWNER ||
+                              ''' and name  = ''' || C_NAME  || ''''
          ,against_value_in => 0);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 't_delete_records Happy Path 2';
@@ -199,8 +208,8 @@ $THEN
       wt_assert.eqqueryvalue
          (msg_in           => 'Number of Rows should still be 0'
          ,check_query_in   => 'select count(*) from wt_test_runners' || 
-                              ' where owner = ' || C_OWNER ||
-                              ' and name  = ' || C_NAME
+                              ' where owner = ''' || C_OWNER ||
+                              ''' and name  = ''' || C_NAME  || ''''
          ,against_value_in => 0);
       commit;
    end t_delete_records;

@@ -1,4 +1,4 @@
-create or replace package body wt_testcase
+create or replace package body wt_test_run
 as
 
 
@@ -489,4 +489,4 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--
 
 
-end wt_testcase;
+end wt_test_run;

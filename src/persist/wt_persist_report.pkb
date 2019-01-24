@@ -97,10 +97,7 @@ begin
    loop
       -- Load l_rec
       l_rec.assertion       := buff.assertion;
-
-There is a problem with status here, then copy wt_test_runner.package to wt_testcase and wt_dbout
-
-      l_rec.status          := buff.status;
+      l_rec.status          := buff.status = 'PASS';
       l_rec.details         := buff.details;
       l_rec.testcase        := buff.testcase;
       l_rec.message         := buff.message;

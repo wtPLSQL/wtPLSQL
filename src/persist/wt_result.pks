@@ -2,10 +2,9 @@ create or replace package wt_result
    authid definer
 as
 
-   procedure initialize
-      (in_test_run_id   in number);
+   procedure initialize;
 
-   procedure save_results;
+   procedure finalize;
 
    procedure delete_records
       (in_test_run_id  in number);

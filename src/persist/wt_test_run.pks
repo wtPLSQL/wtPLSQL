@@ -9,8 +9,9 @@ as
 
    g_test_runs_rec  core_data.run_rec_type;
 
-   procedure insert_test_run
-      (in_test_runs_rec  in core_data.run_rec_type);
+   procedure initialize;
+
+   procedure finalize;
 
    procedure delete_runs
       (in_test_run_id  in number);

@@ -3,6 +3,12 @@ create or replace package body wt_testcase
 as
 
 
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   C_TESTCASE  CONSTANT varchar2(50) := 'WT_TESTCASE_FOR_TESTING_1234ABCD';
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
 ---------------------
 --  Public Procedures
 ---------------------
@@ -10,72 +16,132 @@ as
 
 ------------------------------------------------------------
 function get_id
-      (in_name   in varchar2)
+      (in_testcase  in varchar2)
    return number
 is
    l_id  number;
 begin
-   select id into rec.id from wt_testcases
-    where name = in_name;
-   return rec.id;
-exception
-   when NO_DATA_FOUND
-   then
-      return null;
+   select id into l_id
+    from  wt_testcases
+    where name = in_testcase;
+   return l_id;
+exception when NO_DATA_FOUND
+then
+    return NULL;
 end get_id;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_get_id
+   is
+      l_id           number;
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_get_id Setup';
+      delete from wt_testcases
+       where testcase = C_TESTCASE;
+      wt_assert.isnotnull
+         (msg_in          => 'Number of Rows deleted'  
+         ,check_this_in   => SQL%ROWCOUNT);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eqqueryvalue
+         (msg_in           => 'Number of Rows should be 0'
+         ,check_query_in   => 'select count(*) from wt_testcases' || 
+                              ' where testcase = ''' || C_TESTCASE || ''''
+         ,against_value_in => 0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_get_id Happy Path 1';
+      wt_assert.isnull
+         (msg_in            => 'Check for Null return'
+         ,check_this_in     => get_id(C_TESTCASE));
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_get_id Happy Path 2';
+      insert into wt_testcases (id, testcase)
+         values (wt_test_runners_seq.nextval, C_TESTCASE)
+         returning id into l_id;
+      wt_assert.eq
+         (msg_in           => 'Check ID return'
+         ,check_this_in    => get_id(C_TESTCASE)
+         ,against_this_in  => l_id);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_get_id Teardown';
+      delete from wt_testcases
+       where testcase = C_TESTCASE;
+      wt_assert.eq
+         (msg_in           => 'Number of Rows deleted'
+         ,check_this_in    => SQL%ROWCOUNT
+         ,against_this_in  => 1);
+      commit;
+   end t_get_id;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
 function dim_id
-      (in_name   in varchar2)
+      (in_testcase  in varchar2)
    return number
 is
+   pragma AUTONOMOUS_TRANSACTION;
    rec  wt_testcases%ROWTYPE;
 begin
-   rec.id := get_id (in_name);
+   rec.id := get_id (in_testcase);
    if rec.id is null
    then
-      rec.id   := wt_testcases_seq.nextval;
-      rec.name := in_name;
+      rec.id       := wt_testcases_seq.nextval;
+      rec.testcase := in_testcase;
       insert into wt_testcases values rec;
    end if;
+   commit;
    return rec.id;
 end dim_id;
 
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure t_get_id
+   procedure t_dim_id
    is
+      l_id           number;
    begin
       --------------------------------------  WTPLSQL Testing --
-      null;
-   end t_get_id;
-   procedure t_insert_test_runner
-   is
-      C_OWNER    CONSTANT varchar2(50) := 'WT_TEST_RUNNER_OWNER_FOR_TESTING';
-      C_NAME     CONSTANT varchar2(50) := 'WT_TEST_RUNNER_NAME_FOR_TESTING';
-      l_id       number;
-      num_recs   number;
-   begin
+      wt_assert.g_testcase := 't_dim_id Setup';
+      delete from wt_testcases
+       where testcase = C_TESTCASE;
+      wt_assert.isnotnull
+         (msg_in          => 'Number of Rows deleted'  
+         ,check_this_in   => SQL%ROWCOUNT);
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'INSERT_TEST_RUNNER Happy Path 1';
-      delete from wt_test_runners
-       where owner = C_OWNER
-        and  name  = C_NAME;
       wt_assert.eqqueryvalue
-         (msg_in             => 'Number of Starting Records'
-         ,check_query_in     => 'select count(name) from wt_test_runners' ||
-                                ' where owner = ' || C_OWNER ||
-                                ' and name = ' || C_NAME
-         ,against_value_in   => 0);
-   end t_insert_test_runner;
+         (msg_in           => 'Number of Rows should be 0'
+         ,check_query_in   => 'select count(*) from wt_testcases' || 
+                              ' where testcase = ''' || C_TESTCASE || ''''
+         ,against_value_in => 0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_dim_id Happy Path 1';
+      l_id := dim_id(C_TESTCASE);
+      wt_assert.isnotnull
+         (msg_in            => 'Check ID return 1'
+         ,check_this_in     => l_id);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_dim_id Happy Path 2';
+      wt_assert.eq
+         (msg_in            => 'Check ID return 2'
+         ,check_this_in     => dim_id(C_TESTCASE)
+         ,against_this_in   => l_id);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_dim_id Teardown';
+      delete from wt_testcases
+       where owner = C_TESTCASE;
+      wt_assert.eq
+         (msg_in           => 'Number of Rows deleted'  
+         ,check_this_in    => SQL%ROWCOUNT
+         ,against_this_in  => 1);
+      commit;
+   end t_dim_id;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
 procedure delete_records
-      (in_test_runner_id  in number)
 is
 begin
    with q1 as (
@@ -83,7 +149,7 @@ begin
     from  wt_testcases
    MINUS
    select testcase_id ID
-    from  wt_results
+    from  wt_test_runs
     group by testcase_id
    )
    delete from wt_testcases

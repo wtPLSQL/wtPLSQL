@@ -9,13 +9,9 @@ create table hooks
    ,run_string  varchar2(4000)   constraint wt_hooks_nn3 not null
    ,description varchar2(1000)
    ,constraint hooks_pk primary key (hook_name, seq)
-   ,constraint hooks_ck1 check (hook_name in ('before_test_all'
-                                             ,'before_test_run'
-                                             ,'execute_test_runner'
-                                             ,'after_assertion'
-                                             ,'after_test_run'
-                                             ,'after_test_all'
-                                             ,'ad_hoc_report'))
+   ,constraint hooks_ck1 check (
+hook_name in ('before_test_all','before_test_run','execute_test_runner','after_assertion','after_test_run','after_test_all','ad_hoc_report')
+                               )
    ,constraint hooks_ck2 check (seq > 0)
    );
 
