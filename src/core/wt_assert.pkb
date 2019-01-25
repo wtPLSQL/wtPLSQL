@@ -620,8 +620,8 @@ is
 begin
    g_rec.last_assert  := 'EQ';
    g_rec.last_msg     := msg_in;
-   g_rec.last_pass    := (xmltype.getclobval(check_this_in)  =
-                          xmltype.getclobval(against_this_in)  );
+   g_rec.last_pass    := nvl(xmltype.getclobval(check_this_in) =
+                             xmltype.getclobval(against_this_in), FALSE);
    g_rec.last_details := 'Expected "' || substr(xmltype.getclobval(against_this_in),1,1000) ||
                         '" and got "' || substr(xmltype.getclobval(check_this_in)  ,1,1000) ||
                         '"';
@@ -2356,7 +2356,7 @@ begin
       g_rec.last_pass := FALSE;
    else
       -- If either was Null, it would have been caught above.
-      g_rec.last_pass := l_sqlerrm like '%' || against_exc_in || '%';
+      g_rec.last_pass := nvl(l_sqlerrm like '%' || against_exc_in || '%', FALSE);
    end if;
    if against_exc_in is null
    then
@@ -2598,7 +2598,7 @@ begin
    open l_rc for check_query_in;
    fetch l_rc into l_rc_buff;
    close l_rc;
-   g_rec.last_pass    := (   l_rc_buff = against_value_in
+   g_rec.last_pass    := (   nvl(l_rc_buff = against_value_in, FALSE)
                           or (    l_rc_buff is null
                               and against_value_in is null
                               and null_ok_in               )  );
@@ -2636,8 +2636,8 @@ begin
    open l_rc for check_query_in;
    fetch l_rc into l_rc_buff;
    close l_rc;
-   g_rec.last_pass    := (xmltype.getclobval(l_rc_buff)       =
-                          xmltype.getclobval(against_value_in)  );
+   g_rec.last_pass    := nvl(xmltype.getclobval(l_rc_buff) =
+                             xmltype.getclobval(against_value_in), FALSE);
    g_rec.last_details := 'Expected "' || substr(xmltype.getclobval(against_value_in),1,1000) ||
                         '" and got "' || substr(xmltype.getclobval(l_rc_buff       ),1,1000) ||
                       '" for Query: ' || substr(                   check_query_in   ,1,1000) ;
@@ -2672,7 +2672,7 @@ begin
    open l_rc for check_query_in;
    fetch l_rc into l_rc_buff;
    close l_rc;
-   g_rec.last_pass    := (   l_rc_buff = against_value_in
+   g_rec.last_pass    := (   nvl(l_rc_buff = against_value_in, FALSE)
                           or (    l_rc_buff is null
                               and against_value_in is null
                               and null_ok_in               )  );
@@ -2712,7 +2712,7 @@ begin
    fetch l_rc into l_rc_buff;
    close l_rc;
    compare_results    := nvl(DBMS_LOB.COMPARE(l_rc_buff, against_value_in),-1);
-   g_rec.last_pass    := (   (compare_results = 0)
+   g_rec.last_pass    := (   nvl(compare_results = 0, FALSE)
                           or (    l_rc_buff is null
                               and against_value_in is null
                               and null_ok_in               )  );
@@ -3425,7 +3425,7 @@ is
          g_rec.last_details := SQLERRM || CHR(10) ||
                            'FAILURE of Compare Query: ' || l_query || ';';
          g_rec.last_pass    := FALSE;
-         l_success      := FALSE;
+         l_success          := FALSE;
          g_rec.raise_exception := raise_exc_in;
          process_assertion;
    end l_run_query;
@@ -3449,7 +3449,7 @@ begin
    end if;
    l_run_query;
    if NOT l_success then return; end if;
-   g_rec.last_pass    := (l_check_cnt = l_cnt);
+   g_rec.last_pass    := nvl(l_check_cnt = l_cnt, FALSE);
    --
    g_rec.last_details := 'Expected ' || l_cnt       || ' rows from "' || against_this_in ||
                         '" and got ' || l_check_cnt || ' rows from "' || check_this_in   ||

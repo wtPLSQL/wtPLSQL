@@ -361,8 +361,7 @@ $THEN
          msg_in           => 'l_run_recTEST.error_message',
          check_query_in   => 'select 1 from dual where ''' ||
                               l_run_recTEST.error_message ||
-                              ''' like ''%Found too many database objects "' ||
-                              g_DBOUT || '".%''',
+                              ''' like ''%Found too many database objects "WTPLSQL".%''',
          against_value_in => 1);
    end t_check_dbout;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
@@ -390,15 +389,15 @@ begin
    for buff in (
       select component, version
        from  wt_version  t1
-       where (component, install_dtm) in (
-              select t2.component, max(t2.install_dtm)
+       where (component, install_tstmp) in (
+              select t2.component, max(t2.install_tstmp)
                from  wt_version  t2
                group by t2.component)
         and  action != 'REMOVE'
-       order by install_dtm )
+       order by install_tstmp )
    loop
-      ret_str := ret_str || buff.component || ' ' ||
-                            buff.version   || ', ';
+      ret_str := ret_str || buff.component            || ' ' ||
+               trim(to_char(buff.version,'9999.099')) || ', ';
    end loop;
    return substr(ret_str, 1, length(ret_str)-2);
 exception when NO_DATA_FOUND
@@ -413,22 +412,51 @@ $THEN
       existing_version   varchar2(4000);
    begin
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Show Version Happy Path';
+      wt_assert.g_testcase := 'Show Version Setup';
       existing_version := show_version;
       wt_assert.isnotnull (
-         msg_in        => 'Test Existing Version',
+         msg_in        => 'Saved Original Version',
          check_this_in => existing_version);
       --------------------------------------  WTPLSQL Testing --
-      insert into wt_version (install_dtm, action, component, version)
-         values (to_date('31-DEC-4000','DD-MON-YYYY'), 'INSTALL', 'TESTING', 999);
+      wt_assert.g_testcase := 'Show Version Happy Path 1';
+      insert into wt_version (component, version, action)
+         values ('TESTING', 1.01, 'INSTALL');
       wt_assert.isnotnull (
          msg_in          => 'Show New Version',
          check_this_in   => show_version);
       wt_assert.this (
          msg_in          => 'Test New Version',
-         check_this_in   => regexp_like(show_version, 'TESTING.*999'));
+         check_this_in   => regexp_like(show_version, 'TESTING 1[.]010'));
       --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Show Version Happy Path 2';
+      insert into wt_version (component, version, action)
+         values ('TESTING', 1.02, 'UPDATE');
+      wt_assert.isnotnull (
+         msg_in          => 'Show New Version',
+         check_this_in   => show_version);
+      wt_assert.this (
+         msg_in          => 'Test New Version',
+         check_this_in   => regexp_like(show_version, 'TESTING 1[.]020'));
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Show Version Happy Path 3';
+      insert into wt_version (component, version, action)
+         values ('TESTING', 1.02, 'REMOVE');
+      wt_assert.isnotnull (
+         msg_in          => 'Show New Version',
+         check_this_in   => show_version);
+      wt_assert.this (
+         msg_in          => 'Test New Version',
+         check_this_in   => not regexp_like(show_version, 'TESTING'));
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Show Version Teardown';
       rollback;
+      delete from wt_version where component = 'TESTING';
+      wt_assert.eq (
+         msg_in          => 'Records Deleted',
+         check_this_in   => SQL%ROWCOUNT,
+         against_this_in => 0);
+      commit;
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in          => 'Return to Existing Version',
          check_this_in   => show_version,

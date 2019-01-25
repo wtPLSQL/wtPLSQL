@@ -226,6 +226,9 @@ insert into hooks (hook_name, seq, run_string)
 insert into hooks (hook_name, seq, run_string)
    values ('ad_hoc_report', 20, 'begin wt_core_report.ad_hoc_result; end;');
 
+insert into wt_versions (component, version, action)
+   values ('Core', 1.002, 'INSTALL');
+
 commit;
 
 set showmode on

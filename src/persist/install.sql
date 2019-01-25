@@ -159,10 +159,8 @@ insert into hooks (hook_name, seq, run_string)
    values ('after_test_run', 30, 'begin wt_test_run.finalize; end;');
 */
 
-insert into wt_versions
-      (INSTALL_DTM, ACTION, COMPONENT, VERSION)
-   values
-      (sysdate, 'INSTALL', 'Persist', 1.2);
+insert into wt_versions (component, version, action)
+   values ('Persist', 1.002, 'INSTALL');
 
 commit;
 

@@ -210,7 +210,7 @@ begin
                                   ,substr(g_run_rec.test_runner_owner || '.' ||
                                           g_run_rec.test_runner_name, 1, 128));
    l_results_rec.assertion  := in_assertion;
-   l_results_rec.pass       := in_pass;
+   l_results_rec.pass       := nvl(in_pass,FALSE);
    l_results_rec.details    := in_details;
    l_results_rec.message    := in_message;
    -- g_results_nt(N-1).executed_dtm has the last execution time
