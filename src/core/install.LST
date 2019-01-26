@@ -207,12 +207,6 @@ new   1: create or replace public synonym wt_version for wtp.wt_versions
 Synonym created.
 
 
-1 row created.
-
-
-Commit complete.
-
-
 Table created.
 
 
@@ -303,6 +297,9 @@ Package body created.
 No errors.
 
 Configuration Data
+
+1 row created.
+
 
 1 row created.
 

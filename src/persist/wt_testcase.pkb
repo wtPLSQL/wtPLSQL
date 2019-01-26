@@ -22,7 +22,7 @@ is
 begin
    select id into l_id
     from  wt_testcases
-    where name = in_testcase;
+    where testcase = in_testcase;
    return l_id;
 exception when NO_DATA_FOUND
 then
@@ -56,7 +56,7 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 't_get_id Happy Path 2';
       insert into wt_testcases (id, testcase)
-         values (wt_test_runners_seq.nextval, C_TESTCASE)
+         values (wt_testcases_seq.nextval, C_TESTCASE)
          returning id into l_id;
       wt_assert.eq
          (msg_in           => 'Check ID return'
@@ -129,7 +129,7 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 't_dim_id Teardown';
       delete from wt_testcases
-       where owner = C_TESTCASE;
+       where testcase = C_TESTCASE;
       wt_assert.eq
          (msg_in           => 'Number of Rows deleted'  
          ,check_this_in    => SQL%ROWCOUNT
@@ -152,14 +152,55 @@ begin
           select distinct testcase_id ID from wt_testcase_runs);
 end delete_records;
 
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_delete_records
+   is
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_delete_records Setup';
+      delete from wt_testcases
+       where testcase = C_TESTCASE;
+      wt_assert.isnotnull
+         (msg_in          => 'Number of Rows deleted'  
+         ,check_this_in   => SQL%ROWCOUNT);
+      --------------------------------------  WTPLSQL Testing --
+      insert into wt_testcases (id, testcase)
+         values (wt_testcases_seq.nextval, C_TESTCASE);
+      wt_assert.eqqueryvalue
+         (msg_in           => 'Number of Rows should be 1'
+         ,check_query_in   => 'select count(*) from wt_testcases' || 
+                              ' where testcase = ''' || C_TESTCASE  || ''''
+         ,against_value_in => 1);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_delete_records Happy Path 1';
+      delete_records;
+      wt_assert.eqqueryvalue
+         (msg_in           => 'Number of Rows should be 0'
+         ,check_query_in   => 'select count(*) from wt_testcases' || 
+                              ' where testcase = ''' || C_TESTCASE  || ''''
+         ,against_value_in => 0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_delete_records Happy Path 2';
+      delete_records;
+      wt_assert.eqqueryvalue
+         (msg_in           => 'Number of Rows should still be 0'
+         ,check_query_in   => 'select count(*) from wt_testcases' || 
+                              ' where testcase = ''' || C_TESTCASE  || ''''
+         ,against_value_in => 0);
+      commit;
+   end t_delete_records;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 
 --==============================================================--
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure WTPLSQL_RUN  --% WTPLSQL SET DBOUT "WT_TEST_RUNNER:PACKAGE BODY" %--
+   procedure WTPLSQL_RUN
    is
    begin
       --------------------------------------  WTPLSQL Testing --
+      wtplsql.g_DBOUT := 'WT_TEST_RUNNER:PACKAGE BODY';
       t_get_id;
       t_dim_id;
       t_delete_records;

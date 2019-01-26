@@ -14,7 +14,7 @@ select run.id                TEST_RUN_ID
       ,run.error_message
       ,res.result_seq    
       ,res.testcase_id   
-      ,tc.name               TESTCASE
+      ,tc.testcase
       ,res.executed_dtm  
       ,res.interval_msecs
       ,res.assertion     

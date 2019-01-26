@@ -1833,9 +1833,10 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure WTPLSQL_RUN  --% WTPLSQL SET DBOUT "WT_PROFILER:PACKAGE BODY" %--
+   procedure WTPLSQL_RUN
    is
    begin
+      wtplsql.g_DBOUT := 'WT_PROFILER:PACKAGE BODY';
       select username into g_current_user from user_users;
       t_get_error_msg;
       t_delete_profiler_recs;

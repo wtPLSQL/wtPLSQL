@@ -3,7 +3,7 @@ create or replace package wt_testcase
 as
 
    -- Return a Testcase Surrogate Key.
-   -- Return NULL is the Testcase does not exist.
+   -- Return NULL if the Testcase does not exist.
    function get_id
       (in_testcase   in varchar2)
    return number;

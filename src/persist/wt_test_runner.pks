@@ -3,7 +3,7 @@ create or replace package wt_test_runner
 as
 
    -- Return a Test Runner Surrogate Key.
-   -- Return NULL is the Test Runner does not exist.
+   -- Return NULL if the Test Runner does not exist.
    function get_id
       (in_owner  in varchar2
       ,in_name   in varchar2)

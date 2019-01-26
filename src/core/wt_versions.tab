@@ -5,10 +5,9 @@
 
 create table wt_versions
    (install_tstmp  timestamp with local time zone   default systimestamp
-                                   constraint wt_vesions_nn1 not null
-   ,component      varchar2(15)    constraint wt_vesions_nn2 not null
-   ,version        number          constraint wt_vesions_nn3 not null
-   ,action         varchar2(15)    constraint wt_vesions_nn4 not null
+   ,component      varchar2(15)    constraint wt_vesions_nn1 not null
+   ,version        number          constraint wt_vesions_nn2 not null
+   ,action         varchar2(15)    constraint wt_vesions_nn3 not null
    ,notes          varchar2(4000)
    ,constraint wt_versions_pk primary key (install_tstmp)
    ,constraint wt_versions_ck1 check (action in ('INSTALL','UPDATE','REMOVE'))

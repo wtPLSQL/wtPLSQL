@@ -472,10 +472,11 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure WTPLSQL_RUN  --% WTPLSQL SET DBOUT "WT_RESULT:PACKAGE BODY" %--
+   procedure WTPLSQL_RUN
    is
    begin
       --------------------------------------  WTPLSQL Testing --
+      wtplsql.g_DBOUT := 'WT_RESULT:PACKAGE BODY';
       t_initialize;
       t_finalize;
       t_save_testing;

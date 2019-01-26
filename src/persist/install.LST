@@ -906,16 +906,9 @@ Grant succeeded.
 
 Install Package Bodies
 
-Warning: Package Body created with compilation errors.
+Package body created.
 
-Errors for PACKAGE BODY WT_DBOUT:
-
-LINE/COL ERROR                                                                  
--------- -----------------------------------------------------------------      
-2/4      PLS-00103: Encountered the symbol "AUTHID" when expecting one of       
-         the following:                                                         
-         is as compress compiled wrapped                                        
-                                                                                
+No errors.
 
 Warning: Package Body created with compilation errors.
 
@@ -1016,7 +1009,7 @@ LINE/COL ERROR
 
 Warning: Package Body created with compilation errors.
 
-Errors for PACKAGE BODY WT_TESTCASE:
+Errors for PACKAGE BODY WT_TEST_RUN:
 
 LINE/COL ERROR                                                                  
 -------- -----------------------------------------------------------------      
@@ -1026,47 +1019,33 @@ LINE/COL ERROR
 33/24    PL/SQL: ORA-00904: "RUNNER_NAME": invalid identifier                   
 39/4     PL/SQL: SQL Statement ignored                                          
 42/11    PL/SQL: ORA-00904: "RUNNER_NAME": invalid identifier                   
-61/4     PL/SQL: Statement ignored                                              
-61/11    PLS-00201: identifier 'IS_LAST_RUN_FLAG' must be declared              
 69/4     PL/SQL: Statement ignored                                              
 69/27    PLS-00302: component 'RUNNER_NAME' must be declared                    
 73/4     PL/SQL: Statement ignored                                              
-
-LINE/COL ERROR                                                                  
--------- -----------------------------------------------------------------      
 73/24    PLS-00302: component 'ID' must be declared                             
 74/4     PL/SQL: Statement ignored                                              
-75/28    PLS-00201: identifier 'G_TEST_RUNS_REC.RUNNER_OWNER' must be           
-         declared                                                               
-                                                                                
+
+LINE/COL ERROR                                                                  
+-------- -----------------------------------------------------------------      
+75/44    PLS-00302: component 'RUNNER_OWNER' must be declared                   
 78/4     PL/SQL: SQL Statement ignored                                          
-78/36    PL/SQL: ORA-00904: "G_TEST_RUNS_REC": invalid identifier               
+78/16    PL/SQL: ORA-00947: not enough values                                   
 95/7     PL/SQL: Statement ignored                                              
-98/48    PLS-00201: identifier 'G_TEST_RUNS_REC.ID' must be declared            
+98/64    PLS-00302: component 'ID' must be declared                             
 101/7    PL/SQL: Statement ignored                                              
-101/26   PLS-00201: identifier 'G_TEST_RUNS_REC' must be declared               
-
-Warning: Package Body created with compilation errors.
-
-Errors for PACKAGE BODY WT_TEST_RUNNER:
-
-LINE/COL ERROR                                                                  
--------- -----------------------------------------------------------------      
-2/4      PLS-00103: Encountered the symbol "AUTHID" when expecting one of       
-         the following:                                                         
-         is as compress compiled wrapped                                        
+101/26   PLS-00382: expression is of wrong type                                 
+102/7    PL/SQL: Statement ignored                                              
+102/7    PLS-00306: wrong number or types of arguments in call to               
+         'INSERT_TEST_RUN'                                                      
                                                                                 
 
-Warning: Package Body created with compilation errors.
+Package body created.
 
-Errors for PACKAGE BODY WT_TESTCASE:
+No errors.
 
-LINE/COL ERROR                                                                  
--------- -----------------------------------------------------------------      
-2/4      PLS-00103: Encountered the symbol "AUTHID" when expecting one of       
-         the following:                                                         
-         is as compress compiled wrapped                                        
-                                                                                
+Package body created.
+
+No errors.
 
 Warning: Package Body created with compilation errors.
 
@@ -1074,57 +1053,36 @@ Errors for PACKAGE BODY WT_PERSIST_REPORT:
 
 LINE/COL ERROR                                                                  
 -------- -----------------------------------------------------------------      
-5/26     PL/SQL: Item ignored                                                   
-5/26     PLS-00201: identifier 'WT_TEST_RUN_STATS' must be declared             
-24/4     PL/SQL: Statement ignored                                              
-24/49    PLS-00320: the declaration of the type of this expression is           
-         incomplete or malformed                                                
-                                                                                
-26/4     PL/SQL: Statement ignored                                              
-26/49    PLS-00320: the declaration of the type of this expression is           
-         incomplete or malformed                                                
-                                                                                
-28/4     PL/SQL: Statement ignored                                              
+100/7    PL/SQL: Statement ignored                                              
+100/13   PLS-00302: component 'STATUS' must be declared                         
+102/7    PL/SQL: Statement ignored                                              
+102/37   PLS-00302: component 'TESTCASE' must be declared                       
+116/10   PL/SQL: Statement ignored                                              
+116/37   PLS-00302: component 'RUNNER_OWNER' must be declared                   
+141/6    PL/SQL: Statement ignored                                              
+141/33   PLS-00302: component 'DBOUT_OWNER' must be declared                    
+149/4    PL/SQL: Statement ignored                                              
+149/23   PLS-00302: component 'PROFILER_RUNID' must be declared                 
+161/7    PL/SQL: SQL Statement ignored                                          
 
 LINE/COL ERROR                                                                  
 -------- -----------------------------------------------------------------      
-28/49    PLS-00320: the declaration of the type of this expression is           
-         incomplete or malformed                                                
-                                                                                
-30/4     PL/SQL: Statement ignored                                              
-30/49    PLS-00320: the declaration of the type of this expression is           
-         incomplete or malformed                                                
-                                                                                
-41/4     PL/SQL: Statement ignored                                              
-41/49    PLS-00320: the declaration of the type of this expression is           
-         incomplete or malformed                                                
-                                                                                
-
-LINE/COL ERROR                                                                  
--------- -----------------------------------------------------------------      
-43/4     PL/SQL: Statement ignored                                              
-43/49    PLS-00320: the declaration of the type of this expression is           
-         incomplete or malformed                                                
-                                                                                
-45/4     PL/SQL: Statement ignored                                              
-45/49    PLS-00320: the declaration of the type of this expression is           
-         incomplete or malformed                                                
-                                                                                
-47/4     PL/SQL: Statement ignored                                              
-47/49    PLS-00320: the declaration of the type of this expression is           
-         incomplete or malformed                                                
-
-LINE/COL ERROR                                                                  
--------- -----------------------------------------------------------------      
-                                                                                
-49/4     PL/SQL: Statement ignored                                              
-49/49    PLS-00320: the declaration of the type of this expression is           
-         incomplete or malformed                                                
-                                                                                
+169/14   PL/SQL: ORA-00942: table or view does not exist                        
+181/7    PL/SQL: Statement ignored                                              
+181/14   PLS-00364: loop index variable 'BUFF' use is invalid                   
+185/7    PL/SQL: Statement ignored                                              
+185/17   PLS-00364: loop index variable 'BUFF' use is invalid                   
+216/7    PL/SQL: SQL Statement ignored                                          
+225/28   PL/SQL: ORA-00904: "RUNNER_NAME": invalid identifier                   
+229/7    PL/SQL: Statement ignored                                              
+229/26   PLS-00364: loop index variable 'BUFF' use is invalid                   
 
 Configuration Data
 
 1 row deleted.
+
+
+1 row created.
 
 
 Commit complete.

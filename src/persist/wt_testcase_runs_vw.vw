@@ -6,7 +6,7 @@
 create or replace force view wt_testcase_runs_vw as
 select tcr.test_run_id
       ,tcr.testcase_id
-      ,tc.name                 TESTCASE
+      ,tc.testcase
       ,run.test_runner_id
       ,tr.owner                TEST_RUNNER_OWNER
       ,tr.name                 TEST_RUNNER_NAME
