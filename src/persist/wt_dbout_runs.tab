@@ -1,0 +1,51 @@
+
+--
+--  DBOUT Runs Table Installation
+--
+
+create sequence wt_dbout_runs_seq order;
+
+grant select on wt_dbout_runs_seq to public;
+
+create table wt_dbout_runs
+   (test_run_id       number(38)
+   ,profiler_runid    number(38)
+   ,trigger_offset    number(6)
+   ,coverage_pct      number(3)
+   ,profiled_lines    number(6)
+   ,executed_lines    number(6)
+   ,ignored_lines     number(6)
+   ,excluded_lines    number(6)
+   ,notexec_lines     number(6)
+   ,unknown_lines     number(6)
+   ,exec_min_usecs    number(11)
+   ,exec_avg_usecs    number(11)
+   ,exec_max_usecs    number(11)
+   ,exec_tot_usecs    number(11)
+   ,constraint wt_dbout_runs_pk primary key (test_run_id)
+   ,constraint wt_dbout_runs_nk1 unique (profiler_runid)
+   ,constraint wt_dbout_runs_fk1 foreign key (test_run_id)
+       references wt_test_runs (id)
+   ,constraint wt_dbout_runs_fk2 foreign key (profiler_runid)
+       references plsql_profiler_runs (runid) disable
+   ) pctfree 0;
+
+comment on table wt_dbout_runs is 'Database Object Under Test Run data for each Test Run.';
+comment on column wt_dbout_runs.test_run_id is 'Primary (Surrogate) Key of each Test Run';
+comment on column wt_dbout_runs.trigger_offset is 'Calculated offset from start of Trigger Source to start of Trigger PL/SQL Block.';
+comment on column wt_dbout_runs.profiler_runid is 'DBMS_PROFILER unique run identifier from plsql_profiler_runnumber sequence';
+comment on column wt_dbout_runs.coverage_pct is 'Percentage of executed lines to non-ignored, non-excluded lines';
+comment on column wt_dbout_runs.profiled_lines is 'Total number of source lines as counted by DBMS_PROFILER';
+comment on column wt_dbout_runs.executed_lines is 'Number of source lines executed';
+comment on column wt_dbout_runs.ignored_lines is 'Number of source lines ignored as uncountable';
+comment on column wt_dbout_runs.excluded_lines is 'Number of declaration source lines (non-executable) excluded';
+comment on column wt_dbout_runs.notexec_lines is 'Number of source lines not executed';
+comment on column wt_dbout_runs.unknown_lines is 'Number of source lines with unknown DBMS_PROFILER metrics';
+comment on column wt_dbout_runs.exec_min_usecs is 'Minumum execution time for a line of source in microseconds';
+comment on column wt_dbout_runs.exec_avg_usecs is 'Average execution time for a line of source in microseconds';
+comment on column wt_dbout_runs.exec_max_usecs is 'Maximum execution time for a line of source in microseconds';
+comment on column wt_dbout_runs.exec_tot_usecs is 'Total (Sum) of execution times for a line of source in microseconds';
+
+grant select on wt_dbout_runs to public;
+grant insert on wt_dbout_runs to public;
+grant delete on wt_dbout_runs to public;

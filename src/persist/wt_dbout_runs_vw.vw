@@ -16,24 +16,26 @@ select run.id                TEST_RUN_ID
       ,run.end_dtm
       ,run.is_last_run
       ,run.error_message
-      ,run.profiler_runid
-      ,run.trigger_offset 
-      ,run.coverage_pct
-      ,run.profiled_lines
-      ,run.executed_lines
-      ,run.ignored_lines
-      ,run.excluded_lines
-      ,run.notexec_lines
-      ,run.unknown_lines
-      ,run.exec_min_usecs
-      ,run.exec_avg_usecs
-      ,run.exec_max_usecs
-      ,run.exec_tot_usecs
+      ,dbr.profiler_runid
+      ,dbr.trigger_offset 
+      ,dbr.coverage_pct
+      ,dbr.profiled_lines
+      ,dbr.executed_lines
+      ,dbr.ignored_lines
+      ,dbr.excluded_lines
+      ,dbr.notexec_lines
+      ,dbr.unknown_lines
+      ,dbr.exec_min_usecs
+      ,dbr.exec_avg_usecs
+      ,dbr.exec_max_usecs
+      ,dbr.exec_tot_usecs
  from  wt_test_runs  run
        join wt_dbouts  db
             on  db.id = run.dbout_id
        join wt_test_runners  tr
             on  tr.id = run.test_runner_id
+  left join wt_dbout_runs  dbr
+            on  run.id = dbr.test_run_id
  where run.dbout_id is not null;
 
 comment on table wt_dbout_runs_vw is 'Test Run data for each execution of a Test Runner.';

@@ -3,78 +3,16 @@ as
 
 
 ------------------------------------------------------------
--- Use the CLEAR_LAST_RUN procedure to clear the IS_LAST_RUN
---   flag before running this procedure.
-procedure clear_last_run
-      (in_runner_owner   in varchar2
-      ,in_runner_name    in varchar2
-      ,in_last_run_flag  in varchar2)
-as
-begin
-   update wt_test_runs
-     set  is_last_run = NULL
-    where runner_owner = in_runner_owner
-     and  runner_name  = in_runner_name
-     and  is_last_run  = in_last_run_flag;
-end clear_last_run;
-
-
-------------------------------------------------------------
--- Use the SET_LAST_RUN procedure to set the IS_LAST_RUN flag
---   after running this procedure.
-procedure set_last_run
-      (in_runner_owner   in varchar2
-      ,in_runner_name    in varchar2
-      ,in_last_run_flag  in varchar2)
-as
-begin
-   for buff in (select * from wt_test_runs
-                 where runner_owner = in_runner_owner
-                  and  runner_name  = in_runner_name
-                  and  is_last_run  = in_last_run_flag )
-   loop
-      -- Abort if a IS_LAST_RUN flag is already set
-      return;
-   end loop;
-   update wt_test_runs
-     set  is_last_run = in_last_run_flag
-    where runner_owner = in_runner_owner
-     and  runner_name  = in_runner_name
-     and  start_dtm = (
-          select max(trn.start_dtm)
-           from  wt_test_runs  trn
-           where trn.runner_owner = in_runner_owner
-            and  trn.runner_name  = in_runner_name  );
-end set_last_run;
-
-
----------------------
---  Public Procedures
----------------------
-
-
-------------------------------------------------------------
-function get_last_run_flag
-      return varchar2
-is
-begin
-   return IS_LAST_RUN_FLAG;
-end get_last_run_flag;
-
-------------------------------------------------------------
 procedure insert_test_run
-      (in_test_runs_rec  in core_data.run_rec_type)
 is
 begin
-   if core_data.g_run_rec.runner_name is null
+   if g_test_runs_rec.test_run_id is null
    then
       return;
    end if;
-   core_data.g_run_rec.id      := wt_test_runs_seq.nextval;
    clear_last_run
-      (in_runner_owner  => g_test_runs_rec.runner_owner
-      ,in_runner_name   => g_test_runs_rec.runner_name
-      ,in_last_run_flag => IS_LAST_RUN_FLAG);
+      (in_test_runner_id  => g_test_runs_rec.test_runner_id);
+   g_test_runs_rec.is_last_run := C_LAST_RUN_FLAG;
    insert into wt_test_runs values g_test_runs_rec;
 end insert_test_run;
 
@@ -129,59 +67,145 @@ $THEN
    end t_insert_test_run;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
-------------------------------------------------------------
-procedure delete_run
-      (in_test_run_id  in number)
-is
-   r_owner   varchar2(200);
-   r_name    varchar2(200);
-begin
-   hook.before_delete_runs;
-   wt_test_run_stat.delete_records(in_test_run_id);
-   wt_profiler.delete_records(in_test_run_id);
-   wt_result.delete_records(in_test_run_id);
-   wt_test_run.delete_records(in_test_run_id);
-   hook.after_delete_runs;
-end delete_run;
 
-procedure delete_runner
-      (in_test_runner_id  in number
-      ,in_keep_records    in number  default null)
+---------------------
+--  Public Procedures
+---------------------
+
+
+------------------------------------------------------------
+procedure initialize
+is
+   l_test_runs_recNULL  wt_test_runs%ROWTYPE;
+begin
+   g_test_runs_rec := l_test_runs_recNULL;
+   wt_result.initialize;
+   wt_profile.initialize;
+end initialize;
+
+
+------------------------------------------------------------
+procedure finalize
+is 
+begin
+   --
+   g_test_runs_rec.id                := wt_test_runs_seq.nextval;
+   g_test_runs_rec.test_runner_id    := wt_rest_runner.dim_id
+                                           (core_data.g_run_rec.test_runner_owner
+                                           ,core_data.g_run_rec.test_runner_name);
+   g_test_runs_rec.start_dtm         := core_data.g_run_rec.start_dtm;
+   g_test_runs_rec.end_dtm           := core_data.g_run_rec.end_dtm;
+   g_test_runs_rec.runner_sec        := core_data.g_run_rec.runner_sec;
+   g_test_runs_rec.error_message     := core_data.g_run_rec.error_message;
+   g_test_runs_rec.tc_cnt            := core_data.g_run_rec.tc_cnt;
+   g_test_runs_rec.tc_fail           := core_data.g_run_rec.tc_fail;
+   if g_test_runs_rec.tc_cnt != 0
+   then
+      g_test_runs_rec.tc_yield_pct := (g_test_runs_rec.tc_cnt - g_test_runs_rec.tc_fail) /
+                                       g_test_runs_rec.tc_cnt;
+   end if;
+   g_test_runs_rec.asrt_fst_dtm      := core_data.g_run_rec.asrt_fst_dtm;
+   g_test_runs_rec.asrt_lst_dtm      := core_data.g_run_rec.asrt_lst_dtm;
+   g_test_runs_rec.asrt_cnt          := core_data.g_run_rec.asrt_cnt;
+   g_test_runs_rec.asrt_fail         := core_data.g_run_rec.asrt_fail;
+   if g_test_runs_rec.asrt_cnt != 0
+   then
+      g_test_runs_rec.asrt_yield_pct := (g_test_runs_rec.asrt_cnt - g_test_runs_rec.asrt_fail) /
+                                         g_test_runs_rec.asrt_cnt;
+   end if;
+   g_test_runs_rec.asrt_min_msec     := core_data.g_run_rec.asrt_min_msec;
+   g_test_runs_rec.asrt_avg_msec     := core_data.g_run_rec.asrt_avg_msec;
+   g_test_runs_rec.asrt_max_msec     := core_data.g_run_rec.asrt_max_msec;
+   g_test_runs_rec.asrt_tot_msec     := core_data.g_run_rec.asrt_tot_msec;
+   g_test_runs_rec.asrt_std_msec     := core_data.g_run_rec.asrt_std_msec;
+   g_test_runs_rec.asrt_sos_msec     := core_data.g_run_rec.asrt_sos_msec;
+   g_test_runs_rec.dbout_id          := wt_dbout.dim_id
+                                           (core_data.g_run_rec.dbout_owner
+                                           ,core_data.g_run_rec.dbout_name
+                                           ,core_data.g_run_rec.dbout_type);
+   insert_test_run;
+   --
+   wt_result.finalize;
+   wt_profile.finalize;
+   --
+   commit;
+end finalize;
+
+
+------------------------------------------------------------
+function get_last_run_flag
+      return varchar2
 is
 begin
-   for buff in (select id from wt_test_runs
+   return LAST_RUN_FLAG;
+end get_last_run_flag;
+
+
+------------------------------------------------------------
+-- Use the CLEAR_LAST_RUN procedure to clear the LAST_RUN_FLAG
+--   flag before running this procedure.
+procedure clear_last_run
+      (in_test_runner_id   in numnber)
+as
+begin
+   update wt_test_runs
+     set  is_last_run = NULL
+    where test_runner_id = in_test_runner_id
+     and  is_last_run  = LAST_RUN_FLAG;
+end clear_last_run;
+
+
+------------------------------------------------------------
+-- Use the SET_LAST_RUN procedure to set the LAST_RUN flag
+--   after running this procedure.
+procedure set_last_run
+      (in_test_runner_id   in number)
+as
+   num_rows  number;
+begin
+   select count(is_last_run)
+    into  num_rows
+    from  wt_test_runs
+    where test_runner_id = in_test_runner_id
+     and  is_last_run  = LAST_RUN_FLAG;
+   if num_rows > 0
+   then
+      -- Abort if a LAST_RUN_FLAG is already set
+      return;
+   end if;
+   --update the latest as the LAST_RUN
+   update wt_test_runs
+     set  is_last_run = LAST_RUN_FLAG
+    where test_runner_id = in_test_runner_id
+     and  start_dtm = (
+          select max(tr.start_dtm)
+           from  wt_test_runs  tr
+           where tr.test_runner_id = in_test_runner_id);
+end set_last_run;
+
+------------------------------------------------------------
+procedure delete_runs
+   (in_test_runner_id  in number)
+is
+begin
+   for buff in (select rownum, id from wt_test_runs
                  where test_runner_id = in_test_runner_id
-                 order by start_dtm desc, id desc)
+                 order by start_dtm, id)
    loop
       -- Keep the last test runs for this Test Runner
-      if num_recs > nvl(in_keep_records, g_keep_num_recs)
+      if buff.rownum > g_keep_num_recs
       then
-       -- Autonomous Transaction COMMIT
-       delete_runs(buff.id);
+         -- Autonomous Transaction COMMIT
+         wt_profile.delete_run(buff.id);
+         wt_result.delete_run(buff.id);
+         delete_run_id(buff.id);
       end if;
    end loop;
-   if in_keep_records = 0
-   then
-      surrogate_key.delete_records(in_test_runner_id);
-   end if;
-end delete_runner;
-
-procedure delete_runner
-      (in_runner_owner  in varchar2
-      ,in_runner_name   in varchar2
-      ,in_keep_records  in number  default null)
-is
-   l_id  number;
-begin
-   select id into l_id
-    from  wt_test_runners
-    where owner = in_runner_owner
-     and  name  = in_runner_name;
-   delete_runner(l_id, in_keep_records);
-exception
-   when no_data_found then
-      null;   -- Nothing to delete. Return silently.
-end delete_runner;
+exception when others then
+   core_data.run_error('Test Runner ID: ' || in_test_runner_id || CHR(10) ||
+	                    dbms_utility.format_error_stack ||
+                       dbms_utility.format_error_backtrace);
+end delete_runs;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
@@ -290,36 +314,17 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
-procedure delete_runs
-      (in_test_run_id  in number)
+procedure delete_run_id
+      (in_test_run_id  in number  default null)
 is
-   r_owner   varchar2(200);
-   r_name    varchar2(200);
 begin
-   wt_hook.before_delete_runs;
-   wt_test_run_stat.delete_records(in_test_run_id);
-   wt_profiler.delete_records(in_test_run_id);
-   wt_result.delete_records(in_test_run_id);
-   begin
-      --
-      select runner_owner, runner_name
-        into r_owner,      r_name
-       from  wt_test_runs
-       where id = in_test_run_id;
-      --
-      delete from wt_test_runs
-       where id = in_test_run_id;
-      --
-      set_last_run(in_runner_owner  => r_owner
-                  ,in_runner_name   => r_name
-                  ,in_last_run_flag => IS_LAST_RUN_FLAG);
-      --
-   exception when NO_DATA_FOUND
-   then
-      null;  -- Ignore Error
-   end;
-   wt_hook.after_delete_runs;
-end delete_runs;
+   delete from wt_test_runs
+    where id = in_test_run_id;
+   set_last_run(in_runner_owner  => core_data.g_run_rec.test_owner
+               ,in_runner_name   => core_data.g_run_rec.test_name);
+exception when NO_DATA_FOUND then
+   null;  -- Ignore Error
+end delete_run_id;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
@@ -426,6 +431,7 @@ $THEN
    end t_delete_run_id;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
+
 --==============================================================--
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
@@ -479,11 +485,19 @@ $THEN
                ,against_value_in   => 0);
    end t_test_runs_rec_and_table;
 
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
+--==============================================================--
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
    procedure WTPLSQL_RUN
    is
    begin
       --------------------------------------  WTPLSQL Testing --
+      wtplsql.g_DBOUT := 'WT_TEST_RUN:PACKAGE BODY';
       t_insert_test_run;
+      t_test_runs_rec_table;
    end;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--
