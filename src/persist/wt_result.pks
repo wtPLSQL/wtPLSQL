@@ -4,9 +4,10 @@ as
 
    procedure initialize;
 
-   procedure finalize;
+   procedure finalize
+      (in_test_run_id  in number);
 
-   procedure delete_records
+   procedure delete_run_id
       (in_test_run_id  in number);
 
    --   WtPLSQL Self Test Procedures
