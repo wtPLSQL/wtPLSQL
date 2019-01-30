@@ -12,8 +12,6 @@ as
 
    g_keep_num_recs    number := 20;
 
-   g_test_runs_rec  wt_test_runs%ROWTYPE;
-
    procedure initialize;
 
    procedure finalize;

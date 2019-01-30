@@ -1,6 +1,13 @@
 create or replace package body wt_profile
 as
 
+   TYPE ignr_aa_type is table
+      of varchar2(1)
+      index by PLS_INTEGER;
+   g_ignr_aa   ignr_aa_type;
+
+   g_rec  wt_dbout_runs%ROWTYPE;
+
    $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
       g_current_user  varchar2(30);
       g_skip_insert   boolean := FALSE;
@@ -327,234 +334,6 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
-function is_profilable  -- find_dbout
-   return boolean
-is
-   cursor c_readable
-      (in_owner  varchar2
-      ,in_name   varchar2
-      ,in_type   varchar2)
-   is
-      select src.name
-       from  dba_source  src
-       where src.owner  = core_data.g_run_rec.dbout_owner
-        and  src.name   = core_data.g_run_rec.dbout_name
-        and  src.type   = core_data.g_run_rec.dbout_type;
-   b_readable  c_readable%ROWTYPE;
-   ret_bool    boolean;
-begin
-   -- Find the first occurance of any PL/SQL source
-   open c_readable (core_data.g_run_rec.dbout_owner
-                   ,core_data.g_run_rec.dbout_name
-                   ,core_data.g_run_rec.dbout_type);
-   fetch c_readable into b_readable;
-   ret_bool := c_readable%FOUND;
-   if     core_data.g_run_rec.dbout_type in ('FUNCTION', 'PROCEDURE', 'PACKAGE BODY',
-                                             'TRIGGER', 'TYPE BODY')
-      AND not ret_bool
-   then
-      -- These object types should have PL/SQL source code available
-      --%WTPLSQL_begin_ignore_lines%--  Untestable:
-      core_data.run_error( 'Unable to read source for '    ||
-                           core_data.g_run_rec.dbout_type  || ' ' ||
-                           core_data.g_run_rec.dbout_owner || '.' ||
-                           core_data.g_run_rec.dbout_name  );
-      --%WTPLSQL_end_ignore_lines%--
-   end if;
-   close c_readable;
-   return ret_bool;
-end is_profilable;
-
-$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
-$THEN
-   procedure t_is_profilable
-   is
-      l_recSAVE    wt_dbout_runs%ROWTYPE;
-      l_recNULL    wt_dbout_runs%ROWTYPE;
-      l_recTEST    wt_dbout_runs%ROWTYPE;
-      l_owner      varchar2(128);
-      l_pname      varchar2(128) := 'WT_PROFILE_FIND_DBOUT';
-      --------------------------------------  WTPLSQL Testing --
-      procedure run_find_dbout is begin
-         l_recSAVE := g_rec;
-         g_rec := l_recNULL;
-         find_dbout(l_owner, l_pname);
-         l_recTEST := g_rec;
-         g_rec := l_recSAVE;
-      end run_find_dbout;
-   begin
-      select username into l_owner from user_users;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Find DBOUT Setup';
-      tl_compile_db_object
-         (in_ptype   => 'package'
-         ,in_pname   => l_pname
-         ,in_source  => '   l_junk number;' );
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Find DBOUT Happy Path 1';
-      tl_compile_db_object
-         (in_ptype   => 'package body'
-         ,in_pname   => l_pname
-         ,in_source  => 'begin'          || CHR(10) ||
-                        '  l_junk := 1;' );
-      run_find_dbout;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull
-         (msg_in          => 'l_recTEST.dbout_owner'
-         ,check_this_in   => l_recTEST.dbout_owner);
-      wt_assert.isnull
-         (msg_in          => 'l_recTEST.dbout_name'
-         ,check_this_in   => l_recTEST.dbout_name);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull
-         (msg_in          => 'l_recTEST.dbout_type'
-         ,check_this_in   => l_recTEST.dbout_type);
-      wt_assert.isnull
-         (msg_in          => 'l_recTEST.error_message'
-         ,check_this_in   => l_recTEST.error_message);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Find DBOUT Happy Path 2';
-      tl_compile_db_object
-         (in_ptype   => 'package body'
-         ,in_pname   => l_pname
-         ,in_source  => 
-            '  --% WTPLSQL SET DBOUT "' || l_pname ||
-                                     ':PACKAGE BODY" %--' || CHR(10) ||
-            'begin'                                       || CHR(10) ||
-            '  l_junk := 1;'                              );
-      run_find_dbout;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_owner'
-         ,check_this_in   => l_recTEST.dbout_owner
-         ,against_this_in => g_current_user);
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_name'
-         ,check_this_in   => l_recTEST.dbout_name
-         ,against_this_in => l_pname);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_type'
-         ,check_this_in   => l_recTEST.dbout_type
-         ,against_this_in => 'PACKAGE BODY');
-      wt_assert.isnull
-         (msg_in        => 'l_recTEST.error_message'
-         ,check_this_in => l_recTEST.error_message);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Find DBOUT Happy Path 3';
-      tl_compile_db_object
-         (in_ptype   => 'package body'
-         ,in_pname   => l_pname
-         ,in_source  => 
-            '  --% WTPLSQL SET DBOUT "' || g_current_user ||
-                                    '.' || l_pname ||
-                                    ':PACKAGE BODY" %--' || CHR(10) ||
-            'begin'                                      || CHR(10) ||
-            '  l_junk := 1;'                             );
-      run_find_dbout;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_owner'
-         ,check_this_in   => l_recTEST.dbout_owner
-         ,against_this_in => g_current_user);
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_name'
-         ,check_this_in   => l_recTEST.dbout_name
-         ,against_this_in => l_pname);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_type'
-         ,check_this_in   => l_recTEST.dbout_type
-         ,against_this_in => 'PACKAGE BODY');
-      wt_assert.isnull
-         (msg_in        => 'l_recTEST.error_message'
-         ,check_this_in => l_recTEST.error_message);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Find DBOUT Sad Path 1';
-      tl_compile_db_object
-         (in_ptype   => 'package body'
-         ,in_pname   => l_pname
-         ,in_source  =>
-            -- Don't remove the "||", otherwise this will set the DBOUT
-            '  --% WTPLSQL SET DBOUT ' || '"BOGUS1" %--' || CHR(10) ||
-            'begin'                                      || CHR(10) ||
-            '  l_junk := 1;'                             );
-      run_find_dbout;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull
-         (msg_in          => 'l_recTEST.dbout_owner'
-         ,check_this_in   => l_recTEST.dbout_owner);
-      wt_assert.isnull
-         (msg_in          => 'l_recTEST.dbout_name'
-         ,check_this_in   => l_recTEST.dbout_name);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull
-         (msg_in          => 'l_recTEST.dbout_type'
-         ,check_this_in   => l_recTEST.dbout_type);
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.error_message'
-         ,check_this_in   => l_recTEST.error_message
-         ,against_this_in => 'Unable to find database object "BOGUS1".');
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Find DBOUT Sad Path 2';
-      tl_compile_db_object
-         (in_ptype   => 'package body'
-         ,in_pname   => l_pname
-         ,in_source  => 
-            '  --% WTPLSQL SET DBOUT "' || g_current_user ||
-                                    '.' || l_pname || '" %--'  || CHR(10) ||
-            'begin'                                            || CHR(10) ||
-            '  l_junk := 1;'                                   );
-      run_find_dbout;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_owner'
-         ,check_this_in   => l_recTEST.dbout_owner
-         ,against_this_in => g_current_user);
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_name'
-         ,check_this_in   => l_recTEST.dbout_name
-         ,against_this_in => l_pname);
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.error_message'
-         ,check_this_in   => l_recTEST.error_message
-         ,against_this_in => 'Found too many database objects "WTP.WT_PROFILE_FIND_DBOUT".');
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Find DBOUT Sad Path 3';
-      tl_compile_db_object
-         (in_ptype   => 'package body'
-         ,in_pname   => l_pname
-         ,in_source  => 
-            -- Don't remove the "||", otherwise this will set the DBOUT
-            '  --% WTPLSQL SET DBOUT ' || '"SYS.ALL_OBJECTS:VIEW" %--' || CHR(10) ||
-            'begin'                                                    || CHR(10) ||
-            '  l_junk := 1;'                                           );
-      run_find_dbout;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_owner'
-         ,check_this_in   => l_recTEST.dbout_owner
-         ,against_this_in => 'SYS');
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_name'
-         ,check_this_in   => l_recTEST.dbout_name
-         ,against_this_in => 'ALL_OBJECTS');
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_type'
-         ,check_this_in   => l_recTEST.dbout_type
-         ,against_this_in => 'VIEW');
-      wt_assert.isnull
-         (msg_in          => 'l_recTEST.error_message'
-         ,check_this_in   => l_recTEST.error_message);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Find DBOUT Teardown';
-      tl_drop_db_object(l_pname, 'package');
-   end t_is_profilable;
-$END  ----------------%WTPLSQL_end_ignore_lines%----------------
-
-
-------------------------------------------------------------
 procedure delete_plsql_profiler_recs
       (in_profiler_runid  in number)
 is
@@ -617,9 +396,9 @@ is
       select line
             ,instr(text,'--%WTPLSQL_begin_ignore_lines%--') col
        from  dba_source
-       where owner = g_rec.dbout_owner
-        and  name  = g_rec.dbout_name
-        and  type  = g_rec.dbout_type
+       where owner = core_data.g_run_rec.dbout_owner
+        and  name  = core_data.g_run_rec.dbout_name
+        and  type  = core_data.g_run_rec.dbout_type
         and  text like '%--\%WTPLSQL_begin_ignore_lines\%--%' escape '\'
        order by line;
    buff_find_begin  c_find_begin%ROWTYPE;
@@ -628,9 +407,9 @@ is
       select line
             ,instr(text,'--%WTPLSQL_end_ignore_lines%--') col
        from  dba_source
-       where owner = g_rec.dbout_owner
-        and  name  = g_rec.dbout_name
-        and  type  = g_rec.dbout_type
+       where owner = core_data.g_run_rec.dbout_owner
+        and  name  = core_data.g_run_rec.dbout_name
+        and  type  = core_data.g_run_rec.dbout_type
         and  line >= in_line
         and  text like '%--\%WTPLSQL_end_ignore_lines\%--%' escape '\'
       )
@@ -656,9 +435,9 @@ begin
          select max(line)
           into  buff_find_end.line
           from  dba_source
-          where owner = g_rec.dbout_owner
-           and  name  = g_rec.dbout_name
-           and  type  = g_rec.dbout_type;
+          where owner = core_data.g_run_rec.dbout_owner
+           and  name  = core_data.g_run_rec.dbout_name
+           and  type  = core_data.g_run_rec.dbout_type;
       end if;
       close c_find_end;
       for i in buff_find_begin.line + g_rec.trigger_offset ..
@@ -1039,6 +818,7 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 ------------------------------------------------------------
 procedure insert_wt_profile
+      (in_test_run_id  in  number)
 is
    prof_rec    wt_profiles%ROWTYPE;
    l_max_line  number;
@@ -1085,12 +865,12 @@ begin
           join plsql_profiler_data  ppd
                on  ppd.unit_number = ppu.unit_number
                and ppd.runid       = g_rec.prof_runid
-    where ppu.unit_owner = g_rec.dbout_owner
-     and  ppu.unit_name  = g_rec.dbout_name
-     and  ppu.unit_type  = g_rec.dbout_type
+    where ppu.unit_owner = core_data.g_run_rec.dbout_owner
+     and  ppu.unit_name  = core_data.g_run_rec.dbout_name
+     and  ppu.unit_type  = core_data.g_run_rec.dbout_type
      and  ppu.runid      = g_rec.prof_runid;
    load_ignr_aa;
-   prof_rec.test_run_id := g_rec.test_run_id;
+   prof_rec.test_run_id := in_test_run_id;
    for buf1 in (
       select src.line
             ,ppd.total_occur
@@ -1104,12 +884,12 @@ begin
                   and ppd.runid       = g_rec.prof_runid
              join dba_source  src
                   on  src.line  = ppd.line# + g_rec.trigger_offset
-                  and src.owner = g_rec.dbout_owner
-                  and src.name  = g_rec.dbout_name
-                  and src.type  = g_rec.dbout_type
-       where ppu.unit_owner = g_rec.dbout_owner
-        and  ppu.unit_name  = g_rec.dbout_name
-        and  ppu.unit_type  = g_rec.dbout_type
+                  and src.owner = core_data.g_run_rec.dbout_owner
+                  and src.name  = core_data.g_run_rec.dbout_name
+                  and src.type  = core_data.g_run_rec.dbout_type
+       where ppu.unit_owner = core_data.g_run_rec.dbout_owner
+        and  ppu.unit_name  = core_data.g_run_rec.dbout_name
+        and  ppu.unit_type  = core_data.g_run_rec.dbout_type
         and  ppu.runid      = g_rec.prof_runid )
    loop
       prof_rec.line        := buf1.line;
@@ -1120,8 +900,8 @@ begin
       prof_rec.text        := buf1.text;
       prof_rec.status      := NULL;
       l_set_status;
-      insert into wt_profiles values prof_rec;
       add_dbout_run(prof_rec);
+      insert into wt_profiles values prof_rec;
    end loop;
    g_ignr_aa.delete;
    delete_plsql_profiler_recs(g_rec.prof_runid);
@@ -1307,12 +1087,388 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
+function is_profilable  -- find_dbout
+   return boolean
+is
+   cursor c_readable
+   is
+      select src.name
+       from  dba_source  src
+       where src.owner  = core_data.g_run_rec.dbout_owner
+        and  src.name   = core_data.g_run_rec.dbout_name
+        and  src.type   = core_data.g_run_rec.dbout_type;
+   b_readable  c_readable%ROWTYPE;
+   ret_bool    boolean;
+begin
+   -- Find the first occurance of any PL/SQL source
+   open c_readable;
+   fetch c_readable into b_readable;
+   ret_bool := c_readable%FOUND;
+   close c_readable;
+   return ret_bool;
+end is_profilable;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_is_profilable
+   is
+      l_recSAVE    wt_dbout_runs%ROWTYPE;
+      l_recNULL    wt_dbout_runs%ROWTYPE;
+      l_recTEST    wt_dbout_runs%ROWTYPE;
+      l_owner      varchar2(128);
+      l_pname      varchar2(128) := 'WT_PROFILE_FIND_DBOUT';
+      --------------------------------------  WTPLSQL Testing --
+      procedure run_find_dbout is begin
+         l_recSAVE := g_rec;
+         g_rec := l_recNULL;
+         find_dbout(l_owner, l_pname);
+         l_recTEST := g_rec;
+         g_rec := l_recSAVE;
+      end run_find_dbout;
+   begin
+      select username into l_owner from user_users;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_is_profilable Setup';
+      tl_compile_db_object
+         (in_ptype   => 'package'
+         ,in_pname   => l_pname
+         ,in_source  => '   l_junk number;' );
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_is_profilable Happy Path 1';
+      tl_compile_db_object
+         (in_ptype   => 'package body'
+         ,in_pname   => l_pname
+         ,in_source  => 'begin'          || CHR(10) ||
+                        '  l_junk := 1;' );
+      run_find_dbout;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnull
+         (msg_in          => 'l_recTEST.dbout_owner'
+         ,check_this_in   => l_recTEST.dbout_owner);
+      wt_assert.isnull
+         (msg_in          => 'l_recTEST.dbout_name'
+         ,check_this_in   => l_recTEST.dbout_name);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnull
+         (msg_in          => 'l_recTEST.dbout_type'
+         ,check_this_in   => l_recTEST.dbout_type);
+      wt_assert.isnull
+         (msg_in          => 'l_recTEST.error_message'
+         ,check_this_in   => l_recTEST.error_message);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Find DBOUT Happy Path 2';
+      tl_compile_db_object
+         (in_ptype   => 'package body'
+         ,in_pname   => l_pname
+         ,in_source  => 
+            '  --% WTPLSQL SET DBOUT "' || l_pname ||
+                                     ':PACKAGE BODY" %--' || CHR(10) ||
+            'begin'                                       || CHR(10) ||
+            '  l_junk := 1;'                              );
+      run_find_dbout;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq
+         (msg_in          => 'l_recTEST.dbout_owner'
+         ,check_this_in   => l_recTEST.dbout_owner
+         ,against_this_in => g_current_user);
+      wt_assert.eq
+         (msg_in          => 'l_recTEST.dbout_name'
+         ,check_this_in   => l_recTEST.dbout_name
+         ,against_this_in => l_pname);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq
+         (msg_in          => 'l_recTEST.dbout_type'
+         ,check_this_in   => l_recTEST.dbout_type
+         ,against_this_in => 'PACKAGE BODY');
+      wt_assert.isnull
+         (msg_in        => 'l_recTEST.error_message'
+         ,check_this_in => l_recTEST.error_message);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Find DBOUT Happy Path 3';
+      tl_compile_db_object
+         (in_ptype   => 'package body'
+         ,in_pname   => l_pname
+         ,in_source  => 
+            '  --% WTPLSQL SET DBOUT "' || g_current_user ||
+                                    '.' || l_pname ||
+                                    ':PACKAGE BODY" %--' || CHR(10) ||
+            'begin'                                      || CHR(10) ||
+            '  l_junk := 1;'                             );
+      run_find_dbout;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq
+         (msg_in          => 'l_recTEST.dbout_owner'
+         ,check_this_in   => l_recTEST.dbout_owner
+         ,against_this_in => g_current_user);
+      wt_assert.eq
+         (msg_in          => 'l_recTEST.dbout_name'
+         ,check_this_in   => l_recTEST.dbout_name
+         ,against_this_in => l_pname);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq
+         (msg_in          => 'l_recTEST.dbout_type'
+         ,check_this_in   => l_recTEST.dbout_type
+         ,against_this_in => 'PACKAGE BODY');
+      wt_assert.isnull
+         (msg_in        => 'l_recTEST.error_message'
+         ,check_this_in => l_recTEST.error_message);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Find DBOUT Sad Path 1';
+      tl_compile_db_object
+         (in_ptype   => 'package body'
+         ,in_pname   => l_pname
+         ,in_source  =>
+            -- Don't remove the "||", otherwise this will set the DBOUT
+            '  --% WTPLSQL SET DBOUT ' || '"BOGUS1" %--' || CHR(10) ||
+            'begin'                                      || CHR(10) ||
+            '  l_junk := 1;'                             );
+      run_find_dbout;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnull
+         (msg_in          => 'l_recTEST.dbout_owner'
+         ,check_this_in   => l_recTEST.dbout_owner);
+      wt_assert.isnull
+         (msg_in          => 'l_recTEST.dbout_name'
+         ,check_this_in   => l_recTEST.dbout_name);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnull
+         (msg_in          => 'l_recTEST.dbout_type'
+         ,check_this_in   => l_recTEST.dbout_type);
+      wt_assert.eq
+         (msg_in          => 'l_recTEST.error_message'
+         ,check_this_in   => l_recTEST.error_message
+         ,against_this_in => 'Unable to find database object "BOGUS1".');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Find DBOUT Sad Path 2';
+      tl_compile_db_object
+         (in_ptype   => 'package body'
+         ,in_pname   => l_pname
+         ,in_source  => 
+            '  --% WTPLSQL SET DBOUT "' || g_current_user ||
+                                    '.' || l_pname || '" %--'  || CHR(10) ||
+            'begin'                                            || CHR(10) ||
+            '  l_junk := 1;'                                   );
+      run_find_dbout;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq
+         (msg_in          => 'l_recTEST.dbout_owner'
+         ,check_this_in   => l_recTEST.dbout_owner
+         ,against_this_in => g_current_user);
+      wt_assert.eq
+         (msg_in          => 'l_recTEST.dbout_name'
+         ,check_this_in   => l_recTEST.dbout_name
+         ,against_this_in => l_pname);
+      wt_assert.eq
+         (msg_in          => 'l_recTEST.error_message'
+         ,check_this_in   => l_recTEST.error_message
+         ,against_this_in => 'Found too many database objects "WTP.WT_PROFILE_FIND_DBOUT".');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Find DBOUT Sad Path 3';
+      tl_compile_db_object
+         (in_ptype   => 'package body'
+         ,in_pname   => l_pname
+         ,in_source  => 
+            -- Don't remove the "||", otherwise this will set the DBOUT
+            '  --% WTPLSQL SET DBOUT ' || '"SYS.ALL_OBJECTS:VIEW" %--' || CHR(10) ||
+            'begin'                                                    || CHR(10) ||
+            '  l_junk := 1;'                                           );
+      run_find_dbout;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq
+         (msg_in          => 'l_recTEST.dbout_owner'
+         ,check_this_in   => l_recTEST.dbout_owner
+         ,against_this_in => 'SYS');
+      wt_assert.eq
+         (msg_in          => 'l_recTEST.dbout_name'
+         ,check_this_in   => l_recTEST.dbout_name
+         ,against_this_in => 'ALL_OBJECTS');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq
+         (msg_in          => 'l_recTEST.dbout_type'
+         ,check_this_in   => l_recTEST.dbout_type
+         ,against_this_in => 'VIEW');
+      wt_assert.isnull
+         (msg_in          => 'l_recTEST.error_message'
+         ,check_this_in   => l_recTEST.error_message);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Find DBOUT Teardown';
+      tl_drop_db_object(l_pname, 'package');
+   end t_is_profilable;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
+------------------------------------------------------------
+-- Find begining of PL/SQL Block in a Trigger
+function trigger_offset
+      (dbout_owner_in  in  varchar2
+      ,dbout_name_in   in  varchar2
+      ,dbout_type_in   in  varchar2)
+   return number
+is
+begin
+   if dbout_type_in != 'TRIGGER'
+   then
+      return 0;
+   end if;
+   for buff in (
+      select line, text from dba_source
+       where owner = dbout_owner_in
+        and  name  = dbout_name_in
+        and  type  = 'TRIGGER'
+      order by line )
+   loop
+      if regexp_instr(buff.text,
+                      '(^declare$' ||
+                      '|^declare[[:space:]]' ||
+                      '|[[:space:]]declare$' ||
+                      '|[[:space:]]declare[[:space:]])', 1, 1, 0, 'i') <> 0
+         OR
+         regexp_instr(buff.text,
+                      '(^begin$' ||
+                      '|^begin[[:space:]]' ||
+                      '|[[:space:]]begin$' ||
+                      '|[[:space:]]begin[[:space:]])', 1, 1, 0, 'i') <> 0 
+      then
+         return buff.line - 1;
+      end if;
+   end loop;
+   return 0;
+end trigger_offset;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_trigger_offset
+   is
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Trigger Offset Happy Path';
+      wt_assert.eq (
+         msg_in          => 'Trigger Test',
+         check_this_in   => trigger_offset (dbout_owner_in => g_current_user
+                                           ,dbout_name_in  => 'WT_SELF_TEST$TEST'
+                                           ,dbout_type_in  => 'TRIGGER'),
+         against_this_in => 3);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq (
+         msg_in          => 'Package Test',
+         check_this_in   => trigger_offset (dbout_owner_in => g_current_user
+                                           ,dbout_name_in  => 'WT_PROFILER'
+                                           ,dbout_type_in  => 'PACKAGE BODY'),
+         against_this_in => 0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Trigger Offset Sad Path';
+      wt_assert.eq (
+         msg_in          => 'Non Existent Object',
+         check_this_in   => trigger_offset (dbout_owner_in => 'BOGUS456'
+                                           ,dbout_name_in  => 'BOGUS123'
+                                           ,dbout_type_in  => 'TRIGGER'),
+         against_this_in => 0);
+   end t_trigger_offset;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
+------------------------------------------------------------
+function calc_pct_coverage
+      (in_test_run_id  in  number)
+   return number
+IS
+BEGIN
+   for buff in (
+      select sum(case status when 'EXEC' then 1 else 0 end)    HITS
+            ,sum(case status when 'NOTX' then 1 else 0 end)    MISSES
+       from  wt_profiles  p
+       where test_run_id = in_test_run_id  )
+   loop
+      if buff.hits + buff.misses = 0
+      then
+         return -1;
+      else
+         return round(100 * buff.hits / (buff.hits + buff.misses),2);
+      end if;
+   end loop;
+   return null;
+END calc_pct_coverage;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_calc_pct_coverage
+   is
+      c_test_run_id  constant number := -95;
+      l_profile          wt_profiles%ROWTYPE;
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Calculate Percent Coverage Setup';
+      tl_insert_test_runs(c_test_run_id, 'Calculate Offset Test');
+      l_profile.test_run_id  := c_test_run_id;
+      l_profile.total_occur  := 1;
+      l_profile.total_usecs  := 1;
+      l_profile.min_usecs    := 1;
+      l_profile.max_usecs    := 1;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Calculate Percent Coverage Happy Path 1';
+      l_profile.line         := 1;
+      l_profile.status       := 'EXEC';
+      l_profile.text         := 'Testing ' || l_profile.line;
+      tl_insert_wt_profiles(l_profile);
+      --------------------------------------  WTPLSQL Testing --
+      l_profile.line         := 2;
+      l_profile.status       := 'NOTX';
+      l_profile.text         := 'Testing ' || l_profile.line;
+      tl_insert_wt_profiles(l_profile);
+      --------------------------------------  WTPLSQL Testing --
+      l_profile.line         := 3;
+      l_profile.status       := 'EXEC';
+      l_profile.text         := 'Testing ' || l_profile.line;
+      tl_insert_wt_profiles(l_profile);
+      wt_assert.eq (
+         msg_in          => 'Main Test',
+         check_this_in   => calc_pct_coverage(c_test_run_id),
+         against_this_in => 66.67);
+      tl_delete_wt_profiles(c_test_run_id);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Calculate Percent Coverage Happy Path 2';
+      l_profile.line         := 1;
+      l_profile.status       := 'EXCL';
+      l_profile.text         := 'Testing ' || l_profile.line;
+      tl_insert_wt_profiles(l_profile);
+      --------------------------------------  WTPLSQL Testing --
+      l_profile.line         := 2;
+      l_profile.status       := 'UNKN';
+      l_profile.text         := 'Testing ' || l_profile.line;
+      tl_insert_wt_profiles(l_profile);
+      --------------------------------------  WTPLSQL Testing --
+      l_profile.line         := 3;
+      l_profile.status       := 'EXCL';
+      l_profile.text         := 'Testing ' || l_profile.line;
+      tl_insert_wt_profiles(l_profile);
+      wt_assert.eq (
+         msg_in          => 'Main Test',
+         check_this_in   => calc_pct_coverage(c_test_run_id),
+         against_this_in => -1);
+      tl_delete_wt_profiles(c_test_run_id);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Calculate Percent Coverage Sad Path';
+      wt_assert.isnull (
+         msg_in        => 'Missing Test Run ID',
+         check_this_in => calc_pct_coverage(-99990));
+      wt_assert.isnull (
+         msg_in        => 'NULL Test Run ID',
+         check_this_in => calc_pct_coverage(null));
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Calculate Percent Coverage Teardown';
+      tl_delete_test_runs(c_test_run_id);
+   end t_calc_pct_coverage;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
+------------------------------------------------------------
 procedure initialize
 is
    l_rec_NULL     wt_dbout_runs%ROWTYPE;
    l_retnum       binary_integer;
 begin
    g_rec := l_rec_NULL;
+   -- g_ignr_aa.delete;  Not Needed
    $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
    $THEN
       -- In case a test failed and left this set to TRUE
@@ -1321,11 +1477,6 @@ begin
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    if is_profilable
    then
-      -- Calculate the trigger offset, if any.
-      g_rec.trigger_offset := wt_profile.trigger_offset
-                                 (dbout_owner_in => g_rec.dbout_owner
-                                 ,dbout_name_in  => g_rec.dbout_name
-                                 ,dbout_type_in  => g_rec.dbout_type );
       -- Check Versions
       l_retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
       if l_retnum <> 0 then
@@ -1530,7 +1681,6 @@ begin
    then
       raise_application_error (-20004, 'i_test_run_id is null');
    end if;
-   g_rec.test_run_id := in_test_run_id;
    $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
    $THEN
       if not g_skip_insert
@@ -1543,6 +1693,13 @@ begin
       g_rec := l_rec_NULL;
       raise;
    end;
+   -- Calculate the trigger offset, if any.
+   g_rec.test_run_id := in_test_run_id;
+   g_rec.trigger_offset := trigger_offset
+                              (dbout_owner_in => core_data.g_run_rec.dbout_owner
+                              ,dbout_name_in  => core_data.g_run_rec.dbout_name
+                              ,dbout_type_in  => core_data.g_run_rec.dbout_type );
+   -- Save Results
    insert_wt_profile;
    insert into wt_dbout_runs values g_rec;
    $IF $$WTPLSQL_SELFTEST
@@ -1673,170 +1830,6 @@ $THEN
          check_this_in   => l_sqlerrm,
          against_this_in => 'ORA-20000: g_rec.test_run_id is null');
    end t_finalize;
-$END  ----------------%WTPLSQL_end_ignore_lines%----------------
-
-
-------------------------------------------------------------
--- Find begining of PL/SQL Block in a Trigger
-function trigger_offset
-      (dbout_owner_in  in  varchar2
-      ,dbout_name_in   in  varchar2
-      ,dbout_type_in   in  varchar2)
-   return number
-is
-begin
-   if dbout_type_in != 'TRIGGER'
-   then
-      return 0;
-   end if;
-   for buff in (
-      select line, text from dba_source
-       where owner = dbout_owner_in
-        and  name  = dbout_name_in
-        and  type  = 'TRIGGER'
-      order by line )
-   loop
-      if regexp_instr(buff.text,
-                      '(^declare$' ||
-                      '|^declare[[:space:]]' ||
-                      '|[[:space:]]declare$' ||
-                      '|[[:space:]]declare[[:space:]])', 1, 1, 0, 'i') <> 0
-         OR
-         regexp_instr(buff.text,
-                      '(^begin$' ||
-                      '|^begin[[:space:]]' ||
-                      '|[[:space:]]begin$' ||
-                      '|[[:space:]]begin[[:space:]])', 1, 1, 0, 'i') <> 0 
-      then
-         return buff.line - 1;
-      end if;
-   end loop;
-   return 0;
-end trigger_offset;
-
-$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
-$THEN
-   procedure t_trigger_offset
-   is
-   begin
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Trigger Offset Happy Path';
-      wt_assert.eq (
-         msg_in          => 'Trigger Test',
-         check_this_in   => trigger_offset (dbout_owner_in => g_current_user
-                                           ,dbout_name_in  => 'WT_SELF_TEST$TEST'
-                                           ,dbout_type_in  => 'TRIGGER'),
-         against_this_in => 3);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eq (
-         msg_in          => 'Package Test',
-         check_this_in   => trigger_offset (dbout_owner_in => g_current_user
-                                           ,dbout_name_in  => 'WT_PROFILER'
-                                           ,dbout_type_in  => 'PACKAGE BODY'),
-         against_this_in => 0);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Trigger Offset Sad Path';
-      wt_assert.eq (
-         msg_in          => 'Non Existent Object',
-         check_this_in   => trigger_offset (dbout_owner_in => 'BOGUS456'
-                                           ,dbout_name_in  => 'BOGUS123'
-                                           ,dbout_type_in  => 'TRIGGER'),
-         against_this_in => 0);
-   end t_trigger_offset;
-$END  ----------------%WTPLSQL_end_ignore_lines%----------------
-
-
-------------------------------------------------------------
-function calc_pct_coverage
-      (in_test_run_id  in  number)
-   return number
-IS
-BEGIN
-   for buff in (
-      select sum(case status when 'EXEC' then 1 else 0 end)    HITS
-            ,sum(case status when 'NOTX' then 1 else 0 end)    MISSES
-       from  wt_profiles  p
-       where test_run_id = in_test_run_id  )
-   loop
-      if buff.hits + buff.misses = 0
-      then
-         return -1;
-      else
-         return round(100 * buff.hits / (buff.hits + buff.misses),2);
-      end if;
-   end loop;
-   return null;
-END calc_pct_coverage;
-
-$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
-$THEN
-   procedure t_calc_pct_coverage
-   is
-      c_test_run_id  constant number := -95;
-      l_profile          wt_profiles%ROWTYPE;
-   begin
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Calculate Percent Coverage Setup';
-      tl_insert_test_runs(c_test_run_id, 'Calculate Offset Test');
-      l_profile.test_run_id  := c_test_run_id;
-      l_profile.total_occur  := 1;
-      l_profile.total_usecs  := 1;
-      l_profile.min_usecs    := 1;
-      l_profile.max_usecs    := 1;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Calculate Percent Coverage Happy Path 1';
-      l_profile.line         := 1;
-      l_profile.status       := 'EXEC';
-      l_profile.text         := 'Testing ' || l_profile.line;
-      tl_insert_wt_profiles(l_profile);
-      --------------------------------------  WTPLSQL Testing --
-      l_profile.line         := 2;
-      l_profile.status       := 'NOTX';
-      l_profile.text         := 'Testing ' || l_profile.line;
-      tl_insert_wt_profiles(l_profile);
-      --------------------------------------  WTPLSQL Testing --
-      l_profile.line         := 3;
-      l_profile.status       := 'EXEC';
-      l_profile.text         := 'Testing ' || l_profile.line;
-      tl_insert_wt_profiles(l_profile);
-      wt_assert.eq (
-         msg_in          => 'Main Test',
-         check_this_in   => calc_pct_coverage(c_test_run_id),
-         against_this_in => 66.67);
-      tl_delete_wt_profiles(c_test_run_id);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Calculate Percent Coverage Happy Path 2';
-      l_profile.line         := 1;
-      l_profile.status       := 'EXCL';
-      l_profile.text         := 'Testing ' || l_profile.line;
-      tl_insert_wt_profiles(l_profile);
-      --------------------------------------  WTPLSQL Testing --
-      l_profile.line         := 2;
-      l_profile.status       := 'UNKN';
-      l_profile.text         := 'Testing ' || l_profile.line;
-      tl_insert_wt_profiles(l_profile);
-      --------------------------------------  WTPLSQL Testing --
-      l_profile.line         := 3;
-      l_profile.status       := 'EXCL';
-      l_profile.text         := 'Testing ' || l_profile.line;
-      tl_insert_wt_profiles(l_profile);
-      wt_assert.eq (
-         msg_in          => 'Main Test',
-         check_this_in   => calc_pct_coverage(c_test_run_id),
-         against_this_in => -1);
-      tl_delete_wt_profiles(c_test_run_id);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Calculate Percent Coverage Sad Path';
-      wt_assert.isnull (
-         msg_in        => 'Missing Test Run ID',
-         check_this_in => calc_pct_coverage(-99990));
-      wt_assert.isnull (
-         msg_in        => 'NULL Test Run ID',
-         check_this_in => calc_pct_coverage(null));
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Calculate Percent Coverage Teardown';
-      tl_delete_test_runs(c_test_run_id);
-   end t_calc_pct_coverage;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 

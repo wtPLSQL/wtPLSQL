@@ -1,6 +1,8 @@
 create or replace package body wt_test_run
 as
 
+   g_test_runs_rec  wt_test_runs%ROWTYPE;
+
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    C_OWNER    CONSTANT varchar2(50) := 'WT_TEST_RUNNER_OWNER_FOR_TESTING_1234ABCD';
