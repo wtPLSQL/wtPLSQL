@@ -9,10 +9,12 @@ grant select on wt_test_runs_seq to public;
 
 create table wt_test_runs
    (id                number(38)
-   ,dbout_id          number(38)
    ,test_runner_id    number(38)
+                             constraint wt_test_runs_nn1 not null
    ,start_dtm         timestamp(3) with local time zone
+                             constraint wt_test_runs_nn2 not null
    ,end_dtm           timestamp(3) with local time zone
+   ,dbout_id          number(38)
    ,runner_sec        number(6,1)
    ,is_last_run       varchar2(1)
    ,error_message     varchar2(4000)
@@ -46,10 +48,10 @@ create index wt_test_runs_ix2
 
 comment on table wt_test_runs is 'Test Run data for each execution of a Test Runner.';
 comment on column wt_test_runs.id is 'Primary (Surrogate) Key for each Test Run';
-comment on column wt_test_runs.dbout_id is 'Surrogate Key to the Database Object Under Test (DBOUT).';
-comment on column wt_test_runs.test_runner_id is 'Surrogate Key the Test Runner package. Natural Key 1 part 1';
-comment on column wt_test_runs.start_dtm is 'Date/time (and fractional seconds) this Test Run started. Natural Key 1 part 2';
+comment on column wt_test_runs.test_runner_id is '(Required) Surrogate Key the Test Runner package. Natural Key 1 part 1';
+comment on column wt_test_runs.start_dtm is '(Required) Date/time (and fractional seconds) this Test Run started. Natural Key 1 part 2';
 comment on column wt_test_runs.end_dtm is 'Date/time (and fractional seconds) this Test Run ended.';
+comment on column wt_test_runs.dbout_id is 'Surrogate Key to the Database Object Under Test (DBOUT).';
 comment on column wt_test_runs.runner_sec is 'Total Runtime for Test Runner in Seconds';
 comment on column wt_test_runs.is_last_run is 'Flag "Y" to indicate this is the most recent run for this package owner/name';
 comment on column wt_test_runs.error_message is 'Error messages from this Test Run.';

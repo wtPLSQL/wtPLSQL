@@ -4,8 +4,8 @@
 --
 
 create table wt_testcase_runs
-   (test_run_id         number(38)
-   ,testcase_id         number(38)
+   (test_run_id         number(38)  constraint wt_testcase_runs_nn1 not null
+   ,testcase_id         number(38)  constraint wt_testcase_runs_nn2 not null
    ,asrt_yield_pct      number(3)
    ,asrt_cnt            number(7)
    ,asrt_fail           number(7)
@@ -16,13 +16,15 @@ create table wt_testcase_runs
    ,asrt_tot_msecs      number(10)
    ,asrt_std_msecs      number(10)
    ,asrt_sos_msecs      number(10)
-   ,constraint wt_testcase_runs_pk primary key (testcase_id)
-   ,constraint wt_testcase_runs_nk1 unique (test_run_id, testcase_id)
+   ,constraint wt_testcase_runs_pk primary key (test_run_id, testcase_id)
    ,constraint wt_testcase_runs_fk1 foreign key (test_run_id)
        references wt_test_runs (id)
    ,constraint wt_testcase_runs_fk2 foreign key (testcase_id)
        references wt_testcases (id)
    ) pctfree 0;
+
+create index wt_testcase_runs_ix1
+  on wt_testcase_runs (testcase_id);
 
 comment on table wt_testcase_runs is 'Test Run data statistics for each testcase in the execution of a Test Runner.';
 comment on column wt_testcase_runs.test_run_id is 'Primary Key for each Test Run. Also the Test Runs Foreign Key.';

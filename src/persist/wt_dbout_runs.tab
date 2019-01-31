@@ -3,13 +3,9 @@
 --  DBOUT Runs Table Installation
 --
 
-create sequence wt_dbout_runs_seq order;
-
-grant select on wt_dbout_runs_seq to public;
-
 create table wt_dbout_runs
-   (test_run_id       number(38)
-   ,profiler_runid    number(38)
+   (test_run_id       number(38)  constraint wt_dbout_runs_nn1 not null
+   ,profiler_runid    number(38)  constraint wt_dbout_runs_nn2 not null
    ,trigger_offset    number(6)
    ,coverage_pct      number(3)
    ,profiled_lines    number(6)
@@ -33,7 +29,7 @@ create table wt_dbout_runs
 comment on table wt_dbout_runs is 'Database Object Under Test Run data for each Test Run.';
 comment on column wt_dbout_runs.test_run_id is 'Primary (Surrogate) Key of each Test Run';
 comment on column wt_dbout_runs.trigger_offset is 'Calculated offset from start of Trigger Source to start of Trigger PL/SQL Block.';
-comment on column wt_dbout_runs.profiler_runid is 'DBMS_PROFILER unique run identifier from plsql_profiler_runnumber sequence';
+comment on column wt_dbout_runs.profiler_runid is '(Required) DBMS_PROFILER unique run identifier from plsql_profiler_runnumber sequence';
 comment on column wt_dbout_runs.coverage_pct is 'Percentage of executed lines to non-ignored, non-excluded lines';
 comment on column wt_dbout_runs.profiled_lines is 'Total number of source lines as counted by DBMS_PROFILER';
 comment on column wt_dbout_runs.executed_lines is 'Number of source lines executed';

@@ -14,10 +14,10 @@ select run.id               TEST_RUN_ID
       ,tr.name              TEST_RUNNER_NAME
       ,pf.line         
       ,pf.status       
-      ,pf.tot_execs
-      ,pf.tot_usecs  
-      ,pf.min_usecs    
-      ,pf.max_usecs    
+      ,pf.exec_cnt
+      ,pf.exec_tot_usecs  
+      ,pf.exec_min_usecs    
+      ,pf.exec_max_usecs    
       ,pf.text         
  from  wt_test_runs  run
        join wt_dbouts  db
@@ -37,11 +37,11 @@ comment on column wt_profiles_vw.test_runner_id is 'Primary (Surrogate) Key for 
 comment on column wt_profiles_vw.test_runner_owner is 'Owner of the Test Runner package. Natural Key 1 part 1';
 comment on column wt_profiles_vw.test_runner_name is 'Name of the Test Runner package. Natural Key 1 part 2';
 comment on column wt_profiles_vw.line is 'Source code line number, Primary Key part 2.';
-comment on column wt_profiles_vw.status is 'Executed/NotExecuted/Excluded/Ignored/Unknown Status from the Profiler';
-comment on column wt_profiles_vw.tot_execs is 'Number of times this line was executed.';
-comment on column wt_profiles_vw.tot_usecs is 'Total time in microseconds spent executing this line.';
-comment on column wt_profiles_vw.min_usecs is 'Minimum execution time in microseconds for this line.';
-comment on column wt_profiles_vw.max_usecs is 'Maximum execution time in microseconds for this line.';
+comment on column wt_profiles_vw.status is 'EXEC/NOTX/EXCL/IGNR/UNKN Status from the Profiler';
+comment on column wt_profiles_vw.exec_cnt is 'Number of times this line was executed.';
+comment on column wt_profiles_vw.exec_tot_usecs is 'Total time in microseconds spent executing this line.';
+comment on column wt_profiles_vw.exec_min_usecs is 'Minimum execution time in microseconds for this line.';
+comment on column wt_profiles_vw.exec_max_usecs is 'Maximum execution time in microseconds for this line.';
 comment on column wt_profiles_vw.text is 'Source code text for this line number.';
 
 grant select on wt_profiles_vw to public;

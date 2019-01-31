@@ -4,8 +4,8 @@
 --
 
 create table wt_results
-   (test_run_id      number(38)
-   ,result_seq       number(8)
+   (test_run_id      number(38)    constraint wt_results_nn1 not null
+   ,result_seq       number(8)     constraint wt_results_nn2 not null
    ,testcase_id      number(38)
    ,executed_dtm     timestamp(6)
    ,interval_msecs   number(10,3)

@@ -4,28 +4,27 @@
 --
 
 create table wt_profiles
-   (test_run_id         number(38)
-   ,line                number(6)
+   (test_run_id         number(38)   constraint wt_profiles_nn1 not null
+   ,line                number(6)    constraint wt_profiles_nn2 not null
    ,status              varchar2(4)
-   ,tot_execs           number(9)
-   ,tot_usecs           number
-   ,min_usecs           number
-   ,max_usecs           number
+   ,exec_cnt            number(9)
+   ,exec_tot_usecs      number
+   ,exec_min_usecs      number
+   ,exec_max_usecs      number
    ,text                varchar2(4000)
    ,constraint wt_profiles_pk primary key (test_run_id, line)
    ,constraint wt_profiles_fk1 foreign key (test_run_id)
        references wt_test_runs (id)
-   ,constraint wt_profiles_ck1  check (status in ('EXEC','NOTX','EXCL','IGNR','UNKN'))
    ) pctfree 0;
 
 comment on table wt_profiles is 'PL/SQL Profiler data for Database Object Under Test (DBOUT).';
 comment on column wt_profiles.test_run_id is 'Foreign Key for the Test Run, Primary Key part 1.';
 comment on column wt_profiles.line is 'Source code line number, Primary Key part 2.';
-comment on column wt_profiles.status is 'Executed/NotExecuted/Excluded/Ignored/Unknown Status from the Profiler';
-comment on column wt_profiles.tot_execs is 'Number of times this line was executed.';
-comment on column wt_profiles.tot_usecs is 'Total time in microseconds spent executing this line.';
-comment on column wt_profiles.min_usecs is 'Minimum execution time in microseconds for this line.';
-comment on column wt_profiles.max_usecs is 'Maximum execution time in microseconds for this line.';
+comment on column wt_profiles.status is 'EXEC/NOTX/EXCL/IGNR/UNKN Status from the Profiler';
+comment on column wt_profiles.exec_cnt is 'Number of times this line was executed.';
+comment on column wt_profiles.exec_tot_usecs is 'Total time in microseconds spent executing this line.';
+comment on column wt_profiles.exec_min_usecs is 'Minimum execution time in microseconds for this line.';
+comment on column wt_profiles.exec_max_usecs is 'Maximum execution time in microseconds for this line.';
 comment on column wt_profiles.text is 'Source code text for this line number.';
 
 grant select on wt_profiles to public;
