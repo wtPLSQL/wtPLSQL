@@ -3,6 +3,9 @@ create or replace package wt_profile
 as
 
    function is_profilable
+      (in_dbout_owner  in varchar2
+      ,in_dbout_name   in varchar2
+      ,in_dbout_type   in varchar2)
    return boolean;
 
    function trigger_offset

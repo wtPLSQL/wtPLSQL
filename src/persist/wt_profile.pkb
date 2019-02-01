@@ -33,10 +33,10 @@ $THEN
    begin
       --------------------------------------  WTPLSQL Testing --
       -- Wrap in_source to complete the DDL statement
-      l_sql_txt := 'create or replace ' || in_ptype || ' ' ||
-                   in_pname || ' is' || CHR(10) ||
-                   in_source || CHR(10) ||
-                   'end ' || in_pname || ';';
+      l_sql_txt := 'create or replace ' ||
+                   in_ptype             || ' '   ||
+                   in_pname             || ' is' || CHR(10) ||
+                   in_source            || ';'   ;
       wt_assert.raises
          (msg_in         => 'Compile ' || in_ptype || ' ' || in_pname
          ,check_call_in  => l_sql_txt
@@ -480,14 +480,14 @@ end load_ignr_aa;
 --      tl_compile_db_object
 --         (in_ptype   => 'package'
 --         ,in_pname   => l_pname
---         ,in_source  => '  l_junk number;' );
+--         ,in_source  => '  l_junk number; end l_pname;' );
 --      --------------------------------------  WTPLSQL Testing --
 --      wt_assert.g_testcase := 'Load Ignr Happy Path 1';
 --      tl_compile_db_object
 --         (in_ptype   => 'package body'
 --         ,in_pname   => l_pname
 --         ,in_source  => 'begin'          || CHR(10) ||
---                        '  l_junk := 1;' );
+--                        '  l_junk := 1; end l_pname;' );
 --      run_load_ignr;
 --      wt_assert.eq
 --         (msg_in          => 'l_ignrTest.COUNT'
@@ -964,7 +964,7 @@ end insert_wt_profile;
 --      tl_compile_db_object
 --         (in_ptype   => 'package'
 --         ,in_pname   => l_pname
---         ,in_source  => '  l_junk number;' );
+--         ,in_source  => '  l_junk number; end l_pname;' );
 --      --------------------------------------  WTPLSQL Testing --
 --      tl_compile_db_object
 --         (in_ptype   => 'package body'
@@ -977,7 +977,7 @@ end insert_wt_profile;
 --            '  --%WTPLSQL_end_' || 'ignore_lines%--'   || CHR(10) ||  -- Line 6
 --            '  if 0 = 1 then'                          || CHR(10) ||  -- Line 7
 --            '     l_junk := 3;'                        || CHR(10) ||  -- Line 8
---            '  end if;'                                );             -- Line 9
+--            '  end if;'                                ); end l_pname;             -- Line 9
 --      tl_insert_plsql_profiler_recs(c_test_run_id);
 --      tl_count_plsql_profiler_recs(c_test_run_id, 1);
 --      tl_insert_test_runs(c_test_run_id, 'Insert DBOUT Test');
@@ -1088,15 +1088,18 @@ end insert_wt_profile;
 
 ------------------------------------------------------------
 function is_profilable  -- find_dbout
+      (in_dbout_owner  in varchar2
+      ,in_dbout_name   in varchar2
+      ,in_dbout_type   in varchar2)
    return boolean
 is
    cursor c_readable
    is
       select src.name
        from  dba_source  src
-       where src.owner  = core_data.g_run_rec.dbout_owner
-        and  src.name   = core_data.g_run_rec.dbout_name
-        and  src.type   = core_data.g_run_rec.dbout_type;
+       where src.owner  = in_dbout_owner
+        and  src.name   = in_dbout_name
+        and  src.type   = in_dbout_type;
    b_readable  c_readable%ROWTYPE;
    ret_bool    boolean;
 begin
@@ -1112,187 +1115,86 @@ $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure t_is_profilable
    is
-      l_recSAVE    wt_dbout_runs%ROWTYPE;
-      l_recNULL    wt_dbout_runs%ROWTYPE;
-      l_recTEST    wt_dbout_runs%ROWTYPE;
       l_owner      varchar2(128);
       l_pname      varchar2(128) := 'WT_PROFILE_FIND_DBOUT';
-      --------------------------------------  WTPLSQL Testing --
-      procedure run_find_dbout is begin
-         l_recSAVE := g_rec;
-         g_rec := l_recNULL;
-         find_dbout(l_owner, l_pname);
-         l_recTEST := g_rec;
-         g_rec := l_recSAVE;
-      end run_find_dbout;
    begin
       select username into l_owner from user_users;
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 't_is_profilable Setup';
+      wt_assert.g_testcase := 't_is_profilable Happy Path 1';
       tl_compile_db_object
          (in_ptype   => 'package'
          ,in_pname   => l_pname
-         ,in_source  => '   l_junk number;' );
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 't_is_profilable Happy Path 1';
+         ,in_source  => '   l_junk number;' || CHR(10) ||
+                        'end ' || l_pname   );
       tl_compile_db_object
          (in_ptype   => 'package body'
          ,in_pname   => l_pname
-         ,in_source  => 'begin'          || CHR(10) ||
-                        '  l_junk := 1;' );
-      run_find_dbout;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull
-         (msg_in          => 'l_recTEST.dbout_owner'
-         ,check_this_in   => l_recTEST.dbout_owner);
-      wt_assert.isnull
-         (msg_in          => 'l_recTEST.dbout_name'
-         ,check_this_in   => l_recTEST.dbout_name);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull
-         (msg_in          => 'l_recTEST.dbout_type'
-         ,check_this_in   => l_recTEST.dbout_type);
-      wt_assert.isnull
-         (msg_in          => 'l_recTEST.error_message'
-         ,check_this_in   => l_recTEST.error_message);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Find DBOUT Happy Path 2';
-      tl_compile_db_object
-         (in_ptype   => 'package body'
-         ,in_pname   => l_pname
-         ,in_source  => 
-            '  --% WTPLSQL SET DBOUT "' || l_pname ||
-                                     ':PACKAGE BODY" %--' || CHR(10) ||
-            'begin'                                       || CHR(10) ||
-            '  l_junk := 1;'                              );
-      run_find_dbout;
+         ,in_source  => 'begin'           || CHR(10) ||
+                        'l_junk := 1;'    || CHR(10) ||
+                        'end ' || l_pname );
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_owner'
-         ,check_this_in   => l_recTEST.dbout_owner
-         ,against_this_in => g_current_user);
+         (msg_in          => 'Check Package'
+         ,check_this_in   => is_profilable(l_owner, l_pname, 'PACKAGE')
+         ,against_this_in => TRUE);
       wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_name'
-         ,check_this_in   => l_recTEST.dbout_name
-         ,against_this_in => l_pname);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_type'
-         ,check_this_in   => l_recTEST.dbout_type
-         ,against_this_in => 'PACKAGE BODY');
-      wt_assert.isnull
-         (msg_in        => 'l_recTEST.error_message'
-         ,check_this_in => l_recTEST.error_message);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Find DBOUT Happy Path 3';
-      tl_compile_db_object
-         (in_ptype   => 'package body'
-         ,in_pname   => l_pname
-         ,in_source  => 
-            '  --% WTPLSQL SET DBOUT "' || g_current_user ||
-                                    '.' || l_pname ||
-                                    ':PACKAGE BODY" %--' || CHR(10) ||
-            'begin'                                      || CHR(10) ||
-            '  l_junk := 1;'                             );
-      run_find_dbout;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_owner'
-         ,check_this_in   => l_recTEST.dbout_owner
-         ,against_this_in => g_current_user);
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_name'
-         ,check_this_in   => l_recTEST.dbout_name
-         ,against_this_in => l_pname);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_type'
-         ,check_this_in   => l_recTEST.dbout_type
-         ,against_this_in => 'PACKAGE BODY');
-      wt_assert.isnull
-         (msg_in        => 'l_recTEST.error_message'
-         ,check_this_in => l_recTEST.error_message);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Find DBOUT Sad Path 1';
-      tl_compile_db_object
-         (in_ptype   => 'package body'
-         ,in_pname   => l_pname
-         ,in_source  =>
-            -- Don't remove the "||", otherwise this will set the DBOUT
-            '  --% WTPLSQL SET DBOUT ' || '"BOGUS1" %--' || CHR(10) ||
-            'begin'                                      || CHR(10) ||
-            '  l_junk := 1;'                             );
-      run_find_dbout;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull
-         (msg_in          => 'l_recTEST.dbout_owner'
-         ,check_this_in   => l_recTEST.dbout_owner);
-      wt_assert.isnull
-         (msg_in          => 'l_recTEST.dbout_name'
-         ,check_this_in   => l_recTEST.dbout_name);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull
-         (msg_in          => 'l_recTEST.dbout_type'
-         ,check_this_in   => l_recTEST.dbout_type);
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.error_message'
-         ,check_this_in   => l_recTEST.error_message
-         ,against_this_in => 'Unable to find database object "BOGUS1".');
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Find DBOUT Sad Path 2';
-      tl_compile_db_object
-         (in_ptype   => 'package body'
-         ,in_pname   => l_pname
-         ,in_source  => 
-            '  --% WTPLSQL SET DBOUT "' || g_current_user ||
-                                    '.' || l_pname || '" %--'  || CHR(10) ||
-            'begin'                                            || CHR(10) ||
-            '  l_junk := 1;'                                   );
-      run_find_dbout;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_owner'
-         ,check_this_in   => l_recTEST.dbout_owner
-         ,against_this_in => g_current_user);
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_name'
-         ,check_this_in   => l_recTEST.dbout_name
-         ,against_this_in => l_pname);
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.error_message'
-         ,check_this_in   => l_recTEST.error_message
-         ,against_this_in => 'Found too many database objects "WTP.WT_PROFILE_FIND_DBOUT".');
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Find DBOUT Sad Path 3';
-      tl_compile_db_object
-         (in_ptype   => 'package body'
-         ,in_pname   => l_pname
-         ,in_source  => 
-            -- Don't remove the "||", otherwise this will set the DBOUT
-            '  --% WTPLSQL SET DBOUT ' || '"SYS.ALL_OBJECTS:VIEW" %--' || CHR(10) ||
-            'begin'                                                    || CHR(10) ||
-            '  l_junk := 1;'                                           );
-      run_find_dbout;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_owner'
-         ,check_this_in   => l_recTEST.dbout_owner
-         ,against_this_in => 'SYS');
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_name'
-         ,check_this_in   => l_recTEST.dbout_name
-         ,against_this_in => 'ALL_OBJECTS');
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.eq
-         (msg_in          => 'l_recTEST.dbout_type'
-         ,check_this_in   => l_recTEST.dbout_type
-         ,against_this_in => 'VIEW');
-      wt_assert.isnull
-         (msg_in          => 'l_recTEST.error_message'
-         ,check_this_in   => l_recTEST.error_message);
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Find DBOUT Teardown';
+         (msg_in          => 'Check Package Body'
+         ,check_this_in   => is_profilable(l_owner, l_pname, 'PACKAGE BODY')
+         ,against_this_in => TRUE);
       tl_drop_db_object(l_pname, 'package');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_is_profilable Happy Path 2';
+      tl_compile_db_object
+         (in_ptype   => 'procedure'
+         ,in_pname   => l_pname
+         ,in_source  => '   l_junk number;' || CHR(10) ||
+                        'begin'             || CHR(10) ||
+                        '  l_junk := 1;'    || CHR(10) ||
+                        'end ' || l_pname   );
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq
+         (msg_in          => 'Check Procedure'
+         ,check_this_in   => is_profilable(l_owner, l_pname, 'PROCEDURE')
+         ,against_this_in => TRUE);
+      tl_drop_db_object(l_pname, 'procedure');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_is_profilable Happy Path 3';
+      tl_compile_db_object
+         (in_ptype   => 'type'
+         ,in_pname   => l_pname
+         ,in_source  => '   object(l_junk  number'         || CHR(10) ||
+                        '         ,member procedure test1' || CHR(10) ||
+                        '         )'                       );
+      --------------------------------------  WTPLSQL Testing --
+      tl_compile_db_object
+         (in_ptype   => 'type body'
+         ,in_pname   => l_pname
+         ,in_source  => 'member procedure test1' || CHR(10) ||
+                        'is'                     || CHR(10) ||
+                        'begin'                  || CHR(10) ||
+                        '   l_junk := 1;'        || CHR(10) ||
+                        'end;'                   || CHR(10) ||
+                        'end'                    );
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq
+         (msg_in          => 'Check Type'
+         ,check_this_in   => is_profilable(l_owner, l_pname, 'TYPE')
+         ,against_this_in => TRUE);
+      wt_assert.eq
+         (msg_in          => 'Check Type Body'
+         ,check_this_in   => is_profilable(l_owner, l_pname, 'TYPE BODY')
+         ,against_this_in => TRUE);
+      tl_drop_db_object(l_pname, 'type');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_is_profilable Happy Path 4';
+      wt_assert.eq
+         (msg_in          => 'Check Missing Function'
+         ,check_this_in   => is_profilable(l_owner, 'BOGUS_FUNCTION_123', 'FUNCTION')
+         ,against_this_in => FALSE);
+      wt_assert.eq
+         (msg_in          => 'Check Table'
+         ,check_this_in   => is_profilable(l_owner, 'WT_PROFILES', 'TABLE')
+         ,against_this_in => FALSE);
    end t_is_profilable;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
@@ -1476,6 +1378,9 @@ begin
       g_skip_add    := FALSE;
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    if is_profilable
+         (core_data.g_run_rec.dbout_owner
+         ,core_data.g_run_rec.dbout_name
+         ,core_data.g_run_rec.dbout_type)
    then
       -- Check Versions
       l_retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
@@ -1515,7 +1420,7 @@ end initialize;
 --      tl_compile_db_object
 --         (in_ptype   => 'package'
 --         ,in_pname   => l_pname
---         ,in_source  => '  l_junk number;' );
+--         ,in_source  => '  l_junk number; end l_pname;' );
 --      --------------------------------------  WTPLSQL Testing --
 --      wt_assert.g_testcase := 'Initialize Test HAPPY Path 1';
 --      tl_compile_db_object
@@ -1523,7 +1428,7 @@ end initialize;
 --         ,in_pname   => l_pname
 --         ,in_source  => 
 --            'begin'          || CHR(10) ||  -- Line 2
---            '  l_junk := 7;' );             -- Line 3
+--            '  l_junk := 7;' ); end l_pname;             -- Line 3
 --      --------------------------------------  WTPLSQL Testing --
 --      l_recSAVE := g_rec;
 --      initialize
@@ -1959,10 +1864,10 @@ $THEN
       t_get_error_msg;
       t_delete_profiler_recs;
       t_is_profilable;
-    t_load_ignr_aa;
-    t_insert_wt_profile;
-    t_initialize;
-    t_finalize;
+    --t_load_ignr_aa;
+    --t_insert_wt_profile;
+    --t_initialize;
+    --t_finalize;
       t_trigger_offset;
       t_calc_pct_coverage;
       t_delete_run_id;
