@@ -8,9 +8,9 @@ select run.id                TEST_RUN_ID
       ,run.test_runner_id 
       ,tr.owner              TEST_RUNNER_OWNER
       ,tr.name               TEST_RUNNER_NAME
-      ,run.is_last_run    
       ,run.start_dtm      
       ,run.end_dtm        
+      ,run.is_last_run    
       ,run.error_message
       ,res.result_seq    
       ,res.testcase_id   
@@ -34,9 +34,9 @@ comment on column wt_results_vw.test_run_id is 'Foreign Key for the Test Run';
 comment on column wt_results_vw.test_runner_id is 'Surrogate Key the Test Runner package.';
 comment on column wt_results_vw.test_runner_owner is 'Owner of the Test Runner package.';
 comment on column wt_results_vw.test_runner_name is 'Name of the Test Runner package.';
-comment on column wt_results_vw.is_last_run is 'Optional Flag "Y" to indicate this is the most recent run for this package owner/name';
 comment on column wt_results_vw.start_dtm is 'Date/time (and fractional seconds) this Test Run started.';
 comment on column wt_results_vw.end_dtm is 'Date/time (and fractional seconds) this Test Run ended.';
+comment on column wt_results_vw.is_last_run is 'Optional Flag "Y" to indicate this is the most recent run for this package owner/name';
 comment on column wt_results_vw.error_message is 'Optional Error messages from this Test Run.';
 comment on column wt_results_vw.result_seq is 'Sequence number for this Result';
 comment on column wt_results_vw.testcase_id is 'Foreign Key for the Test Case.';

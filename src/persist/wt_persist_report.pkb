@@ -89,7 +89,7 @@ begin
       l_show_pass_txt := 'N';
    end if;
    for buff in (
-      select * from wt_results
+      select * from wt_results_vw
        where test_run_id = g_test_runs_rec.test_run_id
        and  (   l_show_pass_txt = 'Y'
              or status         != 'PASS')
@@ -97,7 +97,7 @@ begin
    loop
       -- Load l_rec
       l_rec.assertion       := buff.assertion;
-      l_rec.status          := buff.status = 'PASS';
+      l_rec.pass            := (buff.status = 'PASS');
       l_rec.details         := buff.details;
       l_rec.testcase        := buff.testcase;
       l_rec.message         := buff.message;
@@ -113,10 +113,10 @@ begin
       if show_header
       then
          p('');
-         p(' - ' || g_test_runs_rec.runner_owner  ||
-             '.' || g_test_runs_rec.runner_name   || 
-             ' Test Result Details (Test Run ID ' ||
-                    g_test_runs_rec.id            ||
+         p(' - ' || g_test_runs_rec.test_runner_owner  ||
+             '.' || g_test_runs_rec.test_runner_name   || 
+             ' Test Result Details (Test Run ID '      ||
+                    g_test_runs_rec.test_run_id        ||
              ')' );
          p('-----------------------------------------------------------');
          show_header := FALSE;
@@ -138,15 +138,15 @@ is
    header_shown     boolean;
    procedure l_show_header is begin
      p('');
-     p(' - ' || g_test_runs_rec.dbout_owner     ||
-         '.' || g_test_runs_rec.dbout_name      ||
-         ' ' || g_test_runs_rec.dbout_type      ||
-         ' Code Coverage Details (Test Run ID ' ||
-                g_test_runs_rec.id              ||
+     p(' - ' || g_dbout_runs_rec.dbout_owner     ||
+         '.' || g_dbout_runs_rec.dbout_name      ||
+         ' ' || g_dbout_runs_rec.dbout_type      ||
+         ' Code Coverage Details (Test Run ID '  ||
+                g_dbout_runs_rec.test_run_id     ||
          ')' );
    end l_show_header;
 begin
-   if g_test_runs_rec.profiler_runid is null
+   if g_dbout_runs_rec.profiler_runid is null
    then
       return;
    end if;
@@ -160,14 +160,14 @@ begin
    for buff in (
       select line
             ,status
-            ,total_occur
-            ,total_usecs
-            ,min_usecs
-            ,max_usecs
+            ,exec_cnt
+            ,exec_tot_usecs
+            ,exec_min_usecs
+            ,exec_max_usecs
             ,text
             ,rownum
-       from  wt_dbout_profiles
-       where test_run_id = g_test_runs_rec.id
+       from  wt_profiles
+       where test_run_id = g_dbout_runs_rec.test_run_id
        and  (   l_show_aux_txt = 'Y'
              or status not in ('EXEC','IGNR','UNKN','EXCL'))
        order by line  )
@@ -182,15 +182,15 @@ begin
       then
          p(l_header_txt);
       end if;
-      p(to_char(buff.line,'99999') ||
+      p(to_char(buff.line,'99999')              ||
         case buff.status when 'NOTX' then '#NOTX#'
         else ' ' || rpad(buff.status,4) || ' '
-        end                                  ||
-        to_char(buff.total_occur,'99999')    || ' ' ||
-        to_char(buff.total_usecs,'99999999') || ' ' ||
-        to_char(buff.min_usecs,'999999')     || ' ' ||
-        to_char(buff.max_usecs,'99999999')   || ' ' ||
-        replace(buff.text,CHR(10),'')            );
+        end                                     ||
+        to_char(buff.exec_cnt,'99999')          || ' ' ||
+        to_char(buff.exec_tot_usecs,'99999999') || ' ' ||
+        to_char(buff.exec_min_usecs,'999999')   || ' ' ||
+        to_char(buff.exec_max_usecs,'99999999') || ' ' ||
+        replace(buff.text,CHR(10),'')           );
    end loop;
 end profile_out;
 
@@ -214,15 +214,15 @@ begin
    for buff in (
       -- MAX(t2.start_dtm) is a fail-safe if IS_LAST_RUN is not set.
       select * from wt_test_runs_vw
-       where (          runner_name,        start_dtm) in
-             (select t2.runner_name, max(t2.start_dtm)
-               from  wt_test_runs  t2
+       where (          test_runner_name,        start_dtm) in
+             (select t2.test_runner_name, max(t2.start_dtm)
+               from  wt_test_runs_vw  t2
                where (   (    in_runner_name is not null
-                          and in_runner_name = t2.runner_name)
+                          and in_runner_name = t2.test_runner_name)
                       OR in_runner_name is null  )
-                and  t2.runner_owner = in_runner_owner
-               group by t2.runner_name )
-       order by start_dtm, runner_name )
+                and  t2.test_runner_owner = in_runner_owner
+               group by t2.test_runner_name )
+       order by start_dtm, test_runner_name )
    loop
 
       --  Load Test Run Record
