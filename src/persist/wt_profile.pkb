@@ -1088,7 +1088,7 @@ $THEN
          end;
          wt_assert.eq (
             msg_in          => 'insert plsql_profiler_data (LINE#: ' || data_rec.line#|| ')',
-            check_this_in   => SQLERRM,
+            check_this_in   => l_sqlerrm,
             against_this_in => 'ORA-0000: normal, successful completion');
       end insert_plsql_profiler_data;
       --------------------------------------  WTPLSQL Testing --

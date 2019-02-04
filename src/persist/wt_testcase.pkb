@@ -83,6 +83,10 @@ is
    pragma AUTONOMOUS_TRANSACTION;
    rec  wt_testcases%ROWTYPE;
 begin
+   if in_testcase is NULL
+   then
+      return NULL;
+   end if;
    rec.id := get_id (in_testcase);
    if rec.id is null
    then
@@ -126,6 +130,11 @@ $THEN
          (msg_in            => 'Check ID return 2'
          ,check_this_in     => dim_id(C_TESTCASE)
          ,against_this_in   => l_id);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_dim_id Sad Path 1';
+      wt_assert.isnull
+         (msg_in            => 'Check NULL return'
+         ,check_this_in     => dim_id(NULL));
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 't_dim_id Teardown';
       delete from wt_testcases
