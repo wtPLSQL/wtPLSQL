@@ -56,6 +56,8 @@ grant select on dba_procedures    to &schema_owner. with grant option;
 grant select on dba_source        to &schema_owner. with grant option;
 -- For GUI
 grant select on sys.gv_$parameter to &schema_owner. with grant option;
+-- For Jobs
+grant execute on sys.dbms_lock to &schema_owner.;
 
 
 prompt
