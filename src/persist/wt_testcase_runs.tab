@@ -14,8 +14,6 @@ create table wt_testcase_runs
    ,asrt_avg_msecs      number(10)
    ,asrt_max_msecs      number(10)
    ,asrt_tot_msecs      number(10)
-   ,asrt_std_msecs      number(10)
-   ,asrt_sos_msecs      number(10)
    ,constraint wt_testcase_runs_pk primary key (test_run_id, testcase_id)
    ,constraint wt_testcase_runs_fk1 foreign key (test_run_id)
        references wt_test_runs (id)
@@ -37,8 +35,6 @@ comment on column wt_testcase_runs.asrt_min_msecs is 'Minimum interval time betw
 comment on column wt_testcase_runs.asrt_avg_msecs is 'Average interval time between assertions in milliseconds for the Test Case';
 comment on column wt_testcase_runs.asrt_max_msecs is 'Maximum interval time between assertions in milliseconds for the Test Case';
 comment on column wt_testcase_runs.asrt_tot_msecs is 'Total (sum) of interval times between assertions in milliseconds for the Test Case';
-comment on column wt_testcase_runs.asrt_std_msecs is 'Standard Deviation of the interval time between assertions in milliseconds for the Test Case';
-comment on column wt_testcase_runs.asrt_sos_msecs is 'Sum of squares interval time between assertions in milliseconds for the Test Case';
 
 grant select on wt_testcase_runs to public;
 grant delete on wt_testcase_runs to public;

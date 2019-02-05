@@ -115,10 +115,6 @@ $THEN
          (msg_in          => 'l_run_recTEST.asrt_tot_msec'
          ,check_this_in   =>  l_run_recTEST.asrt_tot_msec
          ,against_this_in =>  0);
-      wt_assert.eq
-         (msg_in          => 'l_run_recTEST.asrt_sos_msec'
-         ,check_this_in   =>  l_run_recTEST.asrt_sos_msec
-         ,against_this_in =>  0);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull
          (msg_in          => 'l_tcases_aaTEST.FIRST'
@@ -235,9 +231,6 @@ begin
    end if;
    g_run_rec.asrt_tot_msec := g_run_rec.asrt_tot_msec +
                               l_results_rec.interval_msecs;
-   g_run_rec.asrt_sos_msec := g_run_rec.asrt_sos_msec + 
-                             (l_results_rec.interval_msecs *
-                              l_results_rec.interval_msecs   );
    if l_results_rec.interval_msecs < nvl(g_run_rec.asrt_min_msec,9999999)
    then
       g_run_rec.asrt_min_msec := l_results_rec.interval_msecs;
@@ -260,9 +253,6 @@ begin
    end if;
    l_tcases_rec.asrt_tot_msec := l_tcases_rec.asrt_tot_msec +
                                  l_results_rec.interval_msecs;
-   l_tcases_rec.asrt_sos_msec := l_tcases_rec.asrt_sos_msec +
-                                (l_results_rec.interval_msecs *
-                                 l_results_rec.interval_msecs   );
    if l_results_rec.interval_msecs < nvl(l_tcases_rec.asrt_min_msec,9999999)
    then
       l_tcases_rec.asrt_min_msec := l_results_rec.interval_msecs;
@@ -382,16 +372,6 @@ $THEN
          ,against_this_in =>  l_run_recSAVE.asrt_tot_msec + 
                               l_results_ntTEST(lt).interval_msecs);
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.eq
-         (msg_in          => 'l_run_recTEST.asrt_sos_msec = ' ||
-                             'l_run_recSAVE.asrt_sos_msec + ' ||
-                            '(l_results_ntTEST(lt).interval_msecs *' ||
-                             'l_results_ntTEST(lt).interval_msecs )'
-         ,check_this_in   =>  l_run_recTEST.asrt_sos_msec
-         ,against_this_in =>  l_run_recSAVE.asrt_sos_msec + 
-                             (l_results_ntTEST(lt).interval_msecs *
-                              l_results_ntTEST(lt).interval_msecs ) );
-      --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull
          (msg_in          => 'l_run_recTEST.asrt_min_msec'
          ,check_this_in   =>  l_run_recTEST.asrt_min_msec);
@@ -427,9 +407,6 @@ $THEN
       wt_assert.isnotnull
          (msg_in          => 'l_tcases_aaTEST(''The Testcase'').asrt_tot_msec'
          ,check_this_in   =>  l_tcases_aaTEST('The Testcase').asrt_tot_msec);
-      wt_assert.isnotnull
-         (msg_in          => 'l_tcases_aaTEST(''The Testcase'').asrt_sos_msec'
-         ,check_this_in   =>  l_tcases_aaTEST('The Testcase').asrt_sos_msec);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull
          (msg_in          => 'l_tcases_aaTEST(''The Testcase'').asrt_min_msec'

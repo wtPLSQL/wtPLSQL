@@ -20,7 +20,6 @@ is
       ,asrt_min_msec      number(10)     default 0          -- Minumum Assertion Interval in Milliseconds across all Test Cases
       ,asrt_max_msec      number(10)     default 0          -- Maximum Assertion Interval in Milliseconds across all Test Cases
       ,asrt_tot_msec      number(10)     default 0          -- Total Assertion Intervals in Milliseconds across all Test Cases
-      ,asrt_sos_msec      number(20)     default 0          -- Sum of Squares of Assertion Interval in Milliseconds across all Test Cases
       ,dbout_owner        long_name                         -- Owner of the Database Object Under Test
       ,dbout_name         long_name                         -- Name of the Database Object Under Test
       ,dbout_type         varchar2(20)                      -- Type of the Database Object Under Test
@@ -33,7 +32,6 @@ is
       ,asrt_min_msec  number(10)     default 0          -- Minumum Assertion Interval in Milliseconds in this Test Cases
       ,asrt_max_msec  number(10)     default 0          -- Maximum Assertion Interval in Milliseconds in this Test Cases
       ,asrt_tot_msec  number(10)     default 0          -- Total Assertion Interval in Milliseconds in this Test Cases
-      ,asrt_sos_msec  number(20)     default 0          -- Sum of Squares Assertion Interval in Milliseconds in this Test Cases
       );
    TYPE tcases_aa_type is table of tcases_rec_type index by long_name;
    g_tcases_aa   tcases_aa_type;

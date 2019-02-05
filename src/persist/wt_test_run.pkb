@@ -75,8 +75,10 @@ begin
    g_test_runs_rec.tc_fail           := core_data.g_run_rec.tc_fail;
    if g_test_runs_rec.tc_cnt != 0
    then
-      g_test_runs_rec.tc_yield_pct := (g_test_runs_rec.tc_cnt - g_test_runs_rec.tc_fail) /
-                                       g_test_runs_rec.tc_cnt;
+      g_test_runs_rec.tc_yield_pct := round( 100 *
+                                             ( g_test_runs_rec.tc_cnt -
+                                               g_test_runs_rec.tc_fail  ) /
+                                             g_test_runs_rec.tc_cnt         );
    end if;
    g_test_runs_rec.asrt_fst_dtm      := core_data.g_run_rec.asrt_fst_dtm;
    g_test_runs_rec.asrt_lst_dtm      := core_data.g_run_rec.asrt_lst_dtm;
@@ -85,20 +87,18 @@ begin
    g_test_runs_rec.asrt_min_msec     := core_data.g_run_rec.asrt_min_msec;
    g_test_runs_rec.asrt_max_msec     := core_data.g_run_rec.asrt_max_msec;
    g_test_runs_rec.asrt_tot_msec     := core_data.g_run_rec.asrt_tot_msec;
-   g_test_runs_rec.asrt_sos_msec     := core_data.g_run_rec.asrt_sos_msec;
    g_test_runs_rec.dbout_id          := wt_dbout.dim_id
                                            (core_data.g_run_rec.dbout_owner
                                            ,core_data.g_run_rec.dbout_name
                                            ,core_data.g_run_rec.dbout_type);
    if g_test_runs_rec.asrt_cnt != 0
    then
-      g_test_runs_rec.asrt_yield_pct := (g_test_runs_rec.asrt_cnt - g_test_runs_rec.asrt_fail) /
-                                                      g_test_runs_rec.asrt_cnt;
+      g_test_runs_rec.asrt_yield_pct := round( 100 *
+                                               ( g_test_runs_rec.asrt_cnt -
+                                                 g_test_runs_rec.asrt_fail  ) /
+                                               g_test_runs_rec.asrt_cnt         );
       g_test_runs_rec.asrt_avg_msec  := g_test_runs_rec.asrt_tot_msec /
                                             g_test_runs_rec.asrt_cnt;
-      g_test_runs_rec.asrt_std_msec  := sqrt( ( power(g_test_runs_rec.asrt_tot_msec,2) -
-                                                      g_test_runs_rec.asrt_sos_msec      ) /
-                                             g_test_runs_rec.asrt_cnt                        );
    end if;
 end set_g_test_runs_rec;
 
@@ -115,17 +115,74 @@ $THEN
       wt_assert.g_testcase := 'Set g_test_run_rec Happy Path 1';
       l_cdr_recSAVE := core_data.g_run_rec;
       l_tr_recSAVE  := g_test_runs_rec;
-      --core_data.g_run_rec.dbout_owner := C_OWNER;
-      --core_data.g_run_rec.dbout_name  := C_NAME;
-      --core_data.g_run_rec.dbout_type  := 'TYPE';
-      --
-      More Testing Here
+      --------------------------------------  WTPLSQL Testing --
+      core_data.g_run_rec.test_runner_owner := C_OWNER;
+      core_data.g_run_rec.test_runner_name  := C_NAME;
+      core_data.g_run_rec.tc_cnt            := 2;
+      core_data.g_run_rec.tc_fail           := 1;
+      core_data.g_run_rec.dbout_owner       := C_OWNER;
+      core_data.g_run_rec.dbout_name        := C_NAME;
+      core_data.g_run_rec.dbout_type        := 'TYPE';
+      core_data.g_run_rec.asrt_cnt          := 10;
+      core_data.g_run_rec.asrt_fail         := 5;
+      core_data.g_run_rec.asrt_tot_msec     := 100;
+      --------------------------------------  WTPLSQL Testing --
       set_g_test_runs_rec;
-      --
       l_cdr_recTEST       := core_data.g_run_rec;
       core_data.g_run_rec := l_cdr_recSAVE;
       l_tr_recTEST    := g_test_runs_rec;
       g_test_runs_rec := l_tr_recSAVE;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnotnull (
+         msg_in          => 'l_tr_recTEST.id',
+         check_this_in   =>  l_tr_recTEST.id);
+      wt_assert.isnotnull (
+         msg_in          => 'l_tr_recTEST.test_runner_id',
+         check_this_in   =>  l_tr_recTEST.test_runner_id);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnotnull (
+         msg_in          => 'l_tr_recTEST.dbout_id',
+         check_this_in   =>  l_tr_recTEST.dbout_id);
+      wt_assert.eq (
+         msg_in          => 'l_tr_recTEST.tc_cnt',
+         check_this_in   =>  l_tr_recTEST.tc_cnt,
+         against_this_in => 2);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq (
+         msg_in          => 'l_tr_recTEST.tc_fail',
+         check_this_in   =>  l_tr_recTEST.tc_fail,
+         against_this_in => 1);
+      wt_assert.eq (
+         msg_in          => 'l_tr_recTEST.asrt_cnt',
+         check_this_in   =>  l_tr_recTEST.asrt_cnt,
+         against_this_in => 10);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq (
+         msg_in          => 'l_tr_recTEST.asrt_fail',
+         check_this_in   =>  l_tr_recTEST.asrt_fail,
+         against_this_in => 5);
+      wt_assert.eq (
+         msg_in          => 'l_tr_recTEST.asrt_tot_msec',
+         check_this_in   =>  l_tr_recTEST.asrt_tot_msec,
+         against_this_in => 100);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq (
+         msg_in          => 'l_tr_recTEST.tc_yield_pct',
+         check_this_in   =>  l_tr_recTEST.tc_yield_pct,
+         against_this_in => 50);
+      wt_assert.eq (
+         msg_in          => 'l_tr_recTEST.tc_fail',
+         check_this_in   =>  l_tr_recTEST.tc_fail,
+         against_this_in => 1);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq (
+         msg_in          => 'l_tr_recTEST.asrt_yield_pct',
+         check_this_in   =>  l_tr_recTEST.asrt_yield_pct,
+         against_this_in => 50);
+      wt_assert.eq (
+         msg_in          => 'l_tr_recTEST.asrt_avg_msec',
+         check_this_in   =>  l_tr_recTEST.asrt_avg_msec,
+         against_this_in => 10);
    end t_set_g_test_runs_rec;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
