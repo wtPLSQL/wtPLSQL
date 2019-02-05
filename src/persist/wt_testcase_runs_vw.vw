@@ -20,8 +20,6 @@ select tcr.test_run_id
       ,tcr.asrt_avg_msecs
       ,tcr.asrt_max_msecs
       ,tcr.asrt_tot_msecs
-      ,tcr.asrt_std_msecs
-      ,tcr.asrt_sos_msecs
  from  wt_testcase_runs  tcr
        join wt_testcases  tc
             on  tc.id = tcr.testcase_id
@@ -47,7 +45,5 @@ comment on column wt_testcase_runs_vw.asrt_min_msecs is 'Minimum interval time b
 comment on column wt_testcase_runs_vw.asrt_avg_msecs is 'Average interval time between assertions in milliseconds for the Test Case';
 comment on column wt_testcase_runs_vw.asrt_max_msecs is 'Maximum interval time between assertions in milliseconds for the Test Case';
 comment on column wt_testcase_runs_vw.asrt_tot_msecs is 'Total (sum) of interval times between assertions in milliseconds for the Test Case';
-comment on column wt_testcase_runs_vw.asrt_std_msecs is 'Standard Deviation of the interval time between assertions in milliseconds for the Test Case';
-comment on column wt_testcase_runs_vw.asrt_sos_msecs is 'Sum of squares interval time between assertions in milliseconds for the Test Case';
 
 grant select on wt_testcase_runs_vw to public;

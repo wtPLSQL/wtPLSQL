@@ -25,8 +25,6 @@ select run.id                 TEST_RUN_ID
       ,run.asrt_avg_msec
       ,run.asrt_max_msec
       ,run.asrt_tot_msec
-      ,run.asrt_std_msec
-      ,run.asrt_sos_msec
  from  wt_test_runs  run
        join wt_test_runners  tr
             on  tr.id = run.test_runner_id;
@@ -50,8 +48,8 @@ comment on column wt_test_runs_vw.asrt_cnt is 'Number of Assertions across all T
 comment on column wt_test_runs_vw.asrt_fail is 'Number of Assertion Failures across all Test Cases';
 comment on column wt_test_runs_vw.asrt_yield_pct is 'Percentage of successful assertions to total assertions.';
 comment on column wt_test_runs_vw.asrt_min_msec is 'Minumum Assertion Interval in Milliseconds across all Test Cases';
+comment on column wt_test_runs_vw.asrt_avg_msec is 'Sum of Squares of Assertion Interval in Milliseconds across all Test Cases';
 comment on column wt_test_runs_vw.asrt_max_msec is 'Maximum Assertion Interval in Milliseconds across all Test Cases';
 comment on column wt_test_runs_vw.asrt_tot_msec is 'Total Assertion Intervals in Milliseconds across all Test Cases';
-comment on column wt_test_runs_vw.asrt_sos_msec is 'Sum of Squares of Assertion Interval in Milliseconds across all Test Cases';
 
 grant select on wt_test_runs_vw to public;
