@@ -102,24 +102,24 @@ procedure wait_for_all_tests
       (in_timeout_seconds         in number  default 3600
       ,in_check_interval_seconds  in number  default 60)
 is
-   cursor main is
-      select job_name from wt_scheduler_jobs_vw
-       where status = 'RUNNING';
-   buff main%ROWTYPE;
+   num_jobs       number := 0;
    max_intervals  pls_integer;
-   running        boolean;
 begin
    max_intervals := nvl(in_timeout_seconds,3600) /
                     nvl(in_check_interval_seconds,60);
    for i in 1 .. max_intervals
    loop
-      open main;
-      fetch main into buff;
-      running := main%FOUND;
-      close main;
-      exit when not running;
+      select count(*) into num_jobs
+       from  wt_scheduler_jobs_vw
+       where status = 'RUNNING';
+      exit when num_jobs = 0;
       dbms_lock.sleep(in_check_interval_seconds);
    end loop;
+   if num_jobs > 0
+   then
+      raise_application_error(-20000, 'WAIT_FOR_ALL_TESTS timeout, ' ||
+                                       num_jobs || ' jobs still running');
+   end if;
 end wait_for_all_tests;
 
 
