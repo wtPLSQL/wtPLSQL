@@ -13,7 +13,7 @@ as
 
    -- Run a test runner in a different schema
    -- Returns before the test runner is complete
-   procedure test_runner
+   procedure test_run
       (in_schema_name  in  varchar2
       ,in_runner_name  in  varchar2);
 

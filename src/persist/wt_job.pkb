@@ -15,7 +15,7 @@ as
 ------------------------------------------------------------
 -- Run a test runner in a different schema
 -- Returns before the test runner is complete
-procedure test_runner
+procedure test_run
       (in_schema_name  in  varchar2
       ,in_runner_name  in  varchar2)
 is
@@ -32,7 +32,7 @@ begin
                            ,1,128)
       ,job_type   => 'PLSQL_BLOCK'
       ,job_action => plsql_block);
-end test_runner;
+end test_run;
 
 
 ------------------------------------------------------------
@@ -130,9 +130,11 @@ procedure create_db_link
 is
    connect_string  varchar2(2000);
 begin
-   connect_string := '//' || 'localhost' ||
-                      ':' || 1521        ||
-                      '/' || SYS_CONTEXT('USERENV','SERVICE_NAME');
+    select '//' || 'localhost' ||
+            ':' || 1521        ||
+            '/' || global_name
+    into  connect_string
+    from  global_name;
    execute immediate
       'create database link ' || in_schema_name ||
                ' connect to ' || in_schema_name ||
@@ -140,6 +142,8 @@ begin
                   ' using ''' || connect_string || '''';
 end create_db_link;
 
+
+------------------------------------------------------------
 procedure drop_db_link
       (in_schema_name  in varchar2)
 is
@@ -153,6 +157,67 @@ exception when OTHERS then
    end if;
 end drop_db_link;
 
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_create_drop_db_link
+   is
+      num_rows  number;
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Create Drop DB Link';
+      wt_assert.eqqueryvalue (
+         msg_in           => 'Number of DB Links before testing',
+         check_query_in   => 'select count(*) from user_db_links',
+         against_value_in => 0);
+      wt_assert.raises (
+         msg_in          => 'Create the Database Link',
+         check_call_in   => 'begin wt_job.create_db_link(''' ||
+                                   USER || ''',''' ||
+                                   lower(USER) || '''); end;',
+         against_exc_in  => '');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.objexists (
+         msg_in        =>  USER || ' Database Link',
+         obj_owner_in  =>  USER,
+         obj_name_in   =>  USER,
+         obj_type_in   =>  'DATABASE LINK');
+      wt_assert.eqqueryvalue (
+         msg_in           => 'Number of DB Links during testing',
+         check_query_in   => 'select count(*) from user_db_links',
+         against_value_in => 1);
+      --------------------------------------  WTPLSQL Testing --
+      select count(*)
+       into  num_rows
+       from  wt_results;
+      wt_assert.eqqueryvalue (
+         msg_in           => 'Number of Rows from WT_RESULTS@' || USER,
+         check_query_in   => 'select count(*) from user_db_links@' || USER,
+         against_value_in => num_rows);
+      --------------------------------------  WTPLSQL Testing --
+      rollback;
+      wt_assert.raises (
+         msg_in          => 'Close the Database Link',
+         check_call_in   => 'alter session close database link ' ||
+                                   USER,
+         against_exc_in  => '');
+      wt_assert.raises (
+         msg_in          => 'Drop the Database Link',
+         check_call_in   => 'begin wt_job.drop_db_link(''' ||
+                                   USER || '''); end;',
+         against_exc_in  => '');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.objnotexists (
+         msg_in        =>  USER || ' Database Link',
+         obj_owner_in  =>  USER,
+         obj_name_in   =>  USER,
+         obj_type_in   =>  'DATABASE LINK');
+      wt_assert.eqqueryvalue (
+         msg_in           => 'Number of DB Links after testing',
+         check_query_in   => 'select count(*) from user_db_links',
+         against_value_in => 0);
+   end t_create_drop_db_link;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 
 --==============================================================--
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -161,8 +226,8 @@ $THEN
    is
    begin
       --------------------------------------  WTPLSQL Testing --
-      null;
-   end;
+      t_create_drop_db_link;
+   end WTPLSQL_RUN;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--
 
