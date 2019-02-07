@@ -1923,6 +1923,7 @@ $THEN
    begin
       wtplsql.g_DBOUT := 'WT_PROFILE:PACKAGE BODY';
       select username into g_current_user from user_users;
+      --------------------------------------  WTPLSQL Testing --
       t_get_error_msg;
       t_delete_plsql_profiler_recs;
       t_load_ignr_aa;
