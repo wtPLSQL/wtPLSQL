@@ -374,21 +374,17 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
-procedure delete_plsql_profiler_recs
-      (in_profiler_runid  in number)
+procedure clear_plsql_profiler_recs
 is
 begin
-   delete from plsql_profiler_data
-    where runid = in_profiler_runid;
-   delete from plsql_profiler_units
-    where runid = in_profiler_runid;
-   delete from plsql_profiler_runs
-    where runid = in_profiler_runid;
-end delete_plsql_profiler_recs;
+   delete from plsql_profiler_data;
+   delete from plsql_profiler_units;
+   delete from plsql_profiler_runs;
+end clear_plsql_profiler_recs;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure t_delete_plsql_profiler_recs
+   procedure t_clear_plsql_profiler_recs
    is
       c_test_run_id   constant number := -99;
       l_err_stack     varchar2(32000);
@@ -396,7 +392,7 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Delete PL/SQL Profiler Records Happy Path 1';
       begin
-         delete_plsql_profiler_recs(c_test_run_id);  -- Should run without error
+         clear_plsql_profiler_recs;  -- Should run without error
          l_err_stack := dbms_utility.format_error_stack     ||
                         dbms_utility.format_error_backtrace ;
       exception when others then
@@ -405,7 +401,7 @@ $THEN
       end;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
-         msg_in          => 'delete_plsql_profiler_recs(' || c_test_run_id || ') 1',
+         msg_in          => 'clear_plsql_profiler_recs 1',
          check_this_in   => l_err_stack);
       tl_count_plsql_profiler_recs(c_test_run_id, 0);
       --------------------------------------  WTPLSQL Testing --
@@ -413,7 +409,7 @@ $THEN
       tl_insert_plsql_profiler_recs(c_test_run_id);
       tl_count_plsql_profiler_recs(c_test_run_id, 1);
       begin
-         delete_plsql_profiler_recs(c_test_run_id);  -- Should run without error
+         clear_plsql_profiler_recs;  -- Should run without error
          l_err_stack := dbms_utility.format_error_stack     ||
                         dbms_utility.format_error_backtrace ;
       exception when others then
@@ -422,10 +418,10 @@ $THEN
       end;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
-         msg_in          => 'delete_plsql_profiler_recs(' || c_test_run_id || ') 2',
+         msg_in          => 'clear_plsql_profiler_recs 2',
          check_this_in   => l_err_stack);
       tl_count_plsql_profiler_recs(c_test_run_id, 0);
-   end t_delete_plsql_profiler_recs;
+   end t_clear_plsql_profiler_recs;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -1513,28 +1509,26 @@ is
    l_recNULL   wt_dbout_runs%ROWTYPE;
    l_retnum    binary_integer;
 begin
+   -- Clear g_rec
    g_rec := l_recNULL;
-   if is_profilable(core_data.g_run_rec.dbout_owner
-                   ,core_data.g_run_rec.dbout_name
-                   ,core_data.g_run_rec.dbout_type)
-   then
-      -- Check Versions
-      l_retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
-      if l_retnum <> 0 then
-         ------%WTPLSQL_begin_ignore_lines%------  Can't test this
-         --dbms_profiler.get_version(major_version, minor_version);
-         raise_application_error(-20005,
-            'dbms_profiler.INTERNAL_VERSION_CHECK returned: ' || get_error_msg(l_retnum));
-         ----------------%WTPLSQL_end_ignore_lines%----------------
-      end if;
-      -- This starts the PROFILER Running!!!
-      l_retnum := dbms_profiler.START_PROFILER(run_number => g_rec.profiler_runid);
-      if l_retnum <> 0 then
-         ------%WTPLSQL_begin_ignore_lines%------  Can't test this
-         raise_application_error(-20006,
-            'dbms_profiler.START_PROFILER returned: ' || get_error_msg(l_retnum));
-         ----------------%WTPLSQL_end_ignore_lines%----------------
-      end if;
+   -- Clear Previous PLSQL Profiler Results
+   clear_plsql_profiler_recs;
+   -- Check Versions
+   l_retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
+   if l_retnum <> 0 then
+      ------%WTPLSQL_begin_ignore_lines%------  Can't test this
+      --dbms_profiler.get_version(major_version, minor_version);
+      raise_application_error(-20005,
+         'dbms_profiler.INTERNAL_VERSION_CHECK returned: ' || get_error_msg(l_retnum));
+      ----------------%WTPLSQL_end_ignore_lines%----------------
+   end if;
+   -- This starts the PROFILER Running!!!
+   l_retnum := dbms_profiler.START_PROFILER(run_number => g_rec.profiler_runid);
+   if l_retnum <> 0 then
+      ------%WTPLSQL_begin_ignore_lines%------  Can't test this
+      raise_application_error(-20006,
+         'dbms_profiler.START_PROFILER returned: ' || get_error_msg(l_retnum));
+      ----------------%WTPLSQL_end_ignore_lines%----------------
    end if;
 end initialize;
 
@@ -1542,7 +1536,6 @@ $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure t_initialize
    is
-      c_test_run_id  constant number := -96;
       l_pname        varchar2(128) := 'WT_PROFILE_INITIALIZE';
       l_cdr_recSAVE  core_data.run_rec_type;
       l_cdr_recTEST  core_data.run_rec_type;
@@ -1553,9 +1546,6 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       l_cdr_recSAVE := core_data.g_run_rec;
       l_recSAVE     := g_rec;
-      core_data.g_run_rec.dbout_owner := g_current_user;
-      core_data.g_run_rec.dbout_name  := 'WT_PROFILE';
-      core_data.g_run_rec.dbout_type  := 'PACKAGE BODY';
       initialize;
       dbms_profiler.STOP_PROFILER;
       l_cdr_recTEST       := core_data.g_run_rec;
@@ -1568,26 +1558,6 @@ $THEN
          msg_in          => 'l_recTEST.test_run_id',
          check_this_in   =>  l_recTEST.test_run_id);
       wt_assert.isnotnull (
-         msg_in          => 'l_recTEST.profiler_runid',
-         check_this_in   =>  l_recTEST.profiler_runid);
-      --------------------------------------  WTPLSQL Testing --
-      l_cdr_recSAVE := core_data.g_run_rec;
-      l_recSAVE     := g_rec;
-      core_data.g_run_rec.dbout_owner := g_current_user;
-      core_data.g_run_rec.dbout_name  := l_pname;
-      core_data.g_run_rec.dbout_type  := 'PACKAGE BODY';
-      initialize;
-      dbms_profiler.STOP_PROFILER;
-      l_cdr_recTEST       := core_data.g_run_rec;
-      core_data.g_run_rec := l_cdr_recSAVE;
-      l_recTEST := g_rec;
-      g_rec     := l_recSAVE;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Initialize Happy Path 2';
-      wt_assert.isnull (
-         msg_in          => 'l_recTEST.test_run_id',
-         check_this_in   =>  l_recTEST.test_run_id);
-      wt_assert.isnull (
          msg_in          => 'l_recTEST.profiler_runid',
          check_this_in   =>  l_recTEST.profiler_runid);
    end t_initialize;
@@ -1624,19 +1594,22 @@ begin
       end if;
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    --
-   -- Set g_rec values
-   g_rec.test_run_id    := in_test_run_id;
-   g_rec.trigger_offset := trigger_offset(core_data.g_run_rec.dbout_owner
-                                         ,core_data.g_run_rec.dbout_name
-                                         ,core_data.g_run_rec.dbout_type);
-   -- Save PLSQL Profiler Results (Also updates g_rec)
-   insert_wt_profile(core_data.g_run_rec.dbout_owner
-                    ,core_data.g_run_rec.dbout_name
-                    ,core_data.g_run_rec.dbout_type);
-   -- Save g_rec
-   insert into wt_dbout_runs values g_rec;
-   -- Clear PLSQL Profiler Results
-   delete_plsql_profiler_recs(g_rec.profiler_runid);
+   if is_profilable(core_data.g_run_rec.dbout_owner
+                   ,core_data.g_run_rec.dbout_name
+                   ,core_data.g_run_rec.dbout_type)
+   then
+      -- Set g_rec values
+      g_rec.test_run_id    := in_test_run_id;
+      g_rec.trigger_offset := trigger_offset(core_data.g_run_rec.dbout_owner
+                                            ,core_data.g_run_rec.dbout_name
+                                            ,core_data.g_run_rec.dbout_type);
+      -- Save PLSQL Profiler Results (Also updates g_rec)
+      insert_wt_profile(core_data.g_run_rec.dbout_owner
+                       ,core_data.g_run_rec.dbout_name
+                       ,core_data.g_run_rec.dbout_type);
+      -- Save g_rec
+      insert into wt_dbout_runs values g_rec;
+   end if;
 end finalize;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -1808,11 +1781,11 @@ is
 begin
    select profiler_runid into l_profiler_runid
     from wt_test_runs where id = in_test_run_id;
-   delete_plsql_profiler_recs(l_profiler_runid);
    delete from wt_profiles
     where test_run_id = in_test_run_id;
    delete from wt_dbout_runs
     where test_run_id = in_test_run_id;
+   clear_plsql_profiler_recs;
 exception
    when NO_DATA_FOUND
    then
@@ -1925,7 +1898,7 @@ $THEN
       select username into g_current_user from user_users;
       --------------------------------------  WTPLSQL Testing --
       t_get_error_msg;
-      t_delete_plsql_profiler_recs;
+      t_clear_plsql_profiler_recs;
       t_load_ignr_aa;
       t_add_dbout_run;
       t_set_prof_status;

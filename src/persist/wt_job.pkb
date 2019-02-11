@@ -23,10 +23,9 @@ $THEN
    begin
       --------------------------------------  WTPLSQL Testing --
       -- Wrap in_source to complete the DDL statement
-      l_sql_txt := 'create ' ||
-                   in_ptype  || ' '   ||
-                   in_pname  || ' is' || CHR(10) ||
-                   in_source || ';'   ;
+      l_sql_txt := 'create ' || in_ptype  ||
+                         ' ' || in_pname  ||
+                      ' as ' || in_source ;
       wt_assert.raises
          (msg_in         => 'Compile ' || in_ptype || ' ' || in_pname
          ,check_call_in  => l_sql_txt
@@ -217,9 +216,10 @@ begin
    dbms_scheduler.create_job
       (job_name   => substr('WT_TEST_RUN$' || in_schema_name ||
                                        '$' || in_runner_name
-                           ,1,128)
+                           ,1,30)
       ,job_type   => 'PLSQL_BLOCK'
-      ,job_action => plsql_block);
+      ,job_action => plsql_block
+      ,enabled    => TRUE);
 end test_run;
 
 
@@ -228,12 +228,45 @@ $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure t_run_and_wait_for_job
    is
+      num_rows  number;
    begin
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Run and Wait for Job';
       tl_compile_db_object ('PACKAGE', 'WT_RUN_AND_WAIT_TEST','
-            t_number number;
-         end WT_RUN_AND_WAIT_TEST');
+            procedure wtplsql_run;
+         end WT_RUN_AND_WAIT_TEST;');
+      tl_compile_db_object ('PACKAGE BODY', 'WT_RUN_AND_WAIT_TEST','
+         procedure wtplsql_run is
+         begin
+            wt_assert.isnotnull (
+               msg_in        => ''Test1'',
+               check_this_in => ''Test1'');
+         end wtplsql_run;
+         end WT_RUN_AND_WAIT_TEST;');
+      select count(*) into num_rows
+       from  wt_test_runs_vw
+       where test_runner_owner = g_current_user
+        and  test_runner_name  = 'WT_RUN_AND_WAIT_TEST';
+      wt_assert.isnotnull (
+         msg_in        => 'Number of Test Runs Before',
+         check_this_in => num_rows);
+      wt_assert.raises
+         (msg_in         => 'wt_job.test_run'
+         ,check_call_in  => 'begin wt_job.test_run(''' || g_current_user ||
+                            ''', ''WT_RUN_AND_WAIT_TEST''); end;'
+         ,against_exc_in => '');
+      
+      wt_assert.raises
+         (msg_in         => 'wait_for_all_tests'
+         ,check_call_in  => 'begin wt_job.wait_for_all_tests(1,1); end;'
+         ,against_exc_in => '');
+      wt_assert.eqqueryvalue (
+         msg_in           => 'Number of Test Runs After',
+         check_query_in   => 'select count(*) from wt_test_runs_vw
+                               where test_runner_id = wt_test_runner.get_id(''' ||
+                                                      g_current_user ||
+                                               ''', ''WT_RUN_AND_WAIT_TEST'')',
+         against_value_in => num_rows);
       tl_drop_db_object('PACKAGE', 'WT_RUN_AND_WAIT_TEST');
    end t_run_and_wait_for_job;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
