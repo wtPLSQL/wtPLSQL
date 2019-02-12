@@ -23,16 +23,19 @@ end initialize;
 procedure finalize
       (in_test_run_id   in number)
 is
-   l_results_rec  wt_results%ROWTYPE;
+   l_results_rec        wt_results%ROWTYPE;
+   l_testcase_runs_rec  wt_testcase_runs%ROWTYPE;
+   testcase             core_data.long_name;
 begin
    if in_test_run_id IS NULL
    then
       return;
    end if;
+   -- Test Results
+   l_results_rec.TEST_RUN_ID := in_test_run_id;
    -- There is always an extra NULL element in the g_results_nt array.
    for i in 1 .. core_data.g_results_nt.COUNT - 1
    loop
-      l_results_rec.TEST_RUN_ID    := in_test_run_id;
       l_results_rec.RESULT_SEQ     := core_data.g_results_nt(i).RESULT_SEQ;
       l_results_rec.TESTCASE_ID    := wt_testcase.dim_id
                                          (core_data.g_results_nt(i).TESTCASE);
@@ -49,6 +52,36 @@ begin
       l_results_rec.DETAILS        := core_data.g_results_nt(i).DETAILS;
       insert into wt_results values l_results_rec;
    end loop;
+   -- Testcases
+   if core_data.g_tcases_aa.COUNT > 0
+   then
+      l_testcase_runs_rec.test_run_id := in_test_run_id;
+      testcase := core_data.g_tcases_aa.FIRST;
+      loop
+         l_results_rec.testcase_id          := wt_testcase.dim_id(testcase);
+         l_testcase_runs_rec.asrt_cnt       := core_data.g_tcases_aa(testcase).asrt_cnt;
+         l_testcase_runs_rec.asrt_fail      := core_data.g_tcases_aa(testcase).asrt_fail;
+         l_testcase_runs_rec.asrt_min_msec  := core_data.g_tcases_aa(testcase).asrt_min_msec;
+         l_testcase_runs_rec.asrt_max_msec  := core_data.g_tcases_aa(testcase).asrt_max_msec;
+         l_testcase_runs_rec.asrt_tot_msec  := core_data.g_tcases_aa(testcase).asrt_tot_msec;
+         --
+         l_testcase_runs_rec.asrt_pass      := l_testcase_runs_rec.asrt_cnt -
+                                               l_testcase_runs_rec.asrt_fail;
+         if l_testcase_runs_rec.asrt_cnt > 0 then
+            l_testcase_runs_rec.asrt_yield_pct := l_testcase_runs_rec.asrt_pass /
+                                                  l_testcase_runs_rec.asrt_cnt;
+            l_testcase_runs_rec.asrt_avg_msecs := l_testcase_runs_rec.asrt_tot_msec /
+                                                  l_testcase_runs_rec.asrt_cnt;
+         else
+            l_testcase_runs_rec.asrt_yield_pct := NULL;
+            l_testcase_runs_rec.asrt_avg_msecs := NULL;
+         end if;
+         --
+         insert into wt_testcase_runs values l_testcase_runs_rec;
+         exit when testcase = core_data.g_tcases_aa.LAST;
+         testcase := core_data.g_tcases_aa.NEXT(testcase);
+      end loop;
+   end if;
 end finalize;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------

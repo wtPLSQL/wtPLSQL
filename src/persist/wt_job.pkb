@@ -258,7 +258,7 @@ $THEN
       
       wt_assert.raises
          (msg_in         => 'wait_for_all_tests'
-         ,check_call_in  => 'begin wt_job.wait_for_all_tests(1,1); end;'
+         ,check_call_in  => 'begin wt_job.wait_for_all_tests(2,0.5); end;'
          ,against_exc_in => '');
       wt_assert.eqqueryvalue (
          msg_in           => 'Number of Test Runs After',
