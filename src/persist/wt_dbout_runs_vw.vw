@@ -25,10 +25,10 @@ select run.id                TEST_RUN_ID
       ,dbr.excluded_lines
       ,dbr.notexec_lines
       ,dbr.unknown_lines
-      ,dbr.exec_min_usecs
-      ,dbr.exec_avg_usecs
-      ,dbr.exec_max_usecs
-      ,dbr.exec_tot_usecs
+      ,dbr.exec_min_usec
+      ,dbr.exec_avg_usec
+      ,dbr.exec_max_usec
+      ,dbr.exec_tot_usec
  from  wt_test_runs  run
        join wt_dbouts  db
             on  db.id = run.dbout_id
@@ -60,9 +60,9 @@ comment on column wt_dbout_runs_vw.ignored_lines is 'Number of source lines igno
 comment on column wt_dbout_runs_vw.excluded_lines is 'Number of source lines excluded due to unexplained DBMS_PROFILER metrics';
 comment on column wt_dbout_runs_vw.notexec_lines is 'Number of source lines not executed';
 comment on column wt_dbout_runs_vw.unknown_lines is 'Number of source lines that have unexplained DBMS_PROFILER metrics';
-comment on column wt_dbout_runs_vw.exec_tot_usecs is 'Total (Sum) of execution times for a line of source in microseconds';
-comment on column wt_dbout_runs_vw.exec_min_usecs is 'Minumum execution time for a line of source in microseconds';
-comment on column wt_dbout_runs_vw.exec_max_usecs is 'Maximum execution time for a line of source in microseconds';
-comment on column wt_dbout_runs_vw.exec_avg_usecs is 'Average execution time for a line of source in microseconds';
+comment on column wt_dbout_runs_vw.exec_tot_usec is 'Total (Sum) of execution times for a line of source in microseconds';
+comment on column wt_dbout_runs_vw.exec_min_usec is 'Minumum execution time for a line of source in microseconds';
+comment on column wt_dbout_runs_vw.exec_max_usec is 'Maximum execution time for a line of source in microseconds';
+comment on column wt_dbout_runs_vw.exec_avg_usec is 'Average execution time for a line of source in microseconds';
 
 grant select on wt_dbout_runs_vw to public;

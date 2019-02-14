@@ -700,21 +700,21 @@ begin
       when 'EXEC' then
          g_rec.executed_lines := nvl(g_rec.executed_lines,0) + 1;
          -- Only count the executed time.
-         g_rec.exec_min_usecs := least(nvl(g_rec.exec_min_usecs,999999999)
-                                          ,in_profiles_rec.exec_min_usecs);
-         g_rec.exec_max_usecs := greatest(nvl(g_rec.exec_max_usecs,0)
-                                             ,in_profiles_rec.exec_max_usecs);
-         g_rec.exec_tot_usecs := nvl(g_rec.exec_tot_usecs,0) +
-                                     ( in_profiles_rec.exec_tot_usecs /
+         g_rec.exec_min_usec  := least(nvl(g_rec.exec_min_usec,999999999)
+                                          ,in_profiles_rec.exec_min_usec);
+         g_rec.exec_max_usec  := greatest(nvl(g_rec.exec_max_usec,0)
+                                             ,in_profiles_rec.exec_max_usec);
+         g_rec.exec_tot_usec  := nvl(g_rec.exec_tot_usec,0) +
+                                     ( in_profiles_rec.exec_tot_usec /
                                        in_profiles_rec.exec_cnt  );
       when 'IGNR' then
-         g_rec.ignored_lines := nvl(g_rec.ignored_lines,0) + 1;
+         g_rec.ignored_lines  := nvl(g_rec.ignored_lines,0) + 1;
       when 'EXCL' then
          g_rec.excluded_lines := nvl(g_rec.excluded_lines,0) + 1;
       when 'NOTX' then
-         g_rec.notexec_lines := nvl(g_rec.notexec_lines,0) + 1;
+         g_rec.notexec_lines  := nvl(g_rec.notexec_lines,0) + 1;
       when 'UNKN' then
-         g_rec.unknown_lines := nvl(g_rec.unknown_lines,0) + 1;
+         g_rec.unknown_lines  := nvl(g_rec.unknown_lines,0) + 1;
       else
          raise_application_error(-20011, 'Unknown Profile status "' ||
                                        in_profiles_rec.status || '"');
@@ -742,11 +742,11 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       l_recSAVE := g_rec;
       g_rec     := l_recTEST;
-      l_profileTEST.test_run_id    := -20;
-      l_profileTEST.exec_min_usecs := 10;
-      l_profileTEST.exec_max_usecs := 20;
-      l_profileTEST.exec_tot_usecs := 30;
-      l_profileTEST.exec_cnt       := 1;
+      l_profileTEST.test_run_id   := -20;
+      l_profileTEST.exec_min_usec := 10;
+      l_profileTEST.exec_max_usec := 20;
+      l_profileTEST.exec_tot_usec := 30;
+      l_profileTEST.exec_cnt      := 1;
       l_profileTEST.status := 'EXEC';
       add_dbout_run(l_profileTEST);
       l_profileTEST.status := 'EXEC';
@@ -798,17 +798,17 @@ $THEN
          against_this_in => 15);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'l_recTEST.exec_min_usecs',
-         check_this_in   =>  l_recTEST.exec_min_usecs,
+         msg_in          => 'l_recTEST.exec_min_usec',
+         check_this_in   =>  l_recTEST.exec_min_usec,
          against_this_in => 10);
       wt_assert.eq (
-         msg_in          => 'l_recTEST.exec_max_usecs',
-         check_this_in   =>  l_recTEST.exec_max_usecs,
+         msg_in          => 'l_recTEST.exec_max_usec',
+         check_this_in   =>  l_recTEST.exec_max_usec,
          against_this_in => 20);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
-         msg_in          => 'l_recTEST.exec_tot_usecs',
-         check_this_in   =>  l_recTEST.exec_tot_usecs,
+         msg_in          => 'l_recTEST.exec_tot_usec',
+         check_this_in   =>  l_recTEST.exec_tot_usec,
          against_this_in => 150);
       wt_assert.eq (
          msg_in          => 'l_recTEST.executed_lines',
@@ -853,7 +853,7 @@ begin
       return 'EXEC';
    end if;
    if    in_prof_rec.exec_cnt = 0
-     and in_prof_rec.exec_tot_usecs = 0
+     and in_prof_rec.exec_tot_usec = 0
    then
       -- Check for declaration if Not Executed
       if regexp_like(in_prof_rec.text, '^[[:space:]]*' ||
@@ -883,73 +883,73 @@ $THEN
    begin
       wt_assert.g_testcase := 'Set Prof Status Happy Path';
       --------------------------------------  WTPLSQL Testing --
-      l_prof_rec.exec_cnt       := 1;
-      l_prof_rec.exec_tot_usecs := 1;
-      l_prof_rec.text           := '   function set_prof_status_testing';
-      l_prof_rec.line           := 3;
+      l_prof_rec.exec_cnt      := 1;
+      l_prof_rec.exec_tot_usec := 1;
+      l_prof_rec.text          := '   function set_prof_status_testing';
+      l_prof_rec.line          := 3;
       wt_assert.eq(
          msg_in          => 'Executable Status 1',
          check_this_in   => set_prof_status(l_prof_rec, 10),
          against_this_in => 'EXEC');
       --------------------------------------  WTPLSQL Testing --
-      l_prof_rec.exec_cnt       := 1;
-      l_prof_rec.exec_tot_usecs := 1;
-      l_prof_rec.text           := '   end set_prof_status_testing;';
-      l_prof_rec.line           := 3;
+      l_prof_rec.exec_cnt      := 1;
+      l_prof_rec.exec_tot_usec := 1;
+      l_prof_rec.text          := '   end set_prof_status_testing;';
+      l_prof_rec.line          := 3;
       wt_assert.eq(
          msg_in          => 'Executable Status 2',
          check_this_in   => set_prof_status(l_prof_rec, 10),
          against_this_in => 'EXEC');
       --------------------------------------  WTPLSQL Testing --
-      l_prof_rec.exec_cnt       := 0;
-      l_prof_rec.exec_tot_usecs := 0;
-      l_prof_rec.text           := '   function set_prof_status_testing';
-      l_prof_rec.line           := 3;
+      l_prof_rec.exec_cnt      := 0;
+      l_prof_rec.exec_tot_usec := 0;
+      l_prof_rec.text          := '   function set_prof_status_testing';
+      l_prof_rec.line          := 3;
       wt_assert.eq(
          msg_in          => 'Excluded Status 1',
          check_this_in   => set_prof_status(l_prof_rec, 10),
          against_this_in => 'EXCL');
       --------------------------------------  WTPLSQL Testing --
-      l_prof_rec.exec_cnt       := 0;
-      l_prof_rec.exec_tot_usecs := 0;
-      l_prof_rec.text           := '   end set_prof_status_testing;';
-      l_prof_rec.line           := 10;
+      l_prof_rec.exec_cnt      := 0;
+      l_prof_rec.exec_tot_usec := 0;
+      l_prof_rec.text          := '   end set_prof_status_testing;';
+      l_prof_rec.line          := 10;
       wt_assert.eq(
          msg_in          => 'Excluded Status 2',
          check_this_in   => set_prof_status(l_prof_rec, 10),
          against_this_in => 'EXCL');
       --------------------------------------  WTPLSQL Testing --
-      l_prof_rec.exec_cnt       := 0;
-      l_prof_rec.exec_tot_usecs := 0;
-      l_prof_rec.text           := '   set_prof_status_testing;';
-      l_prof_rec.line           := 3;
+      l_prof_rec.exec_cnt      := 0;
+      l_prof_rec.exec_tot_usec := 0;
+      l_prof_rec.text          := '   set_prof_status_testing;';
+      l_prof_rec.line          := 3;
       wt_assert.eq(
          msg_in          => 'Not Executed Status 1',
          check_this_in   => set_prof_status(l_prof_rec, 10),
          against_this_in => 'NOTX');
       --------------------------------------  WTPLSQL Testing --
-      l_prof_rec.exec_cnt       := 0;
-      l_prof_rec.exec_tot_usecs := 0;
-      l_prof_rec.text           := '   end set_prof_status_testing;';
-      l_prof_rec.line           := 3;
+      l_prof_rec.exec_cnt      := 0;
+      l_prof_rec.exec_tot_usec := 0;
+      l_prof_rec.text          := '   end set_prof_status_testing;';
+      l_prof_rec.line          := 3;
       wt_assert.eq(
          msg_in          => 'Not Executed Status 2',
          check_this_in   => set_prof_status(l_prof_rec, 10),
          against_this_in => 'NOTX');
       --------------------------------------  WTPLSQL Testing --
-      l_prof_rec.exec_cnt       := 0;
-      l_prof_rec.exec_tot_usecs := 1;
-      l_prof_rec.text           := '   function set_prof_status_testing';
-      l_prof_rec.line           := 4;
+      l_prof_rec.exec_cnt      := 0;
+      l_prof_rec.exec_tot_usec := 1;
+      l_prof_rec.text          := '   function set_prof_status_testing';
+      l_prof_rec.line          := 4;
       wt_assert.eq(
          msg_in          => 'Unknown Status 1',
          check_this_in   => set_prof_status(l_prof_rec, 10),
          against_this_in => 'UNKN');
       --------------------------------------  WTPLSQL Testing --
-      l_prof_rec.exec_cnt       := 0;
-      l_prof_rec.exec_tot_usecs := 1;
-      l_prof_rec.text           := '   end set_prof_status_testing;';
-      l_prof_rec.line           := 4;
+      l_prof_rec.exec_cnt      := 0;
+      l_prof_rec.exec_tot_usec := 1;
+      l_prof_rec.text          := '   end set_prof_status_testing;';
+      l_prof_rec.line          := 4;
       wt_assert.eq(
          msg_in          => 'Unknown Status 2',
          check_this_in   => set_prof_status(l_prof_rec, 10),
@@ -957,28 +957,28 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Set Prof Status Sad Path';
       --------------------------------------  WTPLSQL Testing --
-      l_prof_rec.exec_cnt       := NULL;
-      l_prof_rec.exec_tot_usecs := NULL;
-      l_prof_rec.text           := NULL;
-      l_prof_rec.line           := NULL;
+      l_prof_rec.exec_cnt      := NULL;
+      l_prof_rec.exec_tot_usec := NULL;
+      l_prof_rec.text          := NULL;
+      l_prof_rec.line          := NULL;
       wt_assert.eq(
          msg_in          => 'NULL Profiler Record',
          check_this_in   => set_prof_status(l_prof_rec, 10),
          against_this_in => 'UNKN');
       --------------------------------------  WTPLSQL Testing --
-      l_prof_rec.exec_cnt       := 1;
-      l_prof_rec.exec_tot_usecs := 1;
-      l_prof_rec.text           := '   function set_prof_status_testing';
-      l_prof_rec.line           := 3;
+      l_prof_rec.exec_cnt      := 1;
+      l_prof_rec.exec_tot_usec := 1;
+      l_prof_rec.text          := '   function set_prof_status_testing';
+      l_prof_rec.line          := 3;
       wt_assert.eq(
          msg_in          => 'NULL Max Lines',
          check_this_in   => set_prof_status(l_prof_rec, NULL),
          against_this_in => 'EXEC');
       --------------------------------------  WTPLSQL Testing --
-      l_prof_rec.exec_cnt       := NULL;
-      l_prof_rec.exec_tot_usecs := NULL;
-      l_prof_rec.text           := NULL;
-      l_prof_rec.line           := NULL;
+      l_prof_rec.exec_cnt      := NULL;
+      l_prof_rec.exec_tot_usec := NULL;
+      l_prof_rec.text          := NULL;
+      l_prof_rec.line          := NULL;
       wt_assert.eq(
          msg_in          => 'All inputs NULL',
          check_this_in   => set_prof_status(l_prof_rec, NULL),
@@ -1034,12 +1034,12 @@ begin
         and  ppu.unit_type  = in_dbout_type
         and  ppu.runid      = g_rec.profiler_runid )
    loop
-      l_prof_rec.line            := buf1.line;
-      l_prof_rec.exec_cnt        := buf1.total_occur;
-      l_prof_rec.exec_tot_usecs  := buf1.total_time/1000;
-      l_prof_rec.exec_min_usecs  := buf1.min_time/1000;
-      l_prof_rec.exec_max_usecs  := buf1.max_time/1000;
-      l_prof_rec.text            := buf1.text;
+      l_prof_rec.line          := buf1.line;
+      l_prof_rec.exec_cnt      := buf1.total_occur;
+      l_prof_rec.exec_tot_usec := buf1.total_time/1000;
+      l_prof_rec.exec_min_usec := buf1.min_time/1000;
+      l_prof_rec.exec_max_usec := buf1.max_time/1000;
+      l_prof_rec.text          := buf1.text;
       if l_ignr_aa.EXISTS(l_prof_rec.line)
       then
          -- Found Statement to Ignore
@@ -1441,11 +1441,11 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Calculate Percent Coverage Setup';
       tl_insert_test_runs(c_test_run_id, 'Calculate Offset Test');
-      l_profile.test_run_id     := c_test_run_id;
-      l_profile.exec_cnt        := 1;
-      l_profile.exec_tot_usecs  := 1;
-      l_profile.exec_min_usecs  := 1;
-      l_profile.exec_max_usecs  := 1;
+      l_profile.test_run_id    := c_test_run_id;
+      l_profile.exec_cnt       := 1;
+      l_profile.exec_tot_usec  := 1;
+      l_profile.exec_min_usec  := 1;
+      l_profile.exec_max_usec  := 1;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Calculate Percent Coverage Happy Path 1';
       l_profile.line         := 1;
@@ -1570,6 +1570,7 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 procedure finalize
       (in_test_run_id   in number)
 is
+   coverage_lines  number;
 begin
    -- Return if not profiling
    if g_rec.profiler_runid is null
@@ -1607,6 +1608,15 @@ begin
       insert_wt_profile(core_data.g_run_rec.dbout_owner
                        ,core_data.g_run_rec.dbout_name
                        ,core_data.g_run_rec.dbout_type);
+      coverage_lines := g_rec.executed_lines + g_rec.notexec_lines;
+      case coverage_lines
+      when 0 then g_rec.coverage_pct := 0;
+             else g_rec.coverage_pct := 100 * g_rec.executed_lines / coverage_lines;
+      end case;
+      case g_rec.executed_lines
+      when 0 then g_rec.exec_avg_usec := 0;
+             else g_rec.exec_avg_usec := g_rec.exec_tot_usec / g_rec.executed_lines;
+      end case;
       -- Save g_rec
       insert into wt_dbout_runs values g_rec;
    end if;
@@ -1780,7 +1790,7 @@ is
    l_profiler_runid  number;
 begin
    select profiler_runid into l_profiler_runid
-    from wt_test_runs where id = in_test_run_id;
+    from wt_dbout_runs where test_run_id = in_test_run_id;
    delete from wt_profiles
     where test_run_id = in_test_run_id;
    delete from wt_dbout_runs
@@ -1815,14 +1825,14 @@ $THEN
          against_value_in => 0);
       tl_insert_test_runs(c_test_run_id, 'Delete Records Test');
       --------------------------------------  WTPLSQL Testing --
-      l_profile.test_run_id     := c_test_run_id;
-      l_profile.line            := 1;
-      l_profile.status          := 'EXEC';
-      l_profile.exec_cnt        := 1;
-      l_profile.exec_tot_usecs  := 1;
-      l_profile.exec_min_usecs  := 1;
-      l_profile.exec_max_usecs  := 1;
-      l_profile.text            := 'Testing';
+      l_profile.test_run_id    := c_test_run_id;
+      l_profile.line           := 1;
+      l_profile.status         := 'EXEC';
+      l_profile.exec_cnt       := 1;
+      l_profile.exec_tot_usec  := 1;
+      l_profile.exec_min_usec  := 1;
+      l_profile.exec_max_usec  := 1;
+      l_profile.text           := 'Testing';
       tl_insert_wt_profile(l_profile);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Delete Records Happy Path 1';

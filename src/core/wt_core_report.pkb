@@ -192,9 +192,9 @@ begin
    else
       l_out_str := l_out_str || '#FAIL#';
    end if;
-   if in_rec.interval_msecs is not null
+   if in_rec.interval_msec is not null
    then
-      l_out_str := l_out_str || lpad(in_rec.interval_msecs,4) || 'ms ';
+      l_out_str := l_out_str || lpad(in_rec.interval_msec,4) || 'ms ';
    end if;
    if in_rec.message is not null
    then

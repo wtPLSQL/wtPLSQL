@@ -3059,11 +3059,11 @@ a1:=a1||'select res.test_run_id                  LINK'||chr(10)||
 '      ,run.dbout_owner || ''.'' ||'||chr(10)||
 '       run.dbout_name  || ''('' ||'||chr(10)||
 '       run.dbout_type  || '')''           LABEL'||chr(10)||
-'      ,res.max_executed_usecs/1000      VALUE'||chr(10)||
+'      ,res.max_executed_usec/1000      VALUE'||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id        = run.id'||chr(10)||
-'            and res.max_executed_usecs > 0'||chr(10)||
+'            and res.max_executed_usec > 0'||chr(10)||
 ' where (   :P0_TEST_OWNER is NULL'||chr(10)||
 '        or :';
 
@@ -6774,14 +6774,14 @@ declare
 begin
 a1:=a1||'with q1 as ('||chr(10)||
 'select res.test_run_id'||chr(10)||
-'      ,res.max_executed_usecs'||chr(10)||
+'      ,res.max_executed_usec'||chr(10)||
 '      ,rownum                  RNUM'||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
 '       join wt_test_run_stats  res'||chr(10)||
 '            on  res.test_run_id = run.id'||chr(10)||
 '  left join wt_dbout_profiles  prof'||chr(10)||
 '            on  prof.test_run_id = run.id'||chr(10)||
-'            and prof.max_usecs   = res.max_executed_usecs'||chr(10)||
+'            and prof.max_usec   = res.max_executed_usec'||chr(10)||
 ' where run.runner_owner = :P0_TEST_OWNER'||chr(10)||
 '  and  run.runner_na';
 
@@ -6791,22 +6791,22 @@ a1:=a1||'me  = :P0_TEST_RUNNER'||chr(10)||
 'select count(*) num_rows from q1'||chr(10)||
 '), q3 as ('||chr(10)||
 'select test_run_id'||chr(10)||
-'      ,max_usecs'||chr(10)||
+'      ,max_usec'||chr(10)||
 '      ,min(line) line'||chr(10)||
 ' from  wt_dbout_profiles'||chr(10)||
 ' group by test_run_id'||chr(10)||
-'      ,max_usecs'||chr(10)||
+'      ,max_usec'||chr(10)||
 ')'||chr(10)||
 'select q1.test_run_id                LINK'||chr(10)||
 '      ,''ID''    || q1.test_run_id ||'||chr(10)||
 '       '',Line'' || q3.line            LABEL'||chr(10)||
-'      ,q1.max_executed_usecs         VALUE'||chr(10)||
+'      ,q1.max_executed_usec         VALUE'||chr(10)||
 ' from  q1 '||chr(10)||
 '  left join';
 
 a1:=a1||' q3'||chr(10)||
 '            on  q3.test_run_id = q1.test_run_id'||chr(10)||
-'            and q3.max_usecs   = q1.max_executed_usecs'||chr(10)||
+'            and q3.max_usec   = q1.max_executed_usec'||chr(10)||
 ' where q1.rnum > (select num_rows from q2) - 10'||chr(10)||
 ' order by q1.test_run_id'||chr(10)||
 '';
@@ -6990,10 +6990,10 @@ a1:=a1||'  '':'' || test_run_id           || '','' ||'||chr(10)||
 '                 testcase              ||     -- Item Values'||chr(10)||
 '          '':'' || V(''PRINTER_FRIENDLY'')    LINK'||chr(10)||
 '      ,testcase                           LABEL'||chr(10)||
-'      ,tot_interval_msecs                 VALUE'||chr(10)||
+'      ,tot_interval_msec                 VALUE'||chr(10)||
 ' from  wt_testcase_runs'||chr(10)||
 ' where test_run_id = :P0_TEST_RUN_ID'||chr(10)||
-' order by tot_interval_msecs desc'||chr(10)||
+' order by tot_interval_msec desc'||chr(10)||
 '';
 
 wwv_flow_api.create_flash_chart5_series(
@@ -7021,7 +7021,7 @@ begin
 s:=s||'select test_run_id'||chr(10)||
 '      ,result_seq       SEQ'||chr(10)||
 '      ,executed_dtm     EXECUTED_DATE_TIME'||chr(10)||
-'      ,interval_msecs   MSECS'||chr(10)||
+'      ,interval_msec   MSECS'||chr(10)||
 '      ,assertion'||chr(10)||
 '      ,status'||chr(10)||
 '      ,details'||chr(10)||
@@ -7060,7 +7060,7 @@ begin
 a1:=a1||'select test_run_id'||chr(10)||
 '      ,result_seq       SEQ'||chr(10)||
 '      ,executed_dtm     EXECUTED_DATE_TIME'||chr(10)||
-'      ,interval_msecs   MSECS'||chr(10)||
+'      ,interval_msec   MSECS'||chr(10)||
 '      ,assertion'||chr(10)||
 '      ,status'||chr(10)||
 '      ,details'||chr(10)||
@@ -7681,11 +7681,11 @@ begin
 s:=s||'select line'||chr(10)||
 '      ,status'||chr(10)||
 '      ,total_occur'||chr(10)||
-'      ,round(min_usecs)             MIN_USECS'||chr(10)||
+'      ,round(min_usec)             MIN_USECS'||chr(10)||
 '      ,case when total_occur = 0 then 0'||chr(10)||
-'            else round(total_usecs/total_occur)'||chr(10)||
-'       end                          AVG_USECS'||chr(10)||
-'      ,round(max_usecs)             MAX_USECS'||chr(10)||
+'            else round(total_usec/total_occur)'||chr(10)||
+'       end                          AVG_Usec'||chr(10)||
+'      ,round(max_usec)             MAX_Usec'||chr(10)||
 '      ,replace(htf.escape_sc(rtrim(text,CHR(10))),''  '','' &nbsp;'')'||chr(10)||
 '                                    TEXT'||chr(10)||
 ' from  wt_dbout_profil';
@@ -8603,10 +8603,10 @@ s:=s||'select r.dbout_owner'||chr(10)||
 '      ,s.unknown_lines'||chr(10)||
 '      ,s.min_exec';
 
-s:=s||'uted_usecs'||chr(10)||
-'      ,s.avg_executed_usecs'||chr(10)||
-'      ,s.max_executed_usecs'||chr(10)||
-'      ,round(s.tot_executed_usecs,3)  TOT_EXECUTED_USECS'||chr(10)||
+s:=s||'uted_usec'||chr(10)||
+'      ,s.avg_executed_usec'||chr(10)||
+'      ,s.max_executed_usec'||chr(10)||
+'      ,round(s.tot_executed_usec,3)  TOT_EXECUTED_USECS'||chr(10)||
 '      ,r.trigger_offset'||chr(10)||
 '      ,r.error_message'||chr(10)||
 ' from  wt_test_runs  r'||chr(10)||
@@ -8655,10 +8655,10 @@ a1:=a1||'select r.dbout_owner'||chr(10)||
 '      ,s.unknown_lines'||chr(10)||
 '      ,s.min_exec';
 
-a1:=a1||'uted_usecs'||chr(10)||
-'      ,s.avg_executed_usecs'||chr(10)||
-'      ,s.max_executed_usecs'||chr(10)||
-'      ,round(s.tot_executed_usecs,3)  TOT_EXECUTED_USECS'||chr(10)||
+a1:=a1||'uted_usec'||chr(10)||
+'      ,s.avg_executed_usec'||chr(10)||
+'      ,s.max_executed_usec'||chr(10)||
+'      ,round(s.tot_executed_usec,3)  TOT_EXECUTED_USECS'||chr(10)||
 '      ,r.trigger_offset'||chr(10)||
 '      ,r.error_message'||chr(10)||
 ' from  wt_test_runs  r'||chr(10)||
@@ -10040,7 +10040,7 @@ s:=s||'declare'||chr(10)||
 '   num_runs        number;'||chr(10)||
 'begin'||chr(10)||
 '   --'||chr(10)||
-'   select max(tot_interval_msecs)  -- Need Group Function for NULL'||chr(10)||
+'   select max(tot_interval_msec)  -- Need Group Function for NULL'||chr(10)||
 '     into total_elapsed'||chr(10)||
 '    from  wt_testcase_runs'||chr(10)||
 '    where test_run_id = :P0_TEST_RUN_ID'||chr(10)||
@@ -10096,7 +10096,7 @@ declare
 begin
 s:=s||'select result_seq       SEQ'||chr(10)||
 '      ,executed_dtm     EXECUTED_DATE_TIME'||chr(10)||
-'      ,interval_msecs   MSECS'||chr(10)||
+'      ,interval_msec   MSECS'||chr(10)||
 '      ,assertion'||chr(10)||
 '      ,status'||chr(10)||
 '      ,details'||chr(10)||
@@ -10135,7 +10135,7 @@ declare
 begin
 a1:=a1||'select result_seq       SEQ'||chr(10)||
 '      ,executed_dtm     EXECUTED_DATE_TIME'||chr(10)||
-'      ,interval_msecs   MSECS'||chr(10)||
+'      ,interval_msec   MSECS'||chr(10)||
 '      ,assertion'||chr(10)||
 '      ,status'||chr(10)||
 '      ,details'||chr(10)||
@@ -11186,7 +11186,7 @@ begin
 a1:=a1||'with q1 as ('||chr(10)||
 'select res.test_run_id                    LINK'||chr(10)||
 '      ,res.test_run_id                    LABEL'||chr(10)||
-'      ,res.tot_interval_msecs             MILLISECONDS'||chr(10)||
+'      ,res.tot_interval_msec             MILLISECONDS'||chr(10)||
 '      ,rownum                             RNUM'||chr(10)||
 ' from  wt_test_runs  run'||chr(10)||
 '       join wt_testcase_runs  res'||chr(10)||

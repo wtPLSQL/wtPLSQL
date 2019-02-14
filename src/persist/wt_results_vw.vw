@@ -16,7 +16,7 @@ select run.id                TEST_RUN_ID
       ,res.testcase_id   
       ,tc.testcase
       ,res.executed_dtm  
-      ,res.interval_msecs
+      ,res.interval_msec
       ,res.assertion     
       ,res.status        
       ,res.message       
@@ -42,7 +42,7 @@ comment on column wt_results_vw.result_seq is 'Sequence number for this Result';
 comment on column wt_results_vw.testcase_id is 'Foreign Key for the Test Case.';
 comment on column wt_results_vw.testcase is 'The Test Case name';
 comment on column wt_results_vw.executed_dtm is 'Date/Time (with Fractional Seconds) this Result was captured';
-comment on column wt_results_vw.interval_msecs is 'Interval time in milliseconds since the previous Result or start ot the Test Run.';
+comment on column wt_results_vw.interval_msec is 'Interval time in milliseconds since the previous Result or start ot the Test Run.';
 comment on column wt_results_vw.assertion is 'Name of the Assertion Test performed';
 comment on column wt_results_vw.status is 'PASS/FAIL Status from the Assertion';
 comment on column wt_results_vw.details is 'Assertion Details, i.e. Expected Value and Actual Value';

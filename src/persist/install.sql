@@ -36,11 +36,6 @@ end;
 WHENEVER SQLERROR continue
 
 
-prompt
-prompt Run Oracle's Profiler Table Installation
-prompt  Note1: Tables converted to Global Temporary
-prompt  Note2: Includes "Drop Table" and "Drop Sequence" statements
-
 @proftab.sql
 @proftab_comments.sql
 
@@ -90,6 +85,7 @@ prompt Install Tables - Must be ordered for foreign keys
 @wt_test_runners.tab
 @wt_testcases.tab
 @wt_dbouts.tab
+@wt_dbout_runs.tab
 @wt_test_runs.tab
 @wt_results.tab
 @wt_profiles.tab

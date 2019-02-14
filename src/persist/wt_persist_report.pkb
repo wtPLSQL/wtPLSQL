@@ -64,12 +64,12 @@ begin
      '   Total Profiled Lines: ' || to_char(g_dbout_runs_rec.profiled_lines, '9999999') );
    p('         Excluded Lines: ' || to_char(g_dbout_runs_rec.excluded_lines, '9999999') ||
      '   Total Executed Lines: ' || to_char(g_dbout_runs_rec.executed_lines, '9999999') );
-   p('  Minimum LineExec usec: ' || to_char(g_dbout_runs_rec.exec_min_usecs, '9999999') ||
+   p('  Minimum LineExec usec: ' || to_char(g_dbout_runs_rec.exec_min_usec,  '9999999') ||
      '     Not Executed Lines: ' || to_char(g_dbout_runs_rec.notexec_lines,  '9999999') );
-   p('  Average LineExec usec: ' || to_char(g_dbout_runs_rec.exec_avg_usecs, '9999999') ||
+   p('  Average LineExec usec: ' || to_char(g_dbout_runs_rec.exec_avg_usec,  '9999999') ||
      '          Unknown Lines: ' || to_char(g_dbout_runs_rec.unknown_lines,  '9999999') );
-   p('  Maximum LineExec usec: ' || to_char(g_dbout_runs_rec.exec_max_usecs, '9999999') ||
-     '          Code Coverage: ' || to_char(g_dbout_runs_rec.coverage_pct,   '9990.99') || '%');
+   p('  Maximum LineExec usec: ' || to_char(g_dbout_runs_rec.exec_max_usec,  '9999999') ||
+     '          Code Coverage: ' || to_char(g_dbout_runs_rec.coverage_pct,   '99990.9') || '%');
    p('  Trigger Source Offset: ' || to_char(g_dbout_runs_rec.trigger_offset, '9999999') );
 end summary_out;
 
@@ -96,12 +96,12 @@ begin
        order by result_seq )
    loop
       -- Load l_rec
-      l_rec.assertion       := buff.assertion;
-      l_rec.pass            := (buff.status = 'PASS');
-      l_rec.details         := buff.details;
-      l_rec.testcase        := buff.testcase;
-      l_rec.message         := buff.message;
-      l_rec.interval_msecs  := buff.interval_msecs;
+      l_rec.assertion      := buff.assertion;
+      l_rec.pass           := (buff.status = 'PASS');
+      l_rec.details        := buff.details;
+      l_rec.testcase       := buff.testcase;
+      l_rec.message        := buff.message;
+      l_rec.interval_msec  := buff.interval_msec;
       -- Remove Consecutive Testcases
       if l_rec.testcase = old_testcase
       then
@@ -161,9 +161,9 @@ begin
       select line
             ,status
             ,exec_cnt
-            ,exec_tot_usecs
-            ,exec_min_usecs
-            ,exec_max_usecs
+            ,exec_tot_usec
+            ,exec_min_usec
+            ,exec_max_usec
             ,text
             ,rownum
        from  wt_profiles
@@ -182,15 +182,15 @@ begin
       then
          p(l_header_txt);
       end if;
-      p(to_char(buff.line,'99999')              ||
+      p(to_char(buff.line,'99999')             ||
         case buff.status when 'NOTX' then '#NOTX#'
         else ' ' || rpad(buff.status,4) || ' '
-        end                                     ||
-        to_char(buff.exec_cnt,'99999')          || ' ' ||
-        to_char(buff.exec_tot_usecs,'99999999') || ' ' ||
-        to_char(buff.exec_min_usecs,'999999')   || ' ' ||
-        to_char(buff.exec_max_usecs,'99999999') || ' ' ||
-        replace(buff.text,CHR(10),'')           );
+        end                                    ||
+        to_char(buff.exec_cnt,'99999')         || ' ' ||
+        to_char(buff.exec_tot_usec,'99999999') || ' ' ||
+        to_char(buff.exec_min_usec,'999999')   || ' ' ||
+        to_char(buff.exec_max_usec,'99999999') || ' ' ||
+        replace(buff.text,CHR(10),'')          );
    end loop;
 end profile_out;
 

@@ -19,9 +19,9 @@ select run.id               TEST_RUN_ID
       ,pf.line         
       ,pf.status       
       ,pf.exec_cnt
-      ,pf.exec_tot_usecs  
-      ,pf.exec_min_usecs    
-      ,pf.exec_max_usecs    
+      ,pf.exec_tot_usec
+      ,pf.exec_min_usec
+      ,pf.exec_max_usec
       ,pf.text         
  from  wt_test_runs  run
        join wt_dbouts  db
@@ -47,9 +47,9 @@ comment on column wt_dbout_runs_vw.error_message is 'Optional Error messages fro
 comment on column wt_profiles_vw.line is 'Source code line number, Primary Key part 2.';
 comment on column wt_profiles_vw.status is 'EXEC/NOTX/EXCL/IGNR/UNKN Status from the Profiler';
 comment on column wt_profiles_vw.exec_cnt is 'Number of times this line was executed.';
-comment on column wt_profiles_vw.exec_tot_usecs is 'Total time in microseconds spent executing this line.';
-comment on column wt_profiles_vw.exec_min_usecs is 'Minimum execution time in microseconds for this line.';
-comment on column wt_profiles_vw.exec_max_usecs is 'Maximum execution time in microseconds for this line.';
+comment on column wt_profiles_vw.exec_tot_usec is 'Total time in microseconds spent executing this line.';
+comment on column wt_profiles_vw.exec_min_usec is 'Minimum execution time in microseconds for this line.';
+comment on column wt_profiles_vw.exec_max_usec is 'Maximum execution time in microseconds for this line.';
 comment on column wt_profiles_vw.text is 'Source code text for this line number.';
 
 grant select on wt_profiles_vw to public;

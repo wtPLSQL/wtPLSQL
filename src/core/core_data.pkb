@@ -211,13 +211,13 @@ begin
    l_results_rec.message    := in_message;
    -- g_results_nt(N-1).executed_dtm has the last execution time
    -- core_data.init2 also sets g_results_nt(1) during test runner startup
-   l_interval_buff              := l_current_tstamp - l_results_rec.executed_dtm;
-   l_results_rec.interval_msecs := (extract(second from l_interval_buff) +
-                                    60 * ( extract(minute from l_interval_buff) +
-                                          60 * ( extract(hour from l_interval_buff) +
-                                                24 * ( extract(day from l_interval_buff)
-                                   )     )     )     ) * 1000;
-   l_results_rec.executed_dtm   := l_current_tstamp;
+   l_interval_buff             := l_current_tstamp - l_results_rec.executed_dtm;
+   l_results_rec.interval_msec := (extract(second from l_interval_buff) +
+                                   60 * ( extract(minute from l_interval_buff) +
+                                         60 * ( extract(hour from l_interval_buff) +
+                                               24 * ( extract(day from l_interval_buff)
+                                  )     )     )     ) * 1000;
+   l_results_rec.executed_dtm  := l_current_tstamp;
    ------------------------------------------------------------
    --  Update "g_results_nt" Array and Add New Element
    g_results_nt(g_results_nt.COUNT) := l_results_rec;
@@ -230,14 +230,14 @@ begin
       g_run_rec.asrt_fail := g_run_rec.asrt_fail + 1;
    end if;
    g_run_rec.asrt_tot_msec := g_run_rec.asrt_tot_msec +
-                              l_results_rec.interval_msecs;
-   if l_results_rec.interval_msecs < nvl(g_run_rec.asrt_min_msec,9999999)
+                              l_results_rec.interval_msec;
+   if l_results_rec.interval_msec < nvl(g_run_rec.asrt_min_msec,9999999)
    then
-      g_run_rec.asrt_min_msec := l_results_rec.interval_msecs;
+      g_run_rec.asrt_min_msec := l_results_rec.interval_msec;
    end if;
-   if l_results_rec.interval_msecs > nvl(g_run_rec.asrt_max_msec,-1)
+   if l_results_rec.interval_msec > nvl(g_run_rec.asrt_max_msec,-1)
    then
-      g_run_rec.asrt_max_msec := l_results_rec.interval_msecs;
+      g_run_rec.asrt_max_msec := l_results_rec.interval_msec;
    end if;
    -----------------------------------------------------------------------
    --  Set "l_tcases_rec" and update the appropriate "g_tcases_aa" element
@@ -252,14 +252,14 @@ begin
       l_tcases_rec.asrt_fail  := l_tcases_rec.asrt_fail + 1;
    end if;
    l_tcases_rec.asrt_tot_msec := l_tcases_rec.asrt_tot_msec +
-                                 l_results_rec.interval_msecs;
-   if l_results_rec.interval_msecs < nvl(l_tcases_rec.asrt_min_msec,9999999)
+                                 l_results_rec.interval_msec;
+   if l_results_rec.interval_msec < nvl(l_tcases_rec.asrt_min_msec,9999999)
    then
-      l_tcases_rec.asrt_min_msec := l_results_rec.interval_msecs;
+      l_tcases_rec.asrt_min_msec := l_results_rec.interval_msec;
    end if;
-   if l_results_rec.interval_msecs > nvl(l_tcases_rec.asrt_max_msec,-1)
+   if l_results_rec.interval_msec > nvl(l_tcases_rec.asrt_max_msec,-1)
    then
-      l_tcases_rec.asrt_max_msec := l_results_rec.interval_msecs;
+      l_tcases_rec.asrt_max_msec := l_results_rec.interval_msec;
    end if;
    g_tcases_aa(l_results_rec.testcase) := l_tcases_rec;
    --
@@ -314,11 +314,11 @@ $THEN
          ,against_this_in =>  l_results_ntTEST(lt-1).result_seq + 1);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull
-         (msg_in          => 'l_results_ntTEST(lt).interval_msecs'
-         ,check_this_in   =>  l_results_ntTEST(lt).interval_msecs);
+         (msg_in          => 'l_results_ntTEST(lt).interval_msec'
+         ,check_this_in   =>  l_results_ntTEST(lt).interval_msec);
       wt_assert.this
-         (msg_in          => 'l_results_ntTEST(lt).interval_msecs >= 0'
-         ,check_this_in   =>  l_results_ntTEST(lt).interval_msecs >= 0);
+         (msg_in          => 'l_results_ntTEST(lt).interval_msec >= 0'
+         ,check_this_in   =>  l_results_ntTEST(lt).interval_msec >= 0);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull
          (msg_in          => 'l_results_ntTEST(lt).executed_dtm'
@@ -367,10 +367,10 @@ $THEN
       wt_assert.eq
          (msg_in          => 'l_run_recTEST.asrt_tot_msec = ' ||
                              'l_run_recSAVE.asrt_tot_msec + ' ||
-                             'l_results_ntTEST(lt).interval_msecs'
+                             'l_results_ntTEST(lt).interval_msec'
          ,check_this_in   =>  l_run_recTEST.asrt_tot_msec
          ,against_this_in =>  l_run_recSAVE.asrt_tot_msec + 
-                              l_results_ntTEST(lt).interval_msecs);
+                              l_results_ntTEST(lt).interval_msec);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnotnull
          (msg_in          => 'l_run_recTEST.asrt_min_msec'

@@ -26,7 +26,7 @@ begin
             ,ts.failures
             ,extract(day from (tr.end_dtm -
                                tr.start_dtm) * 86400000)
-                                             TOT_INTERVAL_MSECS
+                                             TOT_INTERVAL_MSEC
             ,tr.error_message
        from  wt_test_runs  tr
         left join wt_test_run_stats  ts
@@ -37,7 +37,7 @@ begin
       p('  <testsuite name="' || suites.suite_name ||
                   '" tests="' || suites.testcases ||
                '" failures="' || suites.failures ||
-                   '" time="' || suites.tot_interval_msecs ||
+                   '" time="' || suites.tot_interval_msec ||
               '" timestamp="' || to_char(suites.start_dtm,'YYYY-MM-DD"T"HH24:MI:SS.FF3') ||
                                  to_char(systimestamp,'TZH:TZM') ||
                          '">' );
@@ -46,8 +46,8 @@ begin
                ,tc.testcase
                ,tc.asserts
                ,tc.failures
-               ,nvl(tc.tot_interval_msecs
-                   ,suites.tot_interval_msecs) TOT_INTERVAL_MSECS
+               ,nvl(tc.tot_interval_msec
+                   ,suites.tot_interval_msec) TOT_INTERVAL_MSEC
           from  wt_test_runs  tr
            left join wt_testcase_runs  tc
                      on  tc.test_run_id = tr.id
@@ -59,18 +59,18 @@ begin
          then
             p('    <testcase name="' || nvl(cases.testcase,'NULL') ||
                       '" classname="' || suites.suite_name ||
-                      '" time="' || cases.tot_interval_msecs || '"/>');
+                      '" time="' || cases.tot_interval_msec || '"/>');
          else
             p('    <testcase name="' || nvl(cases.testcase,'NULL') ||
                       '" classname="' || suites.package_name || '.' || suites.class_name ||
-                           '" time="' || cases.tot_interval_msecs || '">');
+                           '" time="' || cases.tot_interval_msec || '">');
             p('      <error message="' || nvl(cases.failures,'No') || ' assertion failures. ' ||
                                           suites.error_message || '">');
             -- Print each of the non-passing results
             for asrts in (
                select result_seq
                      ,status
-                     ,interval_msecs
+                     ,interval_msec
                      ,message
                      ,assertion
                      ,details
@@ -82,14 +82,14 @@ begin
                  and  status != wt_assert.C_PASS
                 order by result_seq )
             loop
-               p(lpad(asrts.result_seq,4)     || ': '  ||
-                 rpad(asrts.status,4)         || ' '   ||
-                 lpad(asrts.interval_msecs,4) || 'ms ' ||
-                 asrts.message                ||  '. ' ||
-                 asrts.assertion              || ' - ' ||
+               p(lpad(asrts.result_seq,4)    || ': '  ||
+                 rpad(asrts.status,4)        || ' '   ||
+                 lpad(asrts.interval_msec,4) || 'ms ' ||
+                 asrts.message               ||  '. ' ||
+                 asrts.assertion             || ' - ' ||
                  replace(replace(asrts.details
                                 ,CHR(13),'\r')
-                        ,CHR(10),'\n')        || '.'   );
+                        ,CHR(10),'\n')       || '.'   );
             end loop;
             p('      </error>');
             p('    </testcase>');

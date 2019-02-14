@@ -2,13 +2,6 @@ create or replace package hook
    authid definer
 as
 
-   TYPE run_nt_type is table
-      of varchar2(4000);
-   TYPE run_aa_type is table
-      of run_nt_type
-      index by varchar2(20);
-   g_run_aa  run_aa_type;
-
    before_test_all_active      boolean := FALSE;
    before_test_run_active      boolean := FALSE;
    execute_test_runner_active  boolean := FALSE;

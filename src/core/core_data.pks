@@ -37,14 +37,14 @@ is
    g_tcases_aa   tcases_aa_type;
 
    TYPE results_rec_type is record
-      (result_seq     number(8)      default 0          -- Sequence Number of the Assertion
-      ,testcase       long_name                         -- Test Case Name of the Assertion
-      ,executed_dtm   timestamp(6) with local time zone -- Execution Date/Time of the Assertion
-      ,interval_msecs number(10,3)   default 0          -- Interval from Previous Assertion in Milliseconds
-      ,assertion      varchar2(15)                      -- Name of the Assertion
-      ,pass           boolean                           -- Did the Assertion Pass? (TRUE/FALSE)
-      ,message        varchar2(200)                     -- Identification Message of the Assertion
-      ,details        varchar2(4000)                    -- Test Details of the Assertion
+      (result_seq    number(8)      default 0          -- Sequence Number of the Assertion
+      ,testcase      long_name                         -- Test Case Name of the Assertion
+      ,executed_dtm  timestamp(6) with local time zone -- Execution Date/Time of the Assertion
+      ,interval_msec number(10,3)   default 0          -- Interval from Previous Assertion in Milliseconds
+      ,assertion     varchar2(15)                      -- Name of the Assertion
+      ,pass          boolean                           -- Did the Assertion Pass? (TRUE/FALSE)
+      ,message       varchar2(200)                     -- Identification Message of the Assertion
+      ,details       varchar2(4000)                    -- Test Details of the Assertion
       );
    TYPE results_nt_type is table of results_rec_type;
    g_results_nt    results_nt_type;

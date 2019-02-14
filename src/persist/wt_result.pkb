@@ -36,20 +36,20 @@ begin
    -- There is always an extra NULL element in the g_results_nt array.
    for i in 1 .. core_data.g_results_nt.COUNT - 1
    loop
-      l_results_rec.RESULT_SEQ     := core_data.g_results_nt(i).RESULT_SEQ;
-      l_results_rec.TESTCASE_ID    := wt_testcase.dim_id
-                                         (core_data.g_results_nt(i).TESTCASE);
-      l_results_rec.EXECUTED_DTM   := core_data.g_results_nt(i).EXECUTED_DTM;
-      l_results_rec.INTERVAL_MSECS := core_data.g_results_nt(i).INTERVAL_MSECS;
-      l_results_rec.ASSERTION      := core_data.g_results_nt(i).ASSERTION;
+      l_results_rec.RESULT_SEQ    := core_data.g_results_nt(i).RESULT_SEQ;
+      l_results_rec.TESTCASE_ID   := wt_testcase.dim_id
+                                        (core_data.g_results_nt(i).TESTCASE);
+      l_results_rec.EXECUTED_DTM  := core_data.g_results_nt(i).EXECUTED_DTM;
+      l_results_rec.INTERVAL_MSEC := core_data.g_results_nt(i).INTERVAL_MSEC;
+      l_results_rec.ASSERTION     := core_data.g_results_nt(i).ASSERTION;
       if core_data.g_results_nt(i).PASS
       then
-         l_results_rec.STATUS         := 'PASS';
+         l_results_rec.STATUS        := 'PASS';
       else
-         l_results_rec.STATUS         := 'FAIL';
+         l_results_rec.STATUS        := 'FAIL';
       end if;
-      l_results_rec.MESSAGE        := core_data.g_results_nt(i).MESSAGE;
-      l_results_rec.DETAILS        := core_data.g_results_nt(i).DETAILS;
+      l_results_rec.MESSAGE       := core_data.g_results_nt(i).MESSAGE;
+      l_results_rec.DETAILS       := core_data.g_results_nt(i).DETAILS;
       insert into wt_results values l_results_rec;
    end loop;
    -- Testcases
@@ -58,7 +58,7 @@ begin
       l_testcase_runs_rec.test_run_id := in_test_run_id;
       testcase := core_data.g_tcases_aa.FIRST;
       loop
-         l_results_rec.testcase_id          := wt_testcase.dim_id(testcase);
+         l_testcase_runs_rec.testcase_id    := wt_testcase.dim_id(testcase);
          l_testcase_runs_rec.asrt_cnt       := core_data.g_tcases_aa(testcase).asrt_cnt;
          l_testcase_runs_rec.asrt_fail      := core_data.g_tcases_aa(testcase).asrt_fail;
          l_testcase_runs_rec.asrt_min_msec  := core_data.g_tcases_aa(testcase).asrt_min_msec;
@@ -70,11 +70,11 @@ begin
          if l_testcase_runs_rec.asrt_cnt > 0 then
             l_testcase_runs_rec.asrt_yield_pct := l_testcase_runs_rec.asrt_pass /
                                                   l_testcase_runs_rec.asrt_cnt;
-            l_testcase_runs_rec.asrt_avg_msecs := l_testcase_runs_rec.asrt_tot_msec /
+            l_testcase_runs_rec.asrt_avg_msec  := l_testcase_runs_rec.asrt_tot_msec /
                                                   l_testcase_runs_rec.asrt_cnt;
          else
             l_testcase_runs_rec.asrt_yield_pct := NULL;
-            l_testcase_runs_rec.asrt_avg_msecs := NULL;
+            l_testcase_runs_rec.asrt_avg_msec  := NULL;
          end if;
          --
          insert into wt_testcase_runs values l_testcase_runs_rec;
@@ -99,13 +99,13 @@ $THEN
    begin
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Happy Path';
-      l_results_rec.result_seq     := 1;
-      l_results_rec.testcase       := 'TESTCASE TEST';
-      l_results_rec.executed_dtm   := systimestamp;
-      l_results_rec.interval_msecs := 99;
-      l_results_rec.assertion      := 'FINALTEST';
-      l_results_rec.pass           := TRUE;
-      l_results_rec.details        := 'This is a WT_RESULT.FINALIZE Test';
+      l_results_rec.result_seq    := 1;
+      l_results_rec.testcase      := 'TESTCASE TEST';
+      l_results_rec.executed_dtm  := systimestamp;
+      l_results_rec.interval_msec := 99;
+      l_results_rec.assertion     := 'FINALTEST';
+      l_results_rec.pass          := TRUE;
+      l_results_rec.details       := 'This is a WT_RESULT.FINALIZE Test';
       --------------------------------------  WTPLSQL Testing --
       -- Setup the FK Record
       l_test_runs_rec.id              := -99;
@@ -188,12 +188,12 @@ $THEN
       insert into wt_test_runs values l_test_runs_rec;
       l_results_rec.test_run_id       := -99;
       --------------------------------------  WTPLSQL Testing --
-      l_results_rec.result_seq     := 1;
-      l_results_rec.executed_dtm   := sysdate;
-      l_results_rec.interval_msecs := 99;
-      l_results_rec.assertion      := 'DELRECTEST';
-      l_results_rec.status         := 'PASS';
-      l_results_rec.details        := 'This is a WT_RESULT.DELETE_RECORDS Test';
+      l_results_rec.result_seq    := 1;
+      l_results_rec.executed_dtm  := sysdate;
+      l_results_rec.interval_msec := 99;
+      l_results_rec.assertion     := 'DELRECTEST';
+      l_results_rec.status        := 'PASS';
+      l_results_rec.details       := 'This is a WT_RESULT.DELETE_RECORDS Test';
       insert into wt_results values l_results_rec;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (

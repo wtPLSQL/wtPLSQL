@@ -15,13 +15,13 @@ User dropped.
 
 old   6: 				  and  regexp_like(table_owner, '&schema_owner.', 'i') )
 new   6: 				  and  regexp_like(table_owner, 'wtp', 'i') )
-drop public synonym UTASSERT                                                    
-drop public synonym WTPLSQL                                                     
-drop public synonym WT_ASSERT                                                   
-drop public synonym WT_CORE_REPORT                                              
-drop public synonym WT_EXECUTE_TEST_RUNNER                                      
-drop public synonym WT_VERSION                                                  
 drop public synonym WT_WTPLSQL                                                  
+drop public synonym WT_VERSION                                                  
+drop public synonym WT_EXECUTE_TEST_RUNNER                                      
+drop public synonym WT_CORE_REPORT                                              
+drop public synonym WT_ASSERT                                                   
+drop public synonym WTPLSQL                                                     
+drop public synonym UTASSERT                                                    
 
 PL/SQL procedure successfully completed.
 

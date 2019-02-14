@@ -4,15 +4,15 @@
 --
 
 create table wt_results
-   (test_run_id      number(38)    constraint wt_results_nn1 not null
-   ,result_seq       number(8)     constraint wt_results_nn2 not null
-   ,testcase_id      number(38)
-   ,executed_dtm     timestamp(6)
-   ,interval_msecs   number(10,3)
-   ,assertion        varchar2(15)
-   ,status           varchar2(4)
-   ,message          varchar2(200)
-   ,details          varchar2(4000)
+   (test_run_id     number(38)    constraint wt_results_nn1 not null
+   ,result_seq      number(8)     constraint wt_results_nn2 not null
+   ,testcase_id     number(38)
+   ,executed_dtm    timestamp(6)
+   ,interval_msec   number(10,3)
+   ,assertion       varchar2(15)
+   ,status          varchar2(4)
+   ,message         varchar2(200)
+   ,details         varchar2(4000)
    ,constraint wt_results_pk primary key (test_run_id, result_seq)
    ,constraint wt_results_fk1 foreign key (test_run_id)
        references wt_test_runs (id)
@@ -28,7 +28,7 @@ comment on column wt_results.test_run_id is 'Foreign Key for the Test Run, Prima
 comment on column wt_results.result_seq is 'Sequence number for this Result, Primary Key part 2.';
 comment on column wt_results.testcase_id is 'Foreign Key for the Test Case.';
 comment on column wt_results.executed_dtm is 'Date/Time (with Fractional Seconds) this Result was captured';
-comment on column wt_results.interval_msecs is 'Interval time in milliseconds since the previous Result or start of the Test Run.';
+comment on column wt_results.interval_msec is 'Interval time in milliseconds since the previous Result or start of the Test Run.';
 comment on column wt_results.assertion is 'Name of the Assertion Test performed';
 comment on column wt_results.status is 'PASS/FAIL Status from the Assertion';
 comment on column wt_results.message is 'Optional test identifier that helps connect an Assertion to the Test Runner.';

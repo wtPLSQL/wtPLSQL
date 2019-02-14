@@ -7,17 +7,17 @@ create table wt_dbout_runs
    (test_run_id       number(38)  constraint wt_dbout_runs_nn1 not null
    ,profiler_runid    number(38)  constraint wt_dbout_runs_nn2 not null
    ,trigger_offset    number(6)
-   ,coverage_pct      number(3)
+   ,coverage_pct      number(4,1)
    ,profiled_lines    number(6)
    ,executed_lines    number(6)
    ,ignored_lines     number(6)
    ,excluded_lines    number(6)
    ,notexec_lines     number(6)
    ,unknown_lines     number(6)
-   ,exec_min_usecs    number(11)
-   ,exec_avg_usecs    number(11)
-   ,exec_max_usecs    number(11)
-   ,exec_tot_usecs    number(11)
+   ,exec_min_usec     number(11)
+   ,exec_avg_usec     number(11)
+   ,exec_max_usec     number(11)
+   ,exec_tot_usec     number(11)
    ,constraint wt_dbout_runs_pk primary key (test_run_id)
    ,constraint wt_dbout_runs_nk1 unique (profiler_runid)
    ,constraint wt_dbout_runs_fk1 foreign key (test_run_id)
@@ -37,10 +37,10 @@ comment on column wt_dbout_runs.ignored_lines is 'Number of source lines ignored
 comment on column wt_dbout_runs.excluded_lines is 'Number of declaration source lines (non-executable) excluded';
 comment on column wt_dbout_runs.notexec_lines is 'Number of source lines not executed';
 comment on column wt_dbout_runs.unknown_lines is 'Number of source lines with unknown DBMS_PROFILER metrics';
-comment on column wt_dbout_runs.exec_min_usecs is 'Minumum execution time for a line of source in microseconds';
-comment on column wt_dbout_runs.exec_avg_usecs is 'Average execution time for a line of source in microseconds';
-comment on column wt_dbout_runs.exec_max_usecs is 'Maximum execution time for a line of source in microseconds';
-comment on column wt_dbout_runs.exec_tot_usecs is 'Total (Sum) of execution times for a line of source in microseconds';
+comment on column wt_dbout_runs.exec_min_usec is 'Minumum execution time for a line of source in microseconds';
+comment on column wt_dbout_runs.exec_avg_usec is 'Average execution time for a line of source in microseconds';
+comment on column wt_dbout_runs.exec_max_usec is 'Maximum execution time for a line of source in microseconds';
+comment on column wt_dbout_runs.exec_tot_usec is 'Total (Sum) of execution times for a line of source in microseconds';
 
 grant select on wt_dbout_runs to public;
 grant insert on wt_dbout_runs to public;

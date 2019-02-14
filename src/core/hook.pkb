@@ -1,6 +1,12 @@
 create or replace package body hook
 as
 
+   TYPE run_nt_type is table
+      of hooks%ROWTYPE;
+   TYPE run_aa_type is table
+      of run_nt_type
+      index by varchar2(20);
+   g_run_aa  run_aa_type;
 
 ----------------------
 --  Private Procedures
@@ -16,12 +22,13 @@ begin
    for i in 1 .. g_run_aa(in_hook_name).COUNT
    loop
       begin
-         execute immediate g_run_aa(in_hook_name)(i);
+         execute immediate g_run_aa(in_hook_name)(i).run_string;
       exception
          when OTHERS
          then
             l_error_stack := 'Hook Error in "' || in_hook_name ||
-                              '", index ' || i || '.' || CHR(10) ||
+                              '", SEQ ' || g_run_aa(in_hook_name)(i).seq ||
+                                    '.' || CHR(10) ||
                               dbms_utility.format_error_stack ||
                               dbms_utility.format_error_backtrace;
             core_data.run_error(l_error_stack);
@@ -139,7 +146,7 @@ begin
        from  hooks
        group by hook_name )
    loop
-      select run_string bulk collect into l_run_nt
+      select * bulk collect into l_run_nt
        from  hooks
        where hook_name = buff.hook_name
        order by hooks.seq;
