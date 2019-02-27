@@ -5,8 +5,6 @@ as
       of varchar2(1)
       index by PLS_INTEGER;
 
-   g_rec  wt_dbout_runs%ROWTYPE;
-
    $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
       g_current_user     varchar2(30);
       wtplsql_skip_test  boolean := FALSE;
@@ -375,11 +373,25 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 ------------------------------------------------------------
 procedure clear_plsql_profiler_recs
+      (in_test_run_id  in  number default NULL)
 is
 begin
-   delete from plsql_profiler_data;
-   delete from plsql_profiler_units;
-   delete from plsql_profiler_runs;
+   for buff in (
+      select runid
+       from  plsql_profiler_runs
+       where (    in_test_run_id is null
+              and run_date < sysdate -1  )
+         or  runid in (
+             select profiler_runid from wt_dbout_runs
+              where test_run_id = in_test_run_id     ) )
+   loop
+      delete from plsql_profiler_data
+       where runid = buff.runid;
+      delete from plsql_profiler_units
+       where runid = buff.runid;
+      delete from plsql_profiler_runs
+       where runid = buff.runid;
+   end loop;
 end clear_plsql_profiler_recs;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -409,7 +421,7 @@ $THEN
       tl_insert_plsql_profiler_recs(c_test_run_id);
       tl_count_plsql_profiler_recs(c_test_run_id, 1);
       begin
-         clear_plsql_profiler_recs;  -- Should run without error
+         clear_plsql_profiler_recs(c_test_run_id);  -- Should run without error
          l_err_stack := dbms_utility.format_error_stack     ||
                         dbms_utility.format_error_backtrace ;
       exception when others then
@@ -1414,20 +1426,20 @@ function calc_pct_coverage
       (in_test_run_id  in  number)
    return number
 IS
-BEGIN
-   for buff in (
+   cursor main is
       select sum(case status when 'EXEC' then 1 else 0 end)    HITS
             ,sum(case status when 'NOTX' then 1 else 0 end)    MISSES
        from  wt_profiles  p
-       where test_run_id = in_test_run_id  )
-   loop
-      if buff.hits + buff.misses = 0
-      then
-         return -1;
-      else
-         return round(100 * buff.hits / (buff.hits + buff.misses),2);
-      end if;
-   end loop;
+       where test_run_id = in_test_run_id;
+   buff  main%ROWTYPE;
+BEGIN
+   open main;
+   fetch main into buff;
+   close main;
+   if nvl(buff.hits + buff.misses, 0) != 0
+   then
+      return round(100 * buff.hits / (buff.hits + buff.misses),2);
+   end if;
    return null;
 END calc_pct_coverage;
 
@@ -1511,7 +1523,7 @@ is
 begin
    -- Clear g_rec
    g_rec := l_recNULL;
-   -- Clear Previous PLSQL Profiler Results
+   -- Clear PLSQL Profiler Results Older than 1 Day
    clear_plsql_profiler_recs;
    -- Check Versions
    l_retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
@@ -1522,14 +1534,24 @@ begin
          'dbms_profiler.INTERNAL_VERSION_CHECK returned: ' || get_error_msg(l_retnum));
       ----------------%WTPLSQL_end_ignore_lines%----------------
    end if;
+   --
+   $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
+      if not wtplsql_skip_test
+      then
+   $END
+   --
    -- This starts the PROFILER Running!!!
+   --dbms_output.put_line('running start_profiler in ' || wt_assert.g_testcase);
    l_retnum := dbms_profiler.START_PROFILER(run_number => g_rec.profiler_runid);
    if l_retnum <> 0 then
-      ------%WTPLSQL_begin_ignore_lines%------  Can't test this
       raise_application_error(-20006,
          'dbms_profiler.START_PROFILER returned: ' || get_error_msg(l_retnum));
-      ----------------%WTPLSQL_end_ignore_lines%----------------
    end if;
+   --
+   $IF $$WTPLSQL_SELFTEST $THEN
+      end if;
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
+   --
 end initialize;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -1546,8 +1568,9 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       l_cdr_recSAVE := core_data.g_run_rec;
       l_recSAVE     := g_rec;
+      wtplsql_skip_test := TRUE;
       initialize;
-      dbms_profiler.STOP_PROFILER;
+      wtplsql_skip_test := FALSE;
       l_cdr_recTEST       := core_data.g_run_rec;
       core_data.g_run_rec := l_cdr_recSAVE;
       l_recTEST := g_rec;
@@ -1589,6 +1612,7 @@ begin
    $END
    --
    -- DBMS_PROFILER.FLUSH_DATA is included with DBMS_PROFILER.STOP_PROFILER
+   --dbms_output.put_line('running stop_profiler in ' || wt_assert.g_testcase);
    dbms_profiler.STOP_PROFILER;
    --
    $IF $$WTPLSQL_SELFTEST $THEN
@@ -1609,17 +1633,28 @@ begin
                        ,core_data.g_run_rec.dbout_name
                        ,core_data.g_run_rec.dbout_type);
       coverage_lines := g_rec.executed_lines + g_rec.notexec_lines;
-      case coverage_lines
-      when 0 then g_rec.coverage_pct := 0;
-             else g_rec.coverage_pct := 100 * g_rec.executed_lines / coverage_lines;
-      end case;
-      case g_rec.executed_lines
-      when 0 then g_rec.exec_avg_usec := 0;
-             else g_rec.exec_avg_usec := g_rec.exec_tot_usec / g_rec.executed_lines;
-      end case;
+      g_rec.coverage_pct := calc_pct_coverage(in_test_run_id);
+      if nvl(g_rec.executed_lines,0) != 0
+      then
+         g_rec.exec_avg_usec := round(g_rec.exec_tot_usec / g_rec.executed_lines, 2);
+      end if;
       -- Save g_rec
       insert into wt_dbout_runs values g_rec;
+      commit;
    end if;
+   --
+   $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
+      if not wtplsql_skip_test
+      then
+   $END
+   --
+   -- Clear PLSQL Profiler Results for this Run
+   clear_plsql_profiler_recs(g_rec.test_run_id);
+   --
+   $IF $$WTPLSQL_SELFTEST $THEN
+      end if;
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
+   --
 end finalize;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -1640,6 +1675,7 @@ $THEN
       core_data.g_run_rec.error_message := NULL;
       g_rec.profiler_runid := NULL;
       --------------------------------------  WTPLSQL Testing --
+      wtplsql_skip_test := TRUE;
       begin
          finalize(-1);
          l_err_stack := dbms_utility.format_error_stack     ||
@@ -1648,6 +1684,7 @@ $THEN
          l_err_stack := dbms_utility.format_error_stack     ||
                         dbms_utility.format_error_backtrace ;
       end;
+      wtplsql_skip_test := FALSE;
       --------------------------------------  WTPLSQL Testing --
       l_cdr_recTEST       := core_data.g_run_rec;
       core_data.g_run_rec := l_cdr_recSAVE;
@@ -1679,6 +1716,7 @@ $THEN
       core_data.g_run_rec.dbout_type  := 'TEST TYPE';
       core_data.g_run_rec.error_message := NULL;
       --------------------------------------  WTPLSQL Testing --
+      wtplsql_skip_test := TRUE;
       begin
          finalize(-2);
          l_err_stack := dbms_utility.format_error_stack     ||
@@ -1687,6 +1725,7 @@ $THEN
          l_err_stack := dbms_utility.format_error_stack     ||
                         dbms_utility.format_error_backtrace ;
       end;
+      wtplsql_skip_test := FALSE;
       --------------------------------------  WTPLSQL Testing --
       l_cdr_recTEST       := core_data.g_run_rec;
       core_data.g_run_rec := l_cdr_recSAVE;
@@ -1724,17 +1763,16 @@ $THEN
       g_rec.profiler_runid := 33;
       g_rec.trigger_offset := -33;
       --------------------------------------  WTPLSQL Testing --
+      wtplsql_skip_test := TRUE;
       begin
-         wtplsql_skip_test := TRUE;
          finalize(-3);
          l_err_stack := dbms_utility.format_error_stack     ||
                         dbms_utility.format_error_backtrace ;
-         wtplsql_skip_test := FALSE;
       exception when others then
-         wtplsql_skip_test := FALSE;
          l_err_stack := dbms_utility.format_error_stack     ||
                         dbms_utility.format_error_backtrace ;
       end;
+      wtplsql_skip_test := FALSE;
       --------------------------------------  WTPLSQL Testing --
       l_cdr_recTEST       := core_data.g_run_rec;
       core_data.g_run_rec := l_cdr_recSAVE;
@@ -1764,6 +1802,7 @@ $THEN
       l_cdr_recSAVE := core_data.g_run_rec;
       l_recSAVE     := g_rec;
       g_rec.profiler_runid := -4;
+      wtplsql_skip_test := TRUE;
       begin
          finalize(null);
          l_sqlerrm := SQLERRM;
@@ -1771,6 +1810,7 @@ $THEN
       exception when others then
          l_sqlerrm := SQLERRM;
       end;
+      wtplsql_skip_test := FALSE;
       l_cdr_recTEST       := core_data.g_run_rec;
       core_data.g_run_rec := l_cdr_recSAVE;
       l_recTEST := g_rec;
@@ -1787,19 +1827,15 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 procedure delete_run_id
       (in_test_run_id  in number)
 is
-   l_profiler_runid  number;
 begin
-   select profiler_runid into l_profiler_runid
-    from wt_dbout_runs where test_run_id = in_test_run_id;
    delete from wt_profiles
     where test_run_id = in_test_run_id;
    delete from wt_dbout_runs
     where test_run_id = in_test_run_id;
-   clear_plsql_profiler_recs;
-exception
-   when NO_DATA_FOUND
+   if in_test_run_id is not null
    then
-      return;
+      clear_plsql_profiler_recs(in_test_run_id);
+   end if;
 end delete_run_id;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -1907,18 +1943,18 @@ $THEN
       wtplsql.g_DBOUT := 'WT_PROFILE:PACKAGE BODY';
       select username into g_current_user from user_users;
       --------------------------------------  WTPLSQL Testing --
-      t_get_error_msg;
+      --t_get_error_msg;
       t_clear_plsql_profiler_recs;
-      t_load_ignr_aa;
-      t_add_dbout_run;
-      t_set_prof_status;
-      t_insert_wt_profile;
-      t_is_profilable;
-      t_trigger_offset;
-      t_calc_pct_coverage;
+      --t_load_ignr_aa;
+      --t_add_dbout_run;
+      --t_set_prof_status;
+      --t_insert_wt_profile;
+      --t_is_profilable;
+      --t_trigger_offset;
+      --t_calc_pct_coverage;
       t_initialize;
-      t_finalize;
-      t_delete_run_id;
+      --t_finalize;
+      --t_delete_run_id;
    end WTPLSQL_RUN;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--

@@ -37,8 +37,7 @@ is
    g_tcases_aa   tcases_aa_type;
 
    TYPE results_rec_type is record
-      (result_seq    number(8)      default 0          -- Sequence Number of the Assertion
-      ,testcase      long_name                         -- Test Case Name of the Assertion
+      (testcase      long_name                         -- Test Case Name of the Assertion
       ,executed_dtm  timestamp(6) with local time zone -- Execution Date/Time of the Assertion
       ,interval_msec number(10,3)   default 0          -- Interval from Previous Assertion in Milliseconds
       ,assertion     varchar2(15)                      -- Name of the Assertion

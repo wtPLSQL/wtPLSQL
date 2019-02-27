@@ -33,4 +33,8 @@ as
       (in_rec  in core_data.results_rec_type)
    return varchar2;
 
+   procedure insert_hooks;
+
+   procedure delete_hooks;
+
 end wt_core_report;

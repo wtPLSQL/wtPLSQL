@@ -62,7 +62,9 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 ------------------------------------------------------------
 procedure set_g_test_runs_rec
 is
+   g_test_runs_recNULL  wt_test_runs%ROWTYPE;
 begin
+   g_test_runs_rec  := g_test_runs_recNULL;
    g_test_runs_rec.id                := wt_test_runs_seq.nextval;
    g_test_runs_rec.test_runner_id    := wt_test_runner.dim_id
                                            (core_data.g_run_rec.test_runner_owner
@@ -78,7 +80,7 @@ begin
       g_test_runs_rec.tc_yield_pct := round( 100 *
                                              ( g_test_runs_rec.tc_cnt -
                                                g_test_runs_rec.tc_fail  ) /
-                                             g_test_runs_rec.tc_cnt         );
+                                             g_test_runs_rec.tc_cnt        , 2);
    end if;
    g_test_runs_rec.asrt_fst_dtm      := core_data.g_run_rec.asrt_fst_dtm;
    g_test_runs_rec.asrt_lst_dtm      := core_data.g_run_rec.asrt_lst_dtm;
@@ -91,14 +93,13 @@ begin
                                            (core_data.g_run_rec.dbout_owner
                                            ,core_data.g_run_rec.dbout_name
                                            ,core_data.g_run_rec.dbout_type);
-   if g_test_runs_rec.asrt_cnt != 0
+   if nvl(g_test_runs_rec.asrt_cnt,0) != 0
    then
-      g_test_runs_rec.asrt_yield_pct := round( 100 *
-                                               ( g_test_runs_rec.asrt_cnt -
-                                                 g_test_runs_rec.asrt_fail  ) /
-                                               g_test_runs_rec.asrt_cnt         );
-      g_test_runs_rec.asrt_avg_msec  := g_test_runs_rec.asrt_tot_msec /
-                                            g_test_runs_rec.asrt_cnt;
+      g_test_runs_rec.asrt_yield_pct := round(100 * ( g_test_runs_rec.asrt_cnt -
+                                                      g_test_runs_rec.asrt_fail ) /
+                                                    g_test_runs_rec.asrt_cnt       , 2);
+      g_test_runs_rec.asrt_avg_msec  := round(g_test_runs_rec.asrt_tot_msec /
+                                              g_test_runs_rec.asrt_cnt       , 2);
    end if;
 end set_g_test_runs_rec;
 
@@ -251,6 +252,7 @@ begin
       (in_test_runner_id  => g_test_runs_rec.test_runner_id);
    g_test_runs_rec.is_last_run := C_LAST_RUN_FLAG;
    insert into wt_test_runs values g_test_runs_rec;
+   commit;
 end insert_test_run;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -274,7 +276,9 @@ $THEN
          against_value_in => 0);
       --------------------------------------  WTPLSQL Testing --
       l_test_runs_rec := g_test_runs_rec;
-      g_test_runs_rec.id := -2;
+      g_test_runs_rec.id             := -2;
+      g_test_runs_rec.test_runner_id := wt_test_runner.dim_id(C_OWNER, C_NAME);
+      g_test_runs_rec.start_dtm      := systimestamp;
       insert_test_run;
       g_test_runs_rec := l_test_runs_rec;
       wt_assert.eqqueryvalue (
@@ -303,18 +307,17 @@ procedure delete_runs
    (in_test_runner_id  in number)
 is
 begin
-   for buff in (select rownum, id from wt_test_runs
-                 where test_runner_id = in_test_runner_id
-                 order by start_dtm, id)
+   for buff in (
+      with q1 as (select start_dtm, id from wt_test_runs
+                   where test_runner_id = in_test_runner_id
+                   order by start_dtm desc, id desc)
+          ,q2 as (select rownum rnum, start_dtm, id from q1)
+      select start_dtm, id from q2
+       where rnum > g_keep_num_recs)
    loop
-      -- Keep the last test runs for this Test Runner
-      if buff.rownum > g_keep_num_recs
-      then
-         -- Autonomous Transaction COMMIT
-         wt_profile.delete_run_id(buff.id);
-         wt_result.delete_run_id(buff.id);
-         delete_run_id(buff.id);
-      end if;
+      wt_profile.delete_run_id(buff.id);
+      wt_result.delete_run_id(buff.id);
+      delete_run_id(buff.id);
    end loop;
 exception when others then
    core_data.run_error('Test Runner ID: ' || in_test_runner_id || CHR(10) ||
@@ -412,15 +415,15 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
-procedure finalize
+procedure finalize1
 is 
 begin
    set_g_test_runs_rec;
-   insert_test_run;
-   wt_result.finalize(g_test_runs_rec.id);
-   wt_profile.finalize(g_test_runs_rec.id);
-   commit;
-end finalize;
+   delete_runs(g_test_runs_rec.test_runner_id);
+   insert_test_run;                          -- With COMMIT
+   wt_result.finalize(g_test_runs_rec.id);   -- With COMMIT
+   wt_profile.finalize(g_test_runs_rec.id);  -- With COMMIT
+end finalize1;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
@@ -434,6 +437,22 @@ $THEN
          check_this_in => 'All components already tested');
    end t_finalize;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
+------------------------------------------------------------
+procedure finalize2
+is 
+begin
+   -- Update any additional errors
+   --   This will cause a chained row in WT_TEST_RUNS
+   update wt_test_runs
+     set  error_message = g_test_runs_rec.error_message
+    where id = g_test_runs_rec.id
+     and  (   (    error_message is null
+               and g_test_runs_rec.error_message is not null )
+           or (error_message != g_test_runs_rec.error_message) );
+   commit;
+end finalize2;
 
 
 ------------------------------------------------------------
@@ -662,6 +681,40 @@ $THEN
          against_exc_in => '');
    end t_delete_run_id;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
+------------------------------------------------------------
+procedure insert_hooks
+is
+begin
+   delete_hooks;
+   insert into hooks (hook_name, seq, run_string)
+      values ('before_test_run', 30, 'begin wt_test_run.initialize; end;');
+   insert into hooks (hook_name, seq, run_string)
+      values ('after_test_run', 30, 'begin wt_test_run.finalize1; end;');
+   insert into hooks (hook_name, seq, run_string)
+      values ('after_test_run', 70, 'begin wt_test_run.finalize2; end;');
+   commit;
+   hook.init;
+end insert_hooks;
+
+
+------------------------------------------------------------
+procedure delete_hooks
+is
+begin
+   delete from hooks
+    where hook_name  = 'before_test_run'
+     and  run_string = 'begin wt_test_run.initialize; end;';
+   delete from hooks
+    where hook_name  = 'after_test_run'
+     and  run_string = 'begin wt_test_run.finalize2; end;';
+   delete from hooks
+    where hook_name  = 'after_test_run'
+     and  run_string = 'begin wt_test_run.finalize2; end;';
+   commit;
+   hook.init;
+end delete_hooks;
 
 
 --==============================================================--

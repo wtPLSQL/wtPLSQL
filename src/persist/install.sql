@@ -142,16 +142,17 @@ show errors
 prompt
 prompt Configuration Data
 
--- Remove this report after testing because there is storage
-delete from hooks
-  where hook_name  = 'after_test_run'
-   and  run_string = 'begin wt_core_report.dbms_out(10); end;';
+-- Remove the core report hooks
+begin
+   wt_core_report.delete_hooks;
+end;
+/
 
--- Setup the Persist Add-on
-insert into hooks (hook_name, seq, run_string)
-   values ('before_test_run', 30, 'begin wt_test_run.initialize; end;');
-insert into hooks (hook_name, seq, run_string)
-   values ('after_test_run', 30, 'begin wt_test_run.finalize; end;');
+-- Add the Persist Add-on hooks
+begin
+   wt_test_run.insert_hooks;
+end;
+/
 
 insert into wt_versions (component, version, action)
    values ('Persist', 1.002, 'INSTALL');

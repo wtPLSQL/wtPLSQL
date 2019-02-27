@@ -14,10 +14,16 @@ as
 
    procedure initialize;
 
-   procedure finalize;
+   procedure finalize1;
+
+   procedure finalize2;
 
    procedure delete_run_id
       (in_test_run_id   in number);
+
+   procedure insert_hooks;
+
+   procedure delete_hooks;
 
    --   WtPLSQL Self Test Procedures
    --

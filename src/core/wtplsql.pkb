@@ -501,6 +501,7 @@ begin
    hook.execute_test_runner;
    --
    -- Primary Finalize
+   wt_assert.g_testcase := '';
    check_dbout;
    core_data.final1;
    g_DBOUT := '';

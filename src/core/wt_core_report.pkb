@@ -23,45 +23,43 @@ is
    run_sec      number;
    tc_cnt       number;
    tc_fail      number;
+   tc_yield     number;
    min_msec     number;
    max_msec     number;
    tot_msec     number;
    avg_msec     number;
-   l_yield_txt  varchar2(50);
 begin
    p('');
    --
-   p('   wtPLSQL ' || wtplsql.show_version);
-   p('   Start Date/Time: ' ||
-         to_char(core_data.g_run_rec.start_dtm, g_date_format));
-   p('');
-   p('Test Results for ' || core_data.g_run_rec.test_runner_owner ||
-                     '.' || core_data.g_run_rec.test_runner_name  );
+   p('  wtPLSQL ' || wtplsql.show_version);
+   p('  Start Date/Time: ' ||
+        to_char(core_data.g_run_rec.start_dtm, g_date_format));
+   p('  Test Results for ' || core_data.g_run_rec.test_runner_owner ||
+                       '.' || core_data.g_run_rec.test_runner_name  );
    ----------------------------------------
    if core_data.g_run_rec.dbout_name is not null
    then
-      p('Database Object Under Test is ' || core_data.g_run_rec.dbout_type  ||
-                                     ' ' || core_data.g_run_rec.dbout_owner ||
-                                     '.' || core_data.g_run_rec.dbout_name  );
+      p('  Database Object Under Test is ' || core_data.g_run_rec.dbout_type  ||
+                                       ' ' || core_data.g_run_rec.dbout_owner ||
+                                       '.' || core_data.g_run_rec.dbout_name  );
    end if;
-   p('----------------------------------------');
+   p('  --------------------------------------------------------------');
    --
-   asrt_cnt  := core_data.g_run_rec.asrt_cnt;
-   asrt_fail := core_data.g_run_rec.asrt_fail;
-   run_sec   := core_data.g_run_rec.runner_sec;
-   tc_cnt    := core_data.g_run_rec.tc_cnt;
-   tc_fail   := core_data.g_run_rec.tc_fail;
-   min_msec  := core_data.g_run_rec.asrt_min_msec;
-   max_msec  := core_data.g_run_rec.asrt_max_msec;
-   tot_msec  := core_data.g_run_rec.asrt_tot_msec;
+   asrt_cnt  := nvl(core_data.g_run_rec.asrt_cnt     ,0);
+   asrt_fail := nvl(core_data.g_run_rec.asrt_fail    ,0);
+   run_sec   := nvl(core_data.g_run_rec.runner_sec   ,0);
+   tc_cnt    := nvl(core_data.g_run_rec.tc_cnt       ,0);
+   tc_fail   := nvl(core_data.g_run_rec.tc_fail      ,0);
+   min_msec  := nvl(core_data.g_run_rec.asrt_min_msec,0);
+   max_msec  := nvl(core_data.g_run_rec.asrt_max_msec,0);
+   tot_msec  := nvl(core_data.g_run_rec.asrt_tot_msec,0);
    case nvl(asrt_cnt,0)
         when 0 then avg_msec := 0;
-               else avg_msec := tot_msec/asrt_cnt;
+               else avg_msec := nvl(tot_msec/asrt_cnt,0);
    end case;
    case nvl(tc_cnt,0)
-        when 0 then l_yield_txt := '(Divide by Zero)';
-               else l_yield_txt := to_char(100 * ( 1 - (tc_fail/tc_cnt) )
-                                          ,'9999999') || '%';
+        when 0 then tc_yield := 0;
+               else tc_yield := nvl(100*(1-(tc_fail/tc_cnt)),0);
    end case;
    --
    p('  Minimum Elapsed msec: ' || to_char(min_msec ,'9999999') ||
@@ -73,7 +71,7 @@ begin
    p('  Total Run Time (sec): ' || to_char(run_sec  ,'99990.9') ||
      '      Failed Testcases: ' || to_char(tc_fail  ,'9999999') );
    p('                        ' ||                  '        '  ||
-     '        Testcase Yield: ' || l_yield_txt                  );
+     '        Testcase Yield: ' || to_char(tc_yield ,'9999999') || '%');
    --
    if core_data.g_run_rec.error_message is not null
    then
@@ -96,8 +94,9 @@ begin
    for i in 1 .. core_data.g_results_nt.COUNT
    loop
       -- Determine if this should be displayed
-      if    in_show_pass
-         OR NOT core_data.g_results_nt(i).pass
+      if core_data.g_results_nt.EXISTS(i)
+         AND (   in_show_pass
+              OR NOT core_data.g_results_nt(i).pass)
       then
          l_rec := core_data.g_results_nt(i);
          -- Remove Consecutive Testcases
@@ -111,10 +110,10 @@ begin
          if show_header
          then
             p('');
-            p(               core_data.g_run_rec.test_runner_owner ||
-                      '.' || core_data.g_run_rec.test_runner_name  ||
-              ' Test Runner Details:' );
-            p('----------------------------------------');
+            p('  ' || core_data.g_run_rec.test_runner_owner ||
+               '.' || core_data.g_run_rec.test_runner_name  ||
+                    ' Test Runner Details' );
+            p('  --------------------------------------------------------------');
             show_header := FALSE;
          end if;
          -- Display the result
@@ -211,6 +210,30 @@ begin
    end if;
    return l_out_str;
 end format_test_result;
+
+
+------------------------------------------------------------
+procedure insert_hooks
+is
+begin
+   delete_hooks;
+   insert into hooks (hook_name, seq, run_string)
+      values ('ad_hoc_report', 20, 'begin wt_core_report.dbms_out(20); end;');
+   commit;
+   hook.init;
+end insert_hooks;
+
+
+------------------------------------------------------------
+procedure delete_hooks
+is
+begin
+   delete from hooks
+    where hook_name  = 'ad_hoc_report'
+     and  run_string = 'begin wt_core_report.dbms_out(20); end;';
+   hook.init;
+   commit;
+end delete_hooks;
 
 
 end wt_core_report;

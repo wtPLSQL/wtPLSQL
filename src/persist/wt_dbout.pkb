@@ -176,12 +176,9 @@ is
 begin
    delete from wt_dbouts
     where id in (
-          select id
-           from  wt_dbouts
+          select id from wt_dbouts
           MINUS
-          select dbout_id ID
-           from  wt_test_runs
-           group by dbout_id);
+          select distinct dbout_id ID from wt_test_runs);
 end delete_records;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------

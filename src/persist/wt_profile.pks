@@ -2,6 +2,8 @@ create or replace package wt_profile
    authid definer
 as
 
+   g_rec  wt_dbout_runs%ROWTYPE;
+
    function is_profilable
       (in_dbout_owner  in varchar2
       ,in_dbout_name   in varchar2

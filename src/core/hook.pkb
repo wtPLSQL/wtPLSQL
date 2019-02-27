@@ -32,10 +32,6 @@ begin
                               dbms_utility.format_error_stack ||
                               dbms_utility.format_error_backtrace;
             core_data.run_error(l_error_stack);
-            wt_assert.isnull
-               (msg_in        => 'Un-handled Exception in ' ||
-                                  in_hook_name || ' Hook'
-               ,check_this_in => l_error_stack);
       end;
    end loop;
 end run_hooks;

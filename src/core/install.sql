@@ -220,13 +220,11 @@ prompt Configuration Data
 insert into hooks (hook_name, seq, run_string)
    values ('execute_test_runner', 20, 'begin wt_execute_test_runner; end;');
 
--- Run this report after testing because there is no storage
-insert into hooks (hook_name, seq, run_string)
-   values ('after_test_run', 20, 'begin wt_core_report.dbms_out(10); end;');
-
--- This is the default ad-hoc result report
-insert into hooks (hook_name, seq, run_string)
-   values ('ad_hoc_report', 20, 'begin wt_core_report.ad_hoc_result; end;');
+-- Add the default ad-hoc result report hooks
+begin
+   wt_core_report.insert_hooks;
+end;
+/
 
 insert into wt_versions (component, version, action)
    values ('Core', 1.002, 'INSTALL');

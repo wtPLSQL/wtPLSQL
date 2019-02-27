@@ -20,23 +20,60 @@ end p;
 ------------------------------------------------------------
 procedure summary_out
 is
+   asrt_cnt        number;
+   asrt_fail       number;
+   runner_sec      number;
+   tc_cnt          number;
+   tc_fail         number;
+   tc_yield_pct    number;
+   asrt_min_msec   number;
+   asrt_max_msec   number;
+   asrt_tot_msec   number;
+   asrt_avg_msec   number;
+   --
+   ignored_lines   number;
+   profiled_lines  number;
+   excluded_lines  number;
+   executed_lines  number;
+   notexec_lines   number;
+   unknown_lines   number;
+   coverage_pct    number;
+   trigger_offset  number;
+   exec_min_usec   number;
+   exec_avg_usec   number;
+   exec_max_usec   number;
 begin
    p('');
-   p('    wtPLSQL ' || wtplsql.show_version);
-   p('    Run ID ' || g_test_runs_rec.test_run_id ||
-              ': ' || to_char(g_test_runs_rec.start_dtm
-                             ,wt_core_report.g_date_format));
-   p('----------------------------------------');
+   p('  wtPLSQL ' || wtplsql.show_version);
    p('  Test Results for ' || g_test_runs_rec.test_runner_owner ||
                        '.' || g_test_runs_rec.test_runner_name  );
-   p('  Minimum Elapsed msec: ' || to_char(g_test_runs_rec.asrt_min_msec, '9999999') ||
-     '      Total Assertions: ' || to_char(g_test_runs_rec.asrt_cnt,      '9999999') );
-   p('  Average Elapsed msec: ' || to_char(g_test_runs_rec.asrt_avg_msec, '9999999') ||
-     '       Total Testcases: ' || to_char(g_test_runs_rec.tc_cnt,        '9999999') );
-   p('  Maximum Elapsed msec: ' || to_char(g_test_runs_rec.asrt_max_msec, '9999999') ||
-     '      Failed Testcases: ' || to_char(g_test_runs_rec.tc_fail,       '9999999') );
-   p('  Total Run Time (sec): ' || to_char(g_test_runs_rec.runner_sec,    '99990.9') ||
-     '        Testcase Yield: ' || to_char(g_test_runs_rec.tc_yield_pct,  '99990.9') || '%');
+   p('  Run ID ' || g_test_runs_rec.test_run_id ||
+            ': ' || to_char(g_test_runs_rec.start_dtm
+                           ,wt_core_report.g_date_format));
+   p('  --------------------------------------------------------------');
+   --
+   asrt_cnt       := nvl(g_test_runs_rec.asrt_cnt     ,0);
+   asrt_fail      := nvl(g_test_runs_rec.asrt_fail    ,0);
+   runner_sec     := nvl(g_test_runs_rec.runner_sec   ,0);
+   tc_cnt         := nvl(g_test_runs_rec.tc_cnt       ,0);
+   tc_fail        := nvl(g_test_runs_rec.tc_fail      ,0);
+   tc_yield_pct   := nvl(g_test_runs_rec.tc_yield_pct ,0);
+   asrt_min_msec  := nvl(g_test_runs_rec.asrt_min_msec,0);
+   asrt_max_msec  := nvl(g_test_runs_rec.asrt_max_msec,0);
+   asrt_tot_msec  := nvl(g_test_runs_rec.asrt_tot_msec,0);
+   asrt_avg_msec  := nvl(g_test_runs_rec.asrt_avg_msec,0);
+   --
+   p('  Minimum Elapsed msec: ' || to_char(asrt_min_msec,'9999999') ||
+     '      Total Assertions: ' || to_char(asrt_cnt     ,'9999999') );
+   p('  Average Elapsed msec: ' || to_char(asrt_avg_msec,'9999999') ||
+     '     Failed Assertions: ' || to_char(asrt_fail    ,'9999999') );
+   p('  Maximum Elapsed msec: ' || to_char(asrt_max_msec,'9999999') ||
+     '       Total Testcases: ' || to_char(tc_cnt       ,'9999999') );
+   p('  Total Run Time (sec): ' || to_char(runner_sec   ,'99990.9') ||
+     '      Failed Testcases: ' || to_char(tc_fail      ,'9999999') );
+   p('                        ' ||                      '        '  ||
+     '        Testcase Yield: ' || to_char(tc_yield_pct ,'9999999') || '%');
+   --
    if     g_dbout_runs_rec.dbout_name is not null
       AND g_dbout_runs_rec.profiler_runid is null
    then
@@ -45,6 +82,7 @@ begin
                       g_dbout_runs_rec.dbout_owner || '.' ||
                       g_dbout_runs_rec.dbout_name  || ' was not profiled.');
    end if;
+   --
    if g_test_runs_rec.error_message is not null
    then
       p('');
@@ -60,17 +98,32 @@ begin
    p('  Code Coverage for ' || g_dbout_runs_rec.dbout_type  ||
                         ' ' || g_dbout_runs_rec.dbout_owner ||
                         '.' || g_dbout_runs_rec.dbout_name  );
-   p('          Ignored Lines: ' || to_char(g_dbout_runs_rec.ignored_lines,  '9999999') ||
-     '   Total Profiled Lines: ' || to_char(g_dbout_runs_rec.profiled_lines, '9999999') );
-   p('         Excluded Lines: ' || to_char(g_dbout_runs_rec.excluded_lines, '9999999') ||
-     '   Total Executed Lines: ' || to_char(g_dbout_runs_rec.executed_lines, '9999999') );
-   p('  Minimum LineExec usec: ' || to_char(g_dbout_runs_rec.exec_min_usec,  '9999999') ||
-     '     Not Executed Lines: ' || to_char(g_dbout_runs_rec.notexec_lines,  '9999999') );
-   p('  Average LineExec usec: ' || to_char(g_dbout_runs_rec.exec_avg_usec,  '9999999') ||
-     '          Unknown Lines: ' || to_char(g_dbout_runs_rec.unknown_lines,  '9999999') );
-   p('  Maximum LineExec usec: ' || to_char(g_dbout_runs_rec.exec_max_usec,  '9999999') ||
-     '          Code Coverage: ' || to_char(g_dbout_runs_rec.coverage_pct,   '99990.9') || '%');
-   p('  Trigger Source Offset: ' || to_char(g_dbout_runs_rec.trigger_offset, '9999999') );
+   p('  ----------------------------------------------------------------');
+   --
+   ignored_lines  := nvl(g_dbout_runs_rec.ignored_lines,  0);
+   profiled_lines := nvl(g_dbout_runs_rec.profiled_lines, 0);
+   excluded_lines := nvl(g_dbout_runs_rec.excluded_lines, 0);
+   executed_lines := nvl(g_dbout_runs_rec.executed_lines, 0);
+   notexec_lines  := nvl(g_dbout_runs_rec.notexec_lines,  0);
+   unknown_lines  := nvl(g_dbout_runs_rec.unknown_lines,  0);
+   coverage_pct   := nvl(g_dbout_runs_rec.coverage_pct,   0);
+   trigger_offset := nvl(g_dbout_runs_rec.trigger_offset, 0);
+   exec_min_usec  := nvl(g_dbout_runs_rec.exec_min_usec,  0);
+   exec_avg_usec  := nvl(g_dbout_runs_rec.exec_avg_usec,  0);
+   exec_max_usec  := nvl(g_dbout_runs_rec.exec_max_usec,  0);
+   --
+   p('          Ignored Lines: ' || to_char(ignored_lines,  '9999999') ||
+     '   Total Profiled Lines: ' || to_char(profiled_lines, '9999999') );
+   p('         Excluded Lines: ' || to_char(excluded_lines, '9999999') ||
+     '   Total Executed Lines: ' || to_char(executed_lines, '9999999') );
+   p('  Minimum LineExec usec: ' || to_char(exec_min_usec,  '9999999') ||
+     '     Not Executed Lines: ' || to_char(notexec_lines,  '9999999') );
+   p('  Average LineExec usec: ' || to_char(exec_avg_usec,  '9999999') ||
+     '          Unknown Lines: ' || to_char(unknown_lines,  '9999999') );
+   p('  Maximum LineExec usec: ' || to_char(exec_max_usec,  '9999999') ||
+     '          Code Coverage: ' || to_char(coverage_pct,   '99990.9') || '%');
+   p('  Trigger Source Offset: ' || to_char(trigger_offset, '9999999') ||
+     '                         ' ||                        '        '  );
 end summary_out;
 
 ------------------------------------------------------------
@@ -113,12 +166,12 @@ begin
       if show_header
       then
          p('');
-         p(' - ' || g_test_runs_rec.test_runner_owner  ||
-             '.' || g_test_runs_rec.test_runner_name   || 
-             ' Test Result Details (Test Run ID '      ||
-                    g_test_runs_rec.test_run_id        ||
-             ')' );
-         p('-----------------------------------------------------------');
+         p('  ' || g_test_runs_rec.test_runner_owner  ||
+            '.' || g_test_runs_rec.test_runner_name   || 
+                 ' Test Result Details'               );
+         p('  Test Run ID: '              ||
+              g_test_runs_rec.test_run_id );
+         p('  --------------------------------------------------------------');
          show_header := FALSE;
       end if;
       -- Display the result
@@ -131,19 +184,20 @@ procedure profile_out
       (in_show_aux  in boolean)
 is
    l_header_txt  CONSTANT varchar2(2000) := 
-     'Source               TotTime MinTime   MaxTime     ' || chr(10) ||
-     '  Line Stat Occurs    (usec)  (usec)    (usec) Text' || chr(10) ||
-     '------ ---- ------ --------- ------- --------- ------------';
+      'Source               TotTime MinTime   MaxTime     ' || chr(10) ||
+      '  Line Stat Occurs    (usec)  (usec)    (usec) Text' || chr(10) ||
+      '------ ---- ------ --------- ------- --------- ------------';
    l_show_aux_txt  varchar2(1);
    header_shown     boolean;
    procedure l_show_header is begin
-     p('');
-     p(' - ' || g_dbout_runs_rec.dbout_owner     ||
-         '.' || g_dbout_runs_rec.dbout_name      ||
-         ' ' || g_dbout_runs_rec.dbout_type      ||
-         ' Code Coverage Details (Test Run ID '  ||
-                g_dbout_runs_rec.test_run_id     ||
-         ')' );
+      p('');
+      p('  ' || g_dbout_runs_rec.dbout_owner ||
+         '.' || g_dbout_runs_rec.dbout_name  ||
+         ' ' || g_dbout_runs_rec.dbout_type  ||
+              ' Code Coverage Details'       );
+      p('  Test Run ID: '              ||
+           g_test_runs_rec.test_run_id );
+      p('  ----------------------------------------------------------------');
    end l_show_header;
 begin
    if g_dbout_runs_rec.profiler_runid is null
