@@ -110,7 +110,10 @@ begin
 exception when OTHERS then
    if SQLERRM != 'ORA-02024: database link not found'
    then
+      ------%WTPLSQL_begin_ignore_lines%------
+      -- Can't Test This
       raise;
+      -------%WTPLSQL_end_ignore_lines%-------
    end if;
 end drop_db_link;
 
@@ -168,6 +171,12 @@ $THEN
          msg_in           => 'Number of DB Links after testing',
          check_query_in   => 'select count(*) from user_db_links',
          against_value_in => 0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Drop Nonexistent DB Link';
+      wt_assert.raises (
+         msg_in          => 'Drop BOGUS Database Link',
+         check_call_in   => 'begin wt_job.drop_db_link(''BOGUS''); end;',
+         against_exc_in  => '');
    end t_create_drop_db_link;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 

@@ -185,6 +185,8 @@ $THEN
       TYPE hname_nt_type is table of hooks.hook_name%TYPE;
       l_hname_nt      hname_nt_type;
       l_hooks_rec     hooks%ROWTYPE;
+      l_err_msgSAVE   core_data.g_run_rec.error_message%TYPE;
+      l_err_msgTEST   core_data.g_run_rec.error_message%TYPE;
       num_recs  number;
    begin
       wtplsql.g_DBOUT := 'HOOK:PACKAGE BODY';
@@ -207,7 +209,7 @@ $THEN
       delete from hooks;
       --------------------------------------  WTPLSQL Testing --
       l_hooks_rec.seq         := 1;
-      l_hooks_rec.description := 'WTPSQL Self Test';
+      l_hooks_rec.description := 'WTPLSQL Self Test';
       for i in 1 .. l_hname_nt.COUNT
       loop
          l_hooks_rec.hook_name  := l_hname_nt(i);
@@ -253,6 +255,43 @@ $THEN
             (msg_in          => l_hname_nt(i) || ' is not active'
             ,check_this_in   => g_test_hook_msg);
       end loop;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Hooks Sad Path 1';
+      l_hooks_rec.seq         := 1;
+      l_hooks_rec.description := 'WTPLSQL Self Test';
+      l_hooks_rec.hook_name   := 'ad_hoc_report';
+      l_hooks_rec.run_string  := 'declare n1 number; begin n1:=1/0; end;';
+      insert into hooks values l_hooks_rec;
+      commit;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eqqueryvalue
+         (msg_in           => 'Confirm number of test records'
+         ,check_query_in   => 'select count(*) from hooks'
+         ,against_value_in => 1);
+      init;
+      wt_assert.isnull
+         (msg_in        => 'core_data.g_run_rec.error_message'
+         ,check_this_in =>  core_data.g_run_rec.error_message);
+      --------------------------------------  WTPLSQL Testing --
+      l_err_msgSAVE := core_data.g_run_rec.error_message;
+      core_data.g_run_rec.error_message := '';
+      wt_assert.raises
+         (msg_in         => 'Test Exception Handler'
+         ,check_call_in  => 'begin hook.ad_hoc_report; end;'
+         ,against_exc_in => '');
+      l_err_msgTEST := core_data.g_run_rec.error_message;
+      core_data.g_run_rec.error_message := l_err_msgSAVE;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnotnull
+         (msg_in        => 'Confirm core_data.run_error'
+         ,check_this_in => l_err_msgTEST);
+      wt_assert.this
+         (msg_in        => 'l_err_msgTEST like ''Hook Error in "ad_hoc_report", SEQ 1.' || '\n' ||
+                                                'ORA-01476: divisor is equal to zero'   || '\n' ||
+                                                'ORA-06512: at line 1%'''
+         ,check_this_in =>  l_err_msgTEST like  'Hook Error in "ad_hoc_report", SEQ 1.' || CHR(10) ||
+                                                'ORA-01476: divisor is equal to zero'   || CHR(10) ||
+                                                'ORA-06512: at line 1%');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Teardown';
       delete from hooks;

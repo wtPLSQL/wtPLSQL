@@ -85,23 +85,27 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 procedure process_assertion
 is
 begin
-$IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
-   if not wtplsql_skip_save then
-$END  ----------------%WTPLSQL_end_ignore_lines%----------------
    if core_data.g_run_rec.test_runner_name is null
    then
       hook.ad_hoc_report;
       return;
    end if;
+   --
+   $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
+      if not wtplsql_skip_save then
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
+   --
    core_data.add
       (in_testcase  => g_testcase
       ,in_assertion => g_rec.last_assert
       ,in_pass      => g_rec.last_pass
       ,in_details   => g_rec.last_details
       ,in_message   => g_rec.last_msg);
-$IF $$WTPLSQL_SELFTEST $THEN   ------%WTPLSQL_begin_ignore_lines%------
-   end if;
-$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+   --
+   $IF $$WTPLSQL_SELFTEST $THEN   ------%WTPLSQL_begin_ignore_lines%------
+      end if;
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
+   --
    hook.after_assertion;
    if     g_rec.raise_exception
       and not g_rec.last_pass
@@ -117,43 +121,114 @@ $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
    procedure t_process_assertion
    is
-      l_msg  varchar2(100) := 'Check Exception Processing';
+      l_test_runner_nameSAVE   core_data.g_run_rec.test_runner_name%TYPE;
+      l_msg     varchar2(100) := 'Check Exception Processing';
+      l_line    varchar2(32767);
+      l_status  pls_integer;
    begin
-      wt_assert.g_testcase := 'Test Process Assertion';
       --------------------------------------  WTPLSQL Testing --
-      g_testcase            := 'PROCESS_ASSERTION';
+      wt_assert.g_testcase := 'Ad Hoc Report Happy Path';
+      g_rec.last_assert     := 'THIS';
+      g_rec.last_pass       := TRUE;
+      g_rec.last_details    := 'Expected "PASS" and got "PASS"';
+      g_rec.last_msg        := 'Ad Hoc Report Happy Path';
+      g_rec.raise_exception := FALSE;
+      l_test_runner_nameSAVE := core_data.g_run_rec.test_runner_name;
+      core_data.g_run_rec.test_runner_name := '';
+      begin
+         --------------------------------------  WTPLSQL Testing --
+         process_assertion;  -- Should not throw exception
+         core_data.g_run_rec.test_runner_name := l_test_runner_nameSAVE;
+         wt_assert.isnotnull
+            (msg_in        => l_msg
+            ,check_this_in => 'Ad Hoc Report Exception Success');
+      exception
+         --------------------------------------  WTPLSQL Testing --
+         when OTHERS then
+            core_data.g_run_rec.test_runner_name := l_test_runner_nameSAVE;
+            wt_assert.isnull
+               (msg_in        => l_msg
+               ,check_this_in => 'Ad Hoc Report Exception Failed');
+      end;
+      --------------------------------------  WTPLSQL Testing --
+      dbms_output.get_line(l_line, l_status);
+      wt_assert.eq
+         (msg_in          => 'Ad Hoc Line 1 Status'
+         ,check_this_in   => l_status
+         ,against_this_in => 0);
+      wt_assert.eq
+         (msg_in          => 'Ad Hoc Line 1 Line'
+         ,check_this_in   => l_line
+         ,against_this_in => 'Ad Hoc Report Happy Path');
+      --------------------------------------  WTPLSQL Testing --
+      dbms_output.get_line(l_line, l_status);
+      wt_assert.eq
+         (msg_in          => 'Ad Hoc Line 2 Status'
+         ,check_this_in   => l_status
+         ,against_this_in => 0);
+      wt_assert.eq
+         (msg_in          => 'Ad Hoc Line 2 Line'
+         ,check_this_in   => l_line
+         ,against_this_in => ' Assertion THIS PASSED.');
+      --------------------------------------  WTPLSQL Testing --
+      dbms_output.get_line(l_line, l_status);
+      wt_assert.eq
+         (msg_in          => 'Ad Hoc Line 3 Status'
+         ,check_this_in   => l_status
+         ,against_this_in => 0);
+      wt_assert.eq
+         (msg_in          => 'Ad Hoc Line 3 Line'
+         ,check_this_in   => l_line
+         ,against_this_in => ' Testcase: Ad Hoc Report Happy Path');
+      --------------------------------------  WTPLSQL Testing --
+      dbms_output.get_line(l_line, l_status);
+      wt_assert.eq
+         (msg_in          => 'Ad Hoc Line 4 Status'
+         ,check_this_in   => l_status
+         ,against_this_in => 0);
+      wt_assert.eq
+         (msg_in          => 'Ad Hoc Line 4 Line'
+         ,check_this_in   => l_line
+         ,against_this_in => ' Expected "PASS" and got "PASS"');
+      --------------------------------------  WTPLSQL Testing --
+      g_testcase := 'PROCESS_ASSERTION';
       g_rec.last_assert     := 'THIS';
       g_rec.last_pass       := FALSE;
       g_rec.last_details    := 'Expected "PASS" and got "FAIL"';
       g_rec.last_msg        := 'Process Assertion Forced Failure';
       g_rec.raise_exception := TRUE;
-      wtplsql_skip_save  := TRUE;
-      process_assertion;  -- Should throw exception
-      --------------------------------------  WTPLSQL Testing --
-      wtplsql_skip_save  := FALSE;
-      wt_assert.isnull
-         (msg_in        => l_msg
-         ,check_this_in => 'Exception missing, should not have arrived here');
-      --------------------------------------  WTPLSQL Testing --
-   exception
-      when ASSERT_FAILURE_EXCEPTION then
-         wtplsql_skip_save := FALSE;
-         wt_assert.eq
-            (msg_in        => l_msg
-            ,check_this_in => SQLERRM
-            ,against_this_in => 
-'ORA-20004: Process Assertion Forced Failure
- Assertion THIS Failed.
- Testcase: PROCESS_ASSERTION
- Expected "PASS" and got "FAIL"');
-      when OTHERS then
-         wtplsql_skip_save := FALSE;
+      begin
+         --------------------------------------  WTPLSQL Testing --
+         wtplsql_skip_save  := TRUE;
+         process_assertion;  -- Should throw exception
+         wtplsql_skip_save    := FALSE;
+         wt_assert.g_testcase := 'Test Process Assertion';
          wt_assert.isnull
             (msg_in        => l_msg
-            ,check_this_in => 'Incorrect Exception Thrown: ' ||
-                              substr(dbms_utility.format_error_stack  ||
-                                     dbms_utility.format_error_backtrace
-                                    ,1,3950)  );
+            ,check_this_in => 'Exception missing, should not have arrived here');
+      exception
+         --------------------------------------  WTPLSQL Testing --
+         when ASSERT_FAILURE_EXCEPTION then
+            wtplsql_skip_save := FALSE;
+            wt_assert.g_testcase := 'Test Process Assertion';
+            wt_assert.eq
+               (msg_in        => l_msg
+               ,check_this_in => SQLERRM
+               ,against_this_in => 'ORA-20004: Process Assertion Forced Failure' || CHR(10) ||
+                                   ' Assertion THIS Failed.'                     || CHR(10) ||
+                                   ' Testcase: PROCESS_ASSERTION'                || CHR(10) ||
+                                   ' Expected "PASS" and got "FAIL"');
+         --------------------------------------  WTPLSQL Testing --
+         when OTHERS then
+            wtplsql_skip_save    := FALSE;
+            wt_assert.g_testcase := 'Test Process Assertion';
+            wt_assert.isnull
+               (msg_in        => l_msg
+               ,check_this_in => 'Incorrect Exception Thrown: ' ||
+                                 substr(dbms_utility.format_error_stack  ||
+                                        dbms_utility.format_error_backtrace
+                                       ,1,3950)  );
+      end;
    end t_process_assertion;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
@@ -2349,7 +2424,7 @@ begin
    then
       -- Both are Null
       g_rec.last_pass := TRUE;
-   elsif against_exc_in is null OR l_sqlerrm is null
+   elsif l_sqlerrm is null OR against_exc_in is null
    then
       -- If both were Null, it would have been caught above.
       --   So, only one can be Null
