@@ -17,8 +17,8 @@ is
       ,asrt_lst_dtm       timestamp(3) with local time zone -- Date/Time of Last Assertion
       ,asrt_cnt           number(7)      default 0          -- Number of Assertions across all Test Cases
       ,asrt_fail          number(7)      default 0          -- Number of Assertion Failures across all Test Cases
-      ,asrt_min_msec      number(10)     default 0          -- Minumum Assertion Interval in Milliseconds across all Test Cases
-      ,asrt_max_msec      number(10)     default 0          -- Maximum Assertion Interval in Milliseconds across all Test Cases
+      ,asrt_min_msec      number(10)                        -- Minumum Assertion Interval in Milliseconds across all Test Cases
+      ,asrt_max_msec      number(10)                        -- Maximum Assertion Interval in Milliseconds across all Test Cases
       ,asrt_tot_msec      number(10)     default 0          -- Total Assertion Intervals in Milliseconds across all Test Cases
       ,dbout_owner        long_name                         -- Owner of the Database Object Under Test
       ,dbout_name         long_name                         -- Name of the Database Object Under Test
@@ -29,8 +29,8 @@ is
    TYPE tcases_rec_type is record
       (asrt_cnt       number(7)      default 0          -- Number of Assertions in this Test Case
       ,asrt_fail      number(7)      default 0          -- Number of Failed Assertsion in this Test Case
-      ,asrt_min_msec  number(10)     default 0          -- Minumum Assertion Interval in Milliseconds in this Test Cases
-      ,asrt_max_msec  number(10)     default 0          -- Maximum Assertion Interval in Milliseconds in this Test Cases
+      ,asrt_min_msec  number(10)                        -- Minumum Assertion Interval in Milliseconds in this Test Cases
+      ,asrt_max_msec  number(10)                        -- Maximum Assertion Interval in Milliseconds in this Test Cases
       ,asrt_tot_msec  number(10)     default 0          -- Total Assertion Interval in Milliseconds in this Test Cases
       );
    TYPE tcases_aa_type is table of tcases_rec_type index by long_name;

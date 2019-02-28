@@ -160,6 +160,25 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
+-- Delete all records for a test runner
+procedure delete_records
+      (in_test_runner_id  in number)
+is
+begin
+   for buff in (
+      select id from wt_test_runs
+       where test_runner_id = in_test_runner_id )
+   loop
+      wt_profile.delete_run_id(buff.id);
+      wt_result.delete_run_id(buff.id);
+      wt_test_run.delete_run_id(buff.id);
+   end loop;
+   delete from wt_test_runners
+    where id = in_test_runner_id;
+end delete_records;
+
+
+------------------------------------------------------------
 procedure delete_records
 is
 begin

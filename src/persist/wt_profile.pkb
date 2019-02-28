@@ -106,13 +106,15 @@ $THEN
 --==============================================================--
       --------------------------------------  WTPLSQL Testing --
    procedure tl_insert_plsql_profiler_recs
-         (in_test_run_id     in number)
+         (in_test_run_id      in number
+         ,in_run_date_offset  in number  default 0)
    is
       l_sql_txt    varchar2(4000);
    begin
       --------------------------------------  WTPLSQL Testing --
-      l_sql_txt := 'insert into plsql_profiler_runs (runid)' ||
-                   ' values (' || in_test_run_id || ')';
+      l_sql_txt := 'insert into plsql_profiler_runs (runid, run_date)' ||
+                   ' values (' || in_test_run_id ||
+                   ', sysdate + ' || in_run_date_offset || ')';
       wt_assert.raises (
          msg_in         => 'insert plsql_profiler_runs (' || in_test_run_id || ')',
          check_call_in  => l_sql_txt,
@@ -223,7 +225,7 @@ $THEN
    end tl_delete_test_runs;
 --==============================================================--
       --------------------------------------  WTPLSQL Testing --
-   procedure tl_insert_wt_profile
+   procedure tl_insert_wt_profiles
          (in_rec  in wt_profiles%ROWTYPE)
    is
       l_sqlerrm  varchar2(4000);
@@ -249,7 +251,7 @@ $THEN
                              ' where test_run_id = ' || in_rec.test_run_id ||
                              ' and line = ' || in_rec.line,
          against_value_in => 1);
-   end tl_insert_wt_profile;
+   end tl_insert_wt_profiles;
 --==============================================================--
       --------------------------------------  WTPLSQL Testing --
    procedure tl_delete_wt_profiles
@@ -275,6 +277,29 @@ $THEN
          against_value_in => 0);
       commit;
    end tl_delete_wt_profiles;
+--==============================================================--
+      --------------------------------------  WTPLSQL Testing --
+   procedure tl_insert_dbout_runs
+         (in_test_run_id  in NUMBER)
+   is
+      l_sql_txt    varchar2(4000);
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      l_sql_txt := 'insert into wt_dbout_runs' ||
+                   ' (test_run_id, profiler_runid)' ||
+                   ' values (' || in_test_run_id ||
+                          ', ' || in_test_run_id || ')';
+      wt_assert.raises (
+         msg_in         => 'Insert wt_dbout_runs (' || in_test_run_id || ')',
+         check_call_in  => l_sql_txt,
+         against_exc_in => '');
+      wt_assert.eqqueryvalue (
+         msg_in           => 'wt_dbout_runs (' || in_test_run_id || ') Count',
+         check_query_in   => 'select count(*) from wt_dbout_runs' ||
+                             ' where test_run_id = ' || in_test_run_id,
+         against_value_in => 1);
+      commit;
+   end tl_insert_dbout_runs;
 --==============================================================--
       --------------------------------------  WTPLSQL Testing --
    procedure tl_delete_dbout_runs
@@ -418,8 +443,11 @@ $THEN
       tl_count_plsql_profiler_recs(c_test_run_id, 0);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Delete PL/SQL Profiler Records Happy Path 2';
+      tl_insert_test_runs(c_test_run_id, 'Delete Profiler Test 2');
+      tl_insert_dbout_runs(c_test_run_id);
       tl_insert_plsql_profiler_recs(c_test_run_id);
       tl_count_plsql_profiler_recs(c_test_run_id, 1);
+      --------------------------------------  WTPLSQL Testing --
       begin
          clear_plsql_profiler_recs(c_test_run_id);  -- Should run without error
          l_err_stack := dbms_utility.format_error_stack     ||
@@ -433,6 +461,30 @@ $THEN
          msg_in          => 'clear_plsql_profiler_recs 2',
          check_this_in   => l_err_stack);
       tl_count_plsql_profiler_recs(c_test_run_id, 0);
+      tl_delete_dbout_runs(c_test_run_id);
+      tl_delete_test_runs(c_test_run_id);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Delete PL/SQL Profiler Records Happy Path 3';
+      tl_insert_test_runs(c_test_run_id, 'Delete Profiler Test 3');
+      tl_insert_dbout_runs(c_test_run_id);
+      tl_insert_plsql_profiler_recs(c_test_run_id, -2);
+      tl_count_plsql_profiler_recs(c_test_run_id, 1);
+      --------------------------------------  WTPLSQL Testing --
+      begin
+         clear_plsql_profiler_recs;  -- Should run without error
+         l_err_stack := dbms_utility.format_error_stack     ||
+                        dbms_utility.format_error_backtrace ;
+      exception when others then
+         l_err_stack := dbms_utility.format_error_stack     ||
+                        dbms_utility.format_error_backtrace ;
+      end;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnull (
+         msg_in          => 'clear_plsql_profiler_recs 3',
+         check_this_in   => l_err_stack);
+      tl_count_plsql_profiler_recs(c_test_run_id, 0);
+      tl_delete_dbout_runs(c_test_run_id);
+      tl_delete_test_runs(c_test_run_id);
    end t_clear_plsql_profiler_recs;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
@@ -1463,17 +1515,17 @@ $THEN
       l_profile.line         := 1;
       l_profile.status       := 'EXEC';
       l_profile.text         := 'Testing ' || l_profile.line;
-      tl_insert_wt_profile(l_profile);
+      tl_insert_wt_profiles(l_profile);
       --------------------------------------  WTPLSQL Testing --
       l_profile.line         := 2;
       l_profile.status       := 'NOTX';
       l_profile.text         := 'Testing ' || l_profile.line;
-      tl_insert_wt_profile(l_profile);
+      tl_insert_wt_profiles(l_profile);
       --------------------------------------  WTPLSQL Testing --
       l_profile.line         := 3;
       l_profile.status       := 'EXEC';
       l_profile.text         := 'Testing ' || l_profile.line;
-      tl_insert_wt_profile(l_profile);
+      tl_insert_wt_profiles(l_profile);
       wt_assert.eq (
          msg_in          => 'Main Test',
          check_this_in   => calc_pct_coverage(c_test_run_id),
@@ -1484,17 +1536,17 @@ $THEN
       l_profile.line         := 1;
       l_profile.status       := 'EXCL';
       l_profile.text         := 'Testing ' || l_profile.line;
-      tl_insert_wt_profile(l_profile);
+      tl_insert_wt_profiles(l_profile);
       --------------------------------------  WTPLSQL Testing --
       l_profile.line         := 2;
       l_profile.status       := 'UNKN';
       l_profile.text         := 'Testing ' || l_profile.line;
-      tl_insert_wt_profile(l_profile);
+      tl_insert_wt_profiles(l_profile);
       --------------------------------------  WTPLSQL Testing --
       l_profile.line         := 3;
       l_profile.status       := 'EXCL';
       l_profile.text         := 'Testing ' || l_profile.line;
-      tl_insert_wt_profile(l_profile);
+      tl_insert_wt_profiles(l_profile);
       wt_assert.eq (
          msg_in          => 'Main Test',
          check_this_in   => calc_pct_coverage(c_test_run_id),
@@ -1549,6 +1601,8 @@ begin
    end if;
    --
    $IF $$WTPLSQL_SELFTEST $THEN
+      else
+         g_rec.profiler_runid := 0;
       end if;
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    --
@@ -1869,7 +1923,7 @@ $THEN
       l_profile.exec_min_usec  := 1;
       l_profile.exec_max_usec  := 1;
       l_profile.text           := 'Testing';
-      tl_insert_wt_profile(l_profile);
+      tl_insert_wt_profiles(l_profile);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Delete Records Happy Path 1';
       begin
@@ -1889,6 +1943,7 @@ $THEN
          check_query_in   => 'select count(*) from wt_profiles' ||
                              ' where test_run_id = ' || c_test_run_id,
          against_value_in => 0);
+      tl_delete_test_runs(c_test_run_id);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Delete Records Sad Path 1';
       begin
@@ -1929,7 +1984,6 @@ $THEN
          against_value_in => 0);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Delete Records Teardown';
-      tl_delete_test_runs(c_test_run_id);
    end t_delete_run_id;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 

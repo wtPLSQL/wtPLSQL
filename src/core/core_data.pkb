@@ -59,6 +59,8 @@ $THEN
       l_run_recSAVE     := g_run_rec;
       l_tcases_aaSAVE   := g_tcases_aa;
       l_results_ntSAVE  := g_results_nt;
+      g_tcases_aa('INIT Happy 1 Test 1') := NULL;
+      g_tcases_aa('INIT Happy 1 Test 2') := NULL;
       init1 ('WTPLSQL');
       l_run_recTEST     := g_run_rec;
       l_tcases_aaTEST   := g_tcases_aa;
@@ -275,7 +277,7 @@ $THEN
       lt   PLS_INTEGER;
    begin
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Add Procedure Happy Path';
+      wt_assert.g_testcase := 'Add Procedure Happy Path 1';
       l_run_recSAVE     := g_run_rec;
       l_tcases_aaSAVE   := g_tcases_aa;
       l_results_ntSAVE  := g_results_nt;
@@ -405,6 +407,64 @@ $THEN
       wt_assert.isnotnull
          (msg_in          => 'l_tcases_aaTEST(''The Testcase'').asrt_max_msec'
          ,check_this_in   =>  l_tcases_aaTEST('The Testcase').asrt_max_msec);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Add Procedure Happy Path 2';
+      l_run_recSAVE     := g_run_rec;
+      l_tcases_aaSAVE   := g_tcases_aa;
+      l_results_ntSAVE  := g_results_nt;
+      add(in_testcase  => 'The Testcase'
+         ,in_assertion => 'The Assert'
+         ,in_pass      => FALSE
+         ,in_details   => 'The Details'
+         ,in_message   => 'The Message');
+      --------------------------------------  WTPLSQL Testing --
+      l_run_recTEST     := g_run_rec;
+      l_tcases_aaTEST   := g_tcases_aa;
+      l_results_ntTEST  := g_results_nt;
+      g_run_rec         := l_run_recSAVE;
+      g_tcases_aa       := l_tcases_aaSAVE;
+      g_results_nt      := l_results_ntSAVE;
+      lt := l_results_ntTEST.COUNT;
+      wt_assert.isnotnull
+         (msg_in          => 'The last element in l_resultsTEST_nt'
+         ,check_this_in   =>  lt);
+      --------------------------------------  WTPLSQL Testing --
+      -- l_results_nt Testing
+      --------------------
+      wt_assert.eq
+         (msg_in          => 'l_run_recTEST.asrt_cnt = ' ||
+                             'l_run_recSAVE.asrt_cnt + 1'
+         ,check_this_in   =>  l_run_recTEST.asrt_cnt
+         ,against_this_in =>  l_run_recSAVE.asrt_cnt + 1);
+      wt_assert.eq
+         (msg_in          => 'l_run_recTEST.asrt_fail = ' ||
+                             'l_run_recSAVE.asrt_fail + 1'
+         ,check_this_in   =>  l_run_recTEST.asrt_fail
+         ,against_this_in =>  l_run_recSAVE.asrt_fail + 1);
+      --------------------------------------  WTPLSQL Testing --
+      -- l_run_rec Testing
+      --------------------
+      wt_assert.eq
+         (msg_in          => 'l_run_recTEST.asrt_cnt = ' ||
+                             'l_run_recSAVE.asrt_cnt + 1'
+         ,check_this_in   =>  l_run_recTEST.asrt_cnt
+         ,against_this_in =>  l_run_recSAVE.asrt_cnt + 1);
+      wt_assert.eq
+         (msg_in          => 'l_run_recTEST.asrt_fail = ' ||
+                             'l_run_recSAVE.asrt_fail + 1'
+         ,check_this_in   =>  l_run_recTEST.asrt_fail
+         ,against_this_in =>  l_run_recSAVE.asrt_fail + 1);
+      --------------------------------------  WTPLSQL Testing --
+      -- l_tcases_aa Testing
+      ----------------------
+      wt_assert.eq
+         (msg_in          => 'l_tcases_aaTEST(''The Testcase'').asrt_cnt'
+         ,check_this_in   =>  l_tcases_aaTEST('The Testcase').asrt_cnt
+         ,against_this_in =>  1);
+      wt_assert.eq
+         (msg_in          => 'l_tcases_aaTEST(''The Testcase'').asrt_fail'
+         ,check_this_in   =>  l_tcases_aaTEST('The Testcase').asrt_fail
+         ,against_this_in =>  1);
    end t_add;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
@@ -462,6 +522,7 @@ $THEN
       l_run_recSAVE     := g_run_rec;
       l_tcases_aaSAVE   := g_tcases_aa;
       l_results_ntSAVE  := g_results_nt;
+      g_tcases_aa('TC1').asrt_fail := 2;
       final1;
       l_run_recTEST     := g_run_rec;
       l_tcases_aaTEST   := g_tcases_aa;

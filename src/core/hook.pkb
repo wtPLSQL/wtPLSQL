@@ -157,7 +157,10 @@ begin
             when 'after_test_run'      then after_test_run_active      := TRUE;
             when 'after_test_all'      then after_test_all_active      := TRUE;
             when 'ad_hoc_report'       then ad_hoc_report_active       := TRUE;
+            ------%WTPLSQL_begin_ignore_lines%------
+            -- Can't Test This
             else raise_application_error(-20003, 'Unknown HOOK_NAME Case' || buff.hook_name);
+            ------%WTPLSQL_end_ignore_lines%------
           end case;
       end if;
    end loop;
@@ -269,6 +272,7 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
+------%WTPLSQL_begin_ignore_lines%------ Can't Test This
 begin
    init;
 end hook;

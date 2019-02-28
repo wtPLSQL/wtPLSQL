@@ -16,6 +16,10 @@ as
       ,in_name   in varchar2)
    return number;
 
+   -- Delete all records for a test runner
+   procedure delete_records
+      (in_test_runner_id  in number);
+
    -- Delete all records with no child records
    procedure delete_records;
    
