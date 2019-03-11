@@ -19,7 +19,7 @@ The http://wtPLSQL.org website (hosted on GitHub.io) has more information about 
 
 ### Participation
 
-See the "To Do" column in one of the [Projects](https://github.com/DDieterich/wtPLSQL/projects) for cards/issues that are ready to work.
+See the ["V1.2 Hooks and GUI" Milestone](https://github.com/DDieterich/wtPLSQL/milestone/4) for issues that are ready to work.
 
 The [repository wiki](https://github.com/DDieterich/wtPLSQL/wiki) includes helpful procedures and discussions for code development and repository maintenance.
 

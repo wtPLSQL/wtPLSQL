@@ -1,6 +1,20 @@
 
 wtPLSQL 1.2 Release Notes:
 
+Proposed V1.2 Release
+* Hooks allow add-ons to attach to basic framework
+   * Move all reporting into hooks
+   * Move all persistence into hooks
+   * Move all code coverage into hooks.
+   * Brutally fast JUnit XML reporting
+* GUI (Graphical Used Interface) using APEX (Application Express)
+   * Trend Analysis
+   * Launch Test Runners
+   * Test Case and Assertion Drill-Down
+   * Code Coverage Drill Down
+* Travis-CI integration ??
+   * New HTML file based reporting
+
 ### Overview
 * Assertion results are recorded in memory arrays by Core.
 * Assertion results are stored in tables by Persist.

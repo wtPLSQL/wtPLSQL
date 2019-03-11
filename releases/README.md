@@ -5,7 +5,7 @@
 
 ### Files and Directories
 
-File Name            | Description
----------------------|------------
-V1.1.0               | Directory of V1.1.0 Release Notes, Upgrades, and Downgrades
-V1.2.0               | Directory of V1.2.0 Release Notes, Upgrades, and Downgrades
+File Name | Description
+----------|------------
+V1.1.0    | Directory of V1.1.0 Release Notes, Upgrades, and Downgrades
+V1.2      | Directory of V1.2 Release Notes, Upgrades, and Downgrades
