@@ -54,8 +54,6 @@ Here are several differences in testing methodologies between relational databas
 ### Test Driven Development (TDD/RSpec)
 In the fast-paced development cycle, defining how the software accomplishes the needs of the business is the typical focus. This is also called "happy path" functionality. Conversely, error handling and error recovery (sad path) requirements typically don't accomplish business needs. That is to say, sad path testing focuses on things going badly, not on things going well. Unfortunately, efforts to develop and define sad path requirements are typically avoided.
 
-TDD places no value on 100% code coverage. TDD typically avoids testing sad path testing during development.
-
 White box testing is centered on 100% code coverage. "Happy path" and "sad path" testing are typically required to achieve 100% code coverage.
 
 Here is more discussion on [Test Driven Development](About-wtPLSQL.md#test-driven-development)
