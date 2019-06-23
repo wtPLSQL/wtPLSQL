@@ -109,7 +109,7 @@ Test fixtures and test suites are a part of the xUnit testing framework. At the 
 ## Test Driven Development
 With **TDD** (Test Driven Development), [you write a test before you write just enough production code to fulfill that test](http://agiledata.org/essays/tdd.html)
 
-The wtPLSQL framework is not intended for Test Driven Development.  100% code coverage is not desirable under the **TDD** approach.  Test isolation and test transience are welcomed mechanisms to assist in getting tests to pass quickly in **TDD**.  The wtPLSQL framework embraces 100% code coverage and does not require test isolation or test transience.
+The wtPLSQL framework is not intended for Test Driven Development.  The wtPLSQL framework embraces 100% code coverage and does not require test isolation or test transience.
 
 ---
 [Website Home Page](README.md)
