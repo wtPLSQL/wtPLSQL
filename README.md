@@ -10,6 +10,8 @@ The http://wtPLSQL.org website (hosted on GitHub.io) has more information about 
 
 [Click here](https://github.com/DDieterich/wtPLSQL/wiki/Compatibility) for the compatibility wiki page.
 
+*NOTE:* Issues are tracked in the Wiki.  See: [Issues Summary](https://github.com/wtPLSQL/wtPLSQL/wiki/Z-Issues-Summary)
+
 
 ### Versions
 
