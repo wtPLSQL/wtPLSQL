@@ -1,0 +1,3 @@
+"USERNAME","INSTALL_OTYPE","INSTALL_TYPE","ONAME_FILTER","NOTES"
+"WTP","DB_LINK","wtp","$^","Don't save the WTP Database Links"
+"WTP","TABLE_TRIGGER","wtp","\![$]DML$","Don't save $DML Triggers"
