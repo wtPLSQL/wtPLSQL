@@ -1,1 +1,39 @@
+title: wtPLSQL Project
+description: wtPLSQL is a white-box testing framework for Oracle database objects.
+show_downloads: false
+google_analytics:
 theme: jekyll-theme-leap-day
+#
+#https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/about-github-pages-and-jekyll
+#
+# Some configuration settings cannot be changed for GitHub Pages sites.
+#lsi: false
+#safe: true
+#source: /docs
+#incremental: false
+#highlighter: rouge
+#gist:
+#  noscript: false
+#kramdown:
+#  math_engine: mathjax
+#  syntax_highlighter: rouge
+#
+# By default, Jekyll doesn't build files or folders that:
+#  -) are located in a folder called /node_modules or /vendor
+#  -) start with _, ., or #
+#  -) end with ~
+#  -) are excluded by the exclude setting in your configuration file
+# If you want Jekyll to process any of these files, you can use the
+#   include setting in your configuration file.
+#
+# GitHub Pages uses plugins that are enabled by default and cannot be disabled:
+#  -) jekyll-coffeescript
+#  -) jekyll-default-layout
+#  -) jekyll-gist
+#  -) jekyll-github-metadata
+#  -) jekyll-optional-front-matter
+#  -) jekyll-paginate
+#  -) jekyll-readme-index
+#  -) jekyll-titles-from-headings
+#  -) jekyll-relative-links
+#
