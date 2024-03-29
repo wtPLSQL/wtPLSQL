@@ -1,0 +1,46 @@
+
+--
+--  Create ODBCAPTURE.OBJECT_CONF Table
+--
+--  NOTE: Foreign keys are in a different script
+--        Indexes are in a different script
+--        Triggers are in a different script
+--
+
+set define off
+
+
+--DBMS_METADATA:ODBCAPTURE.OBJECT_CONF
+
+  CREATE TABLE "ODBCAPTURE"."OBJECT_CONF" 
+   (	"USERNAME" VARCHAR2(128 BYTE) NOT NULL ENABLE, 
+	"INSTALL_OTYPE" VARCHAR2(20 BYTE) NOT NULL ENABLE, 
+	"INSTALL_TYPE" VARCHAR2(10 BYTE) NOT NULL ENABLE, 
+	"ONAME_FILTER" VARCHAR2(4000 BYTE) NOT NULL ENABLE, 
+	"NOTES" VARCHAR2(1024 BYTE)
+   ) SEGMENT CREATION IMMEDIATE  LOGGING;
+ALTER TABLE "ODBCAPTURE"."OBJECT_CONF" ADD CONSTRAINT "OBJECT_CONF_PK" PRIMARY KEY ("USERNAME", "INSTALL_OTYPE", "INSTALL_TYPE")
+  USING INDEX  ENABLE;
+ALTER TABLE "ODBCAPTURE"."OBJECT_CONF" ADD CONSTRAINT "OBJECT_CONF_CK1" CHECK (
+  install_otype not in ('ROLE','USER','GRANT','QUEUE_TABLE','DATA_LOAD','TABLE_FOREIGN_KEY','VIEW_FOREIGN_KEY','MVIEW_FOREIGN_KEY')
+  ) ENABLE;
+
+--  Comments
+
+--DBMS_METADATA:ODBCAPTURE.OBJECT_CONF
+
+   COMMENT ON COLUMN "ODBCAPTURE"."OBJECT_CONF"."USERNAME" IS 'Name of the database schema (Primary Key Column 1). Value must be in SCHEMA_CONF table.';
+   COMMENT ON COLUMN "ODBCAPTURE"."OBJECT_CONF"."INSTALL_OTYPE" IS 'Name of the object type (Primary Key Column 2). Value must be in OTYPE_CONF table.';
+   COMMENT ON COLUMN "ODBCAPTURE"."OBJECT_CONF"."INSTALL_TYPE" IS 'Name of the install type (Primary Key Column 3). Value must be in TYPE_CONF table.';
+   COMMENT ON COLUMN "ODBCAPTURE"."OBJECT_CONF"."ONAME_FILTER" IS 'Where clause of the selected object type to capture (Required). $$ONAME$$ is replaced with the name of the databsae object.';
+   COMMENT ON COLUMN "ODBCAPTURE"."OBJECT_CONF"."NOTES" IS 'Free text field (Optional)';
+   COMMENT ON TABLE "ODBCAPTURE"."OBJECT_CONF"  IS 'Object name filter for each object type in a schema for an install type.';
+
+
+--  Grants
+
+
+--  Synonyms
+
+
+set define on

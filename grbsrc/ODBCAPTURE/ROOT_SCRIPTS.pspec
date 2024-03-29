@@ -1,0 +1,89 @@
+
+--
+--  Create ODBCAPTURE.ROOT_SCRIPTS Package
+--
+
+set define off
+
+
+--DBMS_METADATA:ODBCAPTURE.ROOT_SCRIPTS
+
+  CREATE OR REPLACE EDITIONABLE PACKAGE "ODBCAPTURE"."ROOT_SCRIPTS" 
+   authid current_user
+as
+
+   function alter_foreign_keys_sql
+      (in_install_type  in varchar2)
+   return varchar2;
+
+   function alter_queues_sql
+      (in_install_type  in varchar2)
+   return varchar2;
+
+   function alter_scheduler_jobs_sql
+      (in_install_type  in varchar2)
+   return varchar2;
+
+   function alter_triggers_sql
+      (in_install_type  in varchar2)
+   return varchar2;
+
+   function compile_all_sql
+      (in_install_type  in varchar2)
+   return varchar2;
+
+   function db_build_junit_report_sql
+      (in_install_type  in varchar2)
+   return varchar2;
+
+   function db_install_sql
+      (in_install_type  in varchar2)
+   return varchar2;
+
+   function installation_finalize_sql
+      (in_install_type  in varchar2)
+   return varchar2;
+
+   function installation_prepare_sql
+      (in_install_type  in varchar2)
+   return varchar2;
+
+   function list_invalids_sql
+      (in_install_type  in varchar2)
+   return varchar2;
+
+   function log_files_junit_report_sql
+      (in_install_type  in varchar2)
+   return varchar2;
+
+   function odbcapture_installation_logs_cdl
+      (in_install_type  in varchar2)
+   return varchar2;
+
+   function odbcapture_installation_logs_csv
+      (in_install_type  in varchar2)
+   return varchar2;
+
+   function odbcapture_installation_logs_ctl
+      (in_install_type  in varchar2)
+   return varchar2;
+
+   function report_status_sql
+      (in_install_type  in varchar2)
+   return varchar2;
+
+   function update_id_sequences_sql
+      (in_install_type  in varchar2)
+   return varchar2;
+
+end root_scripts;
+/
+
+
+--  Grants
+
+
+--  Synonyms
+
+
+set define on

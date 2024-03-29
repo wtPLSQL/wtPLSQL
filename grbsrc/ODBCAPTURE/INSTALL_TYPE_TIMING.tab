@@ -1,0 +1,32 @@
+
+--
+--  Create ODBCAPTURE.INSTALL_TYPE_TIMING Table
+--
+--  NOTE: Foreign keys are in a different script
+--        Indexes are in a different script
+--        Triggers are in a different script
+--
+
+set define off
+
+
+--DBMS_METADATA:ODBCAPTURE.INSTALL_TYPE_TIMING
+
+  CREATE TABLE "ODBCAPTURE"."INSTALL_TYPE_TIMING" 
+   (	"FROM_INSTALL_TYPE" VARCHAR2(10 BYTE), 
+	"INSTALL_TIMING" CHAR(7 BYTE), 
+	"TO_INSTALL_TYPE" VARCHAR2(10 BYTE)
+   ) SEGMENT CREATION IMMEDIATE  LOGGING;
+
+--  Comments
+
+--DBMS_METADATA:ODBCAPTURE.INSTALL_TYPE_TIMING
+
+
+--  Grants
+
+
+--  Synonyms
+
+
+set define on

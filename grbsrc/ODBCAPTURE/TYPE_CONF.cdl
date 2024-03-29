@@ -1,0 +1,58 @@
+
+--
+--  Consolidated Data Load script for ODBCAPTURE.TYPE_CONF data
+--
+-- Command Line Parameters:
+--   1 - SYSTEM/password@TNSALIAS
+--       i.e. pass the username and password for the SYSTEM user
+--            and the TNSALIAS for the connection to the database.
+--       The Data Load installation requires this connection information.
+--
+
+prompt
+prompt Disable Triggers and Foreign Keys
+declare
+   procedure run_sql (in_sql in varchar2) is begin
+      dbms_output.put_line(in_sql || ';');
+      execute immediate in_sql;
+   exception when others then
+      dbms_output.put_line('-- ' || SQLERRM || CHR(10));
+   end run_sql;
+begin
+   for buff in (select owner, trigger_name
+                 from  dba_triggers
+                 where table_owner = 'ODBCAPTURE'
+                  and  table_name = 'TYPE_CONF'
+                 order by owner, trigger_name)
+   loop
+      run_sql('alter trigger "' || buff.owner        || '"' ||
+                           '."' || buff.trigger_name || '" DISABLE');
+   end loop;
+   for buff in (select constraint_name
+                 from  dba_constraints
+                 where constraint_type = 'R'
+                  and  owner = 'ODBCAPTURE'
+                  and  table_name = 'TYPE_CONF'
+                 order by owner, constraint_name)
+   loop
+      run_sql('alter table "ODBCAPTURE"."TYPE_CONF"' ||
+              ' DISABLE constraint "' || buff.constraint_name || '"');
+   end loop;
+end;
+/
+
+-- NOTE: Additional file extensions for SQL*Loader include
+--   .bad - Bad Records
+--   .dsc - Discard Records
+--   .log - Log File
+
+prompt
+prompt sqlldr_control=ODBCAPTURE/TYPE_CONF.ctl
+host sqlldr '&1.' control=ODBCAPTURE/TYPE_CONF.ctl data=ODBCAPTURE/TYPE_CONF.csv log=ODBCAPTURE/TYPE_CONF.log silent=HEADER,FEEDBACK
+
+begin
+   if '&_RC.' != '0' then
+      raise_application_error(-20000, 'Control file "ODBCAPTURE/TYPE_CONF.ctl" returned error: &_RC.');
+   end if;
+end;
+/

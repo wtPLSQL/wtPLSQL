@@ -1,0 +1,1378 @@
+
+--
+--  Create ODBCAPTURE.ROOT_SCRIPTS Package Body
+--
+
+set define off
+
+
+--DBMS_METADATA:ODBCAPTURE.ROOT_SCRIPTS
+
+  CREATE OR REPLACE EDITIONABLE PACKAGE BODY "ODBCAPTURE"."ROOT_SCRIPTS" 
+as
+
+
+--------------------------------------------------------------------------------
+-- Alter Foreign Keys Script
+function alter_foreign_keys_sql
+      (in_install_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := q'{
+--
+--  Alter "}' || in_install_type || q'{" Install Type Foreign Keys
+--
+-- Command Line Parameters:
+--   1 - ENABLE/DISABLE
+--
+
+declare
+   procedure missing_parent_sql
+         (in_owner       sys.dba_constraints.owner%TYPE
+         ,in_constraint  sys.dba_constraints.constraint_name%TYPE)
+   is
+      TYPE fk_rec_type is record
+         (child_owner    sys.dba_constraints.owner%TYPE
+         ,child_table    sys.dba_constraints.table_name%TYPE
+         ,child_column   sys.dba_cons_columns.column_name%TYPE
+         ,parent_owner   sys.dba_constraints.owner%TYPE
+         ,parent_table   sys.dba_constraints.table_name%TYPE
+         ,parent_column  sys.dba_cons_columns.column_name%TYPE);
+      TYPE fk_nt_type is table of fk_rec_type;
+      fk_nt  fk_nt_type;
+      sql_txt  varchar2(1000);
+   begin
+      select ctab.owner child_owner,  ctab.table_name child_table,  ccol.column_name child_column,
+             ptab.owner parent_owner, ptab.table_name parent_table, pcol.column_name parent_column
+       bulk  collect into fk_nt
+       from  sys.dba_constraints  ctab
+             join sys.dba_cons_columns  ccol
+                  on  ccol.owner = ctab.owner and ccol.constraint_name = ctab.constraint_name
+             join sys.dba_constraints  ptab
+                  on  ptab.owner = ctab.r_owner and ptab.constraint_name = ctab.r_constraint_name
+             join sys.dba_cons_columns  pcol
+                  on  pcol.owner = ptab.owner and pcol.constraint_name = ptab.constraint_name
+                  and pcol.position = ccol.position
+       where ctab.owner = in_owner and ctab.constraint_name = in_constraint
+       order by ccol.position;
+      if SQL%NOTFOUND then return; end if;
+      dbms_output.put_line('-- ORA-20000: Query to find missing parent keys:');
+      -- ORA-20000:  select "CHILD_KEY" from from "CHILD_OWNER"."CHILD_TABLE" group by "CHILD_KEY"
+      sql_txt := '-- ORA-20000:  select "' || fk_nt(1).child_column;
+      for i in 2 .. fk_nt.LAST
+      loop
+         sql_txt := sql_txt || '", "' || fk_nt(i).child_column;
+      end loop;
+      sql_txt := sql_txt || '" from "' || fk_nt(1).child_owner || '"."' || fk_nt(1).child_table ||
+                        '" group by "' || fk_nt(1).child_column;
+      for i in 2 .. fk_nt.LAST
+      loop
+         sql_txt := sql_txt || '", "' || fk_nt(i).child_column;
+      end loop;
+      dbms_output.put_line (sql_txt || '"');
+      -- ORA-20000: MINUS select "PARENT_KEY" from "PARENT_OWNER"."PARENT_TABLE";
+      sql_txt := '-- ORA-20000:  MINUS select "' || fk_nt(1).parent_column;
+      for i in 2 .. fk_nt.LAST
+      loop
+         sql_txt := sql_txt || '", "' || fk_nt(i).parent_column;
+      end loop;
+      sql_txt := sql_txt || '" from "' || fk_nt(1).parent_owner || '"."' || fk_nt(1).parent_table || '";';
+      dbms_output.put_line (sql_txt);
+   end missing_parent_sql;
+   procedure do_it (in_schema in varchar2)
+   is
+      sql_txt  varchar2(1000);
+   begin
+      for buff in (select owner, table_name, constraint_name from dba_constraints
+                    where constraint_type = 'R' and owner = in_schema
+                    order by owner, table_name, constraint_name)
+      loop
+         sql_txt := 'alter table "' || buff.owner || '"."' || buff.table_name ||
+                       '" &1. constraint "' || buff.constraint_name || '"';
+         dbms_output.put_line(sql_txt || ';');
+         begin
+            execute immediate sql_txt;
+         exception when others then
+            dbms_output.put_line('-- *');
+            dbms_output.put_line('-- ERROR at line :');
+            dbms_output.put_line('-- ' || SQLERRM);
+            missing_parent_sql(buff.owner,buff.constraint_name);
+         end;
+      end loop;
+      dbms_output.put_line('-- ' || in_schema || ' Alter Foreign Keys is done.');
+   end do_it;
+begin
+}';
+   ret_txt := ret_txt || '   dbms_output.put_line(''Alter Foreign Keys for ' ||
+                             in_install_type || ' Install Type'');' || CHR(10);
+   for sch in (select obj.object_owner
+                from  schema_objects_vw  obj
+                      join schema_conf  sl
+                          on  sl.username = obj.object_owner
+                where obj.install_type = in_install_type
+                 and  obj.object_owner != 'PUBLIC'
+                group by obj.object_owner
+                order by obj.object_owner)
+   loop
+      ret_txt := ret_txt || '   do_it(''' || sch.object_owner || ''');' || CHR(10);
+   end loop;
+   ret_txt := ret_txt || 'end;' || CHR(10) ||
+                         '/';
+   return ret_txt;
+end alter_foreign_keys_sql;
+
+
+--------------------------------------------------------------------------------
+-- Alter Queues Script
+function alter_queues_sql
+      (in_install_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := q'{
+--
+--  Alter "}' || in_install_type || q'{" Install Type Queues
+--
+-- Command Line Parameters:
+--   1 - ENABLE/DISABLE
+--
+
+declare
+   procedure do_it (in_schema in varchar2) is
+      sql_txt  varchar2(1000);
+   begin
+      for buff in (select owner, name from dba_queues
+                    where owner = in_schema and queue_type != 'EXCEPTION_QUEUE'
+                    order by owner, name)
+      loop
+         sql_txt := 'begin DBMS_AQADM.' ||
+                    case '&1.' when 'ENABLE' then 'START_QUEUE'
+                                             else 'STOP_QUEUE'
+                    end ||
+                    '(QUEUE_NAME => ''' || buff.owner || '.' || buff.name ||
+                    ''', ENQUEUE => TRUE, DEQUEUE => TRUE); end;';
+         dbms_output.put_line(sql_txt || ';');
+         begin
+            execute immediate sql_txt;
+         exception when others then
+            dbms_output.put_line('-- ' || SQLERRM || CHR(10));
+         end;
+      end loop;
+      dbms_output.put_line('-- ' || in_schema || ' Alter Queues is done.');
+   end do_it;
+begin
+}';
+   ret_txt := ret_txt || '   dbms_output.put_line(''Alter Queues for ' ||
+                             in_install_type || ' Install Type'');' || CHR(10);
+   for sch in (select obj.object_owner
+                from  schema_objects_vw  obj
+                      join schema_conf  sl
+                          on  sl.username = obj.object_owner
+                where obj.install_type = in_install_type
+                 and  obj.object_owner != 'PUBLIC'
+                group by obj.object_owner
+                order by obj.object_owner)
+   loop
+      ret_txt := ret_txt || '   do_it(''' || sch.object_owner || ''');' || CHR(10);
+   end loop;
+   ret_txt := ret_txt || 'end;' || CHR(10) ||
+                         '/';
+   return ret_txt;
+end alter_queues_sql;
+
+
+--------------------------------------------------------------------------------
+-- Alter Scheduler Jobs Script
+function alter_scheduler_jobs_sql
+      (in_install_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := q'{
+--
+--  Alter "}' || in_install_type || q'{" Install Type Scheduler Jobs
+--
+-- Command Line Parameters:
+--   1 - ENABLE/DISABLE
+--
+
+declare
+   procedure do_it (in_schema in varchar2) is
+      sql_txt  varchar2(1000);
+   begin
+      for buff in (select owner, job_name from dba_scheduler_jobs
+                    where owner = in_schema
+                    order by owner, job_name)
+      loop
+         sql_txt := 'begin DBMS_SCHEDULER.&1.(NAME => ''' ||
+               buff.owner || '.' || buff.job_name || '''); end;';
+         dbms_output.put_line(sql_txt || ';');
+         begin
+            execute immediate sql_txt;
+         exception when others then
+            dbms_output.put_line('-- ' || SQLERRM || CHR(10));
+         end;
+      end loop;
+      dbms_output.put_line('-- ' || in_schema || ' Alter Scheduler Jobs is done.');
+   end do_it;
+begin
+}';
+   ret_txt := ret_txt || '   dbms_output.put_line(''Alter Scheduler Jobs for ' ||
+                             in_install_type || ' Install Type'');' || CHR(10);
+   for sch in (select obj.object_owner
+                from  schema_objects_vw  obj
+                      join schema_conf  sl
+                          on  sl.username = obj.object_owner
+                where obj.install_type = in_install_type
+                 and  obj.object_owner != 'PUBLIC'
+                group by obj.object_owner
+                order by obj.object_owner)
+   loop
+      ret_txt := ret_txt || '   do_it(''' || sch.object_owner || ''');' || CHR(10);
+   end loop;
+   ret_txt := ret_txt || 'end;' || CHR(10) ||
+                         '/';
+   return ret_txt;
+end alter_scheduler_jobs_sql;
+
+
+--------------------------------------------------------------------------------
+-- Alter Triggers Script
+function alter_triggers_sql
+      (in_install_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := q'{
+--
+--  Alter "}' || in_install_type || q'{" Install Type Triggers
+--
+-- Command Line Parameters:
+--   1 - ENABLE/DISABLE
+--
+
+declare
+   procedure do_it (in_schema in varchar2) is
+      sql_txt  varchar2(1000);
+   begin
+      for buff in (select owner, trigger_name from dba_triggers
+                    where table_owner = in_schema
+                    order by owner, trigger_name)
+      loop
+         sql_txt := 'alter trigger "' || buff.owner        || '"."' ||
+                                         buff.trigger_name || '" &1.';
+         dbms_output.put_line(sql_txt || ';');
+         begin
+            execute immediate sql_txt;
+         exception when others then
+            dbms_output.put_line('-- ' || SQLERRM || CHR(10));
+         end;
+      end loop;
+      dbms_output.put_line('-- ' || in_schema || ' Alter Triggers is done.');
+   end do_it;
+begin
+}';
+   ret_txt := ret_txt || '   dbms_output.put_line(''Alter Triggers for ' ||
+                             in_install_type || ' Install Type'');' || CHR(10);
+   for sch in (select obj.object_owner
+                from  schema_objects_vw  obj
+                      join schema_conf  sl
+                          on  sl.username = obj.object_owner
+                where obj.install_type = in_install_type
+                 and  obj.object_owner != 'PUBLIC'
+                group by obj.object_owner
+                order by obj.object_owner)
+   loop
+      ret_txt := ret_txt || '   do_it(''' || sch.object_owner || ''');' || CHR(10);
+   end loop;
+   ret_txt := ret_txt || 'end;' || CHR(10) ||
+                         '/';
+   return ret_txt;
+end alter_triggers_sql;
+
+
+--------------------------------------------------------------------------------
+-- Compile All Database Objects Script
+function compile_all_sql
+      (in_install_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := q'{
+--
+--  Compile All "}' || in_install_type || q'{" Install Type Objects
+--
+
+declare
+   procedure do_it (in_schema in varchar2) is
+      sql_txt  varchar2(1000);
+   begin
+      for buff in (select object_name
+                    from  sys.dba_objects
+                    where owner       = in_schema
+                     and  object_type = 'JAVA SOURCE'
+                    order by object_name )
+      loop
+         sql_txt := 'alter java source "' || in_schema || '"."' || buff.object_name || '" compile';
+         dbms_output.put_line(sql_txt || ';');
+         begin
+            execute immediate sql_txt;
+         exception when others then
+            dbms_output.put_line('-- ' || SQLERRM || CHR(10));
+         end;
+      end loop;
+      begin
+         DBMS_UTILITY.compile_schema(schema => in_schema, compile_all => FALSE);
+         dbms_output.put_line('-- ' || in_schema || ' Compile All is done.');
+      exception when others then
+         dbms_output.put_line('Compiling Schema ' || in_schema || CHR(10) || SQLERRM);
+         dbms_output.put_line('');
+      end;
+   end do_it;
+begin
+}';
+   ret_txt := ret_txt || '   dbms_output.put_line(''Compile All for ' ||
+                             in_install_type || ' Install Type'');' || CHR(10);
+   for sch in (select obj.object_owner
+                from  schema_objects_vw  obj
+                      join schema_conf  sl
+                          on  sl.username = obj.object_owner
+                where obj.install_type = in_install_type
+                 and  obj.object_owner != 'PUBLIC'
+                group by obj.object_owner
+                order by obj.object_owner)
+   loop
+      ret_txt := ret_txt || '   do_it(''' || sch.object_owner || ''');' || CHR(10);
+   end loop;
+   ret_txt := ret_txt || 'end;' || CHR(10) ||
+                         '/';
+   return ret_txt;
+end compile_all_sql;
+
+
+--------------------------------------------------------------------------------
+-- Database Build JUnit Report Script
+function db_build_junit_report_sql
+      (in_install_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := q'{
+--
+--  Create JUnit XML Report of Database Build Status for "}' || in_install_type || q'{" Install Type
+--
+
+declare
+   --
+   procedure ot (in_txt in varchar2) is begin
+      dbms_output.put_line(in_txt);
+   end ot;
+   --
+   procedure do_it (in_schema in varchar2) is
+   begin
+      for tsuite in (
+         with q1 as (
+         select obj.owner
+               ,count(obj.owner)                          NUM_TESTS
+               ,sum(decode(obj.status, 'VALID', 0, 1))  NUM_FAILURES
+               ,min(obj.last_ddl_time)                    TSTAMP
+                -- Jenkins JUnit Plugin adds all these times together
+                -- round((max(obj.last_ddl_time) - min(obj.last_ddl_time))*24*60*60)
+               ,0                                         ELAPSED_SECS
+          from  dba_objects obj
+          where obj.owner = in_schema
+          group by obj.owner
+         UNION
+         select syn.table_owner                           OWNER
+               ,count(syn.table_owner)                    NUM_TESTS
+               ,sum(decode(obj.status, 'VALID', 0, 1))  NUM_FAILURES
+               ,min(obj.last_ddl_time)                    TSTAMP
+                -- Jenkins JUnit Plugin adds all these times together
+                -- round((max(obj.last_ddl_time) - min(obj.last_ddl_time))*24*60*60)
+               ,0                                         ELAPSED_SECS
+          from  dba_synonyms syn
+                join dba_objects obj
+                     on  obj.object_name = syn.synonym_name
+                     and obj.owner       = syn.owner
+          where syn.owner       = 'PUBLIC'
+           and  syn.table_owner = in_schema
+          group by syn.table_owner
+         )
+         select owner           -- TESTSUITE
+               ,sum(NUM_TESTS)     NUM_TESTS
+               ,sum(NUM_FAILURES)  NUM_FAILURES
+               ,max(TSTAMP)        TSTAMP
+               ,sum(ELAPSED_SECS)  ELAPSED_SECS
+          from  q1
+          group by owner
+          order by owner)
+      loop
+         ot('  <testsuite name="' || tsuite.owner || '_schema_build'   ||
+                      '" tests="' || tsuite.num_tests                  ||
+                   '" failures="' || tsuite.num_failures               ||
+                       '" time="' || tsuite.elapsed_secs               ||
+                  '" timestamp="' || to_char(tsuite.tstamp,'YYYY-MM-DD"T"HH24:MI:SS') || '">');
+         for tcase in (
+            select obj.object_type                                  -- TESTCASE
+                  ,replace(obj.object_name,'.','_')  OBJECT_NAME    -- CLASS
+                  ,obj.STATUS
+                  ,0                                     ELAPSED_SECS
+             from  dba_objects obj
+             where obj.owner = tsuite.owner
+            UNION ALL
+            select 'PUBLIC_SYNONYM'                  OBJECT_TYPE    -- TESTCASE
+                  ,replace(obj.object_name,'.','_')  OBJECT_NAME    -- CLASS
+                  ,obj.STATUS
+                  ,0                                     ELAPSED_SECS
+             from  dba_synonyms syn
+                   join dba_objects  obj
+                        on  obj.object_name = syn.synonym_name
+                        and obj.owner       = syn.owner
+             where syn.owner       = 'PUBLIC'
+              and  syn.table_owner = tsuite.owner
+            order by 1,2 )
+         loop
+            if tcase.status = 'VALID'
+            then
+               ot('    <testcase name="' || tcase.object_type  || ':' || 'db_object_status' ||
+                         '" classname="' || tsuite.owner       || '.' || tcase.object_name  ||
+                              '" time="' || tcase.elapsed_secs || '"/>'                     );
+            else
+               ot('    <testcase name="' || tcase.object_type  || ':' || 'db_object_status' ||
+                         '" classname="' || tsuite.owner       || '.' || tcase.object_name  ||
+                              '" time="' || tcase.elapsed_secs || '">'                      );
+               ot('      <error message="' || tcase.object_type || ' failed">');
+               ot('** Object Status is ' || tcase.status);
+               for terror in (
+                  select 'Line ' || line     ||
+                        ', Col ' || position ||
+                            ': ' || UTL_I18N.ESCAPE_REFERENCE(text, 'us7ascii')  ERROR_TXT
+                   from  dba_errors
+                   where owner = tsuite.owner
+                    and  type  = decode(tcase.object_type,'PUBLIC_SYNONYM','SYNONYM',tcase.object_type)
+                    and  name  = tcase.object_name
+                   order by sequence )
+               loop
+                  ot(terror.error_txt);
+               end loop;
+               ot('      </error>');
+               ot('    </testcase>');
+            end if;
+         end loop;
+         ot('   </testsuite>');
+      end loop;
+   end do_it;
+begin
+   ot('<?xml version="1.0" encoding="UTF-8"?>');
+   ot('<testsuites>');
+}';
+   for sch in (select obj.object_owner
+                from  schema_objects_vw  obj
+                      join schema_conf  sl
+                          on  sl.username = obj.object_owner
+                where obj.install_type = in_install_type
+                 and  obj.object_owner != 'PUBLIC'
+                group by obj.object_owner
+                order by obj.object_owner)
+   loop
+      ret_txt := ret_txt || '   do_it(''' || sch.object_owner || ''');' || CHR(10);
+   end loop;
+   ret_txt := ret_txt || '   ot(''</testsuites>'');' || CHR(10) ||
+                         'end;'                      || CHR(10) ||
+                         '/';
+   return ret_txt;
+end db_build_junit_report_sql;
+
+
+--------------------------------------------------------------------------------
+-- Database Script Install Wrapper
+function db_install_sql
+      (in_install_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := q'{
+-- Database Installation Assist
+--   Wrapper for Database Installation Scripts
+-- 
+--   Parameters
+--   1) Script Name
+--   2) Schema Name
+--   3) System Connect String
+
+prompt === DBI Started: &1.
+
+define DBI_SCRIPT_NAME="&1."
+define DBI_SCHEMA_NAME="&2."
+define DBI_SYSTEM_CONNECT="&3."
+
+variable dbi_beg_dtm varchar2(40)
+variable dbi_beg_secs number
+
+set feedback off
+begin
+   -- Initialize Timer
+   :dbi_beg_dtm  := to_char(systimestamp,'YYYY-MM-DD') || 'T' ||
+                    to_char(systimestamp,'HH24:MI:SS');
+   :dbi_beg_secs := dbms_utility.get_time;
+   -- Set Current Schema
+   if length('&DBI_SCHEMA_NAME.') > 0
+   then
+      execute immediate 'alter session set current_schema = "&DBI_SCHEMA_NAME."';
+   end if;
+end;
+}';
+   -- Can't have string declaration with a "/" on a line by itself
+   ret_txt := ret_txt || '/' || CHR(10) || q'{
+set feedback on
+set blockterminator off
+set sqlblanklines on
+
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || q'{@"&DBI_SCRIPT_NAME." "&DBI_SYSTEM_CONNECT." "" ""
+set serveroutput on size unlimited format wrapped
+
+set sqlblanklines off
+set blockterminator on
+set feedback off
+begin
+   -- Reset Current Schema
+   if length('&DBI_SCHEMA_NAME.') > 0
+   then
+      execute immediate 'alter session set current_schema = "' || USER || '"';
+   end if;
+   -- Show Timer Results
+   dbms_output.put_line('=== DBI Completed at ' || to_char(systimestamp,'YYYY-MM-DD') || 'T' ||
+                                                   to_char(systimestamp,'HH24:MI:SS') ||
+      ' for a duration of '   || trim( (dbms_utility.get_time - :dbi_beg_secs) / 100 ) ||
+      ' seconds (started at ' || :dbi_beg_dtm || ')');
+end;
+}';
+   -- Can't have string declaration with a "/" on a line by itself
+   ret_txt := ret_txt || '/' || CHR(10) || q'{
+set feedback on}';
+   return ret_txt;
+end db_install_sql;
+
+
+--------------------------------------------------------------------------------
+-- Installation Finalization Script
+function installation_finalize_sql
+      (in_install_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := q'{
+--
+--  Finalize Installation
+--
+-- Command Line Parameters:
+--   1 - SYSTEM/password@TNSALIAS
+--       i.e. pass the username and password for the SYSTEM user
+--            and the TNSALIAS for the connection to the database.
+--       The Data Load installation requires this connection information.
+--
+
+define FINAL_SYSTEM_CONNECT="&1."
+
+prompt
+prompt Drop_Temp_Publicly_Updateable_Table_SQL
+drop table SYSTEM.TEMP_PUBLICLY_UPDATEABLE_TABLE purge;
+
+prompt
+prompt alter_foreign_keys_ENABLE
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || q'{@"alter_foreign_keys.sql" "ENABLE"
+
+prompt
+prompt alter_triggers_ENABLE
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || q'{@"alter_triggers.sql" "ENABLE"
+
+prompt
+prompt update_id_sequences
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || q'{@"update_id_sequences.sql" ""
+
+--prompt
+--prompt alter_queues_ENABLE
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || q'{--@"alter_queues.sql" "ENABLE"
+
+--prompt
+--prompt alter_scheduler_jobs_ENABLE
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || q'{--@"alter_scheduler_jobs.sql" "ENABLE"
+
+prompt
+prompt Load Installation Files
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || q'{@"odbcapture_installation_logs.cdl" "&FINAL_SYSTEM_CONNECT."
+
+prompt
+prompt compile_all
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || q'{@"compile_all.sql" ""}';
+   return ret_txt;
+end installation_finalize_sql;
+
+
+--------------------------------------------------------------------------------
+-- Installation Preparation Script
+function installation_prepare_sql
+      (in_install_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := q'{
+--
+--  Prepare for View Install
+--
+
+prompt
+prompt Create_Temp_Publicly_Updateable_Table_SQL
+create table SYSTEM.TEMP_PUBLICLY_UPDATEABLE_TABLE (c1 number);
+grant all on SYSTEM.TEMP_PUBLICLY_UPDATEABLE_TABLE to PUBLIC with grant option;}';
+   return ret_txt;
+end installation_prepare_sql;
+
+
+
+--------------------------------------------------------------------------------
+-- List Invalid Database Objects
+function list_invalids_sql
+      (in_install_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := q'{
+--
+--  List Invalid Objects for "}' || in_install_type || q'{" Install Type
+--
+
+declare
+   procedure do_it (in_schema in varchar2) is
+   begin
+      for buff in (
+         with q1 as (
+         select owner
+               ,object_name
+               ,object_type
+               ,status
+          from  dba_objects obj
+          where obj.owner = in_schema
+           and  (   obj.object_type != 'TYPE'
+                 or obj.object_name not like 'SYSTP%==')
+           and  obj.status != 'VALID'
+         UNION ALL
+         select syn.table_owner
+               ,syn.synonym_name
+               ,'PUBLIC_SYNONYM'     OBJECT_TYPE
+               ,obj.status
+          from  dba_synonyms syn
+                join dba_objects  obj
+                     on  obj.object_name = syn.synonym_name
+                     and obj.owner       = syn.owner
+                     and obj.status     != 'VALID'
+          where syn.owner       = 'PUBLIC'
+           and  syn.table_owner = in_schema
+         )
+         select '"' || owner       || '",' ||
+                '"' || object_name || '",' ||
+                '"' || object_type || '",' ||
+                '"' || status      || '"'     RECORD_DATA
+          from  q1
+          order by RECORD_DATA)
+      loop
+         dbms_output.put_line(buff.RECORD_DATA);
+      end loop;
+   end do_it;
+begin
+   dbms_output.put_line('"OWNER","OBJECT_NAME","OBJECT_TYPE","STATUS"');
+}';
+   for sch in (select obj.object_owner
+                from  schema_objects_vw  obj
+                      join schema_conf  sl
+                          on  sl.username = obj.object_owner
+                where obj.install_type = in_install_type
+                 and  obj.object_owner != 'PUBLIC'
+                group by obj.object_owner
+                order by obj.object_owner)
+   loop
+      ret_txt := ret_txt || '   do_it(''' || sch.object_owner || ''');' || CHR(10);
+   end loop;
+   ret_txt := ret_txt || 'end;' || CHR(10) ||
+                         '/';
+   return ret_txt;
+end list_invalids_sql;
+
+
+--------------------------------------------------------------------------------
+-- Log Files JUnit Report Script
+function log_files_junit_report_sql
+      (in_install_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := q'{
+--
+--  Create JUnit XML Report of Database Log Files for "}' || in_install_type || q'{" Schema
+--
+
+--Element    | Description
+-------------|-------------
+--TestSuite  | install_SYS, install_SYSTEM, and install_}' || in_install_type || q'{
+--Hostname   | Database Name
+--Property   | name="Source Version" value="https://github.com/DMSTEX/DMSTEX.git at f2c736d0cc6fd80d961414dcae37df2bed0d69e2 (Branch: main)"
+--Testcase   | Script Name
+--Classname  | "Schema Name"."Object Type"
+--Assertions | Number of PL/SQL Statements
+--Status     | PASS/FAIL/ERROR/DISABLE
+--Time       | Testcase Duration
+--Timestamp  | Testcase Runtime (ISO 8601 format)
+--Errors     | Number of Test Errors
+
+declare
+   --
+   -- Process CLOB Contents from odbcapture_installation_logs
+   line_txt    varchar2(4000);
+   so_far      pls_integer;
+   end_pos     pls_integer;
+   --
+   -- Varchar2 Associative Array
+   TYPE vc2_aa_type is table of varchar2(4000)
+      index by pls_integer;
+   --
+   -- Testcases
+   TYPE tc_rec_type is record
+      (schema_name     varchar2(128)
+      ,script_ext      varchar2(10)  -- Script Name Extension
+      ,num_statements  number(3)     -- Number of statements executed in a script
+      ,status          varchar2(10)  -- PASS/FAIL
+      ,duration_secs   number(5)
+      ,t_timestamp     varchar2(20)  -- 2014-01-21T16:17:18
+      ,error_message   varchar2(4000)
+      ,tc_err_aa       vc2_aa_type
+      ,tc_sys_out_aa   vc2_aa_type
+      );
+   TYPE tc_aa_type is table of tc_rec_type
+      index by varchar2(256);     -- Testcase Name (Script Name with Path)
+   tc_aa         tc_aa_type;
+   tc_name       varchar2(256);   -- Testcase Name (Script Name with Path)
+   prev_tc_name  varchar2(256);   -- Previous Testcase Name
+   --
+   tc_buff_aa      vc2_aa_type;      -- Buffer Array for Testcases
+   sys_buff_aa     vc2_aa_type;      -- Buffer Array for System
+   sys_err         boolean := FALSE; -- System Error Found
+   --
+   total_tests     number(4);
+   total_errors    number(4);
+   total_duration  number(6);
+   --
+   procedure initialize_testcase (in_buff in varchar2) is begin
+      -- === DBI Started: "ODBCAPTURE/OBJ_INSTALL_COMMENTS_TAB.tab"
+            tc_name              := replace(substr(in_buff, 18, 256),'"','');
+      tc_aa(tc_name).schema_name := substr(tc_name, 1, instr(tc_name,'/',1)-1);
+      tc_aa(tc_name).script_ext  := substr(tc_name, instr(tc_name,'.',-1)+1,10);
+      tc_aa(tc_name).status      := 'PASS';
+   end initialize_testcase;
+   --
+   procedure finalize_testcase (in_buff in varchar2) is begin
+      if tc_name is null then return; end if;
+      tc_aa(tc_name).t_timestamp   := substr(in_buff,22,19);
+      tc_aa(tc_name).duration_secs := substr(in_buff,60,length(in_buff)-60-40);
+      total_duration := total_duration + tc_aa(tc_name).duration_secs;
+      if regexp_like(tc_name, '[.]cdl$')
+      then
+         tc_buff_aa(tc_buff_aa.COUNT + 1) := '### SQL*Loader Log File: ' || replace(tc_name,'.cdl','.log');
+         begin
+            select substr(replace(contents,CHR(10)||CHR(10),CHR(10)),1,4000)
+             into  tc_buff_aa(tc_buff_aa.COUNT + 1)
+             from  odbcapture_installation_logs
+             where file_name = replace(tc_name,'.cdl','.log');
+         exception when others then
+            tc_buff_aa(tc_buff_aa.COUNT + 1) := SQLERRM;
+         end;
+      end if;
+      if tc_aa(tc_name).status = 'FAIL'
+      then
+         tc_aa(tc_name).num_statements := 1;
+         total_errors := total_errors + 1;
+         if tc_buff_aa.COUNT > 0
+         then
+            for i in tc_buff_aa.FIRST .. tc_buff_aa.LAST
+            loop
+               tc_aa(tc_name).tc_err_aa(i) := tc_buff_aa(i);
+            end loop;
+         end if;
+      else
+         tc_aa(tc_name).num_statements := tc_buff_aa.COUNT;
+         if tc_buff_aa.COUNT > 0
+         then
+            for i in tc_buff_aa.FIRST .. tc_buff_aa.LAST
+            loop
+               tc_aa(tc_name).tc_sys_out_aa(i) := tc_buff_aa(i);
+            end loop;
+         end if;
+      end if;
+      total_tests  := total_tests + 1;
+      prev_tc_name := tc_name;
+      tc_buff_aa.DELETE;
+      tc_name := '';
+   end finalize_testcase;
+   --
+   procedure process_contents_line (in_txt in varchar2) is
+      ldr_txt    varchar2(4000);
+   begin
+      if in_txt is null then return; end if;
+      case
+         when regexp_like(in_txt, '^=== DBI Started: ')
+         then
+            if tc_name is not null
+            then
+               tc_buff_aa(tc_buff_aa.COUNT + 1) := 'Unexpected Testcase End: ' || in_txt;
+               finalize_testcase('');
+               initialize_testcase(in_txt);
+               tc_buff_aa(tc_buff_aa.COUNT + 1) := in_txt;
+            else
+               initialize_testcase(in_txt);
+               tc_buff_aa(tc_buff_aa.COUNT + 1) := in_txt;
+            end if;
+         when regexp_like(in_txt, '^=== DBI Completed at ')
+         then
+            -- === DBI Completed at 2024-03-05T02:54:49 for a duration of 1.25 seconds (started at 2024-03-05T02:54:48)
+            if tc_name is not null
+            then
+               tc_buff_aa(tc_buff_aa.COUNT + 1) := in_txt;
+               finalize_testcase(in_txt);
+            else
+               sys_err := TRUE;
+               sys_buff_aa(sys_buff_aa.COUNT + 1) := 'Unexpected Testcase End: ' || in_txt;
+            end if;
+         when regexp_like(in_txt, '^(-- ){0,1}(PL[/]SQL:|(PLS|OCI|ORA|SP2|SQL|TNS)-[[:digit:]])')
+         then
+            -- (-- ){0,1}:  "-- " may or may not be present
+            -- PL/SQL:      PL/SQL Message
+            -- PLS-"digit"  PL/SQL Errors
+            -- OCI-"digit"  Oracle Call Interface
+            -- ORA-"digit"  Oracle Database Errors
+            -- SP2-"digit"  SQL*Plus Errors
+            -- SQL-"digit"  SQL Errors
+            -- TNS-"digit"  Transparent Network Substrate Errors
+            if tc_name is not null
+            then
+               tc_buff_aa(tc_buff_aa.COUNT + 1) := in_txt;
+               tc_aa(tc_name).status := 'FAIL';
+               if tc_aa(tc_name).error_message is null
+               then
+                  tc_aa(tc_name).error_message := in_txt;
+               end if;
+            else
+               sys_err := TRUE;
+               sys_buff_aa(sys_buff_aa.COUNT + 1) := '(' || prev_tc_name || ') ' || in_txt;
+            end if;
+         else
+            if tc_name is not null
+            then
+               tc_buff_aa(tc_buff_aa.COUNT + 1) := in_txt;
+            else
+               sys_buff_aa(sys_buff_aa.COUNT + 1) := '(' || prev_tc_name || ') ' || in_txt;
+            end if;
+      end case;
+   end process_contents_line;
+   --
+   procedure p (in_txt in varchar2) is begin
+      dbms_output.put_line(in_txt);
+   end p;
+begin
+   --
+   prev_tc_name := 'Initializing';
+   -- JUnit XML Format for Jenkins: "https://llg.cubic.org/docs/junit/"
+   p('<?xml version="1.0" encoding="UTF-8"?>');
+   p('<testsuites>');
+   for buf1 in (select rownum                                        TS_ID
+                      ,l.file_name
+                      ,to_char(l.load_dtm,'YYYY-MM-DD') || 'T' ||
+                       to_char(l.load_dtm,'HH24:MI:SS')              TSTAMP
+                      ,db.db_unique_name
+                      ,l.contents
+                 from  odbcapture_installation_logs  l
+                 cross join v$database  db
+                 where l.install_type = '}' || in_install_type || q'{'
+                  and  l.file_name like 'install%'
+                  and  l.load_dtm > trunc(sysdate,'DD') - 2
+                 order by l.file_name, l.load_dtm)
+   loop
+      -- Initialize
+      tc_aa.DELETE;
+      tc_buff_aa.DELETE;
+      sys_buff_aa.DELETE;
+      tc_name        := '';
+      total_tests    := 0;
+      total_errors   := 0;
+      total_duration := 0;
+      -- Fill the Testcase Array
+      so_far := 0;
+      loop
+         end_pos := instr(buf1.contents, chr(10), so_far + 1);
+         exit when end_pos = 0;
+         line_txt := substr(buf1.contents, so_far + 1, end_pos - so_far - 1);
+         process_contents_line(line_txt);
+         so_far := end_pos;
+      end loop;
+      line_txt := substr(buf1.contents, so_far + 1, 4000);
+      process_contents_line(line_txt);
+      -- testsuite can appear multiple times, if contained in a testsuites element. It can also be the root element.
+      p('  <testsuite name="'      || buf1.file_name      || '"' || -- Full (class) name of the test for non-aggregated testsuite documents.  Class name without the package for aggregated testsuites documents. Required
+                    ' tests="'     ||      total_tests    || '"' || -- The total number of tests in the suite, required.
+                    ' errors="'    ||      total_errors   || '"' || -- The total number of tests in the suite that errored. An errored test is one that had an unanticipated problem, for example an unchecked throwable; or a problem with the implementation of the test. optional
+                    ' hostname="'  || buf1.db_unique_name || '"' || -- Host on which the tests were executed. 'localhost' should be used if the hostname cannot be determined. optional
+                    ' id="'        || buf1.TS_ID          || '"' || -- Starts at 0 for the first testsuite and is incremented by 1 for each following testsuite
+                    ' time="'      ||      total_duration || '"' || -- Time taken (in seconds) to execute the tests in the suite. optional
+                    ' timestamp="' || buf1.TSTAMP         || '"' || -- when the test was executed in ISO 8601 format (2014-01-21T16:17:18). Timezone may not be specified. optional
+                    '>');
+      tc_name := tc_aa.FIRST;
+      while tc_name is not null
+      loop
+         -- testcase can appear multiple times, see /testsuites/testsuite@tests
+            p('    <testcase name="'       ||       DBMS_XMLGEN.CONVERT(tc_name)                || '"' || -- Name of the test method, required.
+                           ' assertions="' ||                     tc_aa(tc_name).num_statements || '"' || -- number of assertions in the test case. optional
+                           ' classname="'  || DBMS_XMLGEN.CONVERT(tc_aa(tc_name).schema_name)   || '.' ||
+                                              DBMS_XMLGEN.CONVERT(tc_aa(tc_name).script_ext)    || '"' || -- Full class name for the class the test method is in. required
+                           ' status="'     ||                     tc_aa(tc_name).status         || '"' ||
+                           ' time="'       ||                     tc_aa(tc_name).duration_secs  || '"' || -- Time taken (in seconds) to execute the test. optional
+                           '>');
+         if tc_aa(tc_name).status = 'PASS'
+         then
+            if tc_aa(tc_name).tc_sys_out_aa.COUNT > 0
+            then
+               -- Data that was written to standard out while the test was executed. optional
+               p('      <system-out>');
+               for i in tc_aa(tc_name).tc_sys_out_aa.FIRST .. tc_aa(tc_name).tc_sys_out_aa.LAST
+               loop
+                  p(DBMS_XMLGEN.CONVERT(tc_aa(tc_name).tc_sys_out_aa(i)));
+               end loop;
+               p('      </system-out>');
+           end if;
+         else
+            -- Indicates that the test errored. An errored test is one that had an unanticipated problem. For example an unchecked throwable or a problem with the implementation of the test. Contains as a text node relevant data for the error, for example a stack trace. optional
+            p('      <error message="' || DBMS_XMLGEN.CONVERT(tc_aa(tc_name).error_message) || '">' );  -- The error message. e.g., if a java exception is thrown, the return value of getMessage()
+            if tc_aa(tc_name).tc_err_aa.COUNT > 0
+            then
+               for i in tc_aa(tc_name).tc_err_aa.FIRST .. tc_aa(tc_name).tc_err_aa.LAST
+               loop
+                  p(DBMS_XMLGEN.CONVERT(tc_aa(tc_name).tc_err_aa(i)));
+               end loop;
+            end if;
+            p('      </error>');
+         end if;
+         p('    </testcase>');
+         exit when tc_name = tc_aa.LAST;
+         tc_name := tc_aa.NEXT(tc_name);
+      end loop;
+      if sys_buff_aa.COUNT > 0
+      then
+         if sys_err
+         then
+            -- Data that was written to standard error while the test suite was executed. optional
+            p('    <system-err>');
+            for i in sys_buff_aa.FIRST .. sys_buff_aa.LAST
+            loop
+               p(DBMS_XMLGEN.CONVERT(sys_buff_aa(i)));
+            end loop;
+            p('    </system-err>');
+         else
+            -- Data that was written to standard out while the test suite was executed. optional
+            p('    <system-out>');
+            for i in sys_buff_aa.FIRST .. sys_buff_aa.LAST
+            loop
+               p(DBMS_XMLGEN.CONVERT(sys_buff_aa(i)));
+            end loop;
+            p('    </system-out>');
+         end if;
+      end if;
+      p('  </testsuite>');
+   end loop;
+   p('</testsuites>');
+end;
+}';
+   -- Can't have string declaration with a "/" on a line by itself
+   ret_txt := ret_txt || '/';
+   return ret_txt;
+end log_files_junit_report_sql;
+
+
+--------------------------------------------------------------------------------
+-- ODBCAPTURE Installation Logs Consolidated Data Load
+function odbcapture_installation_logs_cdl
+      (in_install_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := q'{
+--
+--  Consolidated Data Load script for odbcapture_installation_logs data
+--
+--  Must be run as SYSTEM
+--
+--  Command Line Parameters:
+--   1 - SYSTEM/password@TNSALIAS
+--       i.e. pass the username and password for the SYSTEM user
+--            and the TNSALIAS for the connection to the database.
+--       The Data Load installation requires this connection information.
+--
+
+prompt
+prompt Confirm/Create odbcapture_installation_logs Table
+declare
+   jnk  number := 0;
+   procedure run_sql (in_sql in varchar2) is begin
+      dbms_output.put_line(in_sql || ';');
+      execute immediate in_sql;
+   exception when others then
+      dbms_output.put_line('-- ' || SQLERRM || CHR(10));
+   end run_sql;
+begin
+   begin
+      execute immediate 'insert into odbcapture_installation_logs(load_dtm, install_type, file_name)' ||
+                        ' values(sysdate, ''Test'', ''Test'')';
+      rollback;
+      jnk := 1;
+   exception when others then
+      if SQLERRM != 'ORA-00942: table or view does not exist'
+      then
+         dbms_output.put_line('odbcapture_installation_logs table: ' || SQLERRM);
+      end if;
+      jnk := -1;
+   end;
+   if jnk = -1
+   then
+      run_sql('create table odbcapture_installation_logs' || CHR(10) || 
+         ' (load_dtm date' || CHR(10) || 
+         ' ,install_type varchar2(10)' || CHR(10) || 
+         ' ,file_name varchar2(512)' || CHR(10) || 
+         ' ,contents clob)');
+      run_sql('comment on column odbcapture_installation_logs.load_dtm is ''Date/Time the installation log file was loaded.''');
+      run_sql('comment on column odbcapture_installation_logs.install_type is ''Type of installation (from TYPE_CONF).''');
+      run_sql('comment on column odbcapture_installation_logs.file_name is ''Name of installation log file.''');
+      run_sql('comment on column odbcapture_installation_logs.contents is ''Contents/Text of the installation log file.''');
+      run_sql('comment on table odbcapture_installation_logs is ''ODBCAPTURE installation log files.''');
+      run_sql('grant select on odbcapture_installation_logs to public');
+      run_sql('create public synonym odbcapture_installation_logs for odbcapture_installation_logs');
+   end if;
+end;
+}';
+   -- Can't have string declaration with a "/" on a line by itself
+   ret_txt := ret_txt || '/' || CHR(10) || q'{
+
+-- NOTE: Additional file extensions for SQL*Loader include
+--   .bad - Bad Records
+--   .dsc - Discard Records
+--   .log - Log File
+
+prompt
+prompt sqlldr_control=./odbcapture_installation_logs.ctl
+host sqlldr '&1.' control=odbcapture_installation_logs.ctl data=odbcapture_installation_logs.csv log=odbcapture_installation_logs.log silent=HEADER,FEEDBACK
+
+begin
+   if '&_RC.' != '0' then
+      raise_application_error(-20000, 'Control file "odbcapture_installation_logs.ctl" returned error: &_RC.');
+   end if;
+end;
+}';
+   -- Can't have string declaration with a "/" on a line by itself
+   ret_txt := ret_txt || '/' || CHR(10);
+   return ret_txt;
+end odbcapture_installation_logs_cdl;
+
+
+--------------------------------------------------------------------------------
+-- ODBCAPTURE Installation Logs Comma Separated Values File
+function odbcapture_installation_logs_csv
+      (in_install_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := '"' || in_install_type || '","install_sys.log"'    || CHR(10) ||
+              '"' || in_install_type || '","install_system.log"' || CHR(10) ||
+              '"' || in_install_type || '","install_'            ||
+                     in_install_type || '.log"';
+   for buff in (select table_owner
+                      ,table_name
+                 from  obj_install_data_load_tab
+                 where install_otype  = 'DATA_LOAD'
+                  and  install_type   = in_install_type
+                 order by table_owner
+                      ,table_name)
+   loop
+      ret_txt := ret_txt || CHR(10) || '"' || in_install_type   ||
+                                     '","' || buff.table_owner ||
+                                       '/' || buff.table_name  || '.log"';
+   end loop;
+   return ret_txt;
+end odbcapture_installation_logs_csv;
+
+
+--------------------------------------------------------------------------------
+-- ODBCAPTURE Installation Logs Control File
+function odbcapture_installation_logs_ctl
+      (in_install_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := q'{LOAD DATA
+APPEND INTO TABLE "ODBCAPTURE_INSTALLATION_LOGS"
+FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
+   (LOAD_DTM          SYSDATE
+   ,INSTALL_TYPE      char(10)
+   ,FILE_NAME         char(512)
+   ,CONTENTS          LOBFILE(FILE_NAME) TERMINATED BY EOF
+   )}';
+   return ret_txt;
+end odbcapture_installation_logs_ctl;
+
+
+--------------------------------------------------------------------------------
+-- Report Status
+function report_status_sql
+      (in_install_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := q'{
+--
+--  Report Status Script
+--
+--  Must be run as SYSTEM User (DBA)
+--
+-- Command Line Parameters:
+--   1 - SYSTEM/password@TNSALIAS
+--       i.e. pass the username and password for the SYSTEM user
+--            and the TNSALIAS for the connection to the database.
+--       The Data Load installation requires this connection information.
+--
+-- Note: odbcapture_installation_logs table will be created
+--   to load installation logs (if not already available).
+--
+
+----------------------------------------
+-- Setup for Reports
+set linesize 2499
+set trimspool on
+set echo off
+set verify off
+set termout on
+set serveroutput on size unlimited format wrapped
+
+----------------------------------------
+prompt
+prompt Reporting Summary of Install Type Log Errors
+declare
+   TYPE err_aa_type is table of pls_integer index by varchar2(4000);
+   err_aa      err_aa_type;
+   line_txt    varchar2(4000);
+   so_far      pls_integer;
+   end_pos     pls_integer;
+   procedure add_line is
+   begin
+      if regexp_like(line_txt, '(ORA-|SQL-|SP2-|PLS-|PL2-|TNS-|(object|mmap) failed)')
+      then
+         begin
+            err_aa(line_txt) := err_aa(line_txt) + 1;
+         exception when NO_DATA_FOUND then
+            err_aa(line_txt) := 1;
+         end;
+      end if;
+   end add_line;
+begin
+   for buff in (select file_name, load_dtm, contents
+                 from  odbcapture_installation_logs
+                 where install_type = '}' || in_install_type ||
+q'{'
+                  and  load_dtm > trunc(sysdate,'DD') - 2
+                 order by file_name, load_dtm)
+   loop
+      dbms_output.put_line('Processing file ' || buff.file_name ||
+                                 ' (' || to_char(buff.load_dtm,'YYYY-MM-DD HH24:MI:SS') || ')');
+      err_aa.DELETE;
+      so_far := 0;
+      loop
+         end_pos := instr(buff.contents, chr(10), so_far + 1);
+         exit when end_pos = 0;
+         line_txt := substr(buff.contents, so_far + 1, end_pos - so_far - 1);
+         add_line;
+         so_far := end_pos;
+      end loop;
+      line_txt := substr(buff.contents, so_far + 1, 4000);
+      add_line;
+      if err_aa.COUNT = 0 then continue; end if;
+      line_txt := err_aa.FIRST;
+      loop
+         dbms_output.put_line(line_txt);
+         dbms_output.put_line('  ' || err_aa(line_txt) || ' lines: ' || line_txt);
+         exit when line_txt = err_aa.LAST;
+         line_txt := err_aa.NEXT(line_txt);
+      end loop;
+   end loop;
+end;
+}';
+   -- Can't have string declaration with a "/" on a line by itself
+   ret_txt := ret_txt || '/' || CHR(10) || q'{
+----------------------------------------
+prompt
+prompt Reporting Invalid Objects
+set feedback off
+set termout off
+spool list_invalids.csv
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || q'{@"list_invalids.sql" ""
+spool off
+set termout on
+set feedback on
+
+----------------------------------------
+prompt
+prompt Reporting JUnit XML Database Build Status
+set feedback off
+set termout off
+spool db_build_junit_report.xml
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || q'{@"db_build_junit_report.sql" ""
+spool off
+set termout on
+set feedback on
+
+----------------------------------------
+prompt
+prompt Reorting JUnit XML Installation Log
+set feedback off
+set termout off
+spool log_files_junit_report.xml
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || q'{@"log_files_junit_report.sql" ""
+spool off
+set termout on
+set feedback on
+
+----------------------------------------
+-- Done with Reports
+set linesize 80
+set verify on}';
+   return ret_txt;
+end report_status_sql;
+
+
+--------------------------------------------------------------------------------
+-- Update ID Sequences
+function update_id_sequences_sql
+      (in_install_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := q'{
+--
+-- Update "}' || in_install_type || q'{" IDENTITY SEQUENCES
+--
+
+declare
+   UNDEFINED_SEQUENCE  EXCEPTION;  -- sequence not yet defined in this session
+   PRAGMA EXCEPTION_INIT (UNDEFINED_SEQUENCE, -8002);
+   l_last_seq   number;
+   l_max_val    number;
+   sql_txt      varchar2(4000);
+   procedure do_it (in_schema_name in varchar2) is
+   begin
+      for buff in (
+         select tic.owner
+               ,tic.table_name
+               ,tic.column_name
+               ,tic.sequence_name
+          from  dba_tab_identity_cols  tic
+          where tic.owner = in_schema_name)
+      loop
+         -- Find the Current Sequence Value
+         sql_txt := 'select ' || buff.owner || '.' || buff.sequence_name ||
+                    '.currval from dual';
+         begin
+            execute immediate sql_txt into l_last_seq;
+         exception when UNDEFINED_SEQUENCE
+         then
+            -- Find the Last Number for the Sequence
+            select ds.last_number into l_last_seq
+             from  dba_sequences  ds
+             where ds.sequence_owner = buff.owner
+              and  ds.sequence_name  = buff.sequence_name;
+         end;
+         -- Find the maximum IDENTITY column value
+         sql_txt := 'select max(' || buff.column_name || ')' ||
+                    ' from ' || buff.owner || '.' || buff.table_name;
+         execute immediate sql_txt into l_max_val;
+         -- Display values found
+         dbms_output.put_line(buff.owner || '.' || buff.sequence_name || ' Last Sequence: ' || l_last_seq ||
+                      ', ' || buff.owner || '.' || buff.table_name || ' max(' || buff.column_name || ') = ' || l_max_val);
+         if l_last_seq < l_max_val
+         then
+            -- Increment the sequence as necessary
+            sql_txt := 'begin' ||
+                       ' while ' || buff.owner || '.' || buff.sequence_name || '.nextval < ' || l_max_val ||
+                       ' loop null; end loop;' ||
+                       'end;';
+            dbms_output.put_line(sql_txt);
+            execute immediate sql_txt;-- using l_last_seq;
+         end if;
+      end loop;
+      dbms_output.put_line('-- ' || in_schema_name || ' Identity Sequence Updates is done.');
+   end do_it;
+begin
+}';
+   ret_txt := ret_txt || '   dbms_output.put_line(''Update ID Sequences for ' ||
+                             in_install_type || ' Install Type'');' || CHR(10);
+   for sch in (select obj.object_owner
+                from  schema_objects_vw  obj
+                      join schema_conf  sl
+                          on  sl.username = obj.object_owner
+                where obj.install_type = in_install_type
+                 and  obj.object_owner != 'PUBLIC'
+                group by obj.object_owner
+                order by obj.object_owner)
+   loop
+      ret_txt := ret_txt || '   do_it(''' || sch.object_owner || ''');' || CHR(10);
+   end loop;
+   ret_txt := ret_txt || 'end;' || CHR(10) ||
+                         '/';
+   return ret_txt;
+end update_id_sequences_sql;
+
+
+end root_scripts;
+/
+
+set define on

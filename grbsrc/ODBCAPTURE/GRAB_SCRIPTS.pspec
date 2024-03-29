@@ -1,0 +1,214 @@
+
+--
+--  Create ODBCAPTURE.GRAB_SCRIPTS Package
+--
+
+set define off
+
+
+--DBMS_METADATA:ODBCAPTURE.GRAB_SCRIPTS
+
+  CREATE OR REPLACE EDITIONABLE PACKAGE "ODBCAPTURE"."GRAB_SCRIPTS" 
+   authid current_user
+as
+
+   --Database Views:
+   -----------------
+
+   --   GRAB_SCRIPTS.cr_grnt
+   --      priv_system_privileges_view
+   --      priv_role_privileges_view
+   --      priv_queue_sysprivs_view
+   --      priv_obj_install_vw
+   --      priv_obj_queue_view
+   --      priv_obj_java_fg_view
+
+   --   zx_priv_all_view (_tab)
+   --      priv_queue_register_view
+   --         obj_install_object_view (_tab)
+   --      priv_queue_subscribe_view
+   --         obj_install_object_view (_tab)
+   --      priv_queue_sysprivs_view
+   --         aq_system_privs_vw
+   --      priv_obj_queue_view
+   --         obj_install_object_view (_tab)
+   --      priv_obj_java_fg_view
+   --         uor_install_view
+   --      priv_obj_dir_view
+   --         priv_obj_dir_dflt_vw
+   --         priv_obj_dir_nondflt_vw
+   --      priv_obj_xdbacl_view
+   --         priv_obj_xdbacl_dflt_vw
+   --         priv_obj_xdbacl_nondflt_vw
+   --      priv_obj_install_vw
+   --         obj_install_object_view (_tab)
+   --      priv_role_privileges_view
+   --         uor_install_view
+   --      priv_system_privileges_view
+   --         uor_install_view
+   --      priv_sysobj_privileges_view
+   --         uor_install_view
+
+   --   uor_install_view
+
+   --   schema_objects_vw  (GRAB_SCRIPTS.schemas)
+   --      zx_obj_install_view (_tab)
+   --         obj_install_context_view
+   --         obj_install_index_view
+   --         obj_install_fkey_view
+   --         obj_install_trigger_view
+   --         obj_install_synonym_view
+   --         obj_install_object_view
+   --         data_load_install_view
+
+   --   obj_install_context_view
+   --      obj_install_context_dflt_vw
+   --         obj_install_object_view
+   --         dba_objects_view  (_tab)
+   --      obj_install_context_nondflt_vw
+   --         obj_install_object_view
+   --         dba_objects_view  (_tab)
+
+   --   obj_install_comments_view (_tab)
+   --      obj_install_object_view
+   --      uor_install_view
+
+   --   obj_install_index_view
+   --      obj_install_object_view
+   --         dba_objects_view  (_tab)
+
+   --   obj_install_fkey_view
+   --       obj_install_object_view
+
+   --   obj_install_trigger_view
+   --      obj_install_object_view
+
+   --   obj_install_synonym_view
+   --      obj_install_synonym_dflt_vw
+   --         dba_objects_view  (_tab)
+   --      obj_install_synonym_nondflt_vw
+   --         dba_objects_view  (_tab)
+
+   --   obj_install_object_view
+   --      dba_dependencies_view  (_tab)
+   --      obj_install_object_dflt_vw
+   --         dba_objects_view  (_tab)
+   --      obj_install_object_nondflt_vw
+   --         dba_objects_view  (_tab)
+
+   --   dba_objects_view  (_tab)
+
+   --
+   -- DBA OBJECT TYPES
+   --   (https://renenyffenegger.ch/notes/development/databases/Oracle/installed/data-dictionary/objects/index)
+   --
+   -- CHAIN
+   -- CLUSTER
+   -- CONSUMER GROUP
+   -- CONTEXT
+   -- DATABASE LINK
+   -- DESTINATION
+   -- DIRECTORY
+   -- EDITION
+   -- EVALUATION CONTEXT
+   -- FUNCTION
+   -- INDEX
+   -- INDEX PARTITION
+   -- INDEX SUBPARTITION
+   -- INDEXTYPE
+   -- JOB
+   -- JOB CLASS
+   -- LIBRARY
+   -- LOB
+   -- LOB PARTITION
+   -- MATERIALIZED VIEW
+   -- OPERATOR
+   -- PACKAGE
+   -- PACKAGE BODY
+   -- PROCEDURE
+   -- PROGRAM
+   -- QUEUE
+   -- RESOURCE PLAN
+   -- RULE
+   -- RULE SET
+   -- SCHEDULE
+   -- SCHEDULER GROUP
+   -- SEQUENCE
+   -- SYNONYM
+   -- TABLE
+   -- TABLE PARTITION
+   -- TABLE SUBPARTITION
+   -- TRIGGER
+   -- TYPE
+   -- TYPE BODY
+   -- UNDEFINED
+   -- VIEW
+   -- WINDOW
+   -- XML SCHEMA
+
+   -- Script File Pointer (similar to a file handle)
+   TYPE sf_ptr_type is record
+      (inst_type   varchar2(10)
+      ,inst_ord    pls_integer
+      ,file_id     pls_integer
+      ,num_lines   pls_integer);
+
+   LF    constant varchar2(1) := CHR(10);
+   CRTN  constant varchar2(1) := CHR(13);
+
+   -- Buffer Records: One Line of Text in a Script/File
+   TYPE buffer_rec_type is record
+      (len       number(5)
+      ,buffer    varchar2(32767));
+   -- Associative Array of Script/File Lines
+   TYPE buffer_aa_type is table
+      of buffer_rec_type
+      index by pls_integer;                      -- Line Number
+   -- File Header Record
+   TYPE file_rec_type is record
+      (max_linesize  number(5)
+      ,total_bytes   number(14)
+      ,num_buffers   number(9)
+      ,is_open       varchar2(1)
+      ,schema_name   varchar2(128)
+      ,filename      varchar2(500)
+      ,buffer_aa     buffer_aa_type);
+   -- Associative Array of Files
+   TYPE file_aa_type is table
+      of file_rec_type
+      index by pls_integer;                      -- File ID
+   -- Associative Array of Install Order
+   TYPE ord_aa_type is table
+      of file_aa_type
+      index by pls_integer;                      -- Install Order
+   -- Associative Array of Install Type
+   TYPE it_aa_type is table
+      of ord_aa_type
+      index by varchar2(10);                     -- Install Type
+   -- Associative Array of Script Files by Install Type, Install Order, File ID, and Buffers
+   sf_aa     it_aa_type;
+
+   procedure all_scripts
+      (in_install_type   in varchar2);
+
+   procedure write_scripts
+      (in_zip_file_name  in varchar2
+      ,in_folder_name    in varchar2 default '');
+
+   procedure clear_buffers
+      (in_install_type   in varchar2 default null);
+
+   function get_version
+   return varchar2;
+
+end grab_scripts;
+/
+
+
+--  Grants
+
+
+--  Synonyms
+
+
+set define on

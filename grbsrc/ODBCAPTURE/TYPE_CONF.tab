@@ -1,0 +1,39 @@
+
+--
+--  Create ODBCAPTURE.TYPE_CONF Table
+--
+--  NOTE: Foreign keys are in a different script
+--        Indexes are in a different script
+--        Triggers are in a different script
+--
+
+set define off
+
+
+--DBMS_METADATA:ODBCAPTURE.TYPE_CONF
+
+  CREATE TABLE "ODBCAPTURE"."TYPE_CONF" 
+   (	"INSTALL_TYPE" VARCHAR2(10 BYTE), 
+	"NOTES" VARCHAR2(1024 BYTE), 
+	"INSTALL_TYPE_PARENT" VARCHAR2(10 BYTE)
+   ) SEGMENT CREATION IMMEDIATE  LOGGING;
+ALTER TABLE "ODBCAPTURE"."TYPE_CONF" ADD CONSTRAINT "TYPE_CONF_PK" PRIMARY KEY ("INSTALL_TYPE")
+  USING INDEX  ENABLE;
+ALTER TABLE "ODBCAPTURE"."TYPE_CONF" ADD CONSTRAINT "TYPE_CONF_NN2" CHECK (INSTALL_TYPE_PARENT is not null) ENABLE;
+
+--  Comments
+
+--DBMS_METADATA:ODBCAPTURE.TYPE_CONF
+
+   COMMENT ON COLUMN "ODBCAPTURE"."TYPE_CONF"."INSTALL_TYPE" IS 'Name of the install type (Primary Key)';
+   COMMENT ON COLUMN "ODBCAPTURE"."TYPE_CONF"."NOTES" IS 'Free text field (Optional)';
+   COMMENT ON TABLE "ODBCAPTURE"."TYPE_CONF"  IS 'List of Install Types.  Also defines the names of the top level directories';
+
+
+--  Grants
+
+
+--  Synonyms
+
+
+set define on

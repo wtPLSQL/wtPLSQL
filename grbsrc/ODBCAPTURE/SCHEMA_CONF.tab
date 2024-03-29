@@ -1,0 +1,45 @@
+
+--
+--  Create ODBCAPTURE.SCHEMA_CONF Table
+--
+--  NOTE: Foreign keys are in a different script
+--        Indexes are in a different script
+--        Triggers are in a different script
+--
+
+set define off
+
+
+--DBMS_METADATA:ODBCAPTURE.SCHEMA_CONF
+
+  CREATE TABLE "ODBCAPTURE"."SCHEMA_CONF" 
+   (	"USERNAME" VARCHAR2(128 BYTE) NOT NULL ENABLE, 
+	"INSTALL_TYPE" VARCHAR2(10 BYTE) NOT NULL ENABLE, 
+	"TS_SIZE" VARCHAR2(10 BYTE) NOT NULL ENABLE, 
+	"NOTES" VARCHAR2(1024 BYTE), 
+	"TABLESPACE_NAME" VARCHAR2(30 BYTE)
+   ) SEGMENT CREATION IMMEDIATE  LOGGING;
+ALTER TABLE "ODBCAPTURE"."SCHEMA_CONF" ADD CONSTRAINT "SCHEMA_CONF_CK1" CHECK (regexp_like(ts_size, '^UNLIMITED$|^[0-9]+[KMG]$')) ENABLE;
+ALTER TABLE "ODBCAPTURE"."SCHEMA_CONF" ADD CONSTRAINT "SCHEMA_CONF_PK" PRIMARY KEY ("USERNAME")
+  USING INDEX  ENABLE;
+ALTER TABLE "ODBCAPTURE"."SCHEMA_CONF" ADD CONSTRAINT "SCHEMA_CONF_NN4" CHECK (tablespace_name is not null) ENABLE;
+
+--  Comments
+
+--DBMS_METADATA:ODBCAPTURE.SCHEMA_CONF
+
+   COMMENT ON COLUMN "ODBCAPTURE"."SCHEMA_CONF"."USERNAME" IS 'Name of the database schema (Primary Key)';
+   COMMENT ON COLUMN "ODBCAPTURE"."SCHEMA_CONF"."INSTALL_TYPE" IS 'Install type for this database schema (Required). All objects for this schema are generated for this install type unless filtered by OBJECT_CONF. Value must be in TYPE_CONF table.';
+   COMMENT ON COLUMN "ODBCAPTURE"."SCHEMA_CONF"."TS_SIZE" IS 'Tablespace quota for this schema (Required). UNLIMITED is allowed';
+   COMMENT ON COLUMN "ODBCAPTURE"."SCHEMA_CONF"."NOTES" IS 'Free text field (Optional)';
+   COMMENT ON COLUMN "ODBCAPTURE"."SCHEMA_CONF"."TABLESPACE_NAME" IS 'Default Tablespace Name for this Schema';
+   COMMENT ON TABLE "ODBCAPTURE"."SCHEMA_CONF"  IS 'List of Schema to install in each Install Type.';
+
+
+--  Grants
+
+
+--  Synonyms
+
+
+set define on
