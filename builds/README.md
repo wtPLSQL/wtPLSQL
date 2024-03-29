@@ -26,46 +26,37 @@ https://www.w3schools.com/html/html_iframe.asp
 
 ### Build Sequence
 
-1. ../builds/base_build.sh
-    1. *(Run from "grbsrc" folder)*
-    1. ../builds/util/create_pdb.sql - CDB SYS
-    1. install.sql
-        1. install_sys.sql - PDB SYS
-        1. install_system.sql - PDB SYSTEM
-        1. install_grbsrc.sql - PDB SYSTEM
-    1. ../builds/util/JUnit_Test_DB_Build.sql
-1. ../builds/base_test.sh
-    1. *(Run from "wtplsql" folder)*
-    1. install.sql
-        1. install_sys.sql - PDB SYS
-        1. install_system.sql - PDB SYSTEM
-        1. install_wtpsrc.sql - PDB SYSTEM
-    1. ../builds/util/JUnit_Test_DB_Build.sql
-    1. *(Run from "grbut" folder)*
-    1. install.sql
-        1. install_sys.sql - PDB SYS
-        1. install_system.sql - PDB SYSTEM
-        1. install_grbut.sql - PDB SYSTEM
-    1. ../builds/util/JUnit_Test_DB_Build.sql
-    1. ../builds/util/run_all_wtplsql_tests.sql
-1. ../builds/gui_build.sh
-    1. *(Run from "apex" folder)*
-    1. ../builds/util/new_session.sql - PDB SYSTEM
-    1. ../builds/util/install_ords.sql - 2.22
-    1. ../builds/util/install_apex.sql - 2.12
+builds/*/build.sh (To Be Run in Jenkins?)
+
+1. builds/*/build_initialize.sql
+    1. builds/util/new_session.sql
+    1. builds/util/create_pdb.sql
+1. builds/*/build.sql
+    1. builds/util/new_session.sql
+    1. wtpsrc/install.sql
+1. builds/*/build.sql
+    1. builds/util/new_session.sql
+    1. wtptst/install.sql
+1. builds/pdb_test.sql
+    1. builds/util/new_session.sql
+    1. builds/util/run_all_wtplsql_tests.sql
+    1. builds/util/timing_report.sql
+    1. builds/util/JUnit_Test_DB_Build.sql
+1. builds/gui_build.sh
+    1. builds/util/new_session.sql - PDB SYSTEM
+    1. builds/util/install_ords.sql - 2.22
+    1. builds/util/install_apex.sql - 2.12
     1. apex/ODBCAPTURE_workspace.sql
     1. apex/f200.sql
-    1. ../builds/util/timing_report.sql
-    1. ../builds/util/JUnit_Test_DB_Build.sql
-1. ../builds/gui_test.sh
+    1. builds/util/timing_report.sql
+    1. builds/util/JUnit_Test_DB_Build.sql
+1. gui_test.sh
     1. *(Build/Deploy ORDS.war File)*
     1. Load/Run wtplsql Unit Testing
-1. ../builds/dev_prep.sh
-    1. *(Run from "grbdat" folder)*
-    1. install.sql
-        1. install_sys.sql - PDB SYS
-        1. install_system.sql - PDB SYSTEM
-        1. install_grbdat.sql - PDB SYSTEM
-    1. ../builds/util/JUnit_Test_DB_Build.sql
-    1. ../builds/util/archive_pdb.sql - CDB SYS
-    1. ../builds/util/JUnit_Test_DB_Build.sql
+1. builds/*/build.sql
+    1. builds/util/new_session.sql
+    1. grbsrc/install.sql
+1. builds/*/build.sql
+    1. builds/util/new_session.sql
+    1. wtpgrb/install.sql
+1. builds/util/archive_pdb.sql
