@@ -28,15 +28,31 @@ The [repository wiki](https://github.com/DDieterich/wtPLSQL/wiki) includes helpf
 All software documentation is on the http://wtPLSQL.org website. The document repository is in the "docs" directory (see table below).
 
 
-### Files and Directories
+## File/Folder List
 
-File Name            | Description
----------------------|------------
-docs                 | Directory for documentation. Also contains wtPLSQL website (GitHub.io) source.
-releases             | Directory for release notes, upgrades, and downgrades.
-src                  | Directory for source code.
-LICENSE              | Open Source Terms and Conditions.
-README.md            | Top level Markdown file for the wtPLSQL repository on GitHub
+File Name | Description
+----------|------------
+apex      | Application Express Scripts Folder
+builds    | Build/Test Scripts Folder
+conv      | Conversion Utility Scripts Folder
+diffs     | Upgrade/Downgrade Scripts Folder
+demo      | Demonstrations and Examples Folder
+docs      | User Documentation Folder. Also contains wtPLSQL website (GitHub.io) source.
+junit     | JUnit XML Report Scripts Folder
+wtpgrb    | Configuration Data for ODBCapture Folder
+wtpsav    | Persisting Test Results Add-on Scripts Folder
+wtpsrc    | Core wtPLSQL Component Scripts Folder
+LICENSE   | Open Source Terms and Conditions.
+README.md | Top level Markdown file for the wtPLSQL repository on GitHub
+
+
+## Installation
+
+1. cd wtpsrc
+2. sqlplus / as sysdba @install.sql
+3. select * from odbcapture_installation_logs;
+4. If problems found: more *.log
+
 
 ---
 
