@@ -1,0 +1,25 @@
+
+--
+--  Create Triggers for WTP.WT_SELF_TEST TABLE
+--
+
+set define off
+
+
+--  NOTE: This is a "TRIGGER" Trigger
+
+--DBMS_METADATA:WTP.WT_SELF_TEST$TEST
+
+  CREATE OR REPLACE EDITIONABLE TRIGGER "WTP"."WT_SELF_TEST$TEST" 
+   before insert on wt_self_test
+   for each row
+declare
+   l_junk  number;
+begin
+   l_junk := 1;
+end;
+
+/
+ALTER TRIGGER "WTP"."WT_SELF_TEST$TEST" ENABLE;
+
+set define on

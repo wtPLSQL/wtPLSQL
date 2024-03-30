@@ -1,0 +1,50 @@
+
+--
+--  Create WTP.HOOKS Table
+--
+--  NOTE: Foreign keys are in a different script
+--        Indexes are in a different script
+--        Triggers are in a different script
+--
+
+set define off
+
+
+--DBMS_METADATA:WTP.HOOKS
+
+  CREATE TABLE "WTP"."HOOKS" 
+   (	"HOOK_NAME" VARCHAR2(20 BYTE) CONSTRAINT "WT_HOOKS_NN1" NOT NULL ENABLE, 
+	"SEQ" NUMBER(2,0) CONSTRAINT "WT_HOOKS_NN2" NOT NULL ENABLE, 
+	"RUN_STRING" VARCHAR2(4000 BYTE) CONSTRAINT "WT_HOOKS_NN3" NOT NULL ENABLE, 
+	"DESCRIPTION" VARCHAR2(1000 BYTE)
+   ) SEGMENT CREATION IMMEDIATE  LOGGING;
+ALTER TABLE "WTP"."HOOKS" ADD CONSTRAINT "HOOKS_CK1" CHECK ( hook_name in
+('before_test_all'
+,'before_test_run'
+,'execute_test_runner'
+,'after_assertion'
+,'after_test_run'
+,'after_test_all'
+,'ad_hoc_report') ) ENABLE;
+ALTER TABLE "WTP"."HOOKS" ADD CONSTRAINT "HOOKS_CK2" CHECK (seq > 0) ENABLE;
+ALTER TABLE "WTP"."HOOKS" ADD CONSTRAINT "HOOKS_PK" PRIMARY KEY ("HOOK_NAME", "SEQ")
+  USING INDEX  ENABLE;
+
+--  Comments
+
+--DBMS_METADATA:WTP.HOOKS
+
+   COMMENT ON COLUMN "WTP"."HOOKS"."HOOK_NAME" IS 'Primary Key for each Hook Name';
+   COMMENT ON COLUMN "WTP"."HOOKS"."SEQ" IS 'Primary Key for the sequence of the Hook';
+   COMMENT ON COLUMN "WTP"."HOOKS"."RUN_STRING" IS 'Procedure Name or Un-named PL/SQL Block for EXECUTE IMMEDIATE';
+   COMMENT ON COLUMN "WTP"."HOOKS"."DESCRIPTION" IS 'Description of this Hook.';
+   COMMENT ON TABLE "WTP"."HOOKS"  IS 'wtPLSQL Hooks.';
+
+
+--  Grants
+
+
+--  Synonyms
+
+
+set define on

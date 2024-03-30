@@ -20,7 +20,7 @@ set serveroutput on size unlimited format wrapped
 
 ----------------------------------------
 prompt Identify this Module in V$SESSION
-set appinfo "wtpsrc Installation"
+set appinfo "wtptst Installation"
 
 ----------------------------------------
 prompt Setup Abort on Error
@@ -57,7 +57,7 @@ prompt *************************
 prompt *  Install Application  *
 prompt *************************
 prompt
-@install_wtpsrc.sql "&TOP_PDB_SYSTEM." "" ""
+@install_wtptst.sql "&TOP_PDB_SYSTEM." "" ""
 
 ----------------------------------------
 prompt
@@ -71,5 +71,5 @@ prompt
 set appinfo "Null"
 set appinfo off
 prompt
-prompt "wtpsrc" Installation is Done.
+prompt "wtptst" Installation is Done.
 

@@ -1,0 +1,3 @@
+"HOOK_NAME","SEQ","RUN_STRING","DESCRIPTION"
+"ad_hoc_report",20,"begin wt_core_report.dbms_out(20); end;",
+"execute_test_runner",20,"begin wt_execute_test_runner; end;",

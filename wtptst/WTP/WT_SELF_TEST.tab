@@ -1,0 +1,43 @@
+
+--
+--  Create WTP.WT_SELF_TEST Table
+--
+--  NOTE: Foreign keys are in a different script
+--        Indexes are in a different script
+--        Triggers are in a different script
+--
+
+set define off
+
+
+--DBMS_METADATA:WTP.WT_SELF_TEST
+
+  CREATE TABLE "WTP"."WT_SELF_TEST" 
+   (	"ID" NUMBER, 
+	"TEMP_CLOB" CLOB, 
+	"TEMP_NCLOB" NCLOB, 
+	"TEMP_XML" "XMLTYPE", 
+	"TEMP_BLOB" BLOB
+   ) SEGMENT CREATION IMMEDIATE  LOGGING;
+ALTER TABLE "WTP"."WT_SELF_TEST" ADD CONSTRAINT "WT_SELF_TEST_PK" PRIMARY KEY ("ID")
+  USING INDEX  ENABLE;
+
+--  Comments
+
+--DBMS_METADATA:WTP.WT_SELF_TEST
+
+   COMMENT ON COLUMN "WTP"."WT_SELF_TEST"."ID" IS 'Primary Key';
+   COMMENT ON COLUMN "WTP"."WT_SELF_TEST"."TEMP_CLOB" IS 'CLOB test data';
+   COMMENT ON COLUMN "WTP"."WT_SELF_TEST"."TEMP_NCLOB" IS 'NCLOB test data';
+   COMMENT ON COLUMN "WTP"."WT_SELF_TEST"."TEMP_XML" IS 'XML test data';
+   COMMENT ON COLUMN "WTP"."WT_SELF_TEST"."TEMP_BLOB" IS 'BLOB test data';
+   COMMENT ON TABLE "WTP"."WT_SELF_TEST"  IS 'Test Data for unit testing of WTPLSQL.';
+
+
+--  Grants
+
+
+--  Synonyms
+
+
+set define on

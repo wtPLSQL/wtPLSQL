@@ -5,10 +5,10 @@
 File Name              | Description
 -----------------------|------------
 OraEE122_AP191_ORDS222 | Oracle 12.1 Enterprise Edition, APEX 19.1, ORDS 22.2
-OraXE184_AP191_ORDS222 | Oracle 18.4 Enterprise Edition, APEX 19.1, ORDS 22.2
+OraXE184_AP191_ORDS222 | Oracle 18.4 Express Edition, APEX 19.1, ORDS 22.2
 OraEE193_AP212_ORDS222 | Oracle 19.3 Enterprise Edition, APEX 21.2, ORDS 22.2
 OraEE213_AP212_ORDS222 | Oracle 21.3 Enterprise Edition, APEX 21.2, ORDS 22.2
-OraXE213_AP212_ORDS222 | Oracle 21.3 Enterprise Edition, APEX 21.2, ORDS 22.2
+OraXE213_AP212_ORDS222 | Oracle 21.3 Express Edition, APEX 21.2, ORDS 22.2
 
 ### Build Results Reporting Notes
 

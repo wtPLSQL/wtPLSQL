@@ -1,0 +1,24 @@
+
+--
+--  Create WTP Schema
+--
+
+set define off
+
+create user "WTP"
+   identified by "WTP"
+   default tablespace USERS
+   temporary tablespace TEMP
+   profile DEFAULT
+   quota 512M on USERS
+;
+
+--  Grant SYS Objects (but not directories)
+
+grant SELECT on "SYS"."DBA_OBJECTS" to "WTP" with grant option;
+grant SELECT on "SYS"."DBA_PROCEDURES" to "WTP" with grant option;
+grant SELECT on "SYS"."DBA_SOURCE" to "WTP" with grant option;
+grant EXECUTE on "SYS"."DBMS_LOCK" to "WTP";
+grant SELECT on "SYS"."GV_$PARAMETER" to "WTP" with grant option;
+
+set define on

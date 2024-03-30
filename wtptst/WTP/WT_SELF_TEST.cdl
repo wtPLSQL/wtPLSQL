@@ -1,0 +1,134 @@
+
+--
+--  Consolidated Data Load script for WTP.WT_SELF_TEST data
+--
+-- Command Line Parameters:
+--   1 - SYSTEM/password@TNSALIAS
+--       i.e. pass the username and password for the SYSTEM user
+--            and the TNSALIAS for the connection to the database.
+--       The Data Load installation requires this connection information.
+--
+
+prompt
+prompt Disable Triggers and Foreign Keys
+declare
+   procedure run_sql (in_sql in varchar2) is begin
+      dbms_output.put_line(in_sql || ';');
+      execute immediate in_sql;
+   exception when others then
+      dbms_output.put_line('-- ' || SQLERRM || CHR(10));
+   end run_sql;
+begin
+   for buff in (select owner, trigger_name
+                 from  dba_triggers
+                 where table_owner = 'WTP'
+                  and  table_name = 'WT_SELF_TEST'
+                 order by owner, trigger_name)
+   loop
+      run_sql('alter trigger "' || buff.owner        || '"' ||
+                           '."' || buff.trigger_name || '" DISABLE');
+   end loop;
+   for buff in (select constraint_name
+                 from  dba_constraints
+                 where constraint_type = 'R'
+                  and  owner = 'WTP'
+                  and  table_name = 'WT_SELF_TEST'
+                 order by owner, constraint_name)
+   loop
+      run_sql('alter table "WTP"."WT_SELF_TEST"' ||
+              ' DISABLE constraint "' || buff.constraint_name || '"');
+   end loop;
+end;
+/
+
+-- NOTE: Additional file extensions for SQL*Loader include
+--   .bad - Bad Records
+--   .dsc - Discard Records
+--   .log - Log File
+
+prompt
+prompt sqlldr_control=WTP/WT_SELF_TEST.ctl
+host sqlldr '&1.' control=WTP/WT_SELF_TEST.ctl data=WTP/WT_SELF_TEST.csv log=WTP/WT_SELF_TEST.log silent=HEADER,FEEDBACK
+
+begin
+   if '&_RC.' != '0' then
+      raise_application_error(-20000, 'Control file "WTP/WT_SELF_TEST.ctl" returned error: &_RC.');
+   end if;
+end;
+/
+
+declare
+   l_blob          blob;
+   the_blob        blob;
+   procedure b64_decode
+         (in_blob  in BLOB)
+   is
+      B64_ENCODE_HEADER      constant varchar2(30) := '(Base64 with Linefeeds)';
+      SPLIT_LEN              constant pls_integer  := 32764;    -- Must be divisible by 4
+      header_txt    varchar2(128);
+      len_blob      pls_integer;
+      ptr           pls_integer;
+   begin
+      dbms_lob.trim(l_blob, 0);
+      dbms_lob.trim(the_blob, 0);
+      ----------------------------------------
+      -- Check incoming BLOB sizes (and return if needed)
+      if in_blob is null then return; end if;
+      len_blob := length(in_blob);
+      if len_blob = 0 then return; end if;
+      ----------------------------------------
+      -- Check for B64_ENCODE_HEADER in in_BLOB
+      header_txt := to_char(dbms_lob.substr(in_blob
+                                           ,length(B64_ENCODE_HEADER)
+                                           ,1)
+                           ,nls_charset_id('US7ASCII'));
+      if header_txt != B64_ENCODE_HEADER
+      then
+         raise_application_error(-20000, 'B64_ENCODE_HEADER missing from data: ' || header_txt);
+      end if;
+      ----------------------------------------
+      -- Create "L_BLOB" after removing B64_ENCODE_HEADER, Carriage Returns, and Line Feeds
+      ptr := 1 + length(B64_ENCODE_HEADER);  -- Skip over the header
+      while ptr <= len_blob
+      loop
+         dbms_lob.append(l_blob
+                        ,utl_raw.translate(dbms_lob.substr(in_blob
+                                                          ,SPLIT_LEN
+                                                          ,ptr)
+                                          ,hextoraw('000D0A')       -- NULL, Carriage Return, Line Feed
+                                          ,hextoraw('00')   )   );  -- NULL
+         ptr := ptr + SPLIT_LEN;
+      end loop;
+      len_blob := length(l_blob);
+      ----------------------------------------
+      --  Create "THE_BLOB" after Base64 Decoding
+      ptr := 1;
+      while ptr <= len_blob
+      loop
+         dbms_lob.append(the_blob
+                        ,UTL_ENCODE.BASE64_DECODE(dbms_lob.substr(l_blob
+                                                                 ,SPLIT_LEN
+                                                                 ,ptr)   )   );
+         ptr := ptr + SPLIT_LEN;
+      end loop;
+   end b64_decode;
+begin
+   dbms_lob.createtemporary(l_blob, true);
+   dbms_lob.createtemporary(the_blob, true);
+   for buff in (select ROWID RID, "TEMP_BLOB"
+                 from  "WTP"."WT_SELF_TEST"
+                 for update of "TEMP_BLOB")
+   loop
+      b64_decode(buff."TEMP_BLOB");
+      -- This overwrites the Base64 Encoded String with the original binary data
+      update "WTP"."WT_SELF_TEST"
+        set  "TEMP_BLOB" = the_blob
+       where rowid = buff.rid;
+   end loop;
+   dbms_lob.freetemporary(l_blob);
+   dbms_lob.freetemporary(the_blob);
+end;
+/
+
+commit;
+
