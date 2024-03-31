@@ -14,6 +14,7 @@ as
    g_install_type    type_conf.install_type%TYPE;
    g_schema_name     varchar2(128);
 
+--
 -- Table of Functions/Procedures
 --
 -- Script Handling Utilities
@@ -514,7 +515,7 @@ begin
                                                    when 'EDITION'       then 'EDITION "'
                                                    when 'USER'          then 'USER "'
                                                                         else '"'               || g_schema_name  || '"."'
-                             end                                                               || in_object_name || '"' ||
+                             end                                                               || in_object_name ||
                  '" to "' || buff.grantee   || '"';
       -- "with hierarchy option" has not yet been implemented
       if buff.grantable = 'YES'
@@ -531,7 +532,7 @@ begin
 end get_object_grants;
 
 ------------------------------------------------------------
--- Get synonyms for CURRENT, FUTURE is handled in cr_syn
+-- Get CURRENT synonyms. FUTURE synonyms are handled in cr_syn
 procedure get_synonyms
       (in_fh             in out NOCOPY sf_ptr_type
       ,in_object_name    in            varchar2
@@ -1436,7 +1437,7 @@ is
          (in_blob  in BLOB)
       return CLOB
    is
-      SPLIT_LEN   constant pls_integer  := 32766;    -- Must be divisible by 3
+      SPLIT_LEN   constant pls_integer  := 21843;    -- Must be divisible by 3
       l_clob               clob;
       len_blob             pls_integer;
       ptr                  pls_integer;
@@ -3297,9 +3298,6 @@ is
    POTYPE     varchar2(100) := '';
    OTYPE      varchar2(100) := 'MVIEW';
    fh         sf_ptr_type;  -- object script file handle
-   old_own    dba_mviews.owner%type;
-   old_mview  dba_mviews.mview_name%type;
-   fname      varchar2(1000);
 begin
    for buf1 in (with qmain as (
                 select object_name                  MVIEW_NAME
@@ -3652,7 +3650,7 @@ is
 begin
    for buf1 in
       (select synonym_name
-             ,synonym_name || '.' || ext    FILE_NAME
+             ,ext
         from  obj_install_synonym_tab
         where install_type          = g_install_type
          and  install_type_selector = 'TARGET'      -- Synonym install delayed for this Target
@@ -3660,21 +3658,22 @@ begin
         group by synonym_name, ext
         order by synonym_name )
    loop
-      fh := script_open(in_filename     => buf1.file_name
-                       ,in_otype        => OTYPE
-                       ,in_max_linesize => common_util.MAX_SQL_LEN);
-      script_put_line(fh, '');
-      script_put_line(fh, '--');
-      script_put_line(fh, '--  Create ' || g_schema_name || '.' || buf1.synonym_name ||' Synonym');
-      script_put_line(fh, '--');
-      script_put_line(fh, '--     Note: These are synonyms for "sys" and "core" system objects');
-      script_put_line(fh, '--');
-      script_put_line(fh, '--  Synonyms from objects owned by "sys" Install Type Schema');
-      script_put_line(fh, '--  If not "stub" or "core", Synonyms from objects owned by "core" Install Type Schema');
-      script_put_line(fh, '--');
-      script_put_line(fh, '');
-      script_put_line(fh, 'set define off');
-      script_put_line(fh, '');
+      if NOT script_is_open(fh)
+      then
+         fh := script_open(in_filename     => g_schema_name || '.' || buf1.ext
+                          ,in_otype        => OTYPE
+                          ,in_max_linesize => common_util.MAX_SQL_LEN);
+         script_put_line(fh, '');
+         script_put_line(fh, '--');
+         script_put_line(fh, '--  Create ' || g_schema_name || ' Synonyms');
+         script_put_line(fh, '--');
+         script_put_line(fh, '--  Synonyms from objects owned by "sys" Install Type Schema');
+         script_put_line(fh, '--  Also, synonyms delayed waiting for target installation.');
+         script_put_line(fh, '--');
+         script_put_line(fh, '');
+         script_put_line(fh, 'set define off');
+         script_put_line(fh, '');
+      end if;
       script_put_line(fh, '');
       script_put_line(fh, '--DBMS_METADATA:' || g_schema_name ||
                                          '.' || buf1.synonym_name);
@@ -3684,10 +3683,13 @@ begin
                                            ,name        => buf1.synonym_name
                                            ,schema      => g_schema_name)
                      ,common_util.MAX_SQL_LEN);
+   end loop;
+   if script_is_open(fh)
+   then
       script_put_line(fh, '');
       script_put_line(fh, 'set define on');
       script_close(fh);
-   end loop;
+   end if;
 end cr_syn;
 
 ------------------------------------------------------------
@@ -3697,10 +3699,6 @@ is
    POTYPE     varchar2(100) := '';
    OTYPE      varchar2(100) := 'TABLE';
    fh         sf_ptr_type;  -- object script file handle
-   old_own    varchar2(1000);
-   old_tab    varchar2(1000);
-   fname      varchar2(1000);
-
 begin
    for buf1 in (select obj.object_name                      TABLE_NAME
                       ,obj.object_name || '.' || obj.ext    FILE_NAME
@@ -3967,8 +3965,8 @@ begin
                                                       when 'EDITION'       then 'EDITION "'
                                                       when 'USER'          then 'USER "'
                                                                            else '"'               || buf2.object_owner || '"."'
-                                end                                                               || buf2.object_name  || '"' ||
-                     ' to "' || buf1.username || '"';
+                                end                                                               || buf2.object_name  ||
+                    '" to "' || buf1.username || '"';
          -- "with hierarchy option" has not yet been implemented
          if buf2.grantable = 'YES'
          then
@@ -3991,9 +3989,6 @@ is
    POTYPE     varchar2(100) := '';
    OTYPE      varchar2(100) := 'VIEW';
    fh         sf_ptr_type;  -- object script file handle
-   old_own    varchar2(1000);
-   old_view   varchar2(1000);
-   fname      varchar2(1000);
 begin
    for buf1 in (select obj.object_name                      VIEW_NAME
                       ,obj.object_name || '.' || obj.ext    FILE_NAME
@@ -4094,10 +4089,6 @@ is
    is
       l_notes   type_conf.notes%type;
    begin
-      if USER != 'SYS'
-      then
-         raise_application_error (-20000, 'Must be run by SYS instead of ' || USER || ' user.');
-      end if;
       if in_install_type in ('sys','pub')
       then
          raise_application_error (-20000, 'Install Type of "sys" or "pub" is not allowed: ' || in_install_type);
@@ -4155,6 +4146,7 @@ begin
    ------------------------------------------------------------
    set_schema_name('PUBLIC');
    cr_dblnk;
+   cr_syn;
    ------------------------------------------------------------
    set_schema_name('');
    cr_install_master;
@@ -4203,7 +4195,8 @@ begin
                 from  schema_objects_vw  obj
                       join schema_conf  sl
                           on  sl.username = obj.object_owner
-                where obj.install_type = g_install_type
+                where obj.install_type  = g_install_type
+                 and  obj.object_owner != 'PUBLIC'
                 group by obj.object_owner
                 order by obj.object_owner)
    loop

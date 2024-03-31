@@ -1,3 +1,4 @@
 "INSTALL_TYPE","NOTES","INSTALL_TYPE_PARENT"
+"grbsrc","Source Code Script Generation","pub"
 "pub","N/A PUBLIC.  (Not Installed, Always available for Grants and Synonyms)","sys"
 "sys","N/A System Users.  (Not Installed, Always available for Grants and Synonyms)","sys"

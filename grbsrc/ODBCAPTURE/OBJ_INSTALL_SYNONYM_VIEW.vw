@@ -25,8 +25,8 @@ create view "ODBCAPTURE"."OBJ_INSTALL_SYNONYM_VIEW"
   CREATE OR REPLACE FORCE EDITIONABLE VIEW "ODBCAPTURE"."OBJ_INSTALL_SYNONYM_VIEW" ("INSTALL_TYPE", "INSTALL_TYPE_SELECTOR", "SYNONYM_INSTALL_TYPE", "SYNONYM_ONAME_FILTER", "SYNONYM_OWNER", "SYNONYM_NAME", "OBJECT_TYPE", "DB_LINK", "TARGET_INSTALL_TYPE", "TARGET_ONAME_FILTER", "TARGET_OWNER", "TARGET_NAME", "TARGET_TYPE", "INSTALL_OTYPE", "EXT", "EXT2", "EXT3") AS 
   select case t.install_timing
             when 'CURRENT'
-            then obj.install_type
-            else tgt.install_type
+            then tgt.install_type
+            else obj.install_type
       end                             INSTALL_TYPE
       ,case t.install_timing
             when 'CURRENT'
@@ -60,8 +60,8 @@ create view "ODBCAPTURE"."OBJ_INSTALL_SYNONYM_VIEW"
                                      'MATERIALIZED VIEW', 'JAVA SOURCE', 'QUEUE')
        join install_type_timing  t
             -- Ensure the Target is installed before this Synonym
-            on  t.from_install_type = obj.install_type
-            and t.to_install_type   = tgt.install_type
+            on  t.from_install_type = tgt.install_type
+            and t.to_install_type   = obj.install_type
  where obj.object_type                    = 'SYNONYM'
   and  obj.object_owner_install_type not in ('sys')    -- Exclude 'sys' Synonyms
   and  syn.synonym_name              not like common_util.get_RECYCLE_BIN_NAME_MATCH escape '\';

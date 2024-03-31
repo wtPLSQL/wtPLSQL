@@ -1,0 +1,25 @@
+
+--
+--  Create GRAB_SCRIPTS_DIR Database Directory
+--
+--   Because directories are created based on permissions, granting
+--      directory access to users/roles in different install types
+--      will result in duplicate CREATE DIRECTORY scripts
+--
+
+set define off
+
+
+create or replace directory "GRAB_SCRIPTS_DIR"
+   as '/opt/install_files';
+
+
+--  Grants
+
+grant EXECUTE on directory "GRAB_SCRIPTS_DIR" to "ODBCAPTURE" with grant option;
+
+grant READ on directory "GRAB_SCRIPTS_DIR" to "ODBCAPTURE" with grant option;
+
+grant WRITE on directory "GRAB_SCRIPTS_DIR" to "ODBCAPTURE" with grant option;
+
+set define on

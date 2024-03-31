@@ -69,7 +69,7 @@ create view "ODBCAPTURE"."PRIV_OBJ_QUEUE_VIEW"
  where (   aq.queue_type is null
         or aq.queue_type != 'EXCEPTION_QUEUE')
   and  aq.name not like common_util.get_RECYCLE_BIN_NAME_MATCH escape '\'
-  and  (   uor.install_type not in ('sys','pub')  -- Exclude 'sys' Grantees
+  and  (   uor.install_type not in ('sys','pub')  -- Exclude 'sys' and 'pub' Grantees
         OR (    uor.install_type            = 'pub'             -- Include 'pub' Grantess
             AND obj.object_install_type not in ('sys','pub') )  -- Only if owner not sys or pub
        );

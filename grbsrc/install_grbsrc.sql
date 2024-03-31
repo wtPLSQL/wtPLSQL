@@ -62,6 +62,8 @@ set escape ""
 ----------------------------------------
 -- DATA_LOAD Install
 
+@db_install.sql "ODBCAPTURE/DLOAD_CONF.cdl" "ODBCAPTURE" "&INSTALL_SYSTEM_CONNECT."
+@db_install.sql "ODBCAPTURE/OBJECT_CONF.cdl" "ODBCAPTURE" "&INSTALL_SYSTEM_CONNECT."
 @db_install.sql "ODBCAPTURE/OTYPE_CONF.cdl" "ODBCAPTURE" "&INSTALL_SYSTEM_CONNECT."
 @db_install.sql "ODBCAPTURE/ROLE_CONF.cdl" "ODBCAPTURE" "&INSTALL_SYSTEM_CONNECT."
 @db_install.sql "ODBCAPTURE/SCHEMA_CONF.cdl" "ODBCAPTURE" "&INSTALL_SYSTEM_CONNECT."

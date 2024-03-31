@@ -42,10 +42,10 @@ create view "ODBCAPTURE"."DBA_TAB_PRIVS_VIEW"
        join uor_install_view  gsl
             on  gsl.user_or_role = priv.grantee
  where (   gsl.install_type not in ('sys','pub')  -- No Grants to 'sys' or 'pub' grantees
-        OR (    gsl.install_type                   != 'pub'           -- Grants to 'pub'
+        OR (    gsl.install_type                   = 'pub'           -- Grants to 'pub'
             and obj.object_owner_install_type not in ('sys','pub') )  -- But not owned by 'sys' or 'pub'
-        OR (    gsl.install_type != 'pub'         -- Grants to 'pub'
-            and priv.type         = 'DIRECTORY')  -- Directories are owned by 'SYS'
+        OR (    gsl.install_type = 'pub'         -- Grants to 'pub'
+            and priv.type        = 'DIRECTORY')  -- Directories are owned by 'SYS'
        );
 
 --  Comments

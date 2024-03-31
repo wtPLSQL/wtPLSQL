@@ -11,6 +11,11 @@ set blockterminator off
 set sqlblanklines on
 
 ----------------------------------------
+-- DIRECTORY Install
+
+@db_install.sql "SYSTEM/GRAB_SCRIPTS_DIR.dir" "" ""
+
+----------------------------------------
 -- GRANT Install
 
 @db_install.sql "SYSTEM/ODBCAPTURE_usr.grnt" "" ""

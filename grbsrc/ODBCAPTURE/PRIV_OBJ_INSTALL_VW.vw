@@ -63,7 +63,7 @@ create view "ODBCAPTURE"."PRIV_OBJ_INSTALL_VW"
             on  from_install_type = obj.object_install_type
             and to_install_type   = uor.install_type
  where priv.object_owner != 'SYS'   -- Exclude database objects owned by SYS
-  and  (   uor.install_type not in ('sys')  -- Exclude 'sys' Grantees
+  and  (   uor.install_type not in ('sys','pub')  -- Exclude 'sys' and 'pub' Grantees
         OR (    uor.install_type                  = 'pub'             -- Include 'pub' Grantees
             AND obj.object_owner_install_type not in ('sys','pub') )  -- Only if owner not sys or pub
        );
