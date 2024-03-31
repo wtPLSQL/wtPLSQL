@@ -11,6 +11,11 @@ set blockterminator off
 set sqlblanklines on
 
 ----------------------------------------
+-- USER Install
+
+@db_install.sql "SYS/WTP.usr" "" ""
+
+----------------------------------------
 set sqlblanklines off
 set blockterminator on
 

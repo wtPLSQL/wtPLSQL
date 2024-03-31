@@ -11,9 +11,9 @@ set blockterminator off
 set sqlblanklines on
 
 ----------------------------------------
--- USER Install
+-- GRANT Install
 
-@db_install.sql "SYS/WTP.usr" "" ""
+@db_install.sql "SYSTEM/WTP_usr.grnt" "" ""
 
 ----------------------------------------
 set sqlblanklines off
