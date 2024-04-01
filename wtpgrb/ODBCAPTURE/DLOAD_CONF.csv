@@ -1,8 +1,8 @@
 "USERNAME","TABLE_NAME","INSTALL_TYPE","BEFORE_SELECT_SQL","WHERE_CLAUSE","ORDER_BY_COLUMNS","AFTER_ORDER_BY_SQL","NOTES"
-"ODBCAPTURE","DLOAD_CONF","wtpgrb",,"install_type in ('wtpsrc','wtptst','wtpgrb')","USERNAME, TABLE_NAME, INSTALL_TYPE",,
-"ODBCAPTURE","OBJECT_CONF","wtpgrb",,"install_type in ('wtpsrc','wtptst','wtpgrb')","USERNAME, INSTALL_OTYPE, INSTALL_TYPE",,
-"ODBCAPTURE","ROLE_CONF","wtpgrb",,"install_type in ('wtpsrc','wtptst','wtpgrb')","ROLENAME, INSTALL_TYPE",,
-"ODBCAPTURE","SCHEMA_CONF","wtpgrb",,"install_type in ('wtpsrc','wtptst','wtpgrb')","USERNAME",,
-"ODBCAPTURE","TYPE_CONF","wtpgrb",,"install_type in ('wtpsrc','wtptst','wtpgrb')","INSTALL_TYPE",,
+"ODBCAPTURE","DLOAD_CONF","wtpgrb",,"install_type in ('wtpsrc','wtptst','wtpgrb','wtpsav')","USERNAME, TABLE_NAME, INSTALL_TYPE",,
+"ODBCAPTURE","OBJECT_CONF","wtpgrb",,"install_type in ('wtpsrc','wtptst','wtpgrb','wtpsav')","USERNAME, INSTALL_OTYPE, INSTALL_TYPE",,
+"ODBCAPTURE","ROLE_CONF","wtpgrb",,"install_type in ('wtpsrc','wtptst','wtpgrb','wtpsav')","ROLENAME, INSTALL_TYPE",,
+"ODBCAPTURE","SCHEMA_CONF","wtpgrb",,"install_type in ('wtpsrc','wtptst','wtpgrb','wtpsav')","USERNAME",,
+"ODBCAPTURE","TYPE_CONF","wtpgrb",,"install_type in ('wtpsrc','wtptst','wtpgrb','wtpsav')","INSTALL_TYPE",,
 "WTP","HOOKS","wtpsrc",,,"HOOK_NAME, SEQ",,
 "WTP","WT_SELF_TEST","wtptst",,,"ID",,

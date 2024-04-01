@@ -1,0 +1,66 @@
+
+--
+--  Create WTP.WT_DBOUT_RUNS Table
+--
+--  NOTE: Foreign keys are in a different script
+--        Indexes are in a different script
+--        Triggers are in a different script
+--
+
+set define off
+
+
+--DBMS_METADATA:WTP.WT_DBOUT_RUNS
+
+  CREATE TABLE "WTP"."WT_DBOUT_RUNS" 
+   (	"TEST_RUN_ID" NUMBER(38,0) CONSTRAINT "WT_DBOUT_RUNS_NN1" NOT NULL ENABLE, 
+	"PROFILER_RUNID" NUMBER(38,0) CONSTRAINT "WT_DBOUT_RUNS_NN2" NOT NULL ENABLE, 
+	"TRIGGER_OFFSET" NUMBER(6,0), 
+	"COVERAGE_PCT" NUMBER(4,1), 
+	"PROFILED_LINES" NUMBER(6,0), 
+	"EXECUTED_LINES" NUMBER(6,0), 
+	"IGNORED_LINES" NUMBER(6,0), 
+	"EXCLUDED_LINES" NUMBER(6,0), 
+	"NOTEXEC_LINES" NUMBER(6,0), 
+	"UNKNOWN_LINES" NUMBER(6,0), 
+	"EXEC_MIN_USEC" NUMBER(11,0), 
+	"EXEC_AVG_USEC" NUMBER(11,0), 
+	"EXEC_MAX_USEC" NUMBER(11,0), 
+	"EXEC_TOT_USEC" NUMBER(11,0)
+   ) SEGMENT CREATION DEFERRED  LOGGING;
+ALTER TABLE "WTP"."WT_DBOUT_RUNS" ADD CONSTRAINT "WT_DBOUT_RUNS_PK" PRIMARY KEY ("TEST_RUN_ID")
+  USING INDEX  ENABLE;
+ALTER TABLE "WTP"."WT_DBOUT_RUNS" ADD CONSTRAINT "WT_DBOUT_RUNS_NK1" UNIQUE ("PROFILER_RUNID")
+  USING INDEX  ENABLE;
+
+--  Comments
+
+--DBMS_METADATA:WTP.WT_DBOUT_RUNS
+
+   COMMENT ON COLUMN "WTP"."WT_DBOUT_RUNS"."TEST_RUN_ID" IS 'Primary (Surrogate) Key of each Test Run';
+   COMMENT ON COLUMN "WTP"."WT_DBOUT_RUNS"."PROFILER_RUNID" IS '(Required) DBMS_PROFILER unique run identifier from plsql_profiler_runnumber sequence';
+   COMMENT ON COLUMN "WTP"."WT_DBOUT_RUNS"."TRIGGER_OFFSET" IS 'Calculated offset from start of Trigger Source to start of Trigger PL/SQL Block.';
+   COMMENT ON COLUMN "WTP"."WT_DBOUT_RUNS"."COVERAGE_PCT" IS 'Percentage of executed lines to non-ignored, non-excluded lines';
+   COMMENT ON COLUMN "WTP"."WT_DBOUT_RUNS"."PROFILED_LINES" IS 'Total number of source lines as counted by DBMS_PROFILER';
+   COMMENT ON COLUMN "WTP"."WT_DBOUT_RUNS"."EXECUTED_LINES" IS 'Number of source lines executed';
+   COMMENT ON COLUMN "WTP"."WT_DBOUT_RUNS"."IGNORED_LINES" IS 'Number of source lines ignored as uncountable';
+   COMMENT ON COLUMN "WTP"."WT_DBOUT_RUNS"."EXCLUDED_LINES" IS 'Number of declaration source lines (non-executable) excluded';
+   COMMENT ON COLUMN "WTP"."WT_DBOUT_RUNS"."NOTEXEC_LINES" IS 'Number of source lines not executed';
+   COMMENT ON COLUMN "WTP"."WT_DBOUT_RUNS"."UNKNOWN_LINES" IS 'Number of source lines with unknown DBMS_PROFILER metrics';
+   COMMENT ON COLUMN "WTP"."WT_DBOUT_RUNS"."EXEC_MIN_USEC" IS 'Minumum execution time for a line of source in microseconds';
+   COMMENT ON COLUMN "WTP"."WT_DBOUT_RUNS"."EXEC_AVG_USEC" IS 'Average execution time for a line of source in microseconds';
+   COMMENT ON COLUMN "WTP"."WT_DBOUT_RUNS"."EXEC_MAX_USEC" IS 'Maximum execution time for a line of source in microseconds';
+   COMMENT ON COLUMN "WTP"."WT_DBOUT_RUNS"."EXEC_TOT_USEC" IS 'Total (Sum) of execution times for a line of source in microseconds';
+   COMMENT ON TABLE "WTP"."WT_DBOUT_RUNS"  IS 'Database Object Under Test Run data for each Test Run.';
+
+
+--  Grants
+grant DELETE on "WTP"."WT_DBOUT_RUNS" to "PUBLIC";
+grant INSERT on "WTP"."WT_DBOUT_RUNS" to "PUBLIC";
+grant SELECT on "WTP"."WT_DBOUT_RUNS" to "PUBLIC";
+
+
+--  Synonyms
+
+
+set define on

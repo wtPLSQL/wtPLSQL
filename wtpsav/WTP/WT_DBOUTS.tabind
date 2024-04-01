@@ -1,0 +1,16 @@
+
+--
+--  Create Indexes for WTP.WT_DBOUTS TABLE
+--
+
+set define off
+
+
+--  NOTE: This is a "TARGET" Index
+
+--DBMS_METADATA:WTP.WT_DBOUTS_IX1
+
+  CREATE INDEX "WTP"."WT_DBOUTS_IX1" ON "WTP"."WT_DBOUTS" ("TYPE", "OWNER") 
+  ;
+
+set define on

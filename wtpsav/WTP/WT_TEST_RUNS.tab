@@ -1,0 +1,78 @@
+
+--
+--  Create WTP.WT_TEST_RUNS Table
+--
+--  NOTE: Foreign keys are in a different script
+--        Indexes are in a different script
+--        Triggers are in a different script
+--
+
+set define off
+
+
+--DBMS_METADATA:WTP.WT_TEST_RUNS
+
+  CREATE TABLE "WTP"."WT_TEST_RUNS" 
+   (	"ID" NUMBER(38,0), 
+	"TEST_RUNNER_ID" NUMBER(38,0) CONSTRAINT "WT_TEST_RUNS_NN1" NOT NULL ENABLE, 
+	"START_DTM" TIMESTAMP (3) WITH LOCAL TIME ZONE CONSTRAINT "WT_TEST_RUNS_NN2" NOT NULL ENABLE, 
+	"END_DTM" TIMESTAMP (3) WITH LOCAL TIME ZONE, 
+	"DBOUT_ID" NUMBER(38,0), 
+	"RUNNER_SEC" NUMBER(6,1), 
+	"IS_LAST_RUN" VARCHAR2(1 BYTE), 
+	"ERROR_MESSAGE" VARCHAR2(4000 BYTE), 
+	"TC_CNT" NUMBER(7,0), 
+	"TC_FAIL" NUMBER(7,0), 
+	"TC_YIELD_PCT" NUMBER(4,1), 
+	"ASRT_FST_DTM" TIMESTAMP (3) WITH LOCAL TIME ZONE, 
+	"ASRT_LST_DTM" TIMESTAMP (3) WITH LOCAL TIME ZONE, 
+	"ASRT_CNT" NUMBER(7,0), 
+	"ASRT_FAIL" NUMBER(7,0), 
+	"ASRT_YIELD_PCT" NUMBER(4,1), 
+	"ASRT_MIN_MSEC" NUMBER(10,0), 
+	"ASRT_AVG_MSEC" NUMBER(10,0), 
+	"ASRT_MAX_MSEC" NUMBER(10,0), 
+	"ASRT_TOT_MSEC" NUMBER(10,0)
+   ) SEGMENT CREATION DEFERRED  LOGGING;
+ALTER TABLE "WTP"."WT_TEST_RUNS" ADD CONSTRAINT "WT_TEST_RUNS_PK" PRIMARY KEY ("ID")
+  USING INDEX  ENABLE;
+ALTER TABLE "WTP"."WT_TEST_RUNS" ADD CONSTRAINT "WT_TEST_RUNS_NK1" UNIQUE ("TEST_RUNNER_ID", "START_DTM")
+  USING INDEX  ENABLE;
+
+--  Comments
+
+--DBMS_METADATA:WTP.WT_TEST_RUNS
+
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNS"."ID" IS 'Primary (Surrogate) Key for each Test Run';
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNS"."TEST_RUNNER_ID" IS '(Required) Surrogate Key the Test Runner package. Natural Key 1 part 1';
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNS"."START_DTM" IS '(Required) Date/time (and fractional seconds) this Test Run started. Natural Key 1 part 2';
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNS"."END_DTM" IS 'Date/time (and fractional seconds) this Test Run ended.';
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNS"."DBOUT_ID" IS 'Surrogate Key to the Database Object Under Test (DBOUT).';
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNS"."RUNNER_SEC" IS 'Total Runtime for Test Runner in Seconds';
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNS"."IS_LAST_RUN" IS 'Flag "Y" to indicate this is the most recent run for this package owner/name';
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNS"."ERROR_MESSAGE" IS 'Error messages from this Test Run.';
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNS"."TC_CNT" IS 'Number of Test Cases';
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNS"."TC_FAIL" IS 'Number of Failed Test Cases';
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNS"."TC_YIELD_PCT" IS 'Percentage of successful test cases to total Test Cases.';
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNS"."ASRT_FST_DTM" IS 'Date/Time of First Assertion';
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNS"."ASRT_LST_DTM" IS 'Date/Time of Last Assertion';
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNS"."ASRT_CNT" IS 'Number of Assertions across all Test Cases';
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNS"."ASRT_FAIL" IS 'Number of Assertion Failures across all Test Cases';
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNS"."ASRT_YIELD_PCT" IS 'Percentage of successful assertions to total assertions.';
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNS"."ASRT_MIN_MSEC" IS 'Minumum Assertion Interval in Milliseconds across all Test Cases';
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNS"."ASRT_AVG_MSEC" IS 'Average Assertion Interval in Milliseconds across all Test Cases';
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNS"."ASRT_MAX_MSEC" IS 'Maximum Assertion Interval in Milliseconds across all Test Cases';
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNS"."ASRT_TOT_MSEC" IS 'Total Assertion Intervals in Milliseconds across all Test Cases';
+   COMMENT ON TABLE "WTP"."WT_TEST_RUNS"  IS 'Test Run data for each execution of a Test Runner.';
+
+
+--  Grants
+grant DELETE on "WTP"."WT_TEST_RUNS" to "PUBLIC";
+grant INSERT on "WTP"."WT_TEST_RUNS" to "PUBLIC";
+grant SELECT on "WTP"."WT_TEST_RUNS" to "PUBLIC";
+
+
+--  Synonyms
+
+
+set define on

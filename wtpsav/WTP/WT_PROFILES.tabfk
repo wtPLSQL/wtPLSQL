@@ -1,0 +1,16 @@
+
+--
+--  Create Foreign Keys for WTP.WT_PROFILES TABLE
+--
+
+set define off
+
+
+--  NOTE: This is a "BASE TABLE" Foreign Key
+
+--DBMS_METADATA:WTP.WT_PROFILES_FK1
+
+  ALTER TABLE "WTP"."WT_PROFILES" ADD CONSTRAINT "WT_PROFILES_FK1" FOREIGN KEY ("TEST_RUN_ID")
+	  REFERENCES "WTP"."WT_TEST_RUNS" ("ID") ENABLE;
+
+set define on

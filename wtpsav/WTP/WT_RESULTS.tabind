@@ -1,0 +1,16 @@
+
+--
+--  Create Indexes for WTP.WT_RESULTS TABLE
+--
+
+set define off
+
+
+--  NOTE: This is a "TARGET" Index
+
+--DBMS_METADATA:WTP.WT_RESULTS_IX1
+
+  CREATE INDEX "WTP"."WT_RESULTS_IX1" ON "WTP"."WT_RESULTS" ("TESTCASE_ID", "TEST_RUN_ID") 
+  ;
+
+set define on

@@ -4065,7 +4065,7 @@ begin
             null;
       END;
       script_put_line(fh, '');
-      --get_object_grants(fh, buf1.view_name, 'VIEW');
+      get_object_grants(fh, buf1.view_name, 'VIEW');
       get_synonyms(fh, buf1.view_name, 'VIEW', common_util.MAX_SQL_LEN);
       script_put_line(fh, '');
       script_put_line(fh, 'set define on');

@@ -1,0 +1,53 @@
+
+--
+--  Create WTP.WT_RESULTS Table
+--
+--  NOTE: Foreign keys are in a different script
+--        Indexes are in a different script
+--        Triggers are in a different script
+--
+
+set define off
+
+
+--DBMS_METADATA:WTP.WT_RESULTS
+
+  CREATE TABLE "WTP"."WT_RESULTS" 
+   (	"TEST_RUN_ID" NUMBER(38,0) CONSTRAINT "WT_RESULTS_NN1" NOT NULL ENABLE, 
+	"RESULT_SEQ" NUMBER(8,0) CONSTRAINT "WT_RESULTS_NN2" NOT NULL ENABLE, 
+	"TESTCASE_ID" NUMBER(38,0), 
+	"EXECUTED_DTM" TIMESTAMP (6), 
+	"INTERVAL_MSEC" NUMBER(10,3), 
+	"ASSERTION" VARCHAR2(15 BYTE), 
+	"STATUS" VARCHAR2(4 BYTE), 
+	"MESSAGE" VARCHAR2(200 BYTE), 
+	"DETAILS" VARCHAR2(4000 BYTE)
+   ) SEGMENT CREATION DEFERRED  LOGGING;
+ALTER TABLE "WTP"."WT_RESULTS" ADD CONSTRAINT "WT_RESULTS_PK" PRIMARY KEY ("TEST_RUN_ID", "RESULT_SEQ")
+  USING INDEX  ENABLE;
+
+--  Comments
+
+--DBMS_METADATA:WTP.WT_RESULTS
+
+   COMMENT ON COLUMN "WTP"."WT_RESULTS"."TEST_RUN_ID" IS 'Foreign Key for the Test Run, Primary Key part 1.';
+   COMMENT ON COLUMN "WTP"."WT_RESULTS"."RESULT_SEQ" IS 'Sequence number for this Result, Primary Key part 2.';
+   COMMENT ON COLUMN "WTP"."WT_RESULTS"."TESTCASE_ID" IS 'Foreign Key for the Test Case.';
+   COMMENT ON COLUMN "WTP"."WT_RESULTS"."EXECUTED_DTM" IS 'Date/Time (with Fractional Seconds) this Result was captured';
+   COMMENT ON COLUMN "WTP"."WT_RESULTS"."INTERVAL_MSEC" IS 'Interval time in milliseconds since the previous Result or start of the Test Run.';
+   COMMENT ON COLUMN "WTP"."WT_RESULTS"."ASSERTION" IS 'Name of the Assertion Test performed';
+   COMMENT ON COLUMN "WTP"."WT_RESULTS"."STATUS" IS 'PASS/FAIL Status from the Assertion';
+   COMMENT ON COLUMN "WTP"."WT_RESULTS"."MESSAGE" IS 'Optional test identifier that helps connect an Assertion to the Test Runner.';
+   COMMENT ON COLUMN "WTP"."WT_RESULTS"."DETAILS" IS 'Assertion Details, i.e. Expected Value and Actual Value';
+   COMMENT ON TABLE "WTP"."WT_RESULTS"  IS 'Results data from Test Runs.';
+
+
+--  Grants
+grant DELETE on "WTP"."WT_RESULTS" to "PUBLIC";
+grant SELECT on "WTP"."WT_RESULTS" to "PUBLIC";
+
+
+--  Synonyms
+
+
+set define on

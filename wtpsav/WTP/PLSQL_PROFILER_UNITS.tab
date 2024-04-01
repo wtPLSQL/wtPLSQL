@@ -1,0 +1,51 @@
+
+--
+--  Create WTP.PLSQL_PROFILER_UNITS Table
+--
+--  NOTE: Foreign keys are in a different script
+--        Indexes are in a different script
+--        Triggers are in a different script
+--
+
+set define off
+
+
+--DBMS_METADATA:WTP.PLSQL_PROFILER_UNITS
+
+  CREATE TABLE "WTP"."PLSQL_PROFILER_UNITS" 
+   (	"RUNID" NUMBER, 
+	"UNIT_NUMBER" NUMBER, 
+	"UNIT_TYPE" VARCHAR2(32 BYTE), 
+	"UNIT_OWNER" VARCHAR2(32 BYTE), 
+	"UNIT_NAME" VARCHAR2(32 BYTE), 
+	"UNIT_TIMESTAMP" DATE, 
+	"TOTAL_TIME" NUMBER DEFAULT 0 NOT NULL ENABLE, 
+	"SPARE1" NUMBER, 
+	"SPARE2" NUMBER
+   ) SEGMENT CREATION DEFERRED  LOGGING;
+ALTER TABLE "WTP"."PLSQL_PROFILER_UNITS" ADD PRIMARY KEY ("RUNID", "UNIT_NUMBER")
+  USING INDEX  ENABLE;
+
+--  Comments
+
+--DBMS_METADATA:WTP.PLSQL_PROFILER_UNITS
+
+   COMMENT ON COLUMN "WTP"."PLSQL_PROFILER_UNITS"."RUNID" IS '(Primary key) References plsql_profiler_runs';
+   COMMENT ON COLUMN "WTP"."PLSQL_PROFILER_UNITS"."UNIT_NUMBER" IS '(Primary key) Internally generated library unit #';
+   COMMENT ON COLUMN "WTP"."PLSQL_PROFILER_UNITS"."UNIT_TYPE" IS 'Library unit type';
+   COMMENT ON COLUMN "WTP"."PLSQL_PROFILER_UNITS"."UNIT_OWNER" IS 'Library unit owner name';
+   COMMENT ON COLUMN "WTP"."PLSQL_PROFILER_UNITS"."UNIT_NAME" IS 'Library unit name timestamp on library unit';
+   COMMENT ON COLUMN "WTP"."PLSQL_PROFILER_UNITS"."UNIT_TIMESTAMP" IS 'In the future will be used to detect changes to unit between runs';
+   COMMENT ON COLUMN "WTP"."PLSQL_PROFILER_UNITS"."TOTAL_TIME" IS 'Total time spent in this unit in nanoseconds. The profiler does not set this field, but it is provided for the convenience of analysis tools';
+   COMMENT ON COLUMN "WTP"."PLSQL_PROFILER_UNITS"."SPARE1" IS 'Unused';
+   COMMENT ON COLUMN "WTP"."PLSQL_PROFILER_UNITS"."SPARE2" IS 'Unused';
+   COMMENT ON TABLE "WTP"."PLSQL_PROFILER_UNITS"  IS 'Table of program units for DBMS_PROFILER';
+
+
+--  Grants
+
+
+--  Synonyms
+
+
+set define on

@@ -1,0 +1,43 @@
+
+--
+--  Create WTP.WT_TEST_RUNNERS Table
+--
+--  NOTE: Foreign keys are in a different script
+--        Indexes are in a different script
+--        Triggers are in a different script
+--
+
+set define off
+
+
+--DBMS_METADATA:WTP.WT_TEST_RUNNERS
+
+  CREATE TABLE "WTP"."WT_TEST_RUNNERS" 
+   (	"ID" NUMBER(38,0) CONSTRAINT "WT_TEST_RUNNERS_NN1" NOT NULL ENABLE, 
+	"OWNER" VARCHAR2(128 BYTE) CONSTRAINT "WT_TEST_RUNNERS_NN2" NOT NULL ENABLE, 
+	"NAME" VARCHAR2(128 BYTE) CONSTRAINT "WT_TEST_RUNNERS_NN3" NOT NULL ENABLE
+   ) SEGMENT CREATION DEFERRED  LOGGING;
+ALTER TABLE "WTP"."WT_TEST_RUNNERS" ADD CONSTRAINT "WT_TEST_RUNNERS_PK" PRIMARY KEY ("ID")
+  USING INDEX  ENABLE;
+ALTER TABLE "WTP"."WT_TEST_RUNNERS" ADD CONSTRAINT "WT_TEST_RUNNERS_NK1" UNIQUE ("OWNER", "NAME")
+  USING INDEX  ENABLE;
+
+--  Comments
+
+--DBMS_METADATA:WTP.WT_TEST_RUNNERS
+
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNNERS"."ID" IS 'Primary (Surrogate) Key for each Test Runner';
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNNERS"."OWNER" IS 'Owner of the Test Runner package. Natural Key 1 part 1';
+   COMMENT ON COLUMN "WTP"."WT_TEST_RUNNERS"."NAME" IS 'Name of the Test Runner package. Natural Key 1 part 2';
+   COMMENT ON TABLE "WTP"."WT_TEST_RUNNERS"  IS 'List of Test Runners.';
+
+
+--  Grants
+grant DELETE on "WTP"."WT_TEST_RUNNERS" to "PUBLIC";
+grant SELECT on "WTP"."WT_TEST_RUNNERS" to "PUBLIC";
+
+
+--  Synonyms
+
+
+set define on

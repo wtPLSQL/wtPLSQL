@@ -1,0 +1,41 @@
+
+--
+--  Create WTP.WT_TESTCASES Table
+--
+--  NOTE: Foreign keys are in a different script
+--        Indexes are in a different script
+--        Triggers are in a different script
+--
+
+set define off
+
+
+--DBMS_METADATA:WTP.WT_TESTCASES
+
+  CREATE TABLE "WTP"."WT_TESTCASES" 
+   (	"ID" NUMBER(38,0), 
+	"TESTCASE" VARCHAR2(128 BYTE) CONSTRAINT "WT_TESTCASES_NN1" NOT NULL ENABLE
+   ) SEGMENT CREATION DEFERRED  LOGGING;
+ALTER TABLE "WTP"."WT_TESTCASES" ADD CONSTRAINT "WT_TESTCASES_PK" PRIMARY KEY ("ID")
+  USING INDEX  ENABLE;
+ALTER TABLE "WTP"."WT_TESTCASES" ADD CONSTRAINT "WT_TESTCASES_NK1" UNIQUE ("TESTCASE")
+  USING INDEX  ENABLE;
+
+--  Comments
+
+--DBMS_METADATA:WTP.WT_TESTCASES
+
+   COMMENT ON COLUMN "WTP"."WT_TESTCASES"."ID" IS 'Primary (Surrogate) Key for each Test Case';
+   COMMENT ON COLUMN "WTP"."WT_TESTCASES"."TESTCASE" IS '(Required) Natural Key. The Test Case name';
+   COMMENT ON TABLE "WTP"."WT_TESTCASES"  IS 'Test Cases Used by Test Runners.';
+
+
+--  Grants
+grant DELETE on "WTP"."WT_TESTCASES" to "PUBLIC";
+grant SELECT on "WTP"."WT_TESTCASES" to "PUBLIC";
+
+
+--  Synonyms
+
+
+set define on

@@ -1,0 +1,16 @@
+
+--
+--  Create Indexes for WTP.PLSQL_PROFILER_RUNS TABLE
+--
+
+set define off
+
+
+--  NOTE: This is a "TARGET" Index
+
+--DBMS_METADATA:WTP.PLSQL_PROFILER_RUNS_IDX1
+
+  CREATE INDEX "WTP"."PLSQL_PROFILER_RUNS_IDX1" ON "WTP"."PLSQL_PROFILER_RUNS" ("RUN_DATE") 
+  ;
+
+set define on
