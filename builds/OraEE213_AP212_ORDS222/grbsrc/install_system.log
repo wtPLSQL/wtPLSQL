@@ -1,0 +1,40 @@
+=== DBI Started: SYSTEM/GRAB_SCRIPTS_DIR.dir
+
+Directory created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2024-04-03T13:43:57 for a duration of .16 seconds (started at 2024-04-03T13:43:57)
+=== DBI Started: SYSTEM/ODBCAPTURE_usr.grnt
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2024-04-03T13:43:57 for a duration of .28 seconds (started at 2024-04-03T13:43:57)

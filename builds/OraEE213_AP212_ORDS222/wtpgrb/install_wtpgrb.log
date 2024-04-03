@@ -1,0 +1,139 @@
+=== DBI Started: ./installation_prepare.sql
+
+Create_Temp_Publicly_Updateable_Table_SQL
+
+Table created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2024-04-03T13:44:30 for a duration of .09 seconds (started at 2024-04-03T13:44:30)
+=== DBI Started: ODBCAPTURE/DLOAD_CONF.cdl
+
+Disable Triggers and Foreign Keys
+alter table "ODBCAPTURE"."DLOAD_CONF" DISABLE constraint "DLOAD_CONF_FK1";
+alter table "ODBCAPTURE"."DLOAD_CONF" DISABLE constraint "DLOAD_CONF_FK2";
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/DLOAD_CONF.ctl
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2024-04-03T13:44:31 for a duration of 1.28 seconds (started at 2024-04-03T13:44:30)
+=== DBI Started: ODBCAPTURE/OBJECT_CONF.cdl
+
+Disable Triggers and Foreign Keys
+alter table "ODBCAPTURE"."OBJECT_CONF" DISABLE constraint "OBJECT_CONF_FK1";
+alter table "ODBCAPTURE"."OBJECT_CONF" DISABLE constraint "OBJECT_CONF_FK2";
+alter table "ODBCAPTURE"."OBJECT_CONF" DISABLE constraint "OBJECT_CONF_FK3";
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/OBJECT_CONF.ctl
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2024-04-03T13:44:32 for a duration of 1.3 seconds (started at 2024-04-03T13:44:31)
+=== DBI Started: ODBCAPTURE/ROLE_CONF.cdl
+
+Disable Triggers and Foreign Keys
+alter table "ODBCAPTURE"."ROLE_CONF" DISABLE constraint "ROLE_CONF_FK1";
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/ROLE_CONF.ctl
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2024-04-03T13:44:34 for a duration of 1.28 seconds (started at 2024-04-03T13:44:32)
+=== DBI Started: ODBCAPTURE/SCHEMA_CONF.cdl
+
+Disable Triggers and Foreign Keys
+alter table "ODBCAPTURE"."SCHEMA_CONF" DISABLE constraint "SCHEMA_CONF_FK1";
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/SCHEMA_CONF.ctl
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2024-04-03T13:44:35 for a duration of 1.24 seconds (started at 2024-04-03T13:44:34)
+=== DBI Started: ODBCAPTURE/TYPE_CONF.cdl
+
+Disable Triggers and Foreign Keys
+alter table "ODBCAPTURE"."TYPE_CONF" DISABLE constraint "TYPE_CONF_FK1";
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/TYPE_CONF.ctl
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2024-04-03T13:44:36 for a duration of 1.24 seconds (started at 2024-04-03T13:44:35)
+=== DBI Started: ./installation_finalize.sql
+
+Drop_Temp_Publicly_Updateable_Table_SQL
+
+Table dropped.
+
+
+alter_foreign_keys_ENABLE
+Alter Foreign Keys for wtpgrb Install Type
+alter table "ODBCAPTURE"."DLOAD_CONF" ENABLE constraint "DLOAD_CONF_FK1";
+alter table "ODBCAPTURE"."DLOAD_CONF" ENABLE constraint "DLOAD_CONF_FK2";
+alter table "ODBCAPTURE"."OBJECT_CONF" ENABLE constraint "OBJECT_CONF_FK1";
+alter table "ODBCAPTURE"."OBJECT_CONF" ENABLE constraint "OBJECT_CONF_FK2";
+alter table "ODBCAPTURE"."OBJECT_CONF" ENABLE constraint "OBJECT_CONF_FK3";
+alter table "ODBCAPTURE"."ROLE_CONF" ENABLE constraint "ROLE_CONF_FK1";
+alter table "ODBCAPTURE"."SCHEMA_CONF" ENABLE constraint "SCHEMA_CONF_FK1";
+alter table "ODBCAPTURE"."TYPE_CONF" ENABLE constraint "TYPE_CONF_FK1";
+-- ODBCAPTURE Alter Foreign Keys is done.
+
+PL/SQL procedure successfully completed.
+
+
+alter_triggers_ENABLE
+Alter Triggers for wtpgrb Install Type
+-- ODBCAPTURE Alter Triggers is done.
+
+PL/SQL procedure successfully completed.
+
+
+update_id_sequences
+Update ID Sequences for wtpgrb Install Type
+-- ODBCAPTURE Identity Sequence Updates is done.
+
+PL/SQL procedure successfully completed.
+
+
+Load Installation Files
+
+Confirm/Create odbcapture_installation_logs Table
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=./odbcapture_installation_logs.ctl
+
+
+PL/SQL procedure successfully completed.
+
+
+compile_all
+Compile All for wtpgrb Install Type
+-- ODBCAPTURE Compile All is done.
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2024-04-03T13:44:39 for a duration of 2.75 seconds (started at 2024-04-03T13:44:36)

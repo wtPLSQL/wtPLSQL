@@ -29,9 +29,9 @@ set timing on
 @"&BUTIL_PATH./new_session.sql" "&PDB_SYS." "" ""
 set timing off
 @"install.sql" "&PDB_SYSTEM." "" ""
-insert into wt_versions (component, version, action)
+insert into WTP.wt_versions (component, version, action)
    values ('&INSTALL_TYPE.', '&APP_VERSION.', 'INSTALL');
 commit;
---@"&BUTIL_PATH./fix_invalid_public_synonyms.sql"
+@"&BUTIL_PATH./fix_invalid_public_synonyms.sql"
 
 exit

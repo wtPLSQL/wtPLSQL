@@ -1,40 +1,76 @@
 
 --
---  JUnit Core Report Installation
+--  Master Installation Script
+--    All scripts created by "https://ODBCapture.org", Version V2.1
+--
+--  Must be run as SYS
+--
+-- Command Line Parameters:
+--   1 - TO_PDB_SYSTEM: SYSTEM/password@TNSALIAS
+--       i.e. pass the username and password for the SYSTEM user
+--            and the TNSALIAS for the connection to the pluggable database.
+--       The Data Load installation requires this connection information.
 --
 
---
--- NOTE: Must be run using "wtPLSQL.test_all".
---       "wtPLSQL.test_run" will not provide
---       a complete JUnit XML document.
---
+--  NOTE: If running in a Linux based Docker Container from a Windows FileSystem Mount, run this first:
+--    dos2unix -f -o ../install/*/*.csv ../install/*/*/*.csv
 
--- Capture output
-spool junit_core_install
+define TOP_PDB_SYSTEM="&1."
+execute DBMS_JAVA.SET_OUTPUT(1000000);
+set serveroutput on size unlimited format wrapped
 
--- Connect as SCHEMA_OWNER
-connect &schema_owner./&schema_owner.&connect_string.
-set serveroutput on size unlimited format truncated
+----------------------------------------
+prompt Identify this Module in V$SESSION
+set appinfo "wtpjun Installation"
 
--- Shared Setup Script
-@../common_setup.sql
+----------------------------------------
+prompt Setup Abort on Error
+WHENEVER SQLERROR EXIT SQL.SQLCODE
+WHENEVER OSERROR EXIT
 
--- Install Packages
-@junit_core_report.pks
-@junit_core_report.pkb
+----------------------------------------
+prompt
+prompt **************************
+prompt *  Run SYS Installation  *
+prompt **************************
+prompt
+@install_sys.sql "" "" ""
 
--- Install Hooks
-insert into hooks (hook_name, seq, run_string)
-   values ('before_test_all', 20, 'begin junit_core_report.before_test_all; end;');
-update hooks set run_string = 'begin junit_core_report.show_current; end;'
- where hook_name = 'after_test_run'
-  and  run_string = 'begin wt_core_report.dbms_out(10); end;';
-insert into hooks (hook_name, seq, run_string)
-   values ('after_test_all', 20, 'begin junit_core_report.after_test_all; end;');
-commit;
-begin
-   hook.init;
-end;
-/
+----------------------------------------
+prompt Setup Continue on Error
+WHENEVER SQLERROR CONTINUE
+WHENEVER OSERROR CONTINUE
 
-spool off
+----------------------------------------
+prompt
+prompt *****************************
+prompt *  Run SYSTEM Installation  *
+prompt *****************************
+prompt
+connect &TOP_PDB_SYSTEM.
+execute DBMS_JAVA.SET_OUTPUT(1000000);
+set serveroutput on size unlimited format wrapped
+@install_system.sql "" "" ""
+
+----------------------------------------
+prompt
+prompt *************************
+prompt *  Install Application  *
+prompt *************************
+prompt
+@install_wtpjun.sql "&TOP_PDB_SYSTEM." "" ""
+
+----------------------------------------
+prompt
+prompt *****************
+prompt *  Run Reports  *
+prompt *****************
+prompt
+@report_status.sql "&TOP_PDB_SYSTEM." "" ""
+
+----------------------------------------
+set appinfo "Null"
+set appinfo off
+prompt
+prompt "wtpjun" Installation is Done.
+

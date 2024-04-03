@@ -1,0 +1,255 @@
+=== DBI Started: ./installation_prepare.sql
+
+Create_Temp_Publicly_Updateable_Table_SQL
+
+Table created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2024-04-03T13:42:46 for a duration of .23 seconds (started at 2024-04-03T13:42:46)
+=== DBI Started: WTP/WT_EXECUTE_TEST_RUNNER.proc
+
+Warning: Procedure created with compilation errors.
+
+
+Grant succeeded.
+
+
+Synonym created.
+
+=== DBI Completed at 2024-04-03T13:42:46 for a duration of .3 seconds (started at 2024-04-03T13:42:46)
+=== DBI Started: WTP/CORE_DATA.pspec
+
+Package created.
+
+=== DBI Completed at 2024-04-03T13:42:46 for a duration of .16 seconds (started at 2024-04-03T13:42:46)
+=== DBI Started: WTP/HOOK.pspec
+
+Package created.
+
+=== DBI Completed at 2024-04-03T13:42:46 for a duration of .06 seconds (started at 2024-04-03T13:42:46)
+=== DBI Started: WTP/WTPLSQL.pspec
+
+Package created.
+
+
+Grant succeeded.
+
+
+Synonym created.
+
+
+Synonym created.
+
+=== DBI Completed at 2024-04-03T13:42:47 for a duration of .17 seconds (started at 2024-04-03T13:42:46)
+=== DBI Started: WTP/WT_ASSERT.pspec
+
+Package created.
+
+
+Grant succeeded.
+
+
+Synonym created.
+
+
+Synonym created.
+
+=== DBI Completed at 2024-04-03T13:42:47 for a duration of .26 seconds (started at 2024-04-03T13:42:47)
+=== DBI Started: WTP/WT_CORE_REPORT.pspec
+
+Package created.
+
+
+Grant succeeded.
+
+
+Synonym created.
+
+=== DBI Completed at 2024-04-03T13:42:47 for a duration of .15 seconds (started at 2024-04-03T13:42:47)
+=== DBI Started: WTP/HOOKS.tab
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+=== DBI Completed at 2024-04-03T13:43:03 for a duration of 16.25 seconds (started at 2024-04-03T13:42:47)
+=== DBI Started: WTP/WT_VERSIONS.tab
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Synonym created.
+
+=== DBI Completed at 2024-04-03T13:43:04 for a duration of .41 seconds (started at 2024-04-03T13:43:03)
+=== DBI Started: WTP/HOOKS.cdl
+
+Disable Triggers and Foreign Keys
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=WTP/HOOKS.ctl
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2024-04-03T13:43:07 for a duration of 3.28 seconds (started at 2024-04-03T13:43:04)
+=== DBI Started: WTP/WT_QUAL_TEST_RUNNERS_VW.vw
+
+View created.
+
+
+Grant succeeded.
+
+
+View created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2024-04-03T13:43:07 for a duration of .33 seconds (started at 2024-04-03T13:43:07)
+=== DBI Started: WTP/CORE_DATA.pbody
+
+Package body created.
+
+=== DBI Completed at 2024-04-03T13:43:07 for a duration of .11 seconds (started at 2024-04-03T13:43:07)
+=== DBI Started: WTP/HOOK.pbody
+
+Package body created.
+
+=== DBI Completed at 2024-04-03T13:43:08 for a duration of .1 seconds (started at 2024-04-03T13:43:07)
+=== DBI Started: WTP/WTPLSQL.pbody
+
+Package body created.
+
+=== DBI Completed at 2024-04-03T13:43:08 for a duration of .12 seconds (started at 2024-04-03T13:43:08)
+=== DBI Started: WTP/WT_ASSERT.pbody
+
+Package body created.
+
+=== DBI Completed at 2024-04-03T13:43:08 for a duration of .28 seconds (started at 2024-04-03T13:43:08)
+=== DBI Started: WTP/WT_CORE_REPORT.pbody
+
+Package body created.
+
+=== DBI Completed at 2024-04-03T13:43:08 for a duration of .11 seconds (started at 2024-04-03T13:43:08)
+=== DBI Started: ./installation_finalize.sql
+
+Drop_Temp_Publicly_Updateable_Table_SQL
+
+Table dropped.
+
+
+alter_foreign_keys_ENABLE
+Alter Foreign Keys for wtpsrc Install Type
+-- WTP Alter Foreign Keys is done.
+
+PL/SQL procedure successfully completed.
+
+
+alter_triggers_ENABLE
+Alter Triggers for wtpsrc Install Type
+-- WTP Alter Triggers is done.
+
+PL/SQL procedure successfully completed.
+
+
+update_id_sequences
+Update ID Sequences for wtpsrc Install Type
+-- WTP Identity Sequence Updates is done.
+
+PL/SQL procedure successfully completed.
+
+
+Load Installation Files
+
+Confirm/Create odbcapture_installation_logs Table
+create table odbcapture_installation_logs
+ (load_dtm date
+ ,install_type varchar2(10)
+ ,file_name varchar2(512)
+ ,contents clob);
+comment on column odbcapture_installation_logs.load_dtm is 'Date/Time the installation log file was loaded.';
+comment on column odbcapture_installation_logs.install_type is 'Type of installation (from TYPE_CONF).';
+comment on column odbcapture_installation_logs.file_name is 'Name of installation log file.';
+comment on column odbcapture_installation_logs.contents is 'Contents/Text of the installation log file.';
+comment on table odbcapture_installation_logs is 'ODBCAPTURE installation log files.';
+grant select on odbcapture_installation_logs to public;
+create public synonym odbcapture_installation_logs for odbcapture_installation_logs;
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=./odbcapture_installation_logs.ctl
+
+
+PL/SQL procedure successfully completed.
+
+
+compile_all
+Compile All for wtpsrc Install Type
+-- WTP Compile All is done.
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2024-04-03T13:43:16 for a duration of 7.59 seconds (started at 2024-04-03T13:43:08)

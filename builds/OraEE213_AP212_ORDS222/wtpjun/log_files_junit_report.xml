@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="install_sys.log" tests="0" errors="0" hostname="EE213CDB" id="1" time="0" timestamp="2024-04-03T13:43:31">
+  </testsuite>
+  <testsuite name="install_system.log" tests="0" errors="0" hostname="EE213CDB" id="2" time="0" timestamp="2024-04-03T13:43:31">
+  </testsuite>
+  <testsuite name="install_wtpjun.log" tests="4" errors="0" hostname="EE213CDB" id="3" time="1" timestamp="2024-04-03T13:43:31">
+    <testcase name="./installation_finalize.sql" assertions="" classname="..sql" status="PASS" time="">
+    </testcase>
+    <testcase name="./installation_prepare.sql" assertions="5" classname="..sql" status="PASS" time="0">
+      <system-out>
+=== DBI Started: ./installation_prepare.sql
+Create_Temp_Publicly_Updateable_Table_SQL
+Table created.
+Grant succeeded.
+=== DBI Completed at 2024-04-03T13:43:29 for a duration of .09 seconds (started at 2024-04-03T13:43:28)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/HOOKS.cdl" assertions="8" classname="WTP.cdl" status="PASS" time="1">
+      <system-out>
+=== DBI Started: WTP/HOOKS.cdl
+Disable Triggers and Foreign Keys
+PL/SQL procedure successfully completed.
+sqlldr_control=WTP/HOOKS.ctl
+PL/SQL procedure successfully completed.
+=== DBI Completed at 2024-04-03T13:43:30 for a duration of 1.34 seconds (started at 2024-04-03T13:43:29)
+### SQL*Loader Log File: WTP/HOOKS.log
+ORA-01422: exact fetch returns more than requested number of rows
+      </system-out>
+    </testcase>
+    <testcase name="WTP/JUNIT_CORE_REPORT.pbody" assertions="3" classname="WTP.pbody" status="PASS" time="0">
+      <system-out>
+=== DBI Started: WTP/JUNIT_CORE_REPORT.pbody
+Warning: Package Body created with compilation errors.
+=== DBI Completed at 2024-04-03T13:43:30 for a duration of .05 seconds (started at 2024-04-03T13:43:30)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/JUNIT_CORE_REPORT.pspec" assertions="3" classname="WTP.pspec" status="PASS" time="0">
+      <system-out>
+=== DBI Started: WTP/JUNIT_CORE_REPORT.pspec
+Package created.
+=== DBI Completed at 2024-04-03T13:43:29 for a duration of .06 seconds (started at 2024-04-03T13:43:29)
+      </system-out>
+    </testcase>
+  </testsuite>
+</testsuites>

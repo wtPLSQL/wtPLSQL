@@ -82,6 +82,7 @@ function clear_log_files {
 function move_log_files {
    echo ""
    echo "Move Log Files to Build Folder"
+   mkdir -p "${BUILD_PATH}/${INSTALL_TYPE}" 2> /dev/null
    ls *.xml *.log *.bad *.dsc 2>/dev/null |
       while read FILE
       do
@@ -90,7 +91,7 @@ function move_log_files {
    ls -F | grep '.*/$' |
       while read DIR
       do
-         mkdir "${BUILD_PATH}/${INSTALL_TYPE}/${DIR}" 2> /dev/null
+         mkdir -p "${BUILD_PATH}/${INSTALL_TYPE}/${DIR}" 2> /dev/null
          ls "${DIR}"*.log "${DIR}"*.bad "${DIR}"*.dsc 2> /dev/null |
             while read FILE
             do

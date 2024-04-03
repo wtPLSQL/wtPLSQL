@@ -1,0 +1,52 @@
+
+SQL*Loader: Release 21.0.0.0.0 - Production on Wed Apr 3 13:44:24 2024
+Version 21.3.0.0.0
+
+Copyright (c) 1982, 2021, Oracle and/or its affiliates.  All rights reserved.
+
+Control File:   odbcapture_installation_logs.ctl
+Data File:      odbcapture_installation_logs.csv
+  Bad File:     odbcapture_installation_logs.bad
+  Discard File:  none specified
+ 
+ (Allow all discards)
+
+Number to load: ALL
+Number to skip: 0
+Errors allowed: 50
+Bind array:     250 rows, maximum of 1048576 bytes
+Continuation:    none specified
+Path used:      Conventional
+Silent options: FEEDBACK
+Table "ODBCAPTURE_INSTALLATION_LOGS", loaded from every logical record.
+Insert option in effect for this table: APPEND
+
+   Column Name                  Position   Len  Term Encl Datatype
+------------------------------ ---------- ----- ---- ---- ---------------------
+LOAD_DTM                                                  SYSDATE
+INSTALL_TYPE                        FIRST    10   ,  O(") CHARACTER            
+FILE_NAME                            NEXT   512   ,  O(") CHARACTER            
+CONTENTS                          DERIVED     *  EOF      CHARACTER            
+    Dynamic LOBFILE.  Filename in field FILE_NAME
+
+
+Table "ODBCAPTURE_INSTALLATION_LOGS":
+  9 Rows successfully loaded.
+  0 Rows not loaded due to data errors.
+  0 Rows not loaded because all WHEN clauses were failed.
+  0 Rows not loaded because all fields were null.
+
+
+Space allocated for bind array:                 131500 bytes(250 rows)
+Read   buffer bytes: 1048576
+
+Total logical records skipped:          0
+Total logical records read:             9
+Total logical records rejected:         0
+Total logical records discarded:        0
+
+Run began on Wed Apr 03 13:44:24 2024
+Run ended on Wed Apr 03 13:44:25 2024
+
+Elapsed time was:     00:00:00.59
+CPU time was:         00:00:00.06

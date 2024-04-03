@@ -81,14 +81,14 @@ begin
    then
       ---------------------
       --  Test Suite Header
-      p('  <testsuite name="' ||      xe(core_data.g_run_rec.runner_owner)     ||
-                          '.' ||      xe(core_data.g_run_rec.runner_name)      ||
-              '" classname="' ||                   l_classname                 ||
-                  '" tests="' ||         core_data.g_run_rec.tc_cnt            ||
-               '" failures="' ||         core_data.g_run_rec.tc_fail           ||
-                   '" time="' ||         core_data.g_run_rec.runner_sec        ||
+      p('  <testsuite name="' ||      xe(core_data.g_run_rec.test_runner_owner) ||
+                          '.' ||      xe(core_data.g_run_rec.test_runner_name)  ||
+              '" classname="' ||                   l_classname                  ||
+                  '" tests="' ||         core_data.g_run_rec.tc_cnt             ||
+               '" failures="' ||         core_data.g_run_rec.tc_fail            ||
+                   '" time="' ||         core_data.g_run_rec.runner_sec         ||
               '" timestamp="' || to_char(core_data.g_run_rec.start_dtm
-                                        ,'YYYY-MM-DD"T"HH24:MI:SS.FF3TZH:TZM') ||
+                                        ,'YYYY-MM-DD"T"HH24:MI:SS.FF3TZH:TZM')  ||
                          '">' );
       l_testcase := core_data.g_tcases_aa.FIRST;
       loop

@@ -1,0 +1,58 @@
+
+SQL*Loader: Release 21.0.0.0.0 - Production on Wed Apr 3 13:43:21 2024
+Version 21.3.0.0.0
+
+Copyright (c) 1982, 2021, Oracle and/or its affiliates.  All rights reserved.
+
+Control File:   WTP/WT_SELF_TEST.ctl
+Data File:      WTP/WT_SELF_TEST.csv
+  Bad File:     WTP/WT_SELF_TEST.bad
+  Discard File:  none specified
+ 
+ (Allow all discards)
+
+Number to load: ALL
+Number to skip: 1
+Errors allowed: 50
+Bind array:     250 rows, maximum of 1048576 bytes
+Continuation:    none specified
+Path used:      Conventional
+Silent options: FEEDBACK
+Table "WTP"."WT_SELF_TEST", loaded from every logical record.
+Insert option in effect for this table: APPEND
+TRAILING NULLCOLS option in effect
+
+   Column Name                  Position   Len  Term Encl Datatype
+------------------------------ ---------- ----- ---- ---- ---------------------
+ID                                  FIRST     *   ,  O(") CHARACTER            
+TEMP_CLOB                            NEXT *****   ,  O(") CHARACTER            
+    Maximum field length is 1048576
+TEMP_NCLOB                           NEXT *****   ,  O(") CHARACTER            
+    Maximum field length is 1048576
+TEMP_XML                             NEXT *****   ,  O(") CHARACTER            
+    Maximum field length is 1048576
+TEMP_BLOB                            NEXT *****   ,  O(") CHARACTER            
+    Maximum field length is 1572864
+
+value used for ROWS parameter changed from 250 to 1
+
+Table "WTP"."WT_SELF_TEST":
+  2 Rows successfully loaded.
+  0 Rows not loaded due to data errors.
+  0 Rows not loaded because all WHEN clauses were failed.
+  0 Rows not loaded because all fields were null.
+
+
+Space allocated for bind array:                4718874 bytes(1 rows)
+Read   buffer bytes: 1048576
+
+Total logical records skipped:          1
+Total logical records read:             2
+Total logical records rejected:         0
+Total logical records discarded:        0
+
+Run began on Wed Apr 03 13:43:21 2024
+Run ended on Wed Apr 03 13:43:24 2024
+
+Elapsed time was:     00:00:03.24
+CPU time was:         00:00:00.05
