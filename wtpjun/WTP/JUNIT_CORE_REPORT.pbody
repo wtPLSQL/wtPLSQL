@@ -1,4 +1,14 @@
-create or replace package body junit_core_report
+
+--
+--  Create WTP.JUNIT_CORE_REPORT Package Body
+--
+
+set define off
+
+
+--DBMS_METADATA:WTP.JUNIT_CORE_REPORT
+
+  CREATE OR REPLACE EDITIONABLE PACKAGE BODY "WTP"."JUNIT_CORE_REPORT" 
 as
 
 
@@ -194,3 +204,6 @@ end after_test_all;
 
 
 end junit_core_report;
+/
+
+set define on

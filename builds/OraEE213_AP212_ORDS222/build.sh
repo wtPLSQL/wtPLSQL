@@ -100,16 +100,15 @@ function move_log_files {
    }
 
 ########################################
-# Run the builds
-for INSTALL_TYPE in 'grbsrc' 'grbdat' 'grbtst'
-do
+function run_build {
+   INSTALL_TYPE="${1}"
    clear_log_files
    echo ""
    echo "Move to ../../${INSTALL_TYPE}"
    cd "../../${INSTALL_TYPE}"
    echo ""
-   echo "${BUILD_PATH}/build_${INSTALL_TYPE}.sql"
-   sqlplus /nolog "@${BUILD_PATH}/build.sql" "${BUTIL_PATH}" "${PDB_SYS}" "${PDB_SYSTEM}"
+   echo "${BUILD_PATH}/build.sql ${INSTALL_TYPE}"
+   sqlplus /nolog "@${BUILD_PATH}/build.sql" "${BUTIL_PATH}" "${PDB_SYS}" "${PDB_SYSTEM}" "${INSTALL_TYPE}" "${VERSION}"
    retcd="${?}"
    if [ "${retcd}" != "0" ]
    then
@@ -120,4 +119,39 @@ do
    echo ""
    echo "Move back to ${HOME_DIR}"
    cd "${HOME_DIR}"
-done
+   }
+
+########################################
+function set_plsql_ccflags {
+   ATTR_NAME="${1}"
+   ATTR_VAL="${2}"
+   echo ""
+   echo "../util/update_PLSQL_CCFLAGS.sql '${ATTR_NAME}' '${ATTR_VAL}'"
+   sqlplus /nolog "@../util/update_PLSQL_CCFLAGS.sql" "${ATTR_NAME}" "${ATTR_VAL}" "${PDB_SYS}"
+   retcd="${?}"
+   if [ "${retcd}" != "0" ]
+   then
+      echo "SQL*Plus returned ${retcd}.  Aborting"
+      exit "${retcd}"
+   fi
+   }
+
+########################################
+function run_tests {
+   echo ""
+   echo "../util/run_tests.sql"
+   sqlplus /nolog "@../util/run_tests.sql" "${PDB_SYSTEM}"
+   }
+
+########################################
+#set_plsql_ccflags WTPLSQL_ENABLE TRUE
+run_build 'wtpsrc'
+run_build 'wtptst'
+#set_plsql_ccflags WTPLSQL_SELFTEST TRUE
+#run_tests
+run_build 'wtpjun'
+#run_tests
+run_build 'wtpsav'
+#run_tests
+run_build 'grbsrc'
+run_build 'wtpgrb'

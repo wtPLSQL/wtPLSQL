@@ -36,6 +36,11 @@ set escape ""
 @db_install.sql "WTP/WT_TEST_RUNS_SEQ.seq" "WTP" "&INSTALL_SYSTEM_CONNECT."
 
 ----------------------------------------
+-- PROCEDURE Install
+
+@db_install.sql "WTP/JUNIT_XML_PERSIST_ALL.proc" "WTP" "&INSTALL_SYSTEM_CONNECT."
+
+----------------------------------------
 -- PACKAGE Install
 
 @db_install.sql "WTP/WT_DBOUT.pspec" "WTP" "&INSTALL_SYSTEM_CONNECT."

@@ -39,6 +39,10 @@ grant SELECT on "WTP"."WT_QUAL_TEST_RUNNERS_VW" to "PUBLIC";
    COMMENT ON TABLE "WTP"."WT_QUAL_TEST_RUNNERS_VW"  IS 'All PL/SQL Packages with the required Test Runner Entry Point.';
 
 
+--  Grants
+grant SELECT on "WTP"."WT_QUAL_TEST_RUNNERS_VW" to "PUBLIC";
+
+
 --  Synonyms
 
 

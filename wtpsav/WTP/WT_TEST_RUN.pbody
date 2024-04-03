@@ -718,7 +718,7 @@ begin
      and  run_string = 'begin wt_test_run.initialize; end;';
    delete from hooks
     where hook_name  = 'after_test_run'
-     and  run_string = 'begin wt_test_run.finalize2; end;';
+     and  run_string = 'begin wt_test_run.finalize1; end;';
    delete from hooks
     where hook_name  = 'after_test_run'
      and  run_string = 'begin wt_test_run.finalize2; end;';
