@@ -7,12 +7,12 @@ Table created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T13:43:29 for a duration of .09 seconds (started at 2024-04-03T13:43:28)
+=== DBI Completed at 2024-04-03T16:07:38 for a duration of .1 seconds (started at 2024-04-03T16:07:38)
 === DBI Started: WTP/JUNIT_CORE_REPORT.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T13:43:29 for a duration of .06 seconds (started at 2024-04-03T13:43:29)
+=== DBI Completed at 2024-04-03T16:07:38 for a duration of .12 seconds (started at 2024-04-03T16:07:38)
 === DBI Started: WTP/HOOKS.cdl
 
 Disable Triggers and Foreign Keys
@@ -25,12 +25,12 @@ sqlldr_control=WTP/HOOKS.ctl
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T13:43:30 for a duration of 1.34 seconds (started at 2024-04-03T13:43:29)
+=== DBI Completed at 2024-04-03T16:07:40 for a duration of 1.35 seconds (started at 2024-04-03T16:07:38)
 === DBI Started: WTP/JUNIT_CORE_REPORT.pbody
 
-Warning: Package Body created with compilation errors.
+Package body created.
 
-=== DBI Completed at 2024-04-03T13:43:30 for a duration of .05 seconds (started at 2024-04-03T13:43:30)
+=== DBI Completed at 2024-04-03T16:07:40 for a duration of .08 seconds (started at 2024-04-03T16:07:40)
 === DBI Started: ./installation_finalize.sql
 
 Drop_Temp_Publicly_Updateable_Table_SQL
@@ -79,4 +79,4 @@ Compile All for wtpjun Install Type
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T13:43:34 for a duration of 3.67 seconds (started at 2024-04-03T13:43:30)
+=== DBI Completed at 2024-04-03T16:07:42 for a duration of 2.58 seconds (started at 2024-04-03T16:07:40)

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="install_sys.log" tests="0" errors="0" hostname="EE213CDB" id="1" time="0" timestamp="2024-04-03T13:44:37">
+  <testsuite name="install_sys.log" tests="0" errors="0" hostname="EE213CDB" id="1" time="0" timestamp="2024-04-03T16:08:45">
   </testsuite>
-  <testsuite name="install_system.log" tests="0" errors="0" hostname="EE213CDB" id="2" time="0" timestamp="2024-04-03T13:44:37">
+  <testsuite name="install_system.log" tests="0" errors="0" hostname="EE213CDB" id="2" time="0" timestamp="2024-04-03T16:08:45">
   </testsuite>
-  <testsuite name="install_wtpgrb.log" tests="6" errors="0" hostname="EE213CDB" id="3" time="5" timestamp="2024-04-03T13:44:37">
+  <testsuite name="install_wtpgrb.log" tests="6" errors="0" hostname="EE213CDB" id="3" time="5" timestamp="2024-04-03T16:08:45">
     <testcase name="./installation_finalize.sql" assertions="" classname="..sql" status="PASS" time="">
     </testcase>
     <testcase name="./installation_prepare.sql" assertions="5" classname="..sql" status="PASS" time="0">
@@ -13,7 +13,7 @@
 Create_Temp_Publicly_Updateable_Table_SQL
 Table created.
 Grant succeeded.
-=== DBI Completed at 2024-04-03T13:44:30 for a duration of .09 seconds (started at 2024-04-03T13:44:30)
+=== DBI Completed at 2024-04-03T16:08:37 for a duration of .13 seconds (started at 2024-04-03T16:08:37)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/DLOAD_CONF.cdl" assertions="10" classname="ODBCAPTURE.cdl" status="PASS" time="1">
@@ -25,7 +25,7 @@ alter table &quot;ODBCAPTURE&quot;.&quot;DLOAD_CONF&quot; DISABLE constraint &qu
 PL/SQL procedure successfully completed.
 sqlldr_control=ODBCAPTURE/DLOAD_CONF.ctl
 PL/SQL procedure successfully completed.
-=== DBI Completed at 2024-04-03T13:44:31 for a duration of 1.28 seconds (started at 2024-04-03T13:44:30)
+=== DBI Completed at 2024-04-03T16:08:38 for a duration of 1.3 seconds (started at 2024-04-03T16:08:37)
 ### SQL*Loader Log File: ODBCAPTURE/DLOAD_CONF.log
 ORA-01422: exact fetch returns more than requested number of rows
       </system-out>
@@ -40,7 +40,7 @@ alter table &quot;ODBCAPTURE&quot;.&quot;OBJECT_CONF&quot; DISABLE constraint &q
 PL/SQL procedure successfully completed.
 sqlldr_control=ODBCAPTURE/OBJECT_CONF.ctl
 PL/SQL procedure successfully completed.
-=== DBI Completed at 2024-04-03T13:44:32 for a duration of 1.3 seconds (started at 2024-04-03T13:44:31)
+=== DBI Completed at 2024-04-03T16:08:40 for a duration of 1.27 seconds (started at 2024-04-03T16:08:38)
 ### SQL*Loader Log File: ODBCAPTURE/OBJECT_CONF.log
 ORA-01422: exact fetch returns more than requested number of rows
       </system-out>
@@ -53,7 +53,7 @@ alter table &quot;ODBCAPTURE&quot;.&quot;ROLE_CONF&quot; DISABLE constraint &quo
 PL/SQL procedure successfully completed.
 sqlldr_control=ODBCAPTURE/ROLE_CONF.ctl
 PL/SQL procedure successfully completed.
-=== DBI Completed at 2024-04-03T13:44:34 for a duration of 1.28 seconds (started at 2024-04-03T13:44:32)
+=== DBI Completed at 2024-04-03T16:08:41 for a duration of 1.28 seconds (started at 2024-04-03T16:08:40)
 ### SQL*Loader Log File: ODBCAPTURE/ROLE_CONF.log
 ORA-01422: exact fetch returns more than requested number of rows
       </system-out>
@@ -66,7 +66,7 @@ alter table &quot;ODBCAPTURE&quot;.&quot;SCHEMA_CONF&quot; DISABLE constraint &q
 PL/SQL procedure successfully completed.
 sqlldr_control=ODBCAPTURE/SCHEMA_CONF.ctl
 PL/SQL procedure successfully completed.
-=== DBI Completed at 2024-04-03T13:44:35 for a duration of 1.24 seconds (started at 2024-04-03T13:44:34)
+=== DBI Completed at 2024-04-03T16:08:42 for a duration of 1.24 seconds (started at 2024-04-03T16:08:41)
 ### SQL*Loader Log File: ODBCAPTURE/SCHEMA_CONF.log
 ORA-01422: exact fetch returns more than requested number of rows
       </system-out>
@@ -79,7 +79,7 @@ alter table &quot;ODBCAPTURE&quot;.&quot;TYPE_CONF&quot; DISABLE constraint &quo
 PL/SQL procedure successfully completed.
 sqlldr_control=ODBCAPTURE/TYPE_CONF.ctl
 PL/SQL procedure successfully completed.
-=== DBI Completed at 2024-04-03T13:44:36 for a duration of 1.24 seconds (started at 2024-04-03T13:44:35)
+=== DBI Completed at 2024-04-03T16:08:44 for a duration of 1.3 seconds (started at 2024-04-03T16:08:42)
 ### SQL*Loader Log File: ODBCAPTURE/TYPE_CONF.log
 ORA-01422: exact fetch returns more than requested number of rows
       </system-out>

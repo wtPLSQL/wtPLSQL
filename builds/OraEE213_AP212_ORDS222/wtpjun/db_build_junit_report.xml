@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="WTP_schema_build" tests="36" failures="2" time="0" timestamp="2024-04-03T13:42:46">
+  <testsuite name="WTP_schema_build" tests="36" failures="0" time="0" timestamp="2024-04-03T16:06:57">
     <testcase name="INDEX:db_object_status" classname="WTP.HOOKS_PK" time="0"/>
     <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075780C00002$$" time="0"/>
     <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075780C00003$$" time="0"/>
@@ -20,13 +20,7 @@
     <testcase name="PACKAGE:db_object_status" classname="WTP.WT_CORE_REPORT" time="0"/>
     <testcase name="PACKAGE BODY:db_object_status" classname="WTP.CORE_DATA" time="0"/>
     <testcase name="PACKAGE BODY:db_object_status" classname="WTP.HOOK" time="0"/>
-    <testcase name="PACKAGE BODY:db_object_status" classname="WTP.JUNIT_CORE_REPORT" time="0">
-      <error message="PACKAGE BODY failed">
-** Object Status is INVALID
-Line 74, Col 62: PLS-00302: component &apos;RUNNER_OWNER&apos; must be declared
-Line 74, Col 7: PL/SQL: Statement ignored
-      </error>
-    </testcase>
+    <testcase name="PACKAGE BODY:db_object_status" classname="WTP.JUNIT_CORE_REPORT" time="0"/>
     <testcase name="PACKAGE BODY:db_object_status" classname="WTP.WTPLSQL" time="0"/>
     <testcase name="PACKAGE BODY:db_object_status" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="PACKAGE BODY:db_object_status" classname="WTP.WT_CORE_REPORT" time="0"/>
@@ -35,11 +29,7 @@ Line 74, Col 7: PL/SQL: Statement ignored
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WTPLSQL" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_CORE_REPORT" time="0"/>
-    <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_EXECUTE_TEST_RUNNER" time="0">
-      <error message="PUBLIC_SYNONYM failed">
-** Object Status is INVALID
-      </error>
-    </testcase>
+    <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_EXECUTE_TEST_RUNNER" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_VERSION" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_WTPLSQL" time="0"/>
     <testcase name="TABLE:db_object_status" classname="WTP.HOOKS" time="0"/>

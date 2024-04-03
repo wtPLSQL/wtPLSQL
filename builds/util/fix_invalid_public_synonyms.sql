@@ -1,23 +1,38 @@
 
---Re-create Invalid Public Synonyms
+--
+--  Re-create Invalid Public Synonyms
+--
+
+----------------------------------------
+prompt
+prompt Re-create Invalid Public Synonyms
+set serveroutput on size unlimited format wrapped
 
 Declare
    sql_txt varchar(2000);
 Begin
  for buff in (with q1 as (
-              select * from dba_objects
-               where owner = 'PUBLIC'
-                 and status != 'VALID'
+              select owner, object_name, editionable
+               from  dba_objects
+               where status != 'VALID'
               )
-              select syn.synonym_name, syn.table_owner, syn.table_name
-                from dba_synonyms syn
-               where owner = 'PUBLIC'
-                 and synonym_name in (select object_name from q1)
-                 and table_owner not in (select username from odbcapture.schema_list s 
-                                          where s.install_order <=0)
-                    ) loop
+              select syn.synonym_name, syn.table_owner, syn.table_name,
+                     case q1.editionable when 'Y'  then ' EDITIONABLE'
+                                         when NULL then ''
+                                                   else ' NONEDITIONABLE'
+                     end                  EDITIONABLE
+                from dba_synonyms  syn
+                     join q1
+                          on  q1.owner       = syn.owner
+                          and q1.object_name = syn.synonym_name
+                     join dba_users  usr
+                          on  usr.username = syn.table_owner
+                          and (   usr.oracle_maintained is null
+                               OR usr.oracle_maintained != 'Y')
+               where syn.owner = 'PUBLIC' )
+  loop
     begin
-      sql_txt := 'CREATE OR REPLACE NONEDITIONABLE PUBLIC SYNONYM "' ||
+      sql_txt := 'CREATE OR REPLACE' || buff.EDITIONABLE || ' PUBLIC SYNONYM "' ||
                   buff.synonym_name || '" for "' || buff.table_owner || '"."' ||
                   buff.table_name ||'"';
       execute immediate sql_txt;

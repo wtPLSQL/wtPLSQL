@@ -7,7 +7,7 @@ Table created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T13:42:46 for a duration of .23 seconds (started at 2024-04-03T13:42:46)
+=== DBI Completed at 2024-04-03T16:06:56 for a duration of .26 seconds (started at 2024-04-03T16:06:56)
 === DBI Started: WTP/WT_EXECUTE_TEST_RUNNER.proc
 
 Warning: Procedure created with compilation errors.
@@ -18,17 +18,17 @@ Grant succeeded.
 
 Synonym created.
 
-=== DBI Completed at 2024-04-03T13:42:46 for a duration of .3 seconds (started at 2024-04-03T13:42:46)
+=== DBI Completed at 2024-04-03T16:06:57 for a duration of .29 seconds (started at 2024-04-03T16:06:57)
 === DBI Started: WTP/CORE_DATA.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T13:42:46 for a duration of .16 seconds (started at 2024-04-03T13:42:46)
+=== DBI Completed at 2024-04-03T16:06:57 for a duration of .15 seconds (started at 2024-04-03T16:06:57)
 === DBI Started: WTP/HOOK.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T13:42:46 for a duration of .06 seconds (started at 2024-04-03T13:42:46)
+=== DBI Completed at 2024-04-03T16:06:57 for a duration of .06 seconds (started at 2024-04-03T16:06:57)
 === DBI Started: WTP/WTPLSQL.pspec
 
 Package created.
@@ -42,7 +42,7 @@ Synonym created.
 
 Synonym created.
 
-=== DBI Completed at 2024-04-03T13:42:47 for a duration of .17 seconds (started at 2024-04-03T13:42:46)
+=== DBI Completed at 2024-04-03T16:06:57 for a duration of .18 seconds (started at 2024-04-03T16:06:57)
 === DBI Started: WTP/WT_ASSERT.pspec
 
 Package created.
@@ -56,7 +56,7 @@ Synonym created.
 
 Synonym created.
 
-=== DBI Completed at 2024-04-03T13:42:47 for a duration of .26 seconds (started at 2024-04-03T13:42:47)
+=== DBI Completed at 2024-04-03T16:06:57 for a duration of .23 seconds (started at 2024-04-03T16:06:57)
 === DBI Started: WTP/WT_CORE_REPORT.pspec
 
 Package created.
@@ -67,7 +67,7 @@ Grant succeeded.
 
 Synonym created.
 
-=== DBI Completed at 2024-04-03T13:42:47 for a duration of .15 seconds (started at 2024-04-03T13:42:47)
+=== DBI Completed at 2024-04-03T16:06:58 for a duration of .15 seconds (started at 2024-04-03T16:06:57)
 === DBI Started: WTP/HOOKS.tab
 
 Table created.
@@ -96,7 +96,7 @@ Comment created.
 
 Comment created.
 
-=== DBI Completed at 2024-04-03T13:43:03 for a duration of 16.25 seconds (started at 2024-04-03T13:42:47)
+=== DBI Completed at 2024-04-03T16:07:15 for a duration of 16.91 seconds (started at 2024-04-03T16:06:58)
 === DBI Started: WTP/WT_VERSIONS.tab
 
 Table created.
@@ -131,7 +131,7 @@ Grant succeeded.
 
 Synonym created.
 
-=== DBI Completed at 2024-04-03T13:43:04 for a duration of .41 seconds (started at 2024-04-03T13:43:03)
+=== DBI Completed at 2024-04-03T16:07:15 for a duration of .38 seconds (started at 2024-04-03T16:07:15)
 === DBI Started: WTP/HOOKS.cdl
 
 Disable Triggers and Foreign Keys
@@ -144,7 +144,7 @@ sqlldr_control=WTP/HOOKS.ctl
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T13:43:07 for a duration of 3.28 seconds (started at 2024-04-03T13:43:04)
+=== DBI Completed at 2024-04-03T16:07:18 for a duration of 2.98 seconds (started at 2024-04-03T16:07:15)
 === DBI Started: WTP/WT_QUAL_TEST_RUNNERS_VW.vw
 
 View created.
@@ -167,32 +167,32 @@ Comment created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T13:43:07 for a duration of .33 seconds (started at 2024-04-03T13:43:07)
+=== DBI Completed at 2024-04-03T16:07:18 for a duration of .39 seconds (started at 2024-04-03T16:07:18)
 === DBI Started: WTP/CORE_DATA.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T13:43:07 for a duration of .11 seconds (started at 2024-04-03T13:43:07)
+=== DBI Completed at 2024-04-03T16:07:18 for a duration of .1 seconds (started at 2024-04-03T16:07:18)
 === DBI Started: WTP/HOOK.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T13:43:08 for a duration of .1 seconds (started at 2024-04-03T13:43:07)
+=== DBI Completed at 2024-04-03T16:07:19 for a duration of .1 seconds (started at 2024-04-03T16:07:18)
 === DBI Started: WTP/WTPLSQL.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T13:43:08 for a duration of .12 seconds (started at 2024-04-03T13:43:08)
+=== DBI Completed at 2024-04-03T16:07:19 for a duration of .11 seconds (started at 2024-04-03T16:07:19)
 === DBI Started: WTP/WT_ASSERT.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T13:43:08 for a duration of .28 seconds (started at 2024-04-03T13:43:08)
+=== DBI Completed at 2024-04-03T16:07:19 for a duration of .21 seconds (started at 2024-04-03T16:07:19)
 === DBI Started: WTP/WT_CORE_REPORT.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T13:43:08 for a duration of .11 seconds (started at 2024-04-03T13:43:08)
+=== DBI Completed at 2024-04-03T16:07:19 for a duration of .11 seconds (started at 2024-04-03T16:07:19)
 === DBI Started: ./installation_finalize.sql
 
 Drop_Temp_Publicly_Updateable_Table_SQL
@@ -252,4 +252,4 @@ Compile All for wtpsrc Install Type
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T13:43:16 for a duration of 7.59 seconds (started at 2024-04-03T13:43:08)
+=== DBI Completed at 2024-04-03T16:07:25 for a duration of 6.32 seconds (started at 2024-04-03T16:07:19)
