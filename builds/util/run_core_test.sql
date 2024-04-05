@@ -17,10 +17,12 @@ set trimspool on
 set echo off
 
 ----------------------------------------
-prompt
-prompt Initialize Hooks.
-execute wt_test_run.delete_hooks;
-execute junit_core_report.delete_hooks;
+--  Should be default Installation Settings
+--prompt
+--prompt Initialize Hooks.
+--execute wt_test_run.delete_hooks;
+--execute junit_core_report.delete_hooks;
+--execute wt_core_report.insert_hooks;
 
 ----------------------------------------
 prompt

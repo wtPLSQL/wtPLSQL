@@ -137,6 +137,14 @@ $THEN
       l_status  pls_integer;
    begin
       --------------------------------------  WTPLSQL Testing --
+      loop
+         dbms_output.get_line(l_line, l_status);
+         exit when l_status = 1;
+         wt_assert.isnull
+            (msg_in        => 'Clear DBMS_OUTPUT Buffer'
+            ,check_this_in => l_line);
+      end loop;
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Ad Hoc Report Happy Path';
       g_rec.last_assert     := 'THIS';
       g_rec.last_pass       := TRUE;
@@ -2539,11 +2547,9 @@ $THEN
          msg_in          => 'temp_rec.last_details',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected exception "%PLS-00302: component ''BOGUS'' must be declared%". ' ||
-                            'Actual exception raised was "ORA-06550: line 1, column 17:' || CHR(10) ||
-                            'PLS-00302: component ''BOGUS'' must be declared' || CHR(10) ||
-                            'ORA-06550: line 1, column 7:' || CHR(10) ||
-                            'PL/SQL: Statement ignored". ' ||
-                            'Exception raised by: "begin wt_assert.bogus; end;".');
+                            'Actual exception raised was "ORA-06550: line 1, column 17:'    || CHR(10) ||
+                            'PLS-00302: component ''BOGUS'' must be declared". '                       ||
+                            'Exception raised by: "begin wt_assert.bogus; end;".'                      );
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Raises Tests Happy Path 2';
       raises (
@@ -2554,13 +2560,10 @@ $THEN
       wt_assert.eq (
          msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details,
-         against_this_in => 'Expected exception "%-00302%". ' ||
-                            'Actual exception raised was "' ||
-                            'ORA-06550: line 1, column 17:' || CHR(10) ||
-                            'PLS-00302: component ''BOGUS'' must be declared' || CHR(10) ||
-                            'ORA-06550: line 1, column 7:' || CHR(10) ||
-                            'PL/SQL: Statement ignored". ' ||
-                            'Exception raised by: "begin wt_assert.bogus; end;".');
+         against_this_in => 'Expected exception "%-00302%". '                                       ||
+                            'Actual exception raised was "ORA-06550: line 1, column 17:' || CHR(10) ||
+                            'PLS-00302: component ''BOGUS'' must be declared". '                    ||
+                            'Exception raised by: "begin wt_assert.bogus; end;".'                   );
       --------------------------------------  WTPLSQL Testing --
       throws (
          msg_in         => 'THROWS Varchar2 Test',
@@ -2571,12 +2574,9 @@ $THEN
          msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details,
          against_this_in => 'Expected exception "%PLS-00302: component ''BOGUS'' must be declared%". ' ||
-                            'Actual exception raised was "' ||
-                            'ORA-06550: line 1, column 17:' || CHR(10) ||
-                            'PLS-00302: component ''BOGUS'' must be declared' || CHR(10) ||
-                            'ORA-06550: line 1, column 7:' || CHR(10) ||
-                            'PL/SQL: Statement ignored". ' ||
-                            'Exception raised by: "begin wt_assert.bogus; end;".');
+                            'Actual exception raised was "ORA-06550: line 1, column 17:'    || CHR(10) ||
+                            'PLS-00302: component ''BOGUS'' must be declared". '                       ||
+                            'Exception raised by: "begin wt_assert.bogus; end;".'                      );
       --------------------------------------  WTPLSQL Testing --
       throws (
          msg_in         => 'THROWS Number Test',
@@ -2586,13 +2586,10 @@ $THEN
       wt_assert.eq (
          msg_in          => 'temp_rec.last_details value',
          check_this_in   => temp_rec.last_details,
-         against_this_in => 'Expected exception "%-00302%". ' ||
-                            'Actual exception raised was "' ||
-                            'ORA-06550: line 1, column 17:' || CHR(10) ||
-                            'PLS-00302: component ''BOGUS'' must be declared' || CHR(10) ||
-                            'ORA-06550: line 1, column 7:' || CHR(10) ||
-                            'PL/SQL: Statement ignored". ' ||
-                            'Exception raised by: "begin wt_assert.bogus; end;".');
+         against_this_in => 'Expected exception "%-00302%". '                                       ||
+                            'Actual exception raised was "ORA-06550: line 1, column 17:' || CHR(10) ||
+                            'PLS-00302: component ''BOGUS'' must be declared". '                    ||
+                            'Exception raised by: "begin wt_assert.bogus; end;".'                   );
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Raises Tests Happy Path 3';
       raises (
