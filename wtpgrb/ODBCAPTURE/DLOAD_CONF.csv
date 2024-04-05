@@ -4,5 +4,5 @@
 "ODBCAPTURE","ROLE_CONF","wtpgrb",,"install_type in ('wtpsrc','wtptst','wtpgrb','wtpsav')","ROLENAME, INSTALL_TYPE",,
 "ODBCAPTURE","SCHEMA_CONF","wtpgrb",,"install_type in ('wtpsrc','wtptst','wtpgrb','wtpsav')","USERNAME",,
 "ODBCAPTURE","TYPE_CONF","wtpgrb",,"install_type in ('wtpsrc','wtptst','wtpgrb','wtpsav')","INSTALL_TYPE",,
-"WTP","HOOKS","wtpsrc",,"(hook_name = 'ad_hoc_report' and run_string like '%dbms_out%') OR (hook_name = 'execute_test_runner' and run_string like '%wt_execute_test_runner%')","HOOK_NAME, SEQ",,
+"WTP","HOOKS","wtpsrc",,,"HOOK_NAME, SEQ",,
 "WTP","WT_SELF_TEST","wtptst",,,"ID",,

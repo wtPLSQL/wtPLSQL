@@ -1,5 +1,5 @@
 
-SQL*Loader: Release 21.0.0.0.0 - Production on Wed Apr 3 16:08:39 2024
+SQL*Loader: Release 21.0.0.0.0 - Production on Fri Apr 5 14:28:13 2024
 Version 21.3.0.0.0
 
 Copyright (c) 1982, 2021, Oracle and/or its affiliates.  All rights reserved.
@@ -33,7 +33,7 @@ NOTES                                NEXT  1024   ,  O(") CHARACTER
 value used for ROWS parameter changed from 250 to 201
 
 Table "ODBCAPTURE"."OBJECT_CONF":
-  10 Rows successfully loaded.
+  8 Rows successfully loaded.
   0 Rows not loaded due to data errors.
   0 Rows not loaded because all WHEN clauses were failed.
   0 Rows not loaded because all fields were null.
@@ -43,12 +43,12 @@ Space allocated for bind array:                1043592 bytes(201 rows)
 Read   buffer bytes: 1048576
 
 Total logical records skipped:          1
-Total logical records read:            10
+Total logical records read:             8
 Total logical records rejected:         0
 Total logical records discarded:        0
 
-Run began on Wed Apr 03 16:08:39 2024
-Run ended on Wed Apr 03 16:08:39 2024
+Run began on Fri Apr 05 14:28:13 2024
+Run ended on Fri Apr 05 14:28:13 2024
 
-Elapsed time was:     00:00:00.35
-CPU time was:         00:00:00.04
+Elapsed time was:     00:00:00.34
+CPU time was:         00:00:00.05

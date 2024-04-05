@@ -1,0 +1,496 @@
+
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
+  Test Results for WTP.CORE_DATA
+  Run ID 3: 05-Apr-2024 02:27:21 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        0      Total Assertions:       64
+  Average Elapsed msec:        0     Failed Assertions:        1
+  Maximum Elapsed msec:        3       Total Testcases:        9
+  Total Run Time (sec):      0.2      Failed Testcases:        1
+                                        Testcase Yield:       89%
+
+  Code Coverage for PACKAGE BODY WTP.CORE_DATA
+  ----------------------------------------------------------------
+          Ignored Lines:      184   Total Profiled Lines:      263
+         Excluded Lines:        1   Total Executed Lines:       73
+  Minimum LineExec usec:        0     Not Executed Lines:        0
+  Average LineExec usec:       17          Unknown Lines:        5
+  Maximum LineExec usec:     1163          Code Coverage:    100.0%
+  Trigger Source Offset:        0
+
+  WTP.CORE_DATA Test Result Details
+  Test Run ID: 3
+  --------------------------------------------------------------
+---***  Add Procedure Happy Path 1  ***-----------------------------------------
+#FAIL#.046ms l_run_recTEST.asrt_tot_msec = l_run_recSAVE.asrt_tot_msec + l_results_ntTEST(lt).interval_msec. EQ - Expected "3.085" and got "3"
+
+
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
+  Test Results for WTP.HOOK
+  Run ID 4: 05-Apr-2024 02:27:22 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        0      Total Assertions:       23
+  Average Elapsed msec:        0     Failed Assertions:        9
+  Maximum Elapsed msec:        2       Total Testcases:        5
+  Total Run Time (sec):      0.3      Failed Testcases:        2
+                                        Testcase Yield:       60%
+
+  Code Coverage for PACKAGE BODY WTP.HOOK
+  ----------------------------------------------------------------
+          Ignored Lines:       66   Total Profiled Lines:      104
+         Excluded Lines:        1   Total Executed Lines:       27
+  Minimum LineExec usec:        0     Not Executed Lines:        1
+  Average LineExec usec:       22          Unknown Lines:        9
+  Maximum LineExec usec:      240          Code Coverage:     96.4%
+  Trigger Source Offset:        0
+
+  WTP.HOOK Test Result Details
+  Test Run ID: 4
+  --------------------------------------------------------------
+---***  All Hooks Off  ***------------------------------------------------------
+#FAIL# .21ms before_test_all is not active. ISNULL - Expected NULL and got "before_test_all"
+#FAIL#.141ms before_test_run is not active. ISNULL - Expected NULL and got "before_test_run"
+#FAIL#.129ms execute_test_runner is not active. ISNULL - Expected NULL and got "execute_test_runner"
+#FAIL#.166ms after_test_run is not active. ISNULL - Expected NULL and got "after_test_run"
+#FAIL#.129ms after_test_all is not active. ISNULL - Expected NULL and got "after_test_all"
+#FAIL#.125ms ad_hoc_report is not active. ISNULL - Expected NULL and got "ad_hoc_report"
+---***  Hooks Sad Path 1  ***---------------------------------------------------
+#FAIL#2.04ms Test Exception Handler. RAISES/THROWS - No exception was expected. Exception raised was "ORA-20000: Hook Error in "ad_hoc_report", SEQ 1.\nORA-01476: divisor is equal to zero\nORA-06512: at line 1\nORA-06512: at line 1\nORA-06512: at "WTP.HOOK", line 30". Exception raised by: "begin hook.ad_hoc_report; end;". Error Stack: ORA-20000: Hook Error in "ad_hoc_report", SEQ 1.\nORA-01476: divisor is equal to zero\nORA-06512: at line 1\nORA-06512: at line 1\nORA-06512: at "WTP.HOOK", line 30\nORA-06512: at "WTP.HOOK", line 34\nORA-06512: at "WTP.HOOK", line 108\nORA-06512: at line 1\nORA-06512: at "WTP.HOOK", line 34\nORA-06512: at "WTP.HOOK", line 108\nORA-06512: at line 1\nORA-06512: at "WTP.WT_ASSERT", line 2413\n
+#FAIL#.098ms Confirm core_data.run_error. ISNOTNULL - Expected NOT NULL and got ""
+#FAIL# .06ms l_err_msgTEST like 'Hook Error in "ad_hoc_report", SEQ 1.\nORA-01476: divisor is equal to zero\nORA-06512: at line 1%'. THIS - Expected "TRUE" and got ""
+
+  WTP.HOOK PACKAGE BODY Code Coverage Details
+  Test Run ID: 4
+  ----------------------------------------------------------------
+Source               TotTime MinTime   MaxTime     
+  Line Stat Occurs    (usec)  (usec)    (usec) Text
+------ ---- ------ --------- ------- --------- ------------
+    39#NOTX#     0         0       0         0       end;
+
+
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
+  Test Results for WTP.WTPLSQL
+  Run ID 5: 05-Apr-2024 02:27:23 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        0      Total Assertions:       32
+  Average Elapsed msec:       16     Failed Assertions:        0
+  Maximum Elapsed msec:      117       Total Testcases:       15
+  Total Run Time (sec):      0.5      Failed Testcases:        0
+                                        Testcase Yield:      100%
+
+
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
+  Test Results for WTP.WT_ASSERT
+  Run ID 6: 05-Apr-2024 02:27:23 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        0      Total Assertions:      414
+  Average Elapsed msec:       12     Failed Assertions:        4
+  Maximum Elapsed msec:     2500       Total Testcases:      152
+  Total Run Time (sec):      5.0      Failed Testcases:        2
+                                        Testcase Yield:       99%
+
+  Code Coverage for PACKAGE BODY WTP.WT_ASSERT
+  ----------------------------------------------------------------
+          Ignored Lines:     1145   Total Profiled Lines:     1515
+         Excluded Lines:        2   Total Executed Lines:      314
+  Minimum LineExec usec:        0     Not Executed Lines:        0
+  Average LineExec usec:      191          Unknown Lines:       54
+  Maximum LineExec usec:    36010          Code Coverage:    100.0%
+  Trigger Source Offset:        0
+
+  WTP.WT_ASSERT Test Result Details
+  Test Run ID: 6
+  --------------------------------------------------------------
+---***  Raises Tests Happy Path 1  ***------------------------------------------
+#FAIL#.036ms temp_rec.last_details. EQ - Expected "Expected exception "%PLS-00302: component 'BOGUS' must be declared%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared\nORA-06550: line 1, column 7:\nPL/SQL: Statement ignored". Exception raised by: "begin wt_assert.bogus; end;"." and got "Expected exception "%PLS-00302: component 'BOGUS' must be declared%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared". Exception raised by: "begin wt_assert.bogus; end;"."
+---***  Raises Tests Happy Path 2  ***------------------------------------------
+#FAIL#.059ms temp_rec.last_details value. EQ - Expected "Expected exception "%-00302%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared\nORA-06550: line 1, column 7:\nPL/SQL: Statement ignored". Exception raised by: "begin wt_assert.bogus; end;"." and got "Expected exception "%-00302%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared". Exception raised by: "begin wt_assert.bogus; end;"."
+#FAIL#.054ms temp_rec.last_details value. EQ - Expected "Expected exception "%PLS-00302: component 'BOGUS' must be declared%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared\nORA-06550: line 1, column 7:\nPL/SQL: Statement ignored". Exception raised by: "begin wt_assert.bogus; end;"." and got "Expected exception "%PLS-00302: component 'BOGUS' must be declared%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared". Exception raised by: "begin wt_assert.bogus; end;"."
+#FAIL#.056ms temp_rec.last_details value. EQ - Expected "Expected exception "%-00302%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared\nORA-06550: line 1, column 7:\nPL/SQL: Statement ignored". Exception raised by: "begin wt_assert.bogus; end;"." and got "Expected exception "%-00302%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared". Exception raised by: "begin wt_assert.bogus; end;"."
+
+
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
+  Test Results for WTP.WT_DBOUT
+  Run ID 7: 05-Apr-2024 02:27:30 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        0      Total Assertions:       15
+  Average Elapsed msec:        1     Failed Assertions:        0
+  Maximum Elapsed msec:        2       Total Testcases:       12
+  Total Run Time (sec):      0.2      Failed Testcases:        0
+                                        Testcase Yield:      100%
+
+  Code Coverage for PACKAGE BODY WTP.WT_DBOUT
+  ----------------------------------------------------------------
+          Ignored Lines:       55   Total Profiled Lines:       82
+         Excluded Lines:        2   Total Executed Lines:       22
+  Minimum LineExec usec:        0     Not Executed Lines:        0
+  Average LineExec usec:       34          Unknown Lines:        3
+  Maximum LineExec usec:      332          Code Coverage:    100.0%
+  Trigger Source Offset:        0
+
+
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
+  Test Results for WTP.WT_JOB
+  Run ID 8: 05-Apr-2024 02:27:30 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        0      Total Assertions:       21
+  Average Elapsed msec:       53     Failed Assertions:        2
+  Maximum Elapsed msec:     1062       Total Testcases:        3
+  Total Run Time (sec):      1.3      Failed Testcases:        1
+                                        Testcase Yield:       67%
+
+  Code Coverage for PACKAGE BODY WTP.WT_JOB
+  ----------------------------------------------------------------
+          Ignored Lines:       48   Total Profiled Lines:       92
+         Excluded Lines:        3   Total Executed Lines:       18
+  Minimum LineExec usec:        0     Not Executed Lines:       18
+  Average LineExec usec:      224          Unknown Lines:        5
+  Maximum LineExec usec:     2218          Code Coverage:     50.0%
+  Trigger Source Offset:        0
+
+  WTP.WT_JOB Test Result Details
+  Test Run ID: 8
+  --------------------------------------------------------------
+---***  Create and Drop DB Link  ***--------------------------------------------
+#FAIL#1061ms Number of Rows from WT_SELF_TEST@WTP. EQQUERYVALUE - Exception raised for Query: select count(*) from WT_SELF_TEST@WTP\nORA-01017: invalid username/password; logon denied\nORA-02063: preceding line from WTP\nORA-06512: at "WTP.WT_ASSERT", line 2673\n
+#FAIL#.552ms Close the Database Link. RAISES/THROWS - No exception was expected. Exception raised was "ORA-02081: database link is not open". Exception raised by: "alter session close database link WTP". Error Stack: ORA-02081: database link is not open\nORA-06512: at "WTP.WT_ASSERT", line 2413\n
+
+  WTP.WT_JOB PACKAGE BODY Code Coverage Details
+  Test Run ID: 8
+  ----------------------------------------------------------------
+Source               TotTime MinTime   MaxTime     
+  Line Stat Occurs    (usec)  (usec)    (usec) Text
+------ ---- ------ --------- ------- --------- ------------
+   201#NOTX#     0         0       0         0       dbms_lock.sleep(in_check_interval_seconds);
+   205#NOTX#     0         0       0         0       raise_application_error(-20000, 'WAIT_FOR_ALL_TESTS timeout, ' ||
+   292#NOTX#     0         0       0         0    plsql_block :=
+   296#NOTX#     0         0       0         0    dbms_scheduler.create_job
+   301#NOTX#     0         0       0         0 end test_all;
+   311#NOTX#     0         0       0         0    plsql_block := 'begin' || CHR(10);
+   312#NOTX#     0         0       0         0    for buff in (
+   313#NOTX#     0         0       0         0       select owner
+   317#NOTX#     0         0       0         0       plsql_block := plsql_block ||
+   319#NOTX#     0         0       0         0    end loop;
+   320#NOTX#     0         0       0         0    plsql_block := plsql_block ||
+   322#NOTX#     0         0       0         0    dbms_scheduler.create_job
+   326#NOTX#     0         0       0         0 end test_all_sequential;
+   335#NOTX#     0         0       0         0    for buff in (
+   336#NOTX#     0         0       0         0       select owner
+   340#NOTX#     0         0       0         0       test_all(buff.owner);
+   341#NOTX#     0         0       0         0    end loop;
+   342#NOTX#     0         0       0         0 end test_all_parallel;
+
+
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
+  Test Results for WTP.WT_PROFILE
+  Run ID 9: 05-Apr-2024 02:27:32 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        0      Total Assertions:       46
+  Average Elapsed msec:        0     Failed Assertions:        0
+  Maximum Elapsed msec:        2       Total Testcases:        4
+  Total Run Time (sec):      0.1      Failed Testcases:        0
+                                        Testcase Yield:      100%
+
+  Code Coverage for PACKAGE BODY WTP.WT_PROFILE
+  ----------------------------------------------------------------
+          Ignored Lines:      116   Total Profiled Lines:      261
+         Excluded Lines:       11   Total Executed Lines:       14
+  Minimum LineExec usec:        0     Not Executed Lines:      117
+  Average LineExec usec:       30          Unknown Lines:        3
+  Maximum LineExec usec:      197          Code Coverage:     10.7%
+  Trigger Source Offset:        0
+
+  WTP.WT_PROFILE PACKAGE BODY Code Coverage Details
+  Test Run ID: 9
+  ----------------------------------------------------------------
+Source               TotTime MinTime   MaxTime     
+  Line Stat Occurs    (usec)  (usec)    (usec) Text
+------ ---- ------ --------- ------- --------- ------------
+   338#NOTX#     0         0       0         0    l_msg_prefix  varchar2(50) := 'DBMS_PROFILER Error: ';
+   340#NOTX#     0         0       0         0    case retnum_in
+   341#NOTX#     0         0       0         0    when dbms_profiler.error_param then return l_msg_prefix ||
+   343#NOTX#     0         0       0         0    when dbms_profiler.error_io then return l_msg_prefix ||
+   347#NOTX#     0         0       0         0    when dbms_profiler.error_version then return l_msg_prefix ||
+   352#NOTX#     0         0       0         0    else return l_msg_prefix ||
+   355#NOTX#     0         0       0         0 end get_error_msg;
+   501#NOTX#     0         0       0         0    cursor c_find_begin is
+   502#NOTX#     0         0       0         0       select line
+   529#NOTX#     0         0       0         0             ,col;
+   532#NOTX#     0         0       0         0    open c_find_begin;
+   533#NOTX#     0         0       0         0    loop
+   534#NOTX#     0         0       0         0       fetch c_find_begin into buff_find_begin;
+   535#NOTX#     0         0       0         0       exit when c_find_begin%NOTFOUND;
+   536#NOTX#     0         0       0         0       open c_find_end (buff_find_begin.line, buff_find_begin.col);
+   537#NOTX#     0         0       0         0       fetch c_find_end into buff_find_end;
+   538#NOTX#     0         0       0         0       if c_find_end%NOTFOUND
+   540#NOTX#     0         0       0         0          select max(line)
+   547#NOTX#     0         0       0         0       close c_find_end;
+   548#NOTX#     0         0       0         0       for i in buff_find_begin.line + in_trigger_offset ..
+   551#NOTX#     0         0       0         0          l_ignr_aa(i) := 'X';
+   554#NOTX#     0         0       0         0    close c_find_begin;
+   555#NOTX#     0         0       0         0    return l_ignr_aa;
+   556#NOTX#     0         0       0         0 end load_ignr_aa;
+Source               TotTime MinTime   MaxTime     
+  Line Stat Occurs    (usec)  (usec)    (usec) Text
+------ ---- ------ --------- ------- --------- ------------
+   763#NOTX#     0         0       0         0    case in_profiles_rec.status
+   764#NOTX#     0         0       0         0       when 'EXEC' then
+   765#NOTX#     0         0       0         0          g_rec.executed_lines := nvl(g_rec.executed_lines,0) + 1;
+   767#NOTX#     0         0       0         0          g_rec.exec_min_usec  := least(nvl(g_rec.exec_min_usec,999999999)
+   769#NOTX#     0         0       0         0          g_rec.exec_max_usec  := greatest(nvl(g_rec.exec_max_usec,0)
+   771#NOTX#     0         0       0         0          g_rec.exec_tot_usec  := nvl(g_rec.exec_tot_usec,0) +
+   774#NOTX#     0         0       0         0       when 'IGNR' then
+   775#NOTX#     0         0       0         0          g_rec.ignored_lines  := nvl(g_rec.ignored_lines,0) + 1;
+   776#NOTX#     0         0       0         0       when 'EXCL' then
+   777#NOTX#     0         0       0         0          g_rec.excluded_lines := nvl(g_rec.excluded_lines,0) + 1;
+   778#NOTX#     0         0       0         0       when 'NOTX' then
+   779#NOTX#     0         0       0         0          g_rec.notexec_lines  := nvl(g_rec.notexec_lines,0) + 1;
+   780#NOTX#     0         0       0         0       when 'UNKN' then
+   781#NOTX#     0         0       0         0          g_rec.unknown_lines  := nvl(g_rec.unknown_lines,0) + 1;
+   783#NOTX#     0         0       0         0          raise_application_error(-20011, 'Unknown Profile status "' ||
+   786#NOTX#     0         0       0         0    g_rec.profiled_lines := nvl(g_rec.profiled_lines,0) + 1;
+   787#NOTX#     0         0       0         0 end add_dbout_run;
+   914#NOTX#     0         0       0         0    if in_prof_rec.exec_cnt > 0
+   917#NOTX#     0         0       0         0       return 'EXEC';
+   919#NOTX#     0         0       0         0    if    in_prof_rec.exec_cnt = 0
+   920#NOTX#     0         0       0         0      and in_prof_rec.exec_tot_usec = 0
+   923#NOTX#     0         0       0         0       if regexp_like(in_prof_rec.text, '^[[:space:]]*' ||
+   928#NOTX#     0         0       0         0          return 'EXCL';
+   929#NOTX#     0         0       0         0       elsif     in_prof_rec.line = in_max_line
+   930#NOTX#     0         0       0         0             AND regexp_like(in_prof_rec.text, 'END', 'i')
+Source               TotTime MinTime   MaxTime     
+  Line Stat Occurs    (usec)  (usec)    (usec) Text
+------ ---- ------ --------- ------- --------- ------------
+   935#NOTX#     0         0       0         0          return 'NOTX';
+   939#NOTX#     0         0       0         0    return 'UNKN';
+   940#NOTX#     0         0       0         0 end set_prof_status;
+  1064#NOTX#     0         0       0         0    l_prof_rec.test_run_id := g_rec.test_run_id;
+  1066#NOTX#     0         0       0         0    l_ignr_aa := load_ignr_aa(in_dbout_owner
+  1071#NOTX#     0         0       0         0    select max(ppd.line#) into l_max_line
+  1080#NOTX#     0         0       0         0    for buf1 in (
+  1081#NOTX#     0         0       0         0       select src.line
+  1101#NOTX#     0         0       0         0       l_prof_rec.line          := buf1.line;
+  1102#NOTX#     0         0       0         0       l_prof_rec.exec_cnt      := buf1.total_occur;
+  1103#NOTX#     0         0       0         0       l_prof_rec.exec_tot_usec := buf1.total_time/1000;
+  1104#NOTX#     0         0       0         0       l_prof_rec.exec_min_usec := buf1.min_time/1000;
+  1105#NOTX#     0         0       0         0       l_prof_rec.exec_max_usec := buf1.max_time/1000;
+  1106#NOTX#     0         0       0         0       l_prof_rec.text          := buf1.text;
+  1107#NOTX#     0         0       0         0       if l_ignr_aa.EXISTS(l_prof_rec.line)
+  1110#NOTX#     0         0       0         0          l_prof_rec.status := 'IGNR';
+  1112#NOTX#     0         0       0         0          l_prof_rec.status := set_prof_status(l_prof_rec, l_max_line);
+  1114#NOTX#     0         0       0         0       add_dbout_run(l_prof_rec); -- Updates g_rec
+  1115#NOTX#     0         0       0         0       insert into wt_profiles values l_prof_rec;
+  1116#NOTX#     0         0       0         0    end loop;
+  1117#NOTX#     0         0       0         0 end insert_wt_profile;
+  1302#NOTX#     0         0       0         0    cursor c_readable
+  1304#NOTX#     0         0       0         0       select src.name
+  1308#NOTX#     0         0       0         0         and  src.type   = in_dbout_type;
+  1313#NOTX#     0         0       0         0    open c_readable;
+Source               TotTime MinTime   MaxTime     
+  Line Stat Occurs    (usec)  (usec)    (usec) Text
+------ ---- ------ --------- ------- --------- ------------
+  1314#NOTX#     0         0       0         0    fetch c_readable into b_readable;
+  1315#NOTX#     0         0       0         0    ret_bool := c_readable%FOUND;
+  1316#NOTX#     0         0       0         0    close c_readable;
+  1317#NOTX#     0         0       0         0    return ret_bool;
+  1318#NOTX#     0         0       0         0 end is_profilable;
+  1415#NOTX#     0         0       0         0    if dbout_type_in != 'TRIGGER'
+  1417#NOTX#     0         0       0         0       return 0;
+  1419#NOTX#     0         0       0         0    for buff in (
+  1420#NOTX#     0         0       0         0       select line, text from dba_source
+  1426#NOTX#     0         0       0         0       if regexp_instr(buff.text,
+  1436#NOTX#     0         0       0         0                       '|[[:space:]]begin[[:space:]])', 1, 1, 0, 'i') <> 0
+  1438#NOTX#     0         0       0         0          return buff.line - 1;
+  1440#NOTX#     0         0       0         0    end loop;
+  1441#NOTX#     0         0       0         0    return 0;
+  1442#NOTX#     0         0       0         0 end trigger_offset;
+  1481#NOTX#     0         0       0         0    cursor main is
+  1482#NOTX#     0         0       0         0       select sum(case status when 'EXEC' then 1 else 0 end)    HITS
+  1485#NOTX#     0         0       0         0        where test_run_id = in_test_run_id;
+  1488#NOTX#     0         0       0         0    open main;
+  1489#NOTX#     0         0       0         0    fetch main into buff;
+  1490#NOTX#     0         0       0         0    close main;
+  1491#NOTX#     0         0       0         0    if nvl(buff.hits + buff.misses, 0) != 0
+  1493#NOTX#     0         0       0         0       return round(100 * buff.hits / (buff.hits + buff.misses),2);
+  1495#NOTX#     0         0       0         0    return null;
+  1496#NOTX#     0         0       0         0 END calc_pct_coverage;
+Source               TotTime MinTime   MaxTime     
+  Line Stat Occurs    (usec)  (usec)    (usec) Text
+------ ---- ------ --------- ------- --------- ------------
+  1655#NOTX#     0         0       0         0       return;
+  1660#NOTX#     0         0       0         0       raise_application_error (-20004, 'i_test_run_id is null');
+  1676#NOTX#     0         0       0         0    if is_profilable(core_data.g_run_rec.dbout_owner
+  1681#NOTX#     0         0       0         0       g_rec.test_run_id    := in_test_run_id;
+  1682#NOTX#     0         0       0         0       g_rec.trigger_offset := trigger_offset(core_data.g_run_rec.dbout_owner
+  1686#NOTX#     0         0       0         0       insert_wt_profile(core_data.g_run_rec.dbout_owner
+  1689#NOTX#     0         0       0         0       coverage_lines := g_rec.executed_lines + g_rec.notexec_lines;
+  1690#NOTX#     0         0       0         0       g_rec.coverage_pct := calc_pct_coverage(in_test_run_id);
+  1691#NOTX#     0         0       0         0       if nvl(g_rec.executed_lines,0) != 0
+  1693#NOTX#     0         0       0         0          g_rec.exec_avg_usec := round(g_rec.exec_tot_usec / g_rec.executed_lines, 2);
+  1696#NOTX#     0         0       0         0       insert into wt_dbout_runs values g_rec;
+  1697#NOTX#     0         0       0         0       commit;
+  1712#NOTX#     0         0       0         0 end finalize;
+  1885#NOTX#     0         0       0         0    delete from wt_profiles
+  1887#NOTX#     0         0       0         0    delete from wt_dbout_runs
+  1889#NOTX#     0         0       0         0    if in_test_run_id is not null
+  1891#NOTX#     0         0       0         0       clear_plsql_profiler_recs(in_test_run_id);
+  1893#NOTX#     0         0       0         0 end delete_run_id;
+
+
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
+  Test Results for WTP.WT_RESULT
+  Run ID 10: 05-Apr-2024 02:27:33 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        0      Total Assertions:       20
+  Average Elapsed msec:        1     Failed Assertions:        0
+  Maximum Elapsed msec:        5       Total Testcases:        3
+  Total Run Time (sec):      0.1      Failed Testcases:        0
+                                        Testcase Yield:      100%
+
+  Code Coverage for PACKAGE BODY WTP.WT_RESULT
+  ----------------------------------------------------------------
+          Ignored Lines:       89   Total Profiled Lines:      133
+         Excluded Lines:        0   Total Executed Lines:       42
+  Minimum LineExec usec:        0     Not Executed Lines:        0
+  Average LineExec usec:       12          Unknown Lines:        2
+  Maximum LineExec usec:     1367          Code Coverage:    100.0%
+  Trigger Source Offset:        0
+
+
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
+  Test Results for WTP.WT_TESTCASE
+  Run ID 11: 05-Apr-2024 02:27:33 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        0      Total Assertions:       15
+  Average Elapsed msec:        0     Failed Assertions:        0
+  Maximum Elapsed msec:        2       Total Testcases:       12
+  Total Run Time (sec):      0.1      Failed Testcases:        0
+                                        Testcase Yield:      100%
+
+  Code Coverage for PACKAGE BODY WTP.WT_TEST_RUNNER
+  ----------------------------------------------------------------
+          Ignored Lines:       54   Total Profiled Lines:       88
+         Excluded Lines:        4   Total Executed Lines:       17
+  Minimum LineExec usec:        0     Not Executed Lines:       12
+  Average LineExec usec:       38          Unknown Lines:        1
+  Maximum LineExec usec:      218          Code Coverage:     58.6%
+  Trigger Source Offset:        0
+
+  WTP.WT_TEST_RUNNER PACKAGE BODY Code Coverage Details
+  Test Run ID: 11
+  ----------------------------------------------------------------
+Source               TotTime MinTime   MaxTime     
+  Line Stat Occurs    (usec)  (usec)    (usec) Text
+------ ---- ------ --------- ------- --------- ------------
+    29#NOTX#     0         0       0         0    return l_id;
+    96#NOTX#     0         0       0         0       return NULL;
+   168#NOTX#     0         0       0         0    for buff in (
+   169#NOTX#     0         0       0         0       select id from wt_test_runs
+   172#NOTX#     0         0       0         0       wt_profile.delete_run_id(buff.id);
+   173#NOTX#     0         0       0         0       wt_result.delete_run_id(buff.id);
+   174#NOTX#     0         0       0         0       wt_test_run.delete_run_id(buff.id);
+   175#NOTX#     0         0       0         0    end loop;
+   176#NOTX#     0         0       0         0    delete from wt_test_runners
+   178#NOTX#     0         0       0         0 end delete_records;
+   185#NOTX#     0         0       0         0    delete from wt_test_runners
+   190#NOTX#     0         0       0         0 end delete_records;
+
+
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
+  Test Results for WTP.WT_TEST_RUN
+  Run ID 13: 05-Apr-2024 02:27:33 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        0      Total Assertions:       52
+  Average Elapsed msec:        1     Failed Assertions:        2
+  Maximum Elapsed msec:        6       Total Testcases:       16
+  Total Run Time (sec):      0.2      Failed Testcases:        2
+                                        Testcase Yield:       88%
+
+  Code Coverage for PACKAGE BODY WTP.WT_TEST_RUN
+  ----------------------------------------------------------------
+          Ignored Lines:      176   Total Profiled Lines:      275
+         Excluded Lines:        7   Total Executed Lines:       60
+  Minimum LineExec usec:        0     Not Executed Lines:       26
+  Average LineExec usec:       19          Unknown Lines:        6
+  Maximum LineExec usec:      367          Code Coverage:     69.8%
+  Trigger Source Offset:        0
+
+  WTP.WT_TEST_RUN Test Result Details
+  Test Run ID: 13
+  --------------------------------------------------------------
+---***  SET_LAST_RUN Happy Path 1  ***------------------------------------------
+#FAIL#.373ms Test Run ID of Last Run. EQQUERYVALUE - Expected "-11" and got "3" for Query: select id from wt_test_runs where is_last_run = 'Y'
+---***  SET_LAST_RUN Happy Path 2  ***------------------------------------------
+#FAIL#.278ms Test Run ID of Last Run. EQQUERYVALUE - Expected "-12" and got "3" for Query: select id from wt_test_runs where is_last_run = 'Y'
+
+  WTP.WT_TEST_RUN PACKAGE BODY Code Coverage Details
+  Test Run ID: 13
+  ----------------------------------------------------------------
+Source               TotTime MinTime   MaxTime     
+  Line Stat Occurs    (usec)  (usec)    (usec) Text
+------ ---- ------ --------- ------- --------- ------------
+   322#NOTX#     0         0       0         0 exception when others then
+   323#NOTX#     0         0       0         0    core_data.run_error('Test Runner ID: ' || in_test_runner_id || CHR(10) ||
+   398#NOTX#     0         0       0         0    g_test_runs_rec := l_test_runs_recNULL;
+   399#NOTX#     0         0       0         0    wt_result.initialize;
+   400#NOTX#     0         0       0         0    wt_profile.initialize;  -- Clear, Check, and Set Profiler Runid
+   426#NOTX#     0         0       0         0 end finalize1;
+   448#NOTX#     0         0       0         0    update wt_test_runs
+   454#NOTX#     0         0       0         0    commit;
+   455#NOTX#     0         0       0         0 end finalize2;
+   463#NOTX#     0         0       0         0    return C_LAST_RUN_FLAG;
+   464#NOTX#     0         0       0         0 end get_last_run_flag;
+   492#NOTX#     0         0       0         0       clear_last_run(in_test_runner_id);
+   611#NOTX#     0         0       0         0 exception when NO_DATA_FOUND then
+   612#NOTX#     0         0       0         0    null;  -- Ignore Error
+   690#NOTX#     0         0       0         0    delete_hooks;
+   691#NOTX#     0         0       0         0    insert into hooks (hook_name, seq, run_string)
+   693#NOTX#     0         0       0         0    insert into hooks (hook_name, seq, run_string)
+   695#NOTX#     0         0       0         0    insert into hooks (hook_name, seq, run_string)
+   697#NOTX#     0         0       0         0    commit;
+   698#NOTX#     0         0       0         0    hook.init;
+   699#NOTX#     0         0       0         0 end insert_hooks;
+   706#NOTX#     0         0       0         0    delete from hooks where run_string like '% wt_test_run.%';
+   707#NOTX#     0         0       0         0    dbms_output.put_line(SQL%ROWCOUNT || ' "wt_test_run" rows deleted from HOOKS table.');
+   708#NOTX#     0         0       0         0    hook.init;
+Source               TotTime MinTime   MaxTime     
+  Line Stat Occurs    (usec)  (usec)    (usec) Text
+------ ---- ------ --------- ------- --------- ------------
+   709#NOTX#     0         0       0         0    commit;
+   710#NOTX#     0         0       0         0 end delete_hooks;
+
+
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
+  Test Results for WTP.WT_TEST_RUNNER
+  Run ID 14: 05-Apr-2024 02:27:34 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        0      Total Assertions:       15
+  Average Elapsed msec:        0     Failed Assertions:        0
+  Maximum Elapsed msec:        2       Total Testcases:       12
+  Total Run Time (sec):      0.1      Failed Testcases:        0
+                                        Testcase Yield:      100%
+
+  Code Coverage for PACKAGE BODY WTP.WT_TEST_RUNNER
+  ----------------------------------------------------------------
+          Ignored Lines:       54   Total Profiled Lines:       88
+         Excluded Lines:        3   Total Executed Lines:       21
+  Minimum LineExec usec:        0     Not Executed Lines:        8
+  Average LineExec usec:       26          Unknown Lines:        2
+  Maximum LineExec usec:      316          Code Coverage:     72.4%
+  Trigger Source Offset:        0
+
+  WTP.WT_TEST_RUNNER PACKAGE BODY Code Coverage Details
+  Test Run ID: 14
+  ----------------------------------------------------------------
+Source               TotTime MinTime   MaxTime     
+  Line Stat Occurs    (usec)  (usec)    (usec) Text
+------ ---- ------ --------- ------- --------- ------------
+   168#NOTX#     0         0       0         0    for buff in (
+   169#NOTX#     0         0       0         0       select id from wt_test_runs
+   172#NOTX#     0         0       0         0       wt_profile.delete_run_id(buff.id);
+   173#NOTX#     0         0       0         0       wt_result.delete_run_id(buff.id);
+   174#NOTX#     0         0       0         0       wt_test_run.delete_run_id(buff.id);
+   175#NOTX#     0         0       0         0    end loop;
+   176#NOTX#     0         0       0         0    delete from wt_test_runners
+   178#NOTX#     0         0       0         0 end delete_records;
+

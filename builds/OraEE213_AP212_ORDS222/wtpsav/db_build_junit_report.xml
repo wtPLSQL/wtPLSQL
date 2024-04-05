@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="WTP_schema_build" tests="97" failures="0" time="0" timestamp="2024-04-03T16:06:57">
+  <testsuite name="WTP_schema_build" tests="99" failures="0" time="0" timestamp="2024-04-05T14:25:55">
     <testcase name="INDEX:db_object_status" classname="WTP.HOOKS_PK" time="0"/>
     <testcase name="INDEX:db_object_status" classname="WTP.PLSQL_PROFILER_RUNS_IDX1" time="0"/>
     <testcase name="INDEX:db_object_status" classname="WTP.SYS_C008233" time="0"/>
     <testcase name="INDEX:db_object_status" classname="WTP.SYS_C008234" time="0"/>
     <testcase name="INDEX:db_object_status" classname="WTP.SYS_C008236" time="0"/>
-    <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075780C00002$$" time="0"/>
-    <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075780C00003$$" time="0"/>
-    <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075780C00005$$" time="0"/>
-    <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075780C00006$$" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075784C00002$$" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075784C00003$$" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075784C00005$$" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075784C00006$$" time="0"/>
     <testcase name="INDEX:db_object_status" classname="WTP.WT_DBOUTS_IX1" time="0"/>
     <testcase name="INDEX:db_object_status" classname="WTP.WT_DBOUTS_NK1" time="0"/>
     <testcase name="INDEX:db_object_status" classname="WTP.WT_DBOUTS_PK" time="0"/>
@@ -30,10 +30,10 @@
     <testcase name="INDEX:db_object_status" classname="WTP.WT_TEST_RUNS_NK1" time="0"/>
     <testcase name="INDEX:db_object_status" classname="WTP.WT_TEST_RUNS_PK" time="0"/>
     <testcase name="INDEX:db_object_status" classname="WTP.WT_VERSIONS_PK" time="0"/>
-    <testcase name="LOB:db_object_status" classname="WTP.SYS_LOB0000075780C00002$$" time="0"/>
-    <testcase name="LOB:db_object_status" classname="WTP.SYS_LOB0000075780C00003$$" time="0"/>
-    <testcase name="LOB:db_object_status" classname="WTP.SYS_LOB0000075780C00005$$" time="0"/>
-    <testcase name="LOB:db_object_status" classname="WTP.SYS_LOB0000075780C00006$$" time="0"/>
+    <testcase name="LOB:db_object_status" classname="WTP.SYS_LOB0000075784C00002$$" time="0"/>
+    <testcase name="LOB:db_object_status" classname="WTP.SYS_LOB0000075784C00003$$" time="0"/>
+    <testcase name="LOB:db_object_status" classname="WTP.SYS_LOB0000075784C00005$$" time="0"/>
+    <testcase name="LOB:db_object_status" classname="WTP.SYS_LOB0000075784C00006$$" time="0"/>
     <testcase name="PACKAGE:db_object_status" classname="WTP.CORE_DATA" time="0"/>
     <testcase name="PACKAGE:db_object_status" classname="WTP.HOOK" time="0"/>
     <testcase name="PACKAGE:db_object_status" classname="WTP.JUNIT_CORE_REPORT" time="0"/>
@@ -63,9 +63,11 @@
     <testcase name="PACKAGE BODY:db_object_status" classname="WTP.WT_TEST_RUN" time="0"/>
     <testcase name="PACKAGE BODY:db_object_status" classname="WTP.WT_TEST_RUNNER" time="0"/>
     <testcase name="PROCEDURE:db_object_status" classname="WTP.JUNIT_XML_PERSIST_ALL" time="0"/>
+    <testcase name="PROCEDURE:db_object_status" classname="WTP.WT_AD_HOC_REPORT" time="0"/>
     <testcase name="PROCEDURE:db_object_status" classname="WTP.WT_EXECUTE_TEST_RUNNER" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.UTASSERT" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WTPLSQL" time="0"/>
+    <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_AD_HOC_REPORT" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_CORE_REPORT" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_EXECUTE_TEST_RUNNER" time="0"/>

@@ -31,7 +31,7 @@ is
 begin
    if NOT g_run_aa.EXISTS(in_hook_name)
    then
-      dbms_output.put_line('No hook for ' || in_hook_name);
+      --dbms_output.put_line('No hook for ' || in_hook_name);
       return;
    end if;
    for i in 1 .. g_run_aa(in_hook_name).COUNT

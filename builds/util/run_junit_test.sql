@@ -40,3 +40,5 @@ set verify on
 prompt
 prompt Done with Reports
 set linesize 80
+
+EXIT

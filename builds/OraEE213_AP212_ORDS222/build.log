@@ -7,7 +7,7 @@ Capture Version
 
 build_initialize.sql
 
-SQL*Plus: Release 21.0.0.0.0 - Production on Wed Apr 3 16:06:35 2024
+SQL*Plus: Release 21.0.0.0.0 - Production on Fri Apr 5 14:25:34 2024
 Version 21.3.0.0.0
 
 Copyright (c) 1982, 2021, Oracle.  All rights reserved.
@@ -20,17 +20,17 @@ Reset Output Connections
 
 PL/SQL procedure successfully completed.
 
-Elapsed: 00:00:00.00
+Elapsed: 00:00:00.03
 
 PL/SQL procedure successfully completed.
 
-Elapsed: 00:00:00.00
+Elapsed: 00:00:00.01
 
 Show Database Connection
 
 'DB:'||NAME||',CON:'||SYS_CONTEXT('USERENV','CON_NAME')||',TSTMP:'||SYSTIMESTAMP
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-db: EE213CDB, con: CDB$ROOT, tstmp: 03-APR-24 04.06.35.786702 PM +00:00
+db: EE213CDB, con: CDB$ROOT, tstmp: 05-APR-24 02.25.34.553036 PM +00:00
 
 Elapsed: 00:00:00.01
 
@@ -40,7 +40,7 @@ Show PDBs
 ---------- ------------------------------ ---------- ----------
 	 2 PDB$SEED			  READ ONLY  NO
 	 3 TESTPDB			  READ WRITE NO
-	 5 DEVPDB			  READ WRITE NO
+	 4 DEVPDB			  READ WRITE NO
 	 6 AP212PDB			  READ WRITE NO
 
 Create PDB
@@ -54,13 +54,13 @@ create pluggable database "DEVPDB"
 
 PL/SQL procedure successfully completed.
 
-Elapsed: 00:00:11.51
+Elapsed: 00:00:09.92
 
 Open PDB
 
 Pluggable database altered.
 
-Elapsed: 00:00:07.72
+Elapsed: 00:00:07.95
 
 Show Services
 
@@ -76,7 +76,7 @@ EE213CDBXDB
 
 7 rows selected.
 
-Elapsed: 00:00:00.01
+Elapsed: 00:00:00.03
 
 Update DEFAULT Profile
 
@@ -86,7 +86,7 @@ Elapsed: 00:00:00.02
 
 Profile altered.
 
-Elapsed: 00:00:00.12
+Elapsed: 00:00:00.29
 
 Session altered.
 
@@ -100,7 +100,7 @@ Move to ../../wtpsrc
 
 ../builds/OraEE213_AP212_ORDS222/build.sql wtpsrc
 
-SQL*Plus: Release 21.0.0.0.0 - Production on Wed Apr 3 16:06:55 2024
+SQL*Plus: Release 21.0.0.0.0 - Production on Fri Apr 5 14:25:52 2024
 Version 21.3.0.0.0
 
 Copyright (c) 1982, 2021, Oracle.  All rights reserved.
@@ -113,7 +113,7 @@ Reset Output Connections
 
 PL/SQL procedure successfully completed.
 
-Elapsed: 00:00:00.04
+Elapsed: 00:00:00.03
 
 PL/SQL procedure successfully completed.
 
@@ -123,7 +123,7 @@ Show Database Connection
 
 'DB:'||NAME||',CON:'||SYS_CONTEXT('USERENV','CON_NAME')||',TSTMP:'||SYSTIMESTAMP
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-db: EE213CDB, con: DEVPDB, tstmp: 03-APR-24 04.06.55.556987 PM +00:00
+db: EE213CDB, con: DEVPDB, tstmp: 05-APR-24 02.25.53.141667 PM +00:00
 
 Elapsed: 00:00:00.02
 
@@ -155,7 +155,7 @@ Grant succeeded.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:06:56 for a duration of .51 seconds (started at 2024-04-03T16:06:55)
+=== DBI Completed at 2024-04-05T14:25:53 for a duration of .44 seconds (started at 2024-04-05T14:25:53)
 Setup Continue on Error
 
 *****************************
@@ -197,7 +197,7 @@ Grant succeeded.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:06:56 for a duration of .36 seconds (started at 2024-04-03T16:06:56)
+=== DBI Completed at 2024-04-05T14:25:54 for a duration of .34 seconds (started at 2024-04-05T14:25:53)
 
 *************************
 *  Install Application	*
@@ -212,7 +212,18 @@ Table created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:06:56 for a duration of .26 seconds (started at 2024-04-03T16:06:56)
+=== DBI Completed at 2024-04-05T14:25:54 for a duration of .19 seconds (started at 2024-04-05T14:25:54)
+=== DBI Started: WTP/WT_AD_HOC_REPORT.proc
+
+Warning: Procedure created with compilation errors.
+
+
+Grant succeeded.
+
+
+Synonym created.
+
+=== DBI Completed at 2024-04-05T14:25:54 for a duration of .3 seconds (started at 2024-04-05T14:25:54)
 === DBI Started: WTP/WT_EXECUTE_TEST_RUNNER.proc
 
 Warning: Procedure created with compilation errors.
@@ -223,17 +234,22 @@ Grant succeeded.
 
 Synonym created.
 
-=== DBI Completed at 2024-04-03T16:06:57 for a duration of .29 seconds (started at 2024-04-03T16:06:57)
+=== DBI Completed at 2024-04-05T14:25:54 for a duration of .14 seconds (started at 2024-04-05T14:25:54)
 === DBI Started: WTP/CORE_DATA.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T16:06:57 for a duration of .15 seconds (started at 2024-04-03T16:06:57)
+=== DBI Completed at 2024-04-05T14:25:55 for a duration of .12 seconds (started at 2024-04-05T14:25:54)
 === DBI Started: WTP/HOOK.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T16:06:57 for a duration of .06 seconds (started at 2024-04-03T16:06:57)
+=== DBI Completed at 2024-04-05T14:25:55 for a duration of .05 seconds (started at 2024-04-05T14:25:55)
+=== DBI Started: WTP/JUNIT_CORE_REPORT.pspec
+
+Package created.
+
+=== DBI Completed at 2024-04-05T14:25:55 for a duration of .07 seconds (started at 2024-04-05T14:25:55)
 === DBI Started: WTP/WTPLSQL.pspec
 
 Package created.
@@ -247,7 +263,7 @@ Synonym created.
 
 Synonym created.
 
-=== DBI Completed at 2024-04-03T16:06:57 for a duration of .18 seconds (started at 2024-04-03T16:06:57)
+=== DBI Completed at 2024-04-05T14:25:55 for a duration of .15 seconds (started at 2024-04-05T14:25:55)
 === DBI Started: WTP/WT_ASSERT.pspec
 
 Package created.
@@ -261,7 +277,7 @@ Synonym created.
 
 Synonym created.
 
-=== DBI Completed at 2024-04-03T16:06:57 for a duration of .23 seconds (started at 2024-04-03T16:06:57)
+=== DBI Completed at 2024-04-05T14:25:55 for a duration of .3 seconds (started at 2024-04-05T14:25:55)
 === DBI Started: WTP/WT_CORE_REPORT.pspec
 
 Package created.
@@ -272,7 +288,7 @@ Grant succeeded.
 
 Synonym created.
 
-=== DBI Completed at 2024-04-03T16:06:58 for a duration of .15 seconds (started at 2024-04-03T16:06:57)
+=== DBI Completed at 2024-04-05T14:25:55 for a duration of .15 seconds (started at 2024-04-05T14:25:55)
 === DBI Started: WTP/HOOKS.tab
 
 Table created.
@@ -301,7 +317,7 @@ Comment created.
 
 Comment created.
 
-=== DBI Completed at 2024-04-03T16:07:15 for a duration of 16.91 seconds (started at 2024-04-03T16:06:58)
+=== DBI Completed at 2024-04-05T14:26:11 for a duration of 16.06 seconds (started at 2024-04-05T14:25:55)
 === DBI Started: WTP/WT_VERSIONS.tab
 
 Table created.
@@ -336,7 +352,7 @@ Grant succeeded.
 
 Synonym created.
 
-=== DBI Completed at 2024-04-03T16:07:15 for a duration of .38 seconds (started at 2024-04-03T16:07:15)
+=== DBI Completed at 2024-04-05T14:26:12 for a duration of .34 seconds (started at 2024-04-05T14:26:11)
 === DBI Started: WTP/HOOKS.cdl
 
 Disable Triggers and Foreign Keys
@@ -346,12 +362,12 @@ PL/SQL procedure successfully completed.
 
 sqlldr_control=WTP/HOOKS.ctl
 
-  2 Rows successfully loaded.
+  3 Rows successfully loaded.
 
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T16:07:18 for a duration of 2.98 seconds (started at 2024-04-03T16:07:15)
+=== DBI Completed at 2024-04-05T14:26:16 for a duration of 3.74 seconds (started at 2024-04-05T14:26:12)
 === DBI Started: WTP/WT_QUAL_TEST_RUNNERS_VW.vw
 
 View created.
@@ -374,32 +390,37 @@ Comment created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:18 for a duration of .39 seconds (started at 2024-04-03T16:07:18)
+=== DBI Completed at 2024-04-05T14:26:16 for a duration of .33 seconds (started at 2024-04-05T14:26:16)
 === DBI Started: WTP/CORE_DATA.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:07:18 for a duration of .1 seconds (started at 2024-04-03T16:07:18)
+=== DBI Completed at 2024-04-05T14:26:16 for a duration of .11 seconds (started at 2024-04-05T14:26:16)
 === DBI Started: WTP/HOOK.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:07:19 for a duration of .1 seconds (started at 2024-04-03T16:07:18)
+=== DBI Completed at 2024-04-05T14:26:16 for a duration of .1 seconds (started at 2024-04-05T14:26:16)
+=== DBI Started: WTP/JUNIT_CORE_REPORT.pbody
+
+Package body created.
+
+=== DBI Completed at 2024-04-05T14:26:16 for a duration of .08 seconds (started at 2024-04-05T14:26:16)
 === DBI Started: WTP/WTPLSQL.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:07:19 for a duration of .11 seconds (started at 2024-04-03T16:07:19)
+=== DBI Completed at 2024-04-05T14:26:16 for a duration of .12 seconds (started at 2024-04-05T14:26:16)
 === DBI Started: WTP/WT_ASSERT.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:07:19 for a duration of .21 seconds (started at 2024-04-03T16:07:19)
+=== DBI Completed at 2024-04-05T14:26:17 for a duration of .26 seconds (started at 2024-04-05T14:26:16)
 === DBI Started: WTP/WT_CORE_REPORT.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:07:19 for a duration of .11 seconds (started at 2024-04-03T16:07:19)
+=== DBI Completed at 2024-04-05T14:26:17 for a duration of .1 seconds (started at 2024-04-05T14:26:17)
 === DBI Started: ./installation_finalize.sql
 
 Drop_Temp_Publicly_Updateable_Table_SQL
@@ -461,7 +482,7 @@ Compile All for wtpsrc Install Type
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T16:07:25 for a duration of 6.32 seconds (started at 2024-04-03T16:07:19)
+=== DBI Completed at 2024-04-05T14:26:24 for a duration of 7.27 seconds (started at 2024-04-05T14:26:17)
 
 *****************
 *  Run Reports	*
@@ -469,10 +490,10 @@ PL/SQL procedure successfully completed.
 
 
 Reporting Summary of Install Type Log Errors
-Processing file WTP/HOOKS.log (2024-04-03 16:07:22)
-Processing file install_sys.log (2024-04-03 16:07:22)
-Processing file install_system.log (2024-04-03 16:07:22)
-Processing file install_wtpsrc.log (2024-04-03 16:07:22)
+Processing file WTP/HOOKS.log (2024-04-05 14:26:21)
+Processing file install_sys.log (2024-04-05 14:26:21)
+Processing file install_system.log (2024-04-05 14:26:21)
+Processing file install_wtpsrc.log (2024-04-05 14:26:21)
 
 PL/SQL procedure successfully completed.
 
@@ -484,16 +505,19 @@ Reporting JUnit XML Database Build Status
 Reorting JUnit XML Installation Log
 
 "wtpsrc" Installation is Done.
-old   2:    values ('&INSTALL_TYPE.', '&APP_VERSION.', 'INSTALL')
-new   2:    values ('wtpsrc', '1.003', 'INSTALL')
+old   2:    if '&INSTALL_TYPE.' like 'wtp%'
+new   2:    if 'wtpsrc' like 'wtp%'
+old   5:	  values ('&INSTALL_TYPE.', '&APP_VERSION.', 'INSTALL');
+new   5:	  values ('wtpsrc', '1.003', 'INSTALL');
 
-1 row created.
-
-
-Commit complete.
+PL/SQL procedure successfully completed.
 
 
 Re-create Invalid Public Synonyms
+CREATE OR REPLACE NONEDITIONABLE PUBLIC SYNONYM "WT_AD_HOC_REPORT" for "WTP"."WT
+_AD_HOC_REPORT"
+CREATE OR REPLACE NONEDITIONABLE PUBLIC SYNONYM "WT_EXECUTE_TEST_RUNNER" for "WT
+P"."WT_EXECUTE_TEST_RUNNER"
 
 PL/SQL procedure successfully completed.
 
@@ -517,7 +541,7 @@ Move to ../../wtptst
 
 ../builds/OraEE213_AP212_ORDS222/build.sql wtptst
 
-SQL*Plus: Release 21.0.0.0.0 - Production on Wed Apr 3 16:07:27 2024
+SQL*Plus: Release 21.0.0.0.0 - Production on Fri Apr 5 14:26:26 2024
 Version 21.3.0.0.0
 
 Copyright (c) 1982, 2021, Oracle.  All rights reserved.
@@ -530,19 +554,19 @@ Reset Output Connections
 
 PL/SQL procedure successfully completed.
 
-Elapsed: 00:00:00.01
+Elapsed: 00:00:00.00
 
 PL/SQL procedure successfully completed.
 
-Elapsed: 00:00:00.00
+Elapsed: 00:00:00.01
 
 Show Database Connection
 
 'DB:'||NAME||',CON:'||SYS_CONTEXT('USERENV','CON_NAME')||',TSTMP:'||SYSTIMESTAMP
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-db: EE213CDB, con: DEVPDB, tstmp: 03-APR-24 04.07.28.037668 PM +00:00
+db: EE213CDB, con: DEVPDB, tstmp: 05-APR-24 02.26.26.732999 PM +00:00
 
-Elapsed: 00:00:00.01
+Elapsed: 00:00:00.00
 
 PL/SQL procedure successfully completed.
 
@@ -577,7 +601,7 @@ Table created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:28 for a duration of .12 seconds (started at 2024-04-03T16:07:28)
+=== DBI Completed at 2024-04-05T14:26:27 for a duration of .11 seconds (started at 2024-04-05T14:26:26)
 === DBI Started: WTP/WT_SELF_TEST.tab
 
 Table created.
@@ -603,7 +627,7 @@ Comment created.
 
 Comment created.
 
-=== DBI Completed at 2024-04-03T16:07:30 for a duration of 1.65 seconds (started at 2024-04-03T16:07:28)
+=== DBI Completed at 2024-04-05T14:26:29 for a duration of 2.04 seconds (started at 2024-04-05T14:26:27)
 === DBI Started: WTP/WT_SELF_TEST.cdl
 
 Disable Triggers and Foreign Keys
@@ -624,7 +648,7 @@ PL/SQL procedure successfully completed.
 
 Commit complete.
 
-=== DBI Completed at 2024-04-03T16:07:34 for a duration of 4.68 seconds (started at 2024-04-03T16:07:30)
+=== DBI Completed at 2024-04-05T14:26:33 for a duration of 4.9 seconds (started at 2024-04-05T14:26:29)
 === DBI Started: WTP/WT_SELF_TEST.tabtrg
 
 Trigger created.
@@ -632,7 +656,7 @@ Trigger created.
 
 Trigger altered.
 
-=== DBI Completed at 2024-04-03T16:07:34 for a duration of .14 seconds (started at 2024-04-03T16:07:34)
+=== DBI Completed at 2024-04-05T14:26:34 for a duration of .13 seconds (started at 2024-04-05T14:26:33)
 === DBI Started: ./installation_finalize.sql
 
 Drop_Temp_Publicly_Updateable_Table_SQL
@@ -683,7 +707,7 @@ Compile All for wtptst Install Type
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T16:07:37 for a duration of 2.47 seconds (started at 2024-04-03T16:07:34)
+=== DBI Completed at 2024-04-05T14:26:36 for a duration of 2.43 seconds (started at 2024-04-05T14:26:34)
 
 *****************
 *  Run Reports	*
@@ -691,10 +715,10 @@ PL/SQL procedure successfully completed.
 
 
 Reporting Summary of Install Type Log Errors
-Processing file WTP/WT_SELF_TEST.log (2024-04-03 16:07:35)
-Processing file install_sys.log (2024-04-03 16:07:35)
-Processing file install_system.log (2024-04-03 16:07:35)
-Processing file install_wtptst.log (2024-04-03 16:07:35)
+Processing file WTP/WT_SELF_TEST.log (2024-04-05 14:26:34)
+Processing file install_sys.log (2024-04-05 14:26:34)
+Processing file install_system.log (2024-04-05 14:26:34)
+Processing file install_wtptst.log (2024-04-05 14:26:34)
 
 PL/SQL procedure successfully completed.
 
@@ -706,13 +730,12 @@ Reporting JUnit XML Database Build Status
 Reorting JUnit XML Installation Log
 
 "wtptst" Installation is Done.
-old   2:    values ('&INSTALL_TYPE.', '&APP_VERSION.', 'INSTALL')
-new   2:    values ('wtptst', '1.003', 'INSTALL')
+old   2:    if '&INSTALL_TYPE.' like 'wtp%'
+new   2:    if 'wtptst' like 'wtp%'
+old   5:	  values ('&INSTALL_TYPE.', '&APP_VERSION.', 'INSTALL');
+new   5:	  values ('wtptst', '1.003', 'INSTALL');
 
-1 row created.
-
-
-Commit complete.
+PL/SQL procedure successfully completed.
 
 
 Re-create Invalid Public Synonyms
@@ -733,205 +756,13 @@ Move Log Files to Build Folder
 
 Move back to /opt/DMSTEX_dev/wtPLSQL/builds/OraEE213_AP212_ORDS222
 
-Clear old wtpjun logs
-
-Move to ../../wtpjun
-
-../builds/OraEE213_AP212_ORDS222/build.sql wtpjun
-
-SQL*Plus: Release 21.0.0.0.0 - Production on Wed Apr 3 16:07:38 2024
-Version 21.3.0.0.0
-
-Copyright (c) 1982, 2021, Oracle.  All rights reserved.
-
-
-New Session
-Connected.
-
-Reset Output Connections
-
-PL/SQL procedure successfully completed.
-
-Elapsed: 00:00:00.00
-
-PL/SQL procedure successfully completed.
-
-Elapsed: 00:00:00.01
-
-Show Database Connection
-
-'DB:'||NAME||',CON:'||SYS_CONTEXT('USERENV','CON_NAME')||',TSTMP:'||SYSTIMESTAMP
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-db: EE213CDB, con: DEVPDB, tstmp: 03-APR-24 04.07.38.442936 PM +00:00
-
-Elapsed: 00:00:00.01
-
-PL/SQL procedure successfully completed.
-
-Identify this Module in V$SESSION
-Setup Abort on Error
-
-**************************
-*  Run SYS Installation  *
-**************************
-
-Setup Continue on Error
-
-*****************************
-*  Run SYSTEM Installation  *
-*****************************
-
-Connected.
-
-PL/SQL procedure successfully completed.
-
-
-*************************
-*  Install Application	*
-*************************
-
-=== DBI Started: ./installation_prepare.sql
-
-Create_Temp_Publicly_Updateable_Table_SQL
-
-Table created.
-
-
-Grant succeeded.
-
-=== DBI Completed at 2024-04-03T16:07:38 for a duration of .1 seconds (started at 2024-04-03T16:07:38)
-=== DBI Started: WTP/JUNIT_CORE_REPORT.pspec
-
-Package created.
-
-=== DBI Completed at 2024-04-03T16:07:38 for a duration of .12 seconds (started at 2024-04-03T16:07:38)
-=== DBI Started: WTP/HOOKS.cdl
-
-Disable Triggers and Foreign Keys
-
-PL/SQL procedure successfully completed.
-
-
-sqlldr_control=WTP/HOOKS.ctl
-
-  3 Rows successfully loaded.
-
-
-PL/SQL procedure successfully completed.
-
-=== DBI Completed at 2024-04-03T16:07:40 for a duration of 1.35 seconds (started at 2024-04-03T16:07:38)
-=== DBI Started: WTP/JUNIT_CORE_REPORT.pbody
-
-Package body created.
-
-=== DBI Completed at 2024-04-03T16:07:40 for a duration of .08 seconds (started at 2024-04-03T16:07:40)
-=== DBI Started: ./installation_finalize.sql
-
-Drop_Temp_Publicly_Updateable_Table_SQL
-
-Table dropped.
-
-
-alter_foreign_keys_ENABLE
-Alter Foreign Keys for wtpjun Install Type
--- WTP Alter Foreign Keys is done.
-
-PL/SQL procedure successfully completed.
-
-
-alter_triggers_ENABLE
-Alter Triggers for wtpjun Install Type
-alter trigger "WTP"."WT_SELF_TEST$TEST" ENABLE;
--- WTP Alter Triggers is done.
-
-PL/SQL procedure successfully completed.
-
-
-update_id_sequences
-Update ID Sequences for wtpjun Install Type
--- WTP Identity Sequence Updates is done.
-
-PL/SQL procedure successfully completed.
-
-
-Load Installation Files
-
-Confirm/Create odbcapture_installation_logs Table
-
-PL/SQL procedure successfully completed.
-
-
-sqlldr_control=./odbcapture_installation_logs.ctl
-
-  4 Rows successfully loaded.
-
-
-PL/SQL procedure successfully completed.
-
-
-compile_all
-Compile All for wtpjun Install Type
--- WTP Compile All is done.
-
-PL/SQL procedure successfully completed.
-
-=== DBI Completed at 2024-04-03T16:07:42 for a duration of 2.58 seconds (started at 2024-04-03T16:07:40)
-
-*****************
-*  Run Reports	*
-*****************
-
-
-Reporting Summary of Install Type Log Errors
-Processing file WTP/HOOKS.log (2024-04-03 16:07:41)
-Processing file install_sys.log (2024-04-03 16:07:41)
-Processing file install_system.log (2024-04-03 16:07:41)
-Processing file install_wtpjun.log (2024-04-03 16:07:41)
-
-PL/SQL procedure successfully completed.
-
-
-Reporting Invalid Objects
-
-Reporting JUnit XML Database Build Status
-
-Reorting JUnit XML Installation Log
-
-"wtpjun" Installation is Done.
-old   2:    values ('&INSTALL_TYPE.', '&APP_VERSION.', 'INSTALL')
-new   2:    values ('wtpjun', '1.003', 'INSTALL')
-
-1 row created.
-
-
-Commit complete.
-
-
-Re-create Invalid Public Synonyms
-
-PL/SQL procedure successfully completed.
-
-Disconnected from Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
-Version 21.3.0.0.0
-
-Move Log Files to Build Folder
-'db_build_junit_report.xml' -> '../builds/OraEE213_AP212_ORDS222/wtpjun/db_build_junit_report.xml'
-'install_sys.log' -> '../builds/OraEE213_AP212_ORDS222/wtpjun/install_sys.log'
-'install_system.log' -> '../builds/OraEE213_AP212_ORDS222/wtpjun/install_system.log'
-'install_wtpjun.log' -> '../builds/OraEE213_AP212_ORDS222/wtpjun/install_wtpjun.log'
-'log_files_junit_report.xml' -> '../builds/OraEE213_AP212_ORDS222/wtpjun/log_files_junit_report.xml'
-'odbcapture_installation_logs.log' -> '../builds/OraEE213_AP212_ORDS222/wtpjun/odbcapture_installation_logs.log'
-'WTP/HOOKS.log' -> '../builds/OraEE213_AP212_ORDS222/wtpjun/WTP/HOOKS.log'
-
-Move back to /opt/DMSTEX_dev/wtPLSQL/builds/OraEE213_AP212_ORDS222
-
 Clear old wtpsav logs
 
 Move to ../../wtpsav
 
 ../builds/OraEE213_AP212_ORDS222/build.sql wtpsav
 
-SQL*Plus: Release 21.0.0.0.0 - Production on Wed Apr 3 16:07:44 2024
+SQL*Plus: Release 21.0.0.0.0 - Production on Fri Apr 5 14:26:37 2024
 Version 21.3.0.0.0
 
 Copyright (c) 1982, 2021, Oracle.  All rights reserved.
@@ -954,7 +785,7 @@ Show Database Connection
 
 'DB:'||NAME||',CON:'||SYS_CONTEXT('USERENV','CON_NAME')||',TSTMP:'||SYSTIMESTAMP
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-db: EE213CDB, con: DEVPDB, tstmp: 03-APR-24 04.07.44.389328 PM +00:00
+db: EE213CDB, con: DEVPDB, tstmp: 05-APR-24 02.26.37.598544 PM +00:00
 
 Elapsed: 00:00:00.01
 
@@ -991,27 +822,27 @@ Table created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:44 for a duration of .1 seconds (started at 2024-04-03T16:07:44)
+=== DBI Completed at 2024-04-05T14:26:37 for a duration of .1 seconds (started at 2024-04-05T14:26:37)
 === DBI Started: WTP/PLSQL_PROFILER_RUNNUMBER.seq
 
 Sequence created.
 
-=== DBI Completed at 2024-04-03T16:07:44 for a duration of .07 seconds (started at 2024-04-03T16:07:44)
+=== DBI Completed at 2024-04-05T14:26:37 for a duration of .06 seconds (started at 2024-04-05T14:26:37)
 === DBI Started: WTP/WT_DBOUTS_SEQ.seq
 
 Sequence created.
 
-=== DBI Completed at 2024-04-03T16:07:44 for a duration of .05 seconds (started at 2024-04-03T16:07:44)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .06 seconds (started at 2024-04-05T14:26:37)
 === DBI Started: WTP/WT_TESTCASES_SEQ.seq
 
 Sequence created.
 
-=== DBI Completed at 2024-04-03T16:07:44 for a duration of .06 seconds (started at 2024-04-03T16:07:44)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .05 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/WT_TEST_RUNNERS_SEQ.seq
 
 Sequence created.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .06 seconds (started at 2024-04-03T16:07:44)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .05 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/WT_TEST_RUNS_SEQ.seq
 
 Sequence created.
@@ -1019,52 +850,52 @@ Sequence created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .09 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .09 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/JUNIT_XML_PERSIST_ALL.proc
 
 Warning: Procedure created with compilation errors.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .09 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .05 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/WT_DBOUT.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .07 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .09 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/WT_JOB.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .05 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .06 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/WT_PERSIST_REPORT.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .06 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .06 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/WT_PROFILE.pspec
 
 Warning: Package created with compilation errors.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .07 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .06 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/WT_RESULT.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .06 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .06 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/WT_TESTCASE.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .06 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .07 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/WT_TEST_RUN.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .06 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .04 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/WT_TEST_RUNNER.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .07 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .06 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/PLSQL_PROFILER_DATA.tab
 
 Table created.
@@ -1108,7 +939,7 @@ Comment created.
 
 Comment created.
 
-=== DBI Completed at 2024-04-03T16:07:46 for a duration of .46 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:39 for a duration of .39 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/PLSQL_PROFILER_RUNS.tab
 
 Table created.
@@ -1146,7 +977,7 @@ Comment created.
 
 Comment created.
 
-=== DBI Completed at 2024-04-03T16:07:46 for a duration of .35 seconds (started at 2024-04-03T16:07:46)
+=== DBI Completed at 2024-04-05T14:26:39 for a duration of .63 seconds (started at 2024-04-05T14:26:39)
 === DBI Started: WTP/PLSQL_PROFILER_UNITS.tab
 
 Table created.
@@ -1184,7 +1015,7 @@ Comment created.
 
 Comment created.
 
-=== DBI Completed at 2024-04-03T16:07:47 for a duration of .35 seconds (started at 2024-04-03T16:07:46)
+=== DBI Completed at 2024-04-05T14:26:40 for a duration of .35 seconds (started at 2024-04-05T14:26:39)
 === DBI Started: WTP/WT_DBOUTS.tab
 
 Table created.
@@ -1216,7 +1047,7 @@ Grant succeeded.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:47 for a duration of .36 seconds (started at 2024-04-03T16:07:47)
+=== DBI Completed at 2024-04-05T14:26:40 for a duration of .4 seconds (started at 2024-04-05T14:26:40)
 === DBI Started: WTP/WT_DBOUT_RUNS.tab
 
 Table created.
@@ -1281,7 +1112,7 @@ Grant succeeded.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:48 for a duration of .71 seconds (started at 2024-04-03T16:07:47)
+=== DBI Completed at 2024-04-05T14:26:41 for a duration of .7 seconds (started at 2024-04-05T14:26:40)
 === DBI Started: WTP/WT_PROFILES.tab
 
 Table created.
@@ -1322,7 +1153,7 @@ Grant succeeded.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:48 for a duration of .44 seconds (started at 2024-04-03T16:07:48)
+=== DBI Completed at 2024-04-05T14:26:41 for a duration of .4 seconds (started at 2024-04-05T14:26:41)
 === DBI Started: WTP/WT_RESULTS.tab
 
 Table created.
@@ -1366,7 +1197,7 @@ Grant succeeded.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:49 for a duration of .42 seconds (started at 2024-04-03T16:07:48)
+=== DBI Completed at 2024-04-05T14:26:42 for a duration of .46 seconds (started at 2024-04-05T14:26:41)
 === DBI Started: WTP/WT_TESTCASES.tab
 
 Table created.
@@ -1392,7 +1223,7 @@ Grant succeeded.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:49 for a duration of .35 seconds (started at 2024-04-03T16:07:49)
+=== DBI Completed at 2024-04-05T14:26:42 for a duration of .29 seconds (started at 2024-04-05T14:26:42)
 === DBI Started: WTP/WT_TESTCASE_RUNS.tab
 
 Table created.
@@ -1439,7 +1270,7 @@ Grant succeeded.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:49 for a duration of .45 seconds (started at 2024-04-03T16:07:49)
+=== DBI Completed at 2024-04-05T14:26:43 for a duration of .74 seconds (started at 2024-04-05T14:26:42)
 === DBI Started: WTP/WT_TEST_RUNNERS.tab
 
 Table created.
@@ -1468,7 +1299,7 @@ Grant succeeded.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:50 for a duration of .32 seconds (started at 2024-04-03T16:07:49)
+=== DBI Completed at 2024-04-05T14:26:43 for a duration of .32 seconds (started at 2024-04-05T14:26:43)
 === DBI Started: WTP/WT_TEST_RUNS.tab
 
 Table created.
@@ -1551,27 +1382,27 @@ Grant succeeded.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:50 for a duration of .76 seconds (started at 2024-04-03T16:07:50)
+=== DBI Completed at 2024-04-05T14:26:44 for a duration of .75 seconds (started at 2024-04-05T14:26:43)
 === DBI Started: WTP/PLSQL_PROFILER_RUNS.tabind
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:07:51 for a duration of .07 seconds (started at 2024-04-03T16:07:50)
+=== DBI Completed at 2024-04-05T14:26:44 for a duration of .07 seconds (started at 2024-04-05T14:26:44)
 === DBI Started: WTP/WT_DBOUTS.tabind
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:07:51 for a duration of .07 seconds (started at 2024-04-03T16:07:51)
+=== DBI Completed at 2024-04-05T14:26:44 for a duration of .07 seconds (started at 2024-04-05T14:26:44)
 === DBI Started: WTP/WT_RESULTS.tabind
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:07:51 for a duration of .07 seconds (started at 2024-04-03T16:07:51)
+=== DBI Completed at 2024-04-05T14:26:44 for a duration of .06 seconds (started at 2024-04-05T14:26:44)
 === DBI Started: WTP/WT_TESTCASE_RUNS.tabind
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:07:51 for a duration of .08 seconds (started at 2024-04-03T16:07:51)
+=== DBI Completed at 2024-04-05T14:26:44 for a duration of .07 seconds (started at 2024-04-05T14:26:44)
 === DBI Started: WTP/WT_TEST_RUNS.tabind
 
 Index created.
@@ -1579,7 +1410,7 @@ Index created.
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:07:51 for a duration of .14 seconds (started at 2024-04-03T16:07:51)
+=== DBI Completed at 2024-04-05T14:26:44 for a duration of .11 seconds (started at 2024-04-05T14:26:44)
 === DBI Started: WTP/WT_DBOUT_RUNS_VW.vw
 
 View created.
@@ -1671,7 +1502,7 @@ Comment created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:52 for a duration of .77 seconds (started at 2024-04-03T16:07:51)
+=== DBI Completed at 2024-04-05T14:26:45 for a duration of .76 seconds (started at 2024-04-05T14:26:44)
 === DBI Started: WTP/WT_PROFILES_VW.vw
 
 View created.
@@ -1733,7 +1564,7 @@ Comment created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:52 for a duration of .58 seconds (started at 2024-04-03T16:07:52)
+=== DBI Completed at 2024-04-05T14:26:46 for a duration of .49 seconds (started at 2024-04-05T14:26:45)
 === DBI Started: WTP/WT_RESULTS_VW.vw
 
 View created.
@@ -1801,7 +1632,7 @@ Comment created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:53 for a duration of .58 seconds (started at 2024-04-03T16:07:52)
+=== DBI Completed at 2024-04-05T14:26:46 for a duration of .64 seconds (started at 2024-04-05T14:26:46)
 === DBI Started: WTP/WT_SCHEDULER_JOBS_VW.vw
 
 View created.
@@ -1839,7 +1670,7 @@ Comment created.
 
 Comment created.
 
-=== DBI Completed at 2024-04-03T16:07:53 for a duration of .44 seconds (started at 2024-04-03T16:07:53)
+=== DBI Completed at 2024-04-05T14:26:47 for a duration of .39 seconds (started at 2024-04-05T14:26:46)
 === DBI Started: WTP/WT_TESTCASE_RUNS_VW.vw
 
 View created.
@@ -1904,7 +1735,7 @@ Comment created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:54 for a duration of .55 seconds (started at 2024-04-03T16:07:53)
+=== DBI Completed at 2024-04-05T14:26:47 for a duration of .57 seconds (started at 2024-04-05T14:26:47)
 === DBI Started: WTP/WT_TEST_RUNS_VW.vw
 
 View created.
@@ -1984,70 +1815,67 @@ Comment created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:55 for a duration of .67 seconds (started at 2024-04-03T16:07:54)
+=== DBI Completed at 2024-04-05T14:26:48 for a duration of .69 seconds (started at 2024-04-05T14:26:47)
 === DBI Started: WTP/WT_DBOUT.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:07:55 for a duration of .09 seconds (started at 2024-04-03T16:07:55)
+=== DBI Completed at 2024-04-05T14:26:48 for a duration of .09 seconds (started at 2024-04-05T14:26:48)
 === DBI Started: WTP/WT_JOB.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:07:55 for a duration of .09 seconds (started at 2024-04-03T16:07:55)
+=== DBI Completed at 2024-04-05T14:26:48 for a duration of .1 seconds (started at 2024-04-05T14:26:48)
 === DBI Started: WTP/WT_PERSIST_REPORT.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:07:55 for a duration of .13 seconds (started at 2024-04-03T16:07:55)
+=== DBI Completed at 2024-04-05T14:26:48 for a duration of .15 seconds (started at 2024-04-05T14:26:48)
 === DBI Started: WTP/WT_PROFILE.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:07:55 for a duration of .2 seconds (started at 2024-04-03T16:07:55)
+=== DBI Completed at 2024-04-05T14:26:49 for a duration of .23 seconds (started at 2024-04-05T14:26:48)
 === DBI Started: WTP/WT_RESULT.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:07:55 for a duration of .09 seconds (started at 2024-04-03T16:07:55)
+=== DBI Completed at 2024-04-05T14:26:49 for a duration of .08 seconds (started at 2024-04-05T14:26:49)
 === DBI Started: WTP/WT_TESTCASE.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:07:55 for a duration of .08 seconds (started at 2024-04-03T16:07:55)
+=== DBI Completed at 2024-04-05T14:26:49 for a duration of .08 seconds (started at 2024-04-05T14:26:49)
 === DBI Started: WTP/WT_TEST_RUN.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:07:55 for a duration of .1 seconds (started at 2024-04-03T16:07:55)
+=== DBI Completed at 2024-04-05T14:26:49 for a duration of .08 seconds (started at 2024-04-05T14:26:49)
 === DBI Started: WTP/WT_TEST_RUNNER.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:07:56 for a duration of .12 seconds (started at 2024-04-03T16:07:55)
+=== DBI Completed at 2024-04-05T14:26:49 for a duration of .08 seconds (started at 2024-04-05T14:26:49)
 === DBI Started: WTP/PLSQL_PROFILER_DATA.tabfk
 
 Table altered.
 
-=== DBI Completed at 2024-04-03T16:07:56 for a duration of .07 seconds (started at 2024-04-03T16:07:56)
+=== DBI Completed at 2024-04-05T14:26:49 for a duration of .07 seconds (started at 2024-04-05T14:26:49)
 === DBI Started: WTP/PLSQL_PROFILER_UNITS.tabfk
 
 Table altered.
 
-=== DBI Completed at 2024-04-03T16:07:56 for a duration of .08 seconds (started at 2024-04-03T16:07:56)
+=== DBI Completed at 2024-04-05T14:26:49 for a duration of .07 seconds (started at 2024-04-05T14:26:49)
 === DBI Started: WTP/WT_DBOUT_RUNS.tabfk
 
 Table altered.
 
-
-Table altered.
-
-=== DBI Completed at 2024-04-03T16:07:56 for a duration of .13 seconds (started at 2024-04-03T16:07:56)
+=== DBI Completed at 2024-04-05T14:26:49 for a duration of .07 seconds (started at 2024-04-05T14:26:49)
 === DBI Started: WTP/WT_PROFILES.tabfk
 
 Table altered.
 
-=== DBI Completed at 2024-04-03T16:07:56 for a duration of .07 seconds (started at 2024-04-03T16:07:56)
+=== DBI Completed at 2024-04-05T14:26:49 for a duration of .07 seconds (started at 2024-04-05T14:26:49)
 === DBI Started: WTP/WT_RESULTS.tabfk
 
 Table altered.
@@ -2055,7 +1883,7 @@ Table altered.
 
 Table altered.
 
-=== DBI Completed at 2024-04-03T16:07:56 for a duration of .12 seconds (started at 2024-04-03T16:07:56)
+=== DBI Completed at 2024-04-05T14:26:50 for a duration of .11 seconds (started at 2024-04-05T14:26:49)
 === DBI Started: WTP/WT_TESTCASE_RUNS.tabfk
 
 Table altered.
@@ -2063,7 +1891,7 @@ Table altered.
 
 Table altered.
 
-=== DBI Completed at 2024-04-03T16:07:56 for a duration of .12 seconds (started at 2024-04-03T16:07:56)
+=== DBI Completed at 2024-04-05T14:26:50 for a duration of .14 seconds (started at 2024-04-05T14:26:50)
 === DBI Started: WTP/WT_TEST_RUNS.tabfk
 
 Table altered.
@@ -2071,7 +1899,7 @@ Table altered.
 
 Table altered.
 
-=== DBI Completed at 2024-04-03T16:07:56 for a duration of .15 seconds (started at 2024-04-03T16:07:56)
+=== DBI Completed at 2024-04-05T14:26:50 for a duration of .14 seconds (started at 2024-04-05T14:26:50)
 === DBI Started: ./installation_finalize.sql
 
 Drop_Temp_Publicly_Updateable_Table_SQL
@@ -2084,7 +1912,6 @@ Alter Foreign Keys for wtpsav Install Type
 alter table "WTP"."PLSQL_PROFILER_DATA" ENABLE constraint "PLSQL_PROFILER_DATA_FK1";
 alter table "WTP"."PLSQL_PROFILER_UNITS" ENABLE constraint "PLSQL_PROFILER_UNITS_FK1";
 alter table "WTP"."WT_DBOUT_RUNS" ENABLE constraint "WT_DBOUT_RUNS_FK1";
-alter table "WTP"."WT_DBOUT_RUNS" ENABLE constraint "WT_DBOUT_RUNS_FK2";
 alter table "WTP"."WT_PROFILES" ENABLE constraint "WT_PROFILES_FK1";
 alter table "WTP"."WT_RESULTS" ENABLE constraint "WT_RESULTS_FK1";
 alter table "WTP"."WT_RESULTS" ENABLE constraint "WT_RESULTS_FK2";
@@ -2133,7 +1960,7 @@ Compile All for wtpsav Install Type
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T16:08:00 for a duration of 3.45 seconds (started at 2024-04-03T16:07:57)
+=== DBI Completed at 2024-04-05T14:26:53 for a duration of 3.36 seconds (started at 2024-04-05T14:26:50)
 
 *****************
 *  Run Reports	*
@@ -2141,9 +1968,9 @@ PL/SQL procedure successfully completed.
 
 
 Reporting Summary of Install Type Log Errors
-Processing file install_sys.log (2024-04-03 16:07:57)
-Processing file install_system.log (2024-04-03 16:07:57)
-Processing file install_wtpsav.log (2024-04-03 16:07:57)
+Processing file install_sys.log (2024-04-05 14:26:51)
+Processing file install_system.log (2024-04-05 14:26:51)
+Processing file install_wtpsav.log (2024-04-05 14:26:51)
 
 PL/SQL procedure successfully completed.
 
@@ -2155,13 +1982,12 @@ Reporting JUnit XML Database Build Status
 Reorting JUnit XML Installation Log
 
 "wtpsav" Installation is Done.
-old   2:    values ('&INSTALL_TYPE.', '&APP_VERSION.', 'INSTALL')
-new   2:    values ('wtpsav', '1.003', 'INSTALL')
+old   2:    if '&INSTALL_TYPE.' like 'wtp%'
+new   2:    if 'wtpsav' like 'wtp%'
+old   5:	  values ('&INSTALL_TYPE.', '&APP_VERSION.', 'INSTALL');
+new   5:	  values ('wtpsav', '1.003', 'INSTALL');
 
-1 row created.
-
-
-Commit complete.
+PL/SQL procedure successfully completed.
 
 
 Re-create Invalid Public Synonyms
@@ -2181,13 +2007,209 @@ Move Log Files to Build Folder
 
 Move back to /opt/DMSTEX_dev/wtPLSQL/builds/OraEE213_AP212_ORDS222
 
+Running ../util/setup_for_test.sql from /opt/DMSTEX_dev/wtPLSQL/builds/OraEE213_AP212_ORDS222
+
+SQL*Plus: Release 21.0.0.0.0 - Production on Fri Apr 5 14:26:54 2024
+Version 21.3.0.0.0
+
+Copyright (c) 1982, 2021, Oracle.  All rights reserved.
+
+Last Successful login time: Fri Apr 05 2024 14:26:50 +00:00
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+
+Show the Services for this PDB
+
+NAME
+----------------------------------------------------------------
+devpdb
+
+Using the following service at localhost:1521
+devpdb
+
+PL/SQL procedure successfully completed.
+
+
+Update PLSQL_CCFLAGS parameter
+OLD parm_value:
+NEW parm_value: WTPLSQL_SELFTEST:TRUE
+
+PL/SQL procedure successfully completed.
+
+
+Recompile All Packages
+alter PROCEDURE "WTP"."WT_AD_HOC_REPORT" compile
+alter PROCEDURE "WTP"."WT_EXECUTE_TEST_RUNNER" compile
+alter PACKAGE "WTP"."CORE_DATA" compile
+alter PACKAGE "WTP"."HOOK" compile
+alter PACKAGE "WTP"."JUNIT_CORE_REPORT" compile
+alter PACKAGE "WTP"."WTPLSQL" compile
+alter PACKAGE "WTP"."WT_ASSERT" compile
+alter PACKAGE "WTP"."WT_CORE_REPORT" compile
+alter VIEW "WTP"."WT_QUAL_TEST_RUNNERS_VW" compile
+alter TRIGGER "WTP"."WT_SELF_TEST$TEST" compile
+alter PROCEDURE "WTP"."JUNIT_XML_PERSIST_ALL" compile
+alter PACKAGE "WTP"."WT_DBOUT" compile
+alter PACKAGE "WTP"."WT_JOB" compile
+alter PACKAGE "WTP"."WT_PERSIST_REPORT" compile
+alter PACKAGE "WTP"."WT_PROFILE" compile
+alter PACKAGE "WTP"."WT_RESULT" compile
+alter PACKAGE "WTP"."WT_TESTCASE" compile
+alter PACKAGE "WTP"."WT_TEST_RUN" compile
+alter PACKAGE "WTP"."WT_TEST_RUNNER" compile
+alter VIEW "WTP"."WT_DBOUT_RUNS_VW" compile
+alter VIEW "WTP"."WT_PROFILES_VW" compile
+alter VIEW "WTP"."WT_RESULTS_VW" compile
+alter VIEW "WTP"."WT_SCHEDULER_JOBS_VW" compile
+alter VIEW "WTP"."WT_TESTCASE_RUNS_VW" compile
+alter VIEW "WTP"."WT_TEST_RUNS_VW" compile
+
+PL/SQL procedure successfully completed.
+
+
+Recreate Database Links
+drop database link "WTP"."WTP"
+create database link "WTP"."WTP" connect to "WTP" identified by "WTP" using '//l
+ocalhost:1521/devpdb'
+
+PL/SQL procedure successfully completed.
+
+Disconnected from Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Running ../util/run_core_test.sql from /opt/DMSTEX_dev/wtPLSQL/builds/OraEE213_AP212_ORDS222
+
+SQL*Plus: Release 21.0.0.0.0 - Production on Fri Apr 5 14:26:57 2024
+Version 21.3.0.0.0
+
+Copyright (c) 1982, 2021, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+
+Setup for Unit Tests.
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Initialize Hooks.
+0 "wt_test_run" rows deleted from HOOKS table.
+
+PL/SQL procedure successfully completed.
+
+0 "junit_core_report" rows deleted from HOOKS table.
+
+PL/SQL procedure successfully completed.
+
+
+Run Unit Test and Report.
+
+Done with Unit Tests.
+Disconnected from Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Running ../util/run_junit_test.sql from /opt/DMSTEX_dev/wtPLSQL/builds/OraEE213_AP212_ORDS222
+
+SQL*Plus: Release 21.0.0.0.0 - Production on Fri Apr 5 14:27:12 2024
+Version 21.3.0.0.0
+
+Copyright (c) 1982, 2021, Oracle.  All rights reserved.
+
+Last Successful login time: Fri Apr 05 2024 14:26:57 +00:00
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+
+Setup for Unit Tests.
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Initialize Hooks.
+1 "wt_core_report" rows deleted from HOOKS table.
+
+PL/SQL procedure successfully completed.
+
+0 "wt_test_run" rows deleted from HOOKS table.
+
+PL/SQL procedure successfully completed.
+
+0 "junit_core_report" rows deleted from HOOKS table.
+
+PL/SQL procedure successfully completed.
+
+
+Run and Report Unit Tests.
+
+Done with Reports
+Disconnected from Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Running ../util/run_save_test.sql from /opt/DMSTEX_dev/wtPLSQL/builds/OraEE213_AP212_ORDS222
+
+SQL*Plus: Release 21.0.0.0.0 - Production on Fri Apr 5 14:27:21 2024
+Version 21.3.0.0.0
+
+Copyright (c) 1982, 2021, Oracle.  All rights reserved.
+
+Last Successful login time: Fri Apr 05 2024 14:27:12 +00:00
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+
+Reporting Unit Test Results...
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Initialize Hooks.
+0 "wt_core_report" rows deleted from HOOKS table.
+
+PL/SQL procedure successfully completed.
+
+3 "junit_core_report" rows deleted from HOOKS table.
+
+PL/SQL procedure successfully completed.
+
+0 "wt_test_run" rows deleted from HOOKS table.
+
+PL/SQL procedure successfully completed.
+
+
+Run Unit Tests and Report.
+
+JUnit Report Unit Tests.
+
+Done with Reports
+Disconnected from Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
 Clear old grbsrc logs
 
 Move to ../../grbsrc
 
 ../builds/OraEE213_AP212_ORDS222/build.sql grbsrc
 
-SQL*Plus: Release 21.0.0.0.0 - Production on Wed Apr 3 16:08:01 2024
+SQL*Plus: Release 21.0.0.0.0 - Production on Fri Apr 5 14:27:35 2024
 Version 21.3.0.0.0
 
 Copyright (c) 1982, 2021, Oracle.  All rights reserved.
@@ -2204,15 +2226,15 @@ Elapsed: 00:00:00.00
 
 PL/SQL procedure successfully completed.
 
-Elapsed: 00:00:00.01
+Elapsed: 00:00:00.00
 
 Show Database Connection
 
 'DB:'||NAME||',CON:'||SYS_CONTEXT('USERENV','CON_NAME')||',TSTMP:'||SYSTIMESTAMP
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-db: EE213CDB, con: DEVPDB, tstmp: 03-APR-24 04.08.01.742417 PM +00:00
+db: EE213CDB, con: DEVPDB, tstmp: 05-APR-24 02.27.35.557143 PM +00:00
 
-Elapsed: 00:00:00.00
+Elapsed: 00:00:00.01
 
 PL/SQL procedure successfully completed.
 
@@ -2491,7 +2513,7 @@ Grant succeeded.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:08:06 for a duration of 4.23 seconds (started at 2024-04-03T16:08:01)
+=== DBI Completed at 2024-04-05T14:27:39 for a duration of 3.88 seconds (started at 2024-04-05T14:27:35)
 Setup Continue on Error
 
 *****************************
@@ -2515,7 +2537,7 @@ Grant succeeded.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:08:06 for a duration of .17 seconds (started at 2024-04-03T16:08:06)
+=== DBI Completed at 2024-04-05T14:27:39 for a duration of .16 seconds (started at 2024-04-05T14:27:39)
 === DBI Started: SYSTEM/ODBCAPTURE_usr.grnt
 
 Grant succeeded.
@@ -2541,7 +2563,7 @@ Grant succeeded.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:08:06 for a duration of .32 seconds (started at 2024-04-03T16:08:06)
+=== DBI Completed at 2024-04-05T14:27:40 for a duration of .29 seconds (started at 2024-04-05T14:27:39)
 
 *************************
 *  Install Application	*
@@ -2556,42 +2578,42 @@ Table created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:08:06 for a duration of .2 seconds (started at 2024-04-03T16:08:06)
+=== DBI Completed at 2024-04-05T14:27:40 for a duration of .14 seconds (started at 2024-04-05T14:27:40)
 === DBI Started: ODBCAPTURE/COMMON_UTIL.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T16:08:06 for a duration of .07 seconds (started at 2024-04-03T16:08:06)
+=== DBI Completed at 2024-04-05T14:27:40 for a duration of .06 seconds (started at 2024-04-05T14:27:40)
 === DBI Started: ODBCAPTURE/GRAB_SCRIPTS.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T16:08:07 for a duration of .11 seconds (started at 2024-04-03T16:08:07)
+=== DBI Completed at 2024-04-05T14:27:40 for a duration of .08 seconds (started at 2024-04-05T14:27:40)
 === DBI Started: ODBCAPTURE/ROOT_SCRIPTS.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T16:08:07 for a duration of .08 seconds (started at 2024-04-03T16:08:07)
+=== DBI Completed at 2024-04-05T14:27:40 for a duration of .06 seconds (started at 2024-04-05T14:27:40)
 === DBI Started: ODBCAPTURE/ZIP_UTIL_PKG.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T16:08:07 for a duration of .07 seconds (started at 2024-04-03T16:08:07)
+=== DBI Completed at 2024-04-05T14:27:40 for a duration of .07 seconds (started at 2024-04-05T14:27:40)
 === DBI Started: ODBCAPTURE/DBA_DEPENDENCIES_TAB.tab
 
 Table created.
 
-=== DBI Completed at 2024-04-03T16:08:07 for a duration of .09 seconds (started at 2024-04-03T16:08:07)
+=== DBI Completed at 2024-04-05T14:27:40 for a duration of .07 seconds (started at 2024-04-05T14:27:40)
 === DBI Started: ODBCAPTURE/DBA_OBJECTS_TAB.tab
 
 Table created.
 
-=== DBI Completed at 2024-04-03T16:08:07 for a duration of .07 seconds (started at 2024-04-03T16:08:07)
+=== DBI Completed at 2024-04-05T14:27:40 for a duration of .05 seconds (started at 2024-04-05T14:27:40)
 === DBI Started: ODBCAPTURE/DBA_TAB_PRIVS_TAB.tab
 
 Table created.
 
-=== DBI Completed at 2024-04-03T16:08:07 for a duration of .26 seconds (started at 2024-04-03T16:08:07)
+=== DBI Completed at 2024-04-05T14:27:40 for a duration of .06 seconds (started at 2024-04-05T14:27:40)
 === DBI Started: ODBCAPTURE/DLOAD_CONF.tab
 
 Table created.
@@ -2626,12 +2648,12 @@ Comment created.
 
 Comment created.
 
-=== DBI Completed at 2024-04-03T16:08:08 for a duration of .4 seconds (started at 2024-04-03T16:08:07)
+=== DBI Completed at 2024-04-05T14:27:41 for a duration of .38 seconds (started at 2024-04-05T14:27:40)
 === DBI Started: ODBCAPTURE/INSTALL_TYPE_TIMING.tab
 
 Table created.
 
-=== DBI Completed at 2024-04-03T16:08:08 for a duration of .06 seconds (started at 2024-04-03T16:08:08)
+=== DBI Completed at 2024-04-05T14:27:41 for a duration of .23 seconds (started at 2024-04-05T14:27:41)
 === DBI Started: ODBCAPTURE/OBJECT_CONF.tab
 
 Table created.
@@ -2660,47 +2682,47 @@ Comment created.
 
 Comment created.
 
-=== DBI Completed at 2024-04-03T16:08:08 for a duration of .33 seconds (started at 2024-04-03T16:08:08)
+=== DBI Completed at 2024-04-05T14:27:41 for a duration of .37 seconds (started at 2024-04-05T14:27:41)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_COMMENTS_TAB.tab
 
 Table created.
 
-=== DBI Completed at 2024-04-03T16:08:08 for a duration of .06 seconds (started at 2024-04-03T16:08:08)
+=== DBI Completed at 2024-04-05T14:27:41 for a duration of .06 seconds (started at 2024-04-05T14:27:41)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_CONTEXT_TAB.tab
 
 Table created.
 
-=== DBI Completed at 2024-04-03T16:08:08 for a duration of .06 seconds (started at 2024-04-03T16:08:08)
+=== DBI Completed at 2024-04-05T14:27:42 for a duration of .08 seconds (started at 2024-04-05T14:27:41)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_DATA_LOAD_TAB.tab
 
 Table created.
 
-=== DBI Completed at 2024-04-03T16:08:08 for a duration of .07 seconds (started at 2024-04-03T16:08:08)
+=== DBI Completed at 2024-04-05T14:27:42 for a duration of .07 seconds (started at 2024-04-05T14:27:42)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_FKEY_TAB.tab
 
 Table created.
 
-=== DBI Completed at 2024-04-03T16:08:08 for a duration of .07 seconds (started at 2024-04-03T16:08:08)
+=== DBI Completed at 2024-04-05T14:27:42 for a duration of .06 seconds (started at 2024-04-05T14:27:42)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_INDEX_TAB.tab
 
 Table created.
 
-=== DBI Completed at 2024-04-03T16:08:08 for a duration of .06 seconds (started at 2024-04-03T16:08:08)
+=== DBI Completed at 2024-04-05T14:27:42 for a duration of .06 seconds (started at 2024-04-05T14:27:42)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_OBJECT_TAB.tab
 
 Table created.
 
-=== DBI Completed at 2024-04-03T16:08:09 for a duration of .08 seconds (started at 2024-04-03T16:08:08)
+=== DBI Completed at 2024-04-05T14:27:42 for a duration of .06 seconds (started at 2024-04-05T14:27:42)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_SYNONYM_TAB.tab
 
 Table created.
 
-=== DBI Completed at 2024-04-03T16:08:09 for a duration of .07 seconds (started at 2024-04-03T16:08:09)
+=== DBI Completed at 2024-04-05T14:27:42 for a duration of .07 seconds (started at 2024-04-05T14:27:42)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_TRIGGER_TAB.tab
 
 Table created.
 
-=== DBI Completed at 2024-04-03T16:08:09 for a duration of .06 seconds (started at 2024-04-03T16:08:09)
+=== DBI Completed at 2024-04-05T14:27:42 for a duration of .06 seconds (started at 2024-04-05T14:27:42)
 === DBI Started: ODBCAPTURE/OTYPE_CONF.tab
 
 Table created.
@@ -2738,7 +2760,7 @@ Comment created.
 
 Comment created.
 
-=== DBI Completed at 2024-04-03T16:08:09 for a duration of .36 seconds (started at 2024-04-03T16:08:09)
+=== DBI Completed at 2024-04-05T14:27:42 for a duration of .36 seconds (started at 2024-04-05T14:27:42)
 === DBI Started: ODBCAPTURE/ROLE_CONF.tab
 
 Table created.
@@ -2758,7 +2780,7 @@ Comment created.
 
 Comment created.
 
-=== DBI Completed at 2024-04-03T16:08:10 for a duration of .49 seconds (started at 2024-04-03T16:08:09)
+=== DBI Completed at 2024-04-05T14:27:43 for a duration of .24 seconds (started at 2024-04-05T14:27:42)
 === DBI Started: ODBCAPTURE/SCHEMA_CONF.tab
 
 Table created.
@@ -2790,7 +2812,7 @@ Comment created.
 
 Comment created.
 
-=== DBI Completed at 2024-04-03T16:08:10 for a duration of .33 seconds (started at 2024-04-03T16:08:10)
+=== DBI Completed at 2024-04-05T14:27:43 for a duration of .62 seconds (started at 2024-04-05T14:27:43)
 === DBI Started: ODBCAPTURE/TYPE_CONF.tab
 
 Table created.
@@ -2810,7 +2832,7 @@ Comment created.
 
 Comment created.
 
-=== DBI Completed at 2024-04-03T16:08:10 for a duration of .25 seconds (started at 2024-04-03T16:08:10)
+=== DBI Completed at 2024-04-05T14:27:44 for a duration of .25 seconds (started at 2024-04-05T14:27:43)
 === DBI Started: ODBCAPTURE/ZIP_FILES.tab
 
 Table created.
@@ -2818,17 +2840,17 @@ Table created.
 
 Table altered.
 
-=== DBI Completed at 2024-04-03T16:08:10 for a duration of .12 seconds (started at 2024-04-03T16:08:10)
+=== DBI Completed at 2024-04-05T14:27:44 for a duration of .13 seconds (started at 2024-04-05T14:27:44)
 === DBI Started: ODBCAPTURE/ZX_OBJ_INSTALL_TAB.tab
 
 Table created.
 
-=== DBI Completed at 2024-04-03T16:08:10 for a duration of .07 seconds (started at 2024-04-03T16:08:10)
+=== DBI Completed at 2024-04-05T14:27:44 for a duration of .08 seconds (started at 2024-04-05T14:27:44)
 === DBI Started: ODBCAPTURE/ZX_PRIV_ALL_TAB.tab
 
 Table created.
 
-=== DBI Completed at 2024-04-03T16:08:10 for a duration of .07 seconds (started at 2024-04-03T16:08:10)
+=== DBI Completed at 2024-04-05T14:27:44 for a duration of .06 seconds (started at 2024-04-05T14:27:44)
 === DBI Started: ODBCAPTURE/DLOAD_CONF.cdl
 
 Disable Triggers and Foreign Keys
@@ -2843,7 +2865,7 @@ sqlldr_control=ODBCAPTURE/DLOAD_CONF.ctl
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T16:08:12 for a duration of 1.95 seconds (started at 2024-04-03T16:08:11)
+=== DBI Completed at 2024-04-05T14:27:46 for a duration of 2.33 seconds (started at 2024-04-05T14:27:44)
 === DBI Started: ODBCAPTURE/OBJECT_CONF.cdl
 
 Disable Triggers and Foreign Keys
@@ -2858,7 +2880,7 @@ sqlldr_control=ODBCAPTURE/OBJECT_CONF.ctl
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T16:08:14 for a duration of 2 seconds (started at 2024-04-03T16:08:12)
+=== DBI Completed at 2024-04-05T14:27:48 for a duration of 2.29 seconds (started at 2024-04-05T14:27:46)
 === DBI Started: ODBCAPTURE/OTYPE_CONF.cdl
 
 Disable Triggers and Foreign Keys
@@ -2873,7 +2895,7 @@ sqlldr_control=ODBCAPTURE/OTYPE_CONF.ctl
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T16:08:17 for a duration of 2.34 seconds (started at 2024-04-03T16:08:14)
+=== DBI Completed at 2024-04-05T14:27:51 for a duration of 2.27 seconds (started at 2024-04-05T14:27:48)
 === DBI Started: ODBCAPTURE/ROLE_CONF.cdl
 
 Disable Triggers and Foreign Keys
@@ -2888,7 +2910,7 @@ sqlldr_control=ODBCAPTURE/ROLE_CONF.ctl
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T16:08:19 for a duration of 2.03 seconds (started at 2024-04-03T16:08:17)
+=== DBI Completed at 2024-04-05T14:27:53 for a duration of 2.32 seconds (started at 2024-04-05T14:27:51)
 === DBI Started: ODBCAPTURE/SCHEMA_CONF.cdl
 
 Disable Triggers and Foreign Keys
@@ -2903,7 +2925,7 @@ sqlldr_control=ODBCAPTURE/SCHEMA_CONF.ctl
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T16:08:21 for a duration of 2 seconds (started at 2024-04-03T16:08:19)
+=== DBI Completed at 2024-04-05T14:27:55 for a duration of 2.27 seconds (started at 2024-04-05T14:27:53)
 === DBI Started: ODBCAPTURE/TYPE_CONF.cdl
 
 Disable Triggers and Foreign Keys
@@ -2918,7 +2940,7 @@ sqlldr_control=ODBCAPTURE/TYPE_CONF.ctl
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T16:08:23 for a duration of 1.96 seconds (started at 2024-04-03T16:08:21)
+=== DBI Completed at 2024-04-05T14:27:58 for a duration of 2.39 seconds (started at 2024-04-05T14:27:55)
 === DBI Started: ODBCAPTURE/DBA_DEPENDENCIES_TAB.tabind
 
 Index created.
@@ -2926,47 +2948,47 @@ Index created.
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:08:23 for a duration of .12 seconds (started at 2024-04-03T16:08:23)
+=== DBI Completed at 2024-04-05T14:27:58 for a duration of .11 seconds (started at 2024-04-05T14:27:58)
 === DBI Started: ODBCAPTURE/DBA_OBJECTS_TAB.tabind
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:08:23 for a duration of .23 seconds (started at 2024-04-03T16:08:23)
+=== DBI Completed at 2024-04-05T14:27:58 for a duration of .06 seconds (started at 2024-04-05T14:27:58)
 === DBI Started: ODBCAPTURE/DBA_TAB_PRIVS_TAB.tabind
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:08:23 for a duration of .18 seconds (started at 2024-04-03T16:08:23)
+=== DBI Completed at 2024-04-05T14:27:58 for a duration of .06 seconds (started at 2024-04-05T14:27:58)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_COMMENTS_TAB.tabind
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:08:23 for a duration of .07 seconds (started at 2024-04-03T16:08:23)
+=== DBI Completed at 2024-04-05T14:27:58 for a duration of .06 seconds (started at 2024-04-05T14:27:58)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_CONTEXT_TAB.tabind
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:08:24 for a duration of .06 seconds (started at 2024-04-03T16:08:23)
+=== DBI Completed at 2024-04-05T14:27:58 for a duration of .21 seconds (started at 2024-04-05T14:27:58)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_DATA_LOAD_TAB.tabind
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:08:24 for a duration of .06 seconds (started at 2024-04-03T16:08:24)
+=== DBI Completed at 2024-04-05T14:27:58 for a duration of .15 seconds (started at 2024-04-05T14:27:58)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_FKEY_TAB.tabind
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:08:24 for a duration of .07 seconds (started at 2024-04-03T16:08:24)
+=== DBI Completed at 2024-04-05T14:27:59 for a duration of .06 seconds (started at 2024-04-05T14:27:59)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_INDEX_TAB.tabind
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:08:24 for a duration of .06 seconds (started at 2024-04-03T16:08:24)
+=== DBI Completed at 2024-04-05T14:27:59 for a duration of .06 seconds (started at 2024-04-05T14:27:59)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_OBJECT_TAB.tabind
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:08:24 for a duration of .07 seconds (started at 2024-04-03T16:08:24)
+=== DBI Completed at 2024-04-05T14:27:59 for a duration of .07 seconds (started at 2024-04-05T14:27:59)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_SYNONYM_TAB.tabind
 
 Index created.
@@ -2974,7 +2996,7 @@ Index created.
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:08:24 for a duration of .11 seconds (started at 2024-04-03T16:08:24)
+=== DBI Completed at 2024-04-05T14:27:59 for a duration of .13 seconds (started at 2024-04-05T14:27:59)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_TRIGGER_TAB.tabind
 
 Index created.
@@ -2982,17 +3004,17 @@ Index created.
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:08:24 for a duration of .15 seconds (started at 2024-04-03T16:08:24)
+=== DBI Completed at 2024-04-05T14:27:59 for a duration of .12 seconds (started at 2024-04-05T14:27:59)
 === DBI Started: ODBCAPTURE/ZX_OBJ_INSTALL_TAB.tabind
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:08:24 for a duration of .07 seconds (started at 2024-04-03T16:08:24)
+=== DBI Completed at 2024-04-05T14:27:59 for a duration of .07 seconds (started at 2024-04-05T14:27:59)
 === DBI Started: ODBCAPTURE/ZX_PRIV_ALL_TAB.tabind
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:08:24 for a duration of .07 seconds (started at 2024-04-03T16:08:24)
+=== DBI Completed at 2024-04-05T14:27:59 for a duration of .06 seconds (started at 2024-04-05T14:27:59)
 === DBI Started: ODBCAPTURE/AQ_SYSTEM_PRIVS_VW.vw
 
 View created.
@@ -3000,7 +3022,7 @@ View created.
 
 View created.
 
-=== DBI Completed at 2024-04-03T16:08:24 for a duration of .1 seconds (started at 2024-04-03T16:08:24)
+=== DBI Completed at 2024-04-05T14:27:59 for a duration of .1 seconds (started at 2024-04-05T14:27:59)
 === DBI Started: ODBCAPTURE/DBA_DEPENDENCIES_VIEW.vw
 
 View created.
@@ -3008,7 +3030,7 @@ View created.
 
 View created.
 
-=== DBI Completed at 2024-04-03T16:08:25 for a duration of .13 seconds (started at 2024-04-03T16:08:24)
+=== DBI Completed at 2024-04-05T14:27:59 for a duration of .1 seconds (started at 2024-04-05T14:27:59)
 === DBI Started: ODBCAPTURE/DBA_OBJECTS_VIEW.vw
 
 View created.
@@ -3016,7 +3038,7 @@ View created.
 
 View created.
 
-=== DBI Completed at 2024-04-03T16:08:25 for a duration of .24 seconds (started at 2024-04-03T16:08:25)
+=== DBI Completed at 2024-04-05T14:28:00 for a duration of .35 seconds (started at 2024-04-05T14:27:59)
 === DBI Started: ODBCAPTURE/DBA_TAB_PRIVS_VIEW.vw
 
 View created.
@@ -3024,7 +3046,7 @@ View created.
 
 Warning: View created with compilation errors.
 
-=== DBI Completed at 2024-04-03T16:08:25 for a duration of .09 seconds (started at 2024-04-03T16:08:25)
+=== DBI Completed at 2024-04-05T14:28:00 for a duration of .13 seconds (started at 2024-04-05T14:28:00)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_COMMENTS_VIEW.vw
 
 View created.
@@ -3032,7 +3054,7 @@ View created.
 
 Warning: View created with compilation errors.
 
-=== DBI Completed at 2024-04-03T16:08:25 for a duration of .15 seconds (started at 2024-04-03T16:08:25)
+=== DBI Completed at 2024-04-05T14:28:00 for a duration of .15 seconds (started at 2024-04-05T14:28:00)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_CONTEXT_VIEW.vw
 
 View created.
@@ -3040,7 +3062,7 @@ View created.
 
 View created.
 
-=== DBI Completed at 2024-04-03T16:08:25 for a duration of .14 seconds (started at 2024-04-03T16:08:25)
+=== DBI Completed at 2024-04-05T14:28:00 for a duration of .11 seconds (started at 2024-04-05T14:28:00)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_DATA_LOAD_VIEW.vw
 
 View created.
@@ -3048,7 +3070,7 @@ View created.
 
 View created.
 
-=== DBI Completed at 2024-04-03T16:08:25 for a duration of .09 seconds (started at 2024-04-03T16:08:25)
+=== DBI Completed at 2024-04-05T14:28:00 for a duration of .11 seconds (started at 2024-04-05T14:28:00)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_FKEY_VIEW.vw
 
 View created.
@@ -3056,7 +3078,7 @@ View created.
 
 View created.
 
-=== DBI Completed at 2024-04-03T16:08:25 for a duration of .13 seconds (started at 2024-04-03T16:08:25)
+=== DBI Completed at 2024-04-05T14:28:00 for a duration of .13 seconds (started at 2024-04-05T14:28:00)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_INDEX_VIEW.vw
 
 View created.
@@ -3064,7 +3086,7 @@ View created.
 
 View created.
 
-=== DBI Completed at 2024-04-03T16:08:26 for a duration of .11 seconds (started at 2024-04-03T16:08:25)
+=== DBI Completed at 2024-04-05T14:28:01 for a duration of .1 seconds (started at 2024-04-05T14:28:00)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_OBJECT_VIEW.vw
 
 View created.
@@ -3072,7 +3094,7 @@ View created.
 
 View created.
 
-=== DBI Completed at 2024-04-03T16:08:26 for a duration of .15 seconds (started at 2024-04-03T16:08:26)
+=== DBI Completed at 2024-04-05T14:28:01 for a duration of .16 seconds (started at 2024-04-05T14:28:01)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_SYNONYM_VIEW.vw
 
 View created.
@@ -3080,7 +3102,7 @@ View created.
 
 View created.
 
-=== DBI Completed at 2024-04-03T16:08:26 for a duration of .1 seconds (started at 2024-04-03T16:08:26)
+=== DBI Completed at 2024-04-05T14:28:01 for a duration of .1 seconds (started at 2024-04-05T14:28:01)
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_TRIGGER_VIEW.vw
 
 View created.
@@ -3088,7 +3110,7 @@ View created.
 
 View created.
 
-=== DBI Completed at 2024-04-03T16:08:26 for a duration of .14 seconds (started at 2024-04-03T16:08:26)
+=== DBI Completed at 2024-04-05T14:28:01 for a duration of .14 seconds (started at 2024-04-05T14:28:01)
 === DBI Started: ODBCAPTURE/PRIV_OBJ_DIR_VIEW.vw
 
 View created.
@@ -3096,7 +3118,7 @@ View created.
 
 Warning: View created with compilation errors.
 
-=== DBI Completed at 2024-04-03T16:08:26 for a duration of .12 seconds (started at 2024-04-03T16:08:26)
+=== DBI Completed at 2024-04-05T14:28:01 for a duration of .13 seconds (started at 2024-04-05T14:28:01)
 === DBI Started: ODBCAPTURE/PRIV_OBJ_INSTALL_VW.vw
 
 View created.
@@ -3104,7 +3126,7 @@ View created.
 
 Warning: View created with compilation errors.
 
-=== DBI Completed at 2024-04-03T16:08:26 for a duration of .11 seconds (started at 2024-04-03T16:08:26)
+=== DBI Completed at 2024-04-05T14:28:01 for a duration of .13 seconds (started at 2024-04-05T14:28:01)
 === DBI Started: ODBCAPTURE/PRIV_OBJ_JAVA_FG_VIEW.vw
 
 View created.
@@ -3112,7 +3134,7 @@ View created.
 
 Warning: View created with compilation errors.
 
-=== DBI Completed at 2024-04-03T16:08:26 for a duration of .13 seconds (started at 2024-04-03T16:08:26)
+=== DBI Completed at 2024-04-05T14:28:01 for a duration of .1 seconds (started at 2024-04-05T14:28:01)
 === DBI Started: ODBCAPTURE/PRIV_OBJ_QUEUE_VIEW.vw
 
 View created.
@@ -3120,7 +3142,7 @@ View created.
 
 Warning: View created with compilation errors.
 
-=== DBI Completed at 2024-04-03T16:08:27 for a duration of .17 seconds (started at 2024-04-03T16:08:26)
+=== DBI Completed at 2024-04-05T14:28:02 for a duration of .11 seconds (started at 2024-04-05T14:28:01)
 === DBI Started: ODBCAPTURE/PRIV_OBJ_XDBACL_VIEW.vw
 
 View created.
@@ -3128,7 +3150,7 @@ View created.
 
 Warning: View created with compilation errors.
 
-=== DBI Completed at 2024-04-03T16:08:27 for a duration of .12 seconds (started at 2024-04-03T16:08:27)
+=== DBI Completed at 2024-04-05T14:28:02 for a duration of .11 seconds (started at 2024-04-05T14:28:02)
 === DBI Started: ODBCAPTURE/PRIV_QUEUE_REGISTER_VIEW.vw
 
 View created.
@@ -3136,7 +3158,7 @@ View created.
 
 Warning: View created with compilation errors.
 
-=== DBI Completed at 2024-04-03T16:08:27 for a duration of .11 seconds (started at 2024-04-03T16:08:27)
+=== DBI Completed at 2024-04-05T14:28:02 for a duration of .12 seconds (started at 2024-04-05T14:28:02)
 === DBI Started: ODBCAPTURE/PRIV_QUEUE_SUBSCRIBE_VIEW.vw
 
 View created.
@@ -3144,7 +3166,7 @@ View created.
 
 Warning: View created with compilation errors.
 
-=== DBI Completed at 2024-04-03T16:08:27 for a duration of .12 seconds (started at 2024-04-03T16:08:27)
+=== DBI Completed at 2024-04-05T14:28:02 for a duration of .16 seconds (started at 2024-04-05T14:28:02)
 === DBI Started: ODBCAPTURE/PRIV_QUEUE_SYSPRIVS_VIEW.vw
 
 View created.
@@ -3152,7 +3174,7 @@ View created.
 
 Warning: View created with compilation errors.
 
-=== DBI Completed at 2024-04-03T16:08:27 for a duration of .1 seconds (started at 2024-04-03T16:08:27)
+=== DBI Completed at 2024-04-05T14:28:02 for a duration of .1 seconds (started at 2024-04-05T14:28:02)
 === DBI Started: ODBCAPTURE/PRIV_ROLE_PRIVILEGES_VIEW.vw
 
 View created.
@@ -3160,7 +3182,7 @@ View created.
 
 Warning: View created with compilation errors.
 
-=== DBI Completed at 2024-04-03T16:08:27 for a duration of .13 seconds (started at 2024-04-03T16:08:27)
+=== DBI Completed at 2024-04-05T14:28:02 for a duration of .13 seconds (started at 2024-04-05T14:28:02)
 === DBI Started: ODBCAPTURE/PRIV_SYSOBJ_PRIVILEGES_VIEW.vw
 
 View created.
@@ -3168,7 +3190,7 @@ View created.
 
 View created.
 
-=== DBI Completed at 2024-04-03T16:08:27 for a duration of .13 seconds (started at 2024-04-03T16:08:27)
+=== DBI Completed at 2024-04-05T14:28:02 for a duration of .12 seconds (started at 2024-04-05T14:28:02)
 === DBI Started: ODBCAPTURE/PRIV_SYSTEM_PRIVILEGES_VIEW.vw
 
 View created.
@@ -3176,7 +3198,7 @@ View created.
 
 Warning: View created with compilation errors.
 
-=== DBI Completed at 2024-04-03T16:08:27 for a duration of .13 seconds (started at 2024-04-03T16:08:27)
+=== DBI Completed at 2024-04-05T14:28:02 for a duration of .12 seconds (started at 2024-04-05T14:28:02)
 === DBI Started: ODBCAPTURE/SCHEMA_OBJECTS_VW.vw
 
 View created.
@@ -3199,7 +3221,7 @@ Comment created.
 
 Comment created.
 
-=== DBI Completed at 2024-04-03T16:08:28 for a duration of .21 seconds (started at 2024-04-03T16:08:28)
+=== DBI Completed at 2024-04-05T14:28:03 for a duration of .21 seconds (started at 2024-04-05T14:28:02)
 === DBI Started: ODBCAPTURE/UOR_INSTALL_VIEW.vw
 
 View created.
@@ -3207,7 +3229,7 @@ View created.
 
 View created.
 
-=== DBI Completed at 2024-04-03T16:08:28 for a duration of .09 seconds (started at 2024-04-03T16:08:28)
+=== DBI Completed at 2024-04-05T14:28:03 for a duration of .09 seconds (started at 2024-04-05T14:28:03)
 === DBI Started: ODBCAPTURE/ZX_OBJ_INSTALL_VIEW.vw
 
 View created.
@@ -3215,7 +3237,7 @@ View created.
 
 View created.
 
-=== DBI Completed at 2024-04-03T16:08:28 for a duration of .1 seconds (started at 2024-04-03T16:08:28)
+=== DBI Completed at 2024-04-05T14:28:03 for a duration of .1 seconds (started at 2024-04-05T14:28:03)
 === DBI Started: ODBCAPTURE/ZX_PRIV_ALL_VIEW.vw
 
 View created.
@@ -3223,27 +3245,27 @@ View created.
 
 View created.
 
-=== DBI Completed at 2024-04-03T16:08:28 for a duration of .23 seconds (started at 2024-04-03T16:08:28)
+=== DBI Completed at 2024-04-05T14:28:03 for a duration of .22 seconds (started at 2024-04-05T14:28:03)
 === DBI Started: ODBCAPTURE/COMMON_UTIL.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:08:28 for a duration of .14 seconds (started at 2024-04-03T16:08:28)
+=== DBI Completed at 2024-04-05T14:28:03 for a duration of .15 seconds (started at 2024-04-05T14:28:03)
 === DBI Started: ODBCAPTURE/GRAB_SCRIPTS.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:08:29 for a duration of .89 seconds (started at 2024-04-03T16:08:28)
+=== DBI Completed at 2024-04-05T14:28:04 for a duration of .87 seconds (started at 2024-04-05T14:28:03)
 === DBI Started: ODBCAPTURE/ROOT_SCRIPTS.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:08:29 for a duration of .1 seconds (started at 2024-04-03T16:08:29)
+=== DBI Completed at 2024-04-05T14:28:04 for a duration of .09 seconds (started at 2024-04-05T14:28:04)
 === DBI Started: ODBCAPTURE/ZIP_UTIL_PKG.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:08:29 for a duration of .13 seconds (started at 2024-04-03T16:08:29)
+=== DBI Completed at 2024-04-05T14:28:04 for a duration of .14 seconds (started at 2024-04-05T14:28:04)
 === DBI Started: ODBCAPTURE/DLOAD_CONF.tabfk
 
 Table altered.
@@ -3251,7 +3273,7 @@ Table altered.
 
 Table altered.
 
-=== DBI Completed at 2024-04-03T16:08:30 for a duration of .14 seconds (started at 2024-04-03T16:08:30)
+=== DBI Completed at 2024-04-05T14:28:05 for a duration of .14 seconds (started at 2024-04-05T14:28:04)
 === DBI Started: ODBCAPTURE/OBJECT_CONF.tabfk
 
 Table altered.
@@ -3262,22 +3284,22 @@ Table altered.
 
 Table altered.
 
-=== DBI Completed at 2024-04-03T16:08:30 for a duration of .2 seconds (started at 2024-04-03T16:08:30)
+=== DBI Completed at 2024-04-05T14:28:05 for a duration of .2 seconds (started at 2024-04-05T14:28:05)
 === DBI Started: ODBCAPTURE/ROLE_CONF.tabfk
 
 Table altered.
 
-=== DBI Completed at 2024-04-03T16:08:30 for a duration of .07 seconds (started at 2024-04-03T16:08:30)
+=== DBI Completed at 2024-04-05T14:28:05 for a duration of .07 seconds (started at 2024-04-05T14:28:05)
 === DBI Started: ODBCAPTURE/SCHEMA_CONF.tabfk
 
 Table altered.
 
-=== DBI Completed at 2024-04-03T16:08:30 for a duration of .07 seconds (started at 2024-04-03T16:08:30)
+=== DBI Completed at 2024-04-05T14:28:05 for a duration of .07 seconds (started at 2024-04-05T14:28:05)
 === DBI Started: ODBCAPTURE/TYPE_CONF.tabfk
 
 Table altered.
 
-=== DBI Completed at 2024-04-03T16:08:30 for a duration of .07 seconds (started at 2024-04-03T16:08:30)
+=== DBI Completed at 2024-04-05T14:28:05 for a duration of .07 seconds (started at 2024-04-05T14:28:05)
 === DBI Started: ./installation_finalize.sql
 
 Drop_Temp_Publicly_Updateable_Table_SQL
@@ -3335,7 +3357,7 @@ Compile All for grbsrc Install Type
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T16:08:34 for a duration of 4.21 seconds (started at 2024-04-03T16:08:30)
+=== DBI Completed at 2024-04-05T14:28:09 for a duration of 4.2 seconds (started at 2024-04-05T14:28:05)
 
 *****************
 *  Run Reports	*
@@ -3343,15 +3365,15 @@ PL/SQL procedure successfully completed.
 
 
 Reporting Summary of Install Type Log Errors
-Processing file ODBCAPTURE/DLOAD_CONF.log (2024-04-03 16:08:31)
-Processing file ODBCAPTURE/OBJECT_CONF.log (2024-04-03 16:08:31)
-Processing file ODBCAPTURE/OTYPE_CONF.log (2024-04-03 16:08:31)
-Processing file ODBCAPTURE/ROLE_CONF.log (2024-04-03 16:08:31)
-Processing file ODBCAPTURE/SCHEMA_CONF.log (2024-04-03 16:08:31)
-Processing file ODBCAPTURE/TYPE_CONF.log (2024-04-03 16:08:31)
-Processing file install_grbsrc.log (2024-04-03 16:08:31)
-Processing file install_sys.log (2024-04-03 16:08:31)
-Processing file install_system.log (2024-04-03 16:08:31)
+Processing file ODBCAPTURE/DLOAD_CONF.log (2024-04-05 14:28:06)
+Processing file ODBCAPTURE/OBJECT_CONF.log (2024-04-05 14:28:06)
+Processing file ODBCAPTURE/OTYPE_CONF.log (2024-04-05 14:28:06)
+Processing file ODBCAPTURE/ROLE_CONF.log (2024-04-05 14:28:06)
+Processing file ODBCAPTURE/SCHEMA_CONF.log (2024-04-05 14:28:06)
+Processing file ODBCAPTURE/TYPE_CONF.log (2024-04-05 14:28:06)
+Processing file install_grbsrc.log (2024-04-05 14:28:06)
+Processing file install_sys.log (2024-04-05 14:28:06)
+Processing file install_system.log (2024-04-05 14:28:06)
 
 PL/SQL procedure successfully completed.
 
@@ -3363,13 +3385,12 @@ Reporting JUnit XML Database Build Status
 Reorting JUnit XML Installation Log
 
 "grbsrc" Installation is Done.
-old   2:    values ('&INSTALL_TYPE.', '&APP_VERSION.', 'INSTALL')
-new   2:    values ('grbsrc', '1.003', 'INSTALL')
+old   2:    if '&INSTALL_TYPE.' like 'wtp%'
+new   2:    if 'grbsrc' like 'wtp%'
+old   5:	  values ('&INSTALL_TYPE.', '&APP_VERSION.', 'INSTALL');
+new   5:	  values ('grbsrc', '1.003', 'INSTALL');
 
-1 row created.
-
-
-Commit complete.
+PL/SQL procedure successfully completed.
 
 
 Re-create Invalid Public Synonyms
@@ -3401,7 +3422,7 @@ Move to ../../wtpgrb
 
 ../builds/OraEE213_AP212_ORDS222/build.sql wtpgrb
 
-SQL*Plus: Release 21.0.0.0.0 - Production on Wed Apr 3 16:08:36 2024
+SQL*Plus: Release 21.0.0.0.0 - Production on Fri Apr 5 14:28:11 2024
 Version 21.3.0.0.0
 
 Copyright (c) 1982, 2021, Oracle.  All rights reserved.
@@ -3414,19 +3435,19 @@ Reset Output Connections
 
 PL/SQL procedure successfully completed.
 
-Elapsed: 00:00:00.00
+Elapsed: 00:00:00.01
 
 PL/SQL procedure successfully completed.
 
-Elapsed: 00:00:00.01
+Elapsed: 00:00:00.00
 
 Show Database Connection
 
 'DB:'||NAME||',CON:'||SYS_CONTEXT('USERENV','CON_NAME')||',TSTMP:'||SYSTIMESTAMP
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-db: EE213CDB, con: DEVPDB, tstmp: 03-APR-24 04.08.36.855028 PM +00:00
+db: EE213CDB, con: DEVPDB, tstmp: 05-APR-24 02.28.11.578164 PM +00:00
 
-Elapsed: 00:00:00.00
+Elapsed: 00:00:00.01
 
 PL/SQL procedure successfully completed.
 
@@ -3461,7 +3482,7 @@ Table created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:08:37 for a duration of .13 seconds (started at 2024-04-03T16:08:37)
+=== DBI Completed at 2024-04-05T14:28:11 for a duration of .15 seconds (started at 2024-04-05T14:28:11)
 === DBI Started: ODBCAPTURE/DLOAD_CONF.cdl
 
 Disable Triggers and Foreign Keys
@@ -3473,12 +3494,12 @@ PL/SQL procedure successfully completed.
 
 sqlldr_control=ODBCAPTURE/DLOAD_CONF.ctl
 
-  8 Rows successfully loaded.
+  7 Rows successfully loaded.
 
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T16:08:38 for a duration of 1.3 seconds (started at 2024-04-03T16:08:37)
+=== DBI Completed at 2024-04-05T14:28:13 for a duration of 1.29 seconds (started at 2024-04-05T14:28:11)
 === DBI Started: ODBCAPTURE/OBJECT_CONF.cdl
 
 Disable Triggers and Foreign Keys
@@ -3491,12 +3512,12 @@ PL/SQL procedure successfully completed.
 
 sqlldr_control=ODBCAPTURE/OBJECT_CONF.ctl
 
-  10 Rows successfully loaded.
+  8 Rows successfully loaded.
 
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T16:08:40 for a duration of 1.27 seconds (started at 2024-04-03T16:08:38)
+=== DBI Completed at 2024-04-05T14:28:14 for a duration of 1.32 seconds (started at 2024-04-05T14:28:13)
 === DBI Started: ODBCAPTURE/ROLE_CONF.cdl
 
 Disable Triggers and Foreign Keys
@@ -3512,7 +3533,7 @@ sqlldr_control=ODBCAPTURE/ROLE_CONF.ctl
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T16:08:41 for a duration of 1.28 seconds (started at 2024-04-03T16:08:40)
+=== DBI Completed at 2024-04-05T14:28:15 for a duration of 1.26 seconds (started at 2024-04-05T14:28:14)
 === DBI Started: ODBCAPTURE/SCHEMA_CONF.cdl
 
 Disable Triggers and Foreign Keys
@@ -3528,7 +3549,7 @@ sqlldr_control=ODBCAPTURE/SCHEMA_CONF.ctl
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T16:08:42 for a duration of 1.24 seconds (started at 2024-04-03T16:08:41)
+=== DBI Completed at 2024-04-05T14:28:17 for a duration of 1.24 seconds (started at 2024-04-05T14:28:15)
 === DBI Started: ODBCAPTURE/TYPE_CONF.cdl
 
 Disable Triggers and Foreign Keys
@@ -3539,12 +3560,12 @@ PL/SQL procedure successfully completed.
 
 sqlldr_control=ODBCAPTURE/TYPE_CONF.ctl
 
-  5 Rows successfully loaded.
+  4 Rows successfully loaded.
 
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T16:08:44 for a duration of 1.3 seconds (started at 2024-04-03T16:08:42)
+=== DBI Completed at 2024-04-05T14:28:18 for a duration of 1.32 seconds (started at 2024-04-05T14:28:17)
 === DBI Started: ./installation_finalize.sql
 
 Drop_Temp_Publicly_Updateable_Table_SQL
@@ -3602,7 +3623,7 @@ Compile All for wtpgrb Install Type
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T16:08:46 for a duration of 2.74 seconds (started at 2024-04-03T16:08:44)
+=== DBI Completed at 2024-04-05T14:28:21 for a duration of 2.77 seconds (started at 2024-04-05T14:28:18)
 
 *****************
 *  Run Reports	*
@@ -3610,14 +3631,14 @@ PL/SQL procedure successfully completed.
 
 
 Reporting Summary of Install Type Log Errors
-Processing file ODBCAPTURE/DLOAD_CONF.log (2024-04-03 16:08:45)
-Processing file ODBCAPTURE/OBJECT_CONF.log (2024-04-03 16:08:45)
-Processing file ODBCAPTURE/ROLE_CONF.log (2024-04-03 16:08:45)
-Processing file ODBCAPTURE/SCHEMA_CONF.log (2024-04-03 16:08:45)
-Processing file ODBCAPTURE/TYPE_CONF.log (2024-04-03 16:08:45)
-Processing file install_sys.log (2024-04-03 16:08:45)
-Processing file install_system.log (2024-04-03 16:08:45)
-Processing file install_wtpgrb.log (2024-04-03 16:08:45)
+Processing file ODBCAPTURE/DLOAD_CONF.log (2024-04-05 14:28:19)
+Processing file ODBCAPTURE/OBJECT_CONF.log (2024-04-05 14:28:19)
+Processing file ODBCAPTURE/ROLE_CONF.log (2024-04-05 14:28:19)
+Processing file ODBCAPTURE/SCHEMA_CONF.log (2024-04-05 14:28:19)
+Processing file ODBCAPTURE/TYPE_CONF.log (2024-04-05 14:28:19)
+Processing file install_sys.log (2024-04-05 14:28:19)
+Processing file install_system.log (2024-04-05 14:28:19)
+Processing file install_wtpgrb.log (2024-04-05 14:28:19)
 
 PL/SQL procedure successfully completed.
 
@@ -3629,13 +3650,12 @@ Reporting JUnit XML Database Build Status
 Reorting JUnit XML Installation Log
 
 "wtpgrb" Installation is Done.
-old   2:    values ('&INSTALL_TYPE.', '&APP_VERSION.', 'INSTALL')
-new   2:    values ('wtpgrb', '1.003', 'INSTALL')
+old   2:    if '&INSTALL_TYPE.' like 'wtp%'
+new   2:    if 'wtpgrb' like 'wtp%'
+old   5:	  values ('&INSTALL_TYPE.', '&APP_VERSION.', 'INSTALL');
+new   5:	  values ('wtpgrb', '1.003', 'INSTALL');
 
-1 row created.
-
-
-Commit complete.
+PL/SQL procedure successfully completed.
 
 
 Re-create Invalid Public Synonyms

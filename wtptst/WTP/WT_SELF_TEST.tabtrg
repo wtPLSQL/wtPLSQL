@@ -6,7 +6,7 @@
 set define off
 
 
---  NOTE: This is a "TRIGGER" Trigger
+--  NOTE: This is a "TARGET" Trigger
 
 --DBMS_METADATA:WTP.WT_SELF_TEST$TEST
 

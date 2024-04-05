@@ -7,27 +7,27 @@ Table created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:44 for a duration of .1 seconds (started at 2024-04-03T16:07:44)
+=== DBI Completed at 2024-04-05T14:26:37 for a duration of .1 seconds (started at 2024-04-05T14:26:37)
 === DBI Started: WTP/PLSQL_PROFILER_RUNNUMBER.seq
 
 Sequence created.
 
-=== DBI Completed at 2024-04-03T16:07:44 for a duration of .07 seconds (started at 2024-04-03T16:07:44)
+=== DBI Completed at 2024-04-05T14:26:37 for a duration of .06 seconds (started at 2024-04-05T14:26:37)
 === DBI Started: WTP/WT_DBOUTS_SEQ.seq
 
 Sequence created.
 
-=== DBI Completed at 2024-04-03T16:07:44 for a duration of .05 seconds (started at 2024-04-03T16:07:44)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .06 seconds (started at 2024-04-05T14:26:37)
 === DBI Started: WTP/WT_TESTCASES_SEQ.seq
 
 Sequence created.
 
-=== DBI Completed at 2024-04-03T16:07:44 for a duration of .06 seconds (started at 2024-04-03T16:07:44)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .05 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/WT_TEST_RUNNERS_SEQ.seq
 
 Sequence created.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .06 seconds (started at 2024-04-03T16:07:44)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .05 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/WT_TEST_RUNS_SEQ.seq
 
 Sequence created.
@@ -35,52 +35,52 @@ Sequence created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .09 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .09 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/JUNIT_XML_PERSIST_ALL.proc
 
 Warning: Procedure created with compilation errors.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .09 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .05 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/WT_DBOUT.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .07 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .09 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/WT_JOB.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .05 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .06 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/WT_PERSIST_REPORT.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .06 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .06 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/WT_PROFILE.pspec
 
 Warning: Package created with compilation errors.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .07 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .06 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/WT_RESULT.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .06 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .06 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/WT_TESTCASE.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .06 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .07 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/WT_TEST_RUN.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .06 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .04 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/WT_TEST_RUNNER.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-03T16:07:45 for a duration of .07 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:38 for a duration of .06 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/PLSQL_PROFILER_DATA.tab
 
 Table created.
@@ -124,7 +124,7 @@ Comment created.
 
 Comment created.
 
-=== DBI Completed at 2024-04-03T16:07:46 for a duration of .46 seconds (started at 2024-04-03T16:07:45)
+=== DBI Completed at 2024-04-05T14:26:39 for a duration of .39 seconds (started at 2024-04-05T14:26:38)
 === DBI Started: WTP/PLSQL_PROFILER_RUNS.tab
 
 Table created.
@@ -162,7 +162,7 @@ Comment created.
 
 Comment created.
 
-=== DBI Completed at 2024-04-03T16:07:46 for a duration of .35 seconds (started at 2024-04-03T16:07:46)
+=== DBI Completed at 2024-04-05T14:26:39 for a duration of .63 seconds (started at 2024-04-05T14:26:39)
 === DBI Started: WTP/PLSQL_PROFILER_UNITS.tab
 
 Table created.
@@ -200,7 +200,7 @@ Comment created.
 
 Comment created.
 
-=== DBI Completed at 2024-04-03T16:07:47 for a duration of .35 seconds (started at 2024-04-03T16:07:46)
+=== DBI Completed at 2024-04-05T14:26:40 for a duration of .35 seconds (started at 2024-04-05T14:26:39)
 === DBI Started: WTP/WT_DBOUTS.tab
 
 Table created.
@@ -232,7 +232,7 @@ Grant succeeded.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:47 for a duration of .36 seconds (started at 2024-04-03T16:07:47)
+=== DBI Completed at 2024-04-05T14:26:40 for a duration of .4 seconds (started at 2024-04-05T14:26:40)
 === DBI Started: WTP/WT_DBOUT_RUNS.tab
 
 Table created.
@@ -297,7 +297,7 @@ Grant succeeded.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:48 for a duration of .71 seconds (started at 2024-04-03T16:07:47)
+=== DBI Completed at 2024-04-05T14:26:41 for a duration of .7 seconds (started at 2024-04-05T14:26:40)
 === DBI Started: WTP/WT_PROFILES.tab
 
 Table created.
@@ -338,7 +338,7 @@ Grant succeeded.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:48 for a duration of .44 seconds (started at 2024-04-03T16:07:48)
+=== DBI Completed at 2024-04-05T14:26:41 for a duration of .4 seconds (started at 2024-04-05T14:26:41)
 === DBI Started: WTP/WT_RESULTS.tab
 
 Table created.
@@ -382,7 +382,7 @@ Grant succeeded.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:49 for a duration of .42 seconds (started at 2024-04-03T16:07:48)
+=== DBI Completed at 2024-04-05T14:26:42 for a duration of .46 seconds (started at 2024-04-05T14:26:41)
 === DBI Started: WTP/WT_TESTCASES.tab
 
 Table created.
@@ -408,7 +408,7 @@ Grant succeeded.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:49 for a duration of .35 seconds (started at 2024-04-03T16:07:49)
+=== DBI Completed at 2024-04-05T14:26:42 for a duration of .29 seconds (started at 2024-04-05T14:26:42)
 === DBI Started: WTP/WT_TESTCASE_RUNS.tab
 
 Table created.
@@ -455,7 +455,7 @@ Grant succeeded.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:49 for a duration of .45 seconds (started at 2024-04-03T16:07:49)
+=== DBI Completed at 2024-04-05T14:26:43 for a duration of .74 seconds (started at 2024-04-05T14:26:42)
 === DBI Started: WTP/WT_TEST_RUNNERS.tab
 
 Table created.
@@ -484,7 +484,7 @@ Grant succeeded.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:50 for a duration of .32 seconds (started at 2024-04-03T16:07:49)
+=== DBI Completed at 2024-04-05T14:26:43 for a duration of .32 seconds (started at 2024-04-05T14:26:43)
 === DBI Started: WTP/WT_TEST_RUNS.tab
 
 Table created.
@@ -567,27 +567,27 @@ Grant succeeded.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:50 for a duration of .76 seconds (started at 2024-04-03T16:07:50)
+=== DBI Completed at 2024-04-05T14:26:44 for a duration of .75 seconds (started at 2024-04-05T14:26:43)
 === DBI Started: WTP/PLSQL_PROFILER_RUNS.tabind
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:07:51 for a duration of .07 seconds (started at 2024-04-03T16:07:50)
+=== DBI Completed at 2024-04-05T14:26:44 for a duration of .07 seconds (started at 2024-04-05T14:26:44)
 === DBI Started: WTP/WT_DBOUTS.tabind
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:07:51 for a duration of .07 seconds (started at 2024-04-03T16:07:51)
+=== DBI Completed at 2024-04-05T14:26:44 for a duration of .07 seconds (started at 2024-04-05T14:26:44)
 === DBI Started: WTP/WT_RESULTS.tabind
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:07:51 for a duration of .07 seconds (started at 2024-04-03T16:07:51)
+=== DBI Completed at 2024-04-05T14:26:44 for a duration of .06 seconds (started at 2024-04-05T14:26:44)
 === DBI Started: WTP/WT_TESTCASE_RUNS.tabind
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:07:51 for a duration of .08 seconds (started at 2024-04-03T16:07:51)
+=== DBI Completed at 2024-04-05T14:26:44 for a duration of .07 seconds (started at 2024-04-05T14:26:44)
 === DBI Started: WTP/WT_TEST_RUNS.tabind
 
 Index created.
@@ -595,7 +595,7 @@ Index created.
 
 Index created.
 
-=== DBI Completed at 2024-04-03T16:07:51 for a duration of .14 seconds (started at 2024-04-03T16:07:51)
+=== DBI Completed at 2024-04-05T14:26:44 for a duration of .11 seconds (started at 2024-04-05T14:26:44)
 === DBI Started: WTP/WT_DBOUT_RUNS_VW.vw
 
 View created.
@@ -687,7 +687,7 @@ Comment created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:52 for a duration of .77 seconds (started at 2024-04-03T16:07:51)
+=== DBI Completed at 2024-04-05T14:26:45 for a duration of .76 seconds (started at 2024-04-05T14:26:44)
 === DBI Started: WTP/WT_PROFILES_VW.vw
 
 View created.
@@ -749,7 +749,7 @@ Comment created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:52 for a duration of .58 seconds (started at 2024-04-03T16:07:52)
+=== DBI Completed at 2024-04-05T14:26:46 for a duration of .49 seconds (started at 2024-04-05T14:26:45)
 === DBI Started: WTP/WT_RESULTS_VW.vw
 
 View created.
@@ -817,7 +817,7 @@ Comment created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:53 for a duration of .58 seconds (started at 2024-04-03T16:07:52)
+=== DBI Completed at 2024-04-05T14:26:46 for a duration of .64 seconds (started at 2024-04-05T14:26:46)
 === DBI Started: WTP/WT_SCHEDULER_JOBS_VW.vw
 
 View created.
@@ -855,7 +855,7 @@ Comment created.
 
 Comment created.
 
-=== DBI Completed at 2024-04-03T16:07:53 for a duration of .44 seconds (started at 2024-04-03T16:07:53)
+=== DBI Completed at 2024-04-05T14:26:47 for a duration of .39 seconds (started at 2024-04-05T14:26:46)
 === DBI Started: WTP/WT_TESTCASE_RUNS_VW.vw
 
 View created.
@@ -920,7 +920,7 @@ Comment created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:54 for a duration of .55 seconds (started at 2024-04-03T16:07:53)
+=== DBI Completed at 2024-04-05T14:26:47 for a duration of .57 seconds (started at 2024-04-05T14:26:47)
 === DBI Started: WTP/WT_TEST_RUNS_VW.vw
 
 View created.
@@ -1000,70 +1000,67 @@ Comment created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-03T16:07:55 for a duration of .67 seconds (started at 2024-04-03T16:07:54)
+=== DBI Completed at 2024-04-05T14:26:48 for a duration of .69 seconds (started at 2024-04-05T14:26:47)
 === DBI Started: WTP/WT_DBOUT.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:07:55 for a duration of .09 seconds (started at 2024-04-03T16:07:55)
+=== DBI Completed at 2024-04-05T14:26:48 for a duration of .09 seconds (started at 2024-04-05T14:26:48)
 === DBI Started: WTP/WT_JOB.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:07:55 for a duration of .09 seconds (started at 2024-04-03T16:07:55)
+=== DBI Completed at 2024-04-05T14:26:48 for a duration of .1 seconds (started at 2024-04-05T14:26:48)
 === DBI Started: WTP/WT_PERSIST_REPORT.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:07:55 for a duration of .13 seconds (started at 2024-04-03T16:07:55)
+=== DBI Completed at 2024-04-05T14:26:48 for a duration of .15 seconds (started at 2024-04-05T14:26:48)
 === DBI Started: WTP/WT_PROFILE.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:07:55 for a duration of .2 seconds (started at 2024-04-03T16:07:55)
+=== DBI Completed at 2024-04-05T14:26:49 for a duration of .23 seconds (started at 2024-04-05T14:26:48)
 === DBI Started: WTP/WT_RESULT.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:07:55 for a duration of .09 seconds (started at 2024-04-03T16:07:55)
+=== DBI Completed at 2024-04-05T14:26:49 for a duration of .08 seconds (started at 2024-04-05T14:26:49)
 === DBI Started: WTP/WT_TESTCASE.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:07:55 for a duration of .08 seconds (started at 2024-04-03T16:07:55)
+=== DBI Completed at 2024-04-05T14:26:49 for a duration of .08 seconds (started at 2024-04-05T14:26:49)
 === DBI Started: WTP/WT_TEST_RUN.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:07:55 for a duration of .1 seconds (started at 2024-04-03T16:07:55)
+=== DBI Completed at 2024-04-05T14:26:49 for a duration of .08 seconds (started at 2024-04-05T14:26:49)
 === DBI Started: WTP/WT_TEST_RUNNER.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-03T16:07:56 for a duration of .12 seconds (started at 2024-04-03T16:07:55)
+=== DBI Completed at 2024-04-05T14:26:49 for a duration of .08 seconds (started at 2024-04-05T14:26:49)
 === DBI Started: WTP/PLSQL_PROFILER_DATA.tabfk
 
 Table altered.
 
-=== DBI Completed at 2024-04-03T16:07:56 for a duration of .07 seconds (started at 2024-04-03T16:07:56)
+=== DBI Completed at 2024-04-05T14:26:49 for a duration of .07 seconds (started at 2024-04-05T14:26:49)
 === DBI Started: WTP/PLSQL_PROFILER_UNITS.tabfk
 
 Table altered.
 
-=== DBI Completed at 2024-04-03T16:07:56 for a duration of .08 seconds (started at 2024-04-03T16:07:56)
+=== DBI Completed at 2024-04-05T14:26:49 for a duration of .07 seconds (started at 2024-04-05T14:26:49)
 === DBI Started: WTP/WT_DBOUT_RUNS.tabfk
 
 Table altered.
 
-
-Table altered.
-
-=== DBI Completed at 2024-04-03T16:07:56 for a duration of .13 seconds (started at 2024-04-03T16:07:56)
+=== DBI Completed at 2024-04-05T14:26:49 for a duration of .07 seconds (started at 2024-04-05T14:26:49)
 === DBI Started: WTP/WT_PROFILES.tabfk
 
 Table altered.
 
-=== DBI Completed at 2024-04-03T16:07:56 for a duration of .07 seconds (started at 2024-04-03T16:07:56)
+=== DBI Completed at 2024-04-05T14:26:49 for a duration of .07 seconds (started at 2024-04-05T14:26:49)
 === DBI Started: WTP/WT_RESULTS.tabfk
 
 Table altered.
@@ -1071,7 +1068,7 @@ Table altered.
 
 Table altered.
 
-=== DBI Completed at 2024-04-03T16:07:56 for a duration of .12 seconds (started at 2024-04-03T16:07:56)
+=== DBI Completed at 2024-04-05T14:26:50 for a duration of .11 seconds (started at 2024-04-05T14:26:49)
 === DBI Started: WTP/WT_TESTCASE_RUNS.tabfk
 
 Table altered.
@@ -1079,7 +1076,7 @@ Table altered.
 
 Table altered.
 
-=== DBI Completed at 2024-04-03T16:07:56 for a duration of .12 seconds (started at 2024-04-03T16:07:56)
+=== DBI Completed at 2024-04-05T14:26:50 for a duration of .14 seconds (started at 2024-04-05T14:26:50)
 === DBI Started: WTP/WT_TEST_RUNS.tabfk
 
 Table altered.
@@ -1087,7 +1084,7 @@ Table altered.
 
 Table altered.
 
-=== DBI Completed at 2024-04-03T16:07:56 for a duration of .15 seconds (started at 2024-04-03T16:07:56)
+=== DBI Completed at 2024-04-05T14:26:50 for a duration of .14 seconds (started at 2024-04-05T14:26:50)
 === DBI Started: ./installation_finalize.sql
 
 Drop_Temp_Publicly_Updateable_Table_SQL
@@ -1100,7 +1097,6 @@ Alter Foreign Keys for wtpsav Install Type
 alter table "WTP"."PLSQL_PROFILER_DATA" ENABLE constraint "PLSQL_PROFILER_DATA_FK1";
 alter table "WTP"."PLSQL_PROFILER_UNITS" ENABLE constraint "PLSQL_PROFILER_UNITS_FK1";
 alter table "WTP"."WT_DBOUT_RUNS" ENABLE constraint "WT_DBOUT_RUNS_FK1";
-alter table "WTP"."WT_DBOUT_RUNS" ENABLE constraint "WT_DBOUT_RUNS_FK2";
 alter table "WTP"."WT_PROFILES" ENABLE constraint "WT_PROFILES_FK1";
 alter table "WTP"."WT_RESULTS" ENABLE constraint "WT_RESULTS_FK1";
 alter table "WTP"."WT_RESULTS" ENABLE constraint "WT_RESULTS_FK2";
@@ -1147,4 +1143,4 @@ Compile All for wtpsav Install Type
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-03T16:08:00 for a duration of 3.45 seconds (started at 2024-04-03T16:07:57)
+=== DBI Completed at 2024-04-05T14:26:53 for a duration of 3.36 seconds (started at 2024-04-05T14:26:50)

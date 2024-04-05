@@ -39,3 +39,5 @@ set verify on
 prompt
 prompt Done with Unit Tests.
 set linesize 80
+
+EXIT

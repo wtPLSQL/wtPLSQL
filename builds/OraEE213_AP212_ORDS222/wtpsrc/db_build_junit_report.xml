@@ -1,21 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="WTP_schema_build" tests="23" failures="1" time="0" timestamp="2024-04-03T16:06:57">
+  <testsuite name="WTP_schema_build" tests="27" failures="2" time="0" timestamp="2024-04-05T14:25:54">
     <testcase name="INDEX:db_object_status" classname="WTP.HOOKS_PK" time="0"/>
     <testcase name="INDEX:db_object_status" classname="WTP.WT_VERSIONS_PK" time="0"/>
     <testcase name="PACKAGE:db_object_status" classname="WTP.CORE_DATA" time="0"/>
     <testcase name="PACKAGE:db_object_status" classname="WTP.HOOK" time="0"/>
+    <testcase name="PACKAGE:db_object_status" classname="WTP.JUNIT_CORE_REPORT" time="0"/>
     <testcase name="PACKAGE:db_object_status" classname="WTP.WTPLSQL" time="0"/>
     <testcase name="PACKAGE:db_object_status" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="PACKAGE:db_object_status" classname="WTP.WT_CORE_REPORT" time="0"/>
     <testcase name="PACKAGE BODY:db_object_status" classname="WTP.CORE_DATA" time="0"/>
     <testcase name="PACKAGE BODY:db_object_status" classname="WTP.HOOK" time="0"/>
+    <testcase name="PACKAGE BODY:db_object_status" classname="WTP.JUNIT_CORE_REPORT" time="0"/>
     <testcase name="PACKAGE BODY:db_object_status" classname="WTP.WTPLSQL" time="0"/>
     <testcase name="PACKAGE BODY:db_object_status" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="PACKAGE BODY:db_object_status" classname="WTP.WT_CORE_REPORT" time="0"/>
+    <testcase name="PROCEDURE:db_object_status" classname="WTP.WT_AD_HOC_REPORT" time="0"/>
     <testcase name="PROCEDURE:db_object_status" classname="WTP.WT_EXECUTE_TEST_RUNNER" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.UTASSERT" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WTPLSQL" time="0"/>
+    <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_AD_HOC_REPORT" time="0">
+      <error message="PUBLIC_SYNONYM failed">
+** Object Status is INVALID
+      </error>
+    </testcase>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_CORE_REPORT" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_EXECUTE_TEST_RUNNER" time="0">

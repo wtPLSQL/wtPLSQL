@@ -41,7 +41,7 @@ prompt JUnit Report Unit Tests.
 set verify off
 set feedback off
 set termout off
-spool junit_xml_persiste_all.xml
+spool junit_xml_persist_all.xml
 execute junit_xml_persist_all;
 spool off
 set termout on
@@ -52,3 +52,5 @@ set verify on
 prompt
 prompt Done with Reports
 set linesize 80
+
+EXIT

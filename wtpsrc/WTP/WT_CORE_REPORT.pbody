@@ -216,7 +216,7 @@ is
 begin
    delete_hooks;
    insert into hooks (hook_name, seq, run_string)
-      values ('ad_hoc_report', 20, 'begin wt_core_report.ad_hoc_result; end;');
+      values ('after_test_run', 20, 'begin wt_core_report.dbms_out(in_detail_level => 10); end;');
    commit;
    hook.init;
 end insert_hooks;

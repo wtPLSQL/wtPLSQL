@@ -134,21 +134,21 @@ function setup_for_test {
 function run_core_test {
    echo ""
    echo "Running ../util/run_core_test.sql from ${PWD}"
-   echo sqlplus "${PDB_WTP}" "@../util/run_core_test.sql"
+   sqlplus "${PDB_WTP}" "@../util/run_core_test.sql"
    }
 
 ########################################
 function run_junit_test {
    echo ""
    echo "Running ../util/run_junit_test.sql from ${PWD}"
-   echo sqlplus "${PDB_WTP}" "@../util/run_junit_test.sql"
+   sqlplus "${PDB_WTP}" "@../util/run_junit_test.sql"
    }
 
 ########################################
 function run_save_test {
    echo ""
    echo "Running ../util/run_save_test.sql from ${PWD}"
-   echo sqlplus "${PDB_WTP}" "@../util/run_save_test.sql"
+   sqlplus "${PDB_WTP}" "@../util/run_save_test.sql"
    }
 
 ########################################
