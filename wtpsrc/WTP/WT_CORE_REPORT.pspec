@@ -37,8 +37,6 @@ as
       --     * Assertion results summary.
       --     * All assertion result details.
 
-   procedure ad_hoc_result;
-
    function format_test_result
       (in_rec  in core_data.results_rec_type)
    return varchar2;

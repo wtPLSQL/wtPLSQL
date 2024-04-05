@@ -14,6 +14,9 @@ as
 
    g_in_process  boolean := FALSE;
 
+   TYPE xml_aa_type is table of varchar2(4000) index by pls_integer;
+   xml_aa   xml_aa_type;
+
    procedure xml_header;
 
    procedure xml_body;
@@ -25,6 +28,10 @@ as
    procedure show_current;
 
    procedure after_test_all;
+
+   procedure insert_hooks;
+
+   procedure delete_hooks;
 
 end junit_core_report;
 /

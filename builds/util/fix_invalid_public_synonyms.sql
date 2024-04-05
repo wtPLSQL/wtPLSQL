@@ -35,11 +35,11 @@ Begin
       sql_txt := 'CREATE OR REPLACE' || buff.EDITIONABLE || ' PUBLIC SYNONYM "' ||
                   buff.synonym_name || '" for "' || buff.table_owner || '"."' ||
                   buff.table_name ||'"';
+      dbms_output.put_line(sql_txt);
       execute immediate sql_txt;
     exception
       when others then
         dbms_output.put_line('ERROR:' || CHR(10) || SQLERRM || CHR(10));
-        dbms_output.put_line(sql_txt);
         dbms_output.put_line('----------------------------------------');
     end;
   end loop;

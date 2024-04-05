@@ -12,14 +12,6 @@ set define off
    authid definer
 as
 
-   before_test_all_active      boolean := FALSE;
-   before_test_run_active      boolean := FALSE;
-   execute_test_runner_active  boolean := FALSE;
-   after_assertion_active      boolean := FALSE;
-   after_test_run_active       boolean := FALSE;
-   after_test_all_active       boolean := FALSE;
-   ad_hoc_report_active        boolean := FALSE;
-
    procedure before_test_all;
    procedure before_test_run;
    procedure execute_test_runner;

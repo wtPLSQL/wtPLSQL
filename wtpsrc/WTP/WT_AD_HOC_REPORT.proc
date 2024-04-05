@@ -1,0 +1,43 @@
+
+--
+--  Create WTP.WT_AD_HOC_REPORT Procedure
+--
+
+set define off
+
+
+--DBMS_METADATA:WTP.WT_AD_HOC_REPORT
+
+  CREATE OR REPLACE EDITIONABLE PROCEDURE "WTP"."WT_AD_HOC_REPORT" 
+   authid current_user
+   -- AUTHID CURRENT_USER is required for assertions with
+   --   dynamic PL/SQL execution.
+is
+begin
+   dbms_output.put_line(wt_assert.g_rec.last_msg);
+   dbms_output.put_line(' Assertion ' || wt_assert.g_rec.last_assert ||
+                     case wt_assert.last_pass
+                     when TRUE then ' PASSED.'
+                               else ' FAILED.'
+                     end);
+   if wt_assert.g_testcase is not null
+   then
+      dbms_output.put_line(' Testcase: ' || wt_assert.g_testcase);
+   end if;
+   dbms_output.put_line(          ' ' || wt_assert.g_rec.last_details);
+end wt_ad_hoc_report;
+/
+
+
+--  Grants
+grant EXECUTE on "WTP"."WT_AD_HOC_REPORT" to "PUBLIC";
+
+
+--  Synonyms
+
+--DBMS_METADATA:PUBLIC.WT_AD_HOC_REPORT
+
+  CREATE OR REPLACE NONEDITIONABLE PUBLIC SYNONYM "WT_AD_HOC_REPORT" FOR "WTP"."WT_AD_HOC_REPORT";
+
+
+set define on

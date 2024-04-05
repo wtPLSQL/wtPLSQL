@@ -29,6 +29,7 @@ set escape ""
 ----------------------------------------
 -- PROCEDURE Install
 
+@db_install.sql "WTP/WT_AD_HOC_REPORT.proc" "WTP" "&INSTALL_SYSTEM_CONNECT."
 @db_install.sql "WTP/WT_EXECUTE_TEST_RUNNER.proc" "WTP" "&INSTALL_SYSTEM_CONNECT."
 
 ----------------------------------------
@@ -36,6 +37,7 @@ set escape ""
 
 @db_install.sql "WTP/CORE_DATA.pspec" "WTP" "&INSTALL_SYSTEM_CONNECT."
 @db_install.sql "WTP/HOOK.pspec" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@db_install.sql "WTP/JUNIT_CORE_REPORT.pspec" "WTP" "&INSTALL_SYSTEM_CONNECT."
 @db_install.sql "WTP/WTPLSQL.pspec" "WTP" "&INSTALL_SYSTEM_CONNECT."
 @db_install.sql "WTP/WT_ASSERT.pspec" "WTP" "&INSTALL_SYSTEM_CONNECT."
 @db_install.sql "WTP/WT_CORE_REPORT.pspec" "WTP" "&INSTALL_SYSTEM_CONNECT."
@@ -61,6 +63,7 @@ set escape ""
 
 @db_install.sql "WTP/CORE_DATA.pbody" "WTP" "&INSTALL_SYSTEM_CONNECT."
 @db_install.sql "WTP/HOOK.pbody" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@db_install.sql "WTP/JUNIT_CORE_REPORT.pbody" "WTP" "&INSTALL_SYSTEM_CONNECT."
 @db_install.sql "WTP/WTPLSQL.pbody" "WTP" "&INSTALL_SYSTEM_CONNECT."
 @db_install.sql "WTP/WT_ASSERT.pbody" "WTP" "&INSTALL_SYSTEM_CONNECT."
 @db_install.sql "WTP/WT_CORE_REPORT.pbody" "WTP" "&INSTALL_SYSTEM_CONNECT."

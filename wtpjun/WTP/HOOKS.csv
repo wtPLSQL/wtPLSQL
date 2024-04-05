@@ -1,4 +1,0 @@
-"HOOK_NAME","SEQ","RUN_STRING","DESCRIPTION"
-"after_test_all",20,"begin junit_core_report.after_test_all; end;",
-"after_test_run",20,"begin junit_core_report.show_current; end;",
-"before_test_all",20,"begin junit_core_report.before_test_all; end;",

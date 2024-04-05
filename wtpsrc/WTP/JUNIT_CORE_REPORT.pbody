@@ -17,15 +17,17 @@ as
 ----------------------
 
 
+------------------------------------------------------------
 -- Print to DBMS_OUTPUT
 procedure p
       (in_line in varchar2)
 is
 begin
-   DBMS_OUTPUT.PUT_LINE(in_line);
+   xml_aa(xml_aa.COUNT + 1) := in_line;
 end p;
 
 
+------------------------------------------------------------
 -- XML Escape
 function xe
       (in_txt in varchar2)
@@ -51,6 +53,7 @@ end xe;
 ---------------------
 
 
+------------------------------------------------------------
 procedure xml_header
 is
 begin
@@ -62,6 +65,7 @@ begin
 end xml_header;
 
 
+------------------------------------------------------------
 procedure xml_body
 is
    l_rec             core_data.results_rec_type;
@@ -87,8 +91,8 @@ begin
                   '" tests="' ||         core_data.g_run_rec.tc_cnt             ||
                '" failures="' ||         core_data.g_run_rec.tc_fail            ||
                    '" time="' ||         core_data.g_run_rec.runner_sec         ||
-              '" timestamp="' || to_char(core_data.g_run_rec.start_dtm
-                                        ,'YYYY-MM-DD"T"HH24:MI:SS.FF3TZH:TZM')  ||
+              '" timestamp="' || to_char(core_data.g_run_rec.start_dtm,'YYYY-MM-DD') || 'T' ||
+                                 to_char(core_data.g_run_rec.start_dtm,'HH24:MI:SS.FF3') ||
                          '">' );
       l_testcase := core_data.g_tcases_aa.FIRST;
       loop
@@ -155,6 +159,7 @@ begin
 end xml_body;
 
 
+------------------------------------------------------------
 procedure xml_trailer
 is
 begin
@@ -162,17 +167,19 @@ begin
 end xml_trailer;
 
 
+------------------------------------------------------------
 procedure before_test_all
 is
 begin
-   if not g_in_process
-   then
-      xml_header;
-   end if;
+   xml_aa.DELETE;
+   xml_aa(1) := '';
+   xml_header;
    g_in_process := TRUE;
 end before_test_all;
 
 
+------------------------------------------------------------
+-- This can be used as an
 procedure show_current
 is
 begin
@@ -192,6 +199,7 @@ begin
 end show_current;
 
 
+------------------------------------------------------------
 procedure after_test_all
 is
 begin
@@ -199,8 +207,39 @@ begin
    then
       xml_trailer;
    end if;
+   for i in 2 .. xml_aa.COUNT
+   loop
+      dbms_output.put_line(xml_aa(i));
+   end loop;
    g_in_process := FALSE;
 end after_test_all;
+
+
+------------------------------------------------------------
+procedure insert_hooks
+is
+begin
+   delete_hooks;
+   insert into hooks (hook_name, seq, run_string)
+      values ('before_test_all', 20, 'begin junit_core_report.before_test_all; end;');
+   insert into hooks (hook_name, seq, run_string)
+      values ('after_test_run', 20, 'begin junit_core_report.show_current; end;');
+   insert into hooks (hook_name, seq, run_string)
+      values ('after_test_all', 20, 'begin junit_core_report.after_test_all; end;');
+   commit;
+   hook.init;
+end insert_hooks;
+
+
+------------------------------------------------------------
+procedure delete_hooks
+is
+begin
+   delete from hooks where run_string like '% junit_core_report.%';
+   dbms_output.put_line(SQL%ROWCOUNT || ' "junit_core_report" rows deleted from HOOKS table.');
+   hook.init;
+   commit;
+end delete_hooks;
 
 
 end junit_core_report;

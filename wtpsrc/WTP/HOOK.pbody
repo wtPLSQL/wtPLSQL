@@ -29,6 +29,11 @@ procedure run_hooks
 is
    l_error_stack          varchar2(32000);
 begin
+   if NOT g_run_aa.EXISTS(in_hook_name)
+   then
+      dbms_output.put_line('No hook for ' || in_hook_name);
+      return;
+   end if;
    for i in 1 .. g_run_aa(in_hook_name).COUNT
    loop
       begin
@@ -36,12 +41,11 @@ begin
       exception
          when OTHERS
          then
-            l_error_stack := 'Hook Error in "' || in_hook_name ||
-                              '", SEQ ' || g_run_aa(in_hook_name)(i).seq ||
-                                    '.' || CHR(10) ||
-                              dbms_utility.format_error_stack ||
-                              dbms_utility.format_error_backtrace;
-            core_data.run_error(l_error_stack);
+            raise_application_error(-20000, 'Hook Error in "' || in_hook_name ||
+                                            '", SEQ ' || g_run_aa(in_hook_name)(i).seq ||
+                                            '.' || CHR(10) ||
+                                            dbms_utility.format_error_stack ||
+                                            dbms_utility.format_error_backtrace);
       end;
    end loop;
 end run_hooks;
@@ -56,30 +60,21 @@ end run_hooks;
 procedure before_test_all
 is
 begin
-   if before_test_all_active
-   then
-      run_hooks('before_test_all');
-   end if;
+   run_hooks('before_test_all');
 end before_test_all;
 
 ------------------------------------------------------------
 procedure before_test_run
 is
 begin
-   if before_test_run_active
-   then
-      run_hooks('before_test_run');
-   end if;
+   run_hooks('before_test_run');
 end before_test_run;
 
 ------------------------------------------------------------
 procedure execute_test_runner
 is
 begin
-   if execute_test_runner_active
-   then
-      run_hooks('execute_test_runner');
-   end if;
+   run_hooks('execute_test_runner');
 end execute_test_runner;
 
 ------------------------------------------------------------
@@ -93,10 +88,7 @@ $THEN
    then
 $END  ------%WTPLSQL_end_ignore_lines%------
    --
-   if after_assertion_active
-   then
-      run_hooks('after_assertion');
-   end if;
+   run_hooks('after_assertion');
    --
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
@@ -109,30 +101,21 @@ end after_assertion;
 procedure after_test_run
 is
 begin
-   if after_test_run_active
-   then
-      run_hooks('after_test_run');
-   end if;
+   run_hooks('after_test_run');
 end after_test_run;
 
 ------------------------------------------------------------
 procedure after_test_all
 is
 begin
-   if after_test_all_active
-   then
-      run_hooks('after_test_all');
-   end if;
+   run_hooks('after_test_all');
 end after_test_all;
 
 ------------------------------------------------------------
 procedure ad_hoc_report
 is
 begin
-   if ad_hoc_report_active
-   then
-      run_hooks('ad_hoc_report');
-   end if;
+   run_hooks('ad_hoc_report');
 end ad_hoc_report;
 
 ------------------------------------------------------------
@@ -140,13 +123,6 @@ procedure init
 is
    l_run_nt  run_nt_type;
 begin
-   before_test_all_active     := FALSE;
-   before_test_run_active     := FALSE;
-   execute_test_runner_active := FALSE;
-   after_assertion_active     := FALSE;
-   after_test_run_active      := FALSE;
-   after_test_all_active      := FALSE;
-   ad_hoc_report_active       := FALSE;
    for buff in (
       select hook_name
        from  hooks
@@ -159,19 +135,6 @@ begin
       if SQL%FOUND
       then
          g_run_aa(buff.hook_name) := l_run_nt;
-         case buff.hook_name
-            when 'before_test_all'     then before_test_all_active     := TRUE;
-            when 'before_test_run'     then before_test_run_active     := TRUE;
-            when 'execute_test_runner' then execute_test_runner_active := TRUE;
-            when 'after_assertion'     then after_assertion_active     := TRUE;
-            when 'after_test_run'      then after_test_run_active      := TRUE;
-            when 'after_test_all'      then after_test_all_active      := TRUE;
-            when 'ad_hoc_report'       then ad_hoc_report_active       := TRUE;
-            ------%WTPLSQL_begin_ignore_lines%------
-            -- Can't Test This
-            else raise_application_error(-20003, 'Unknown HOOK_NAME Case' || buff.hook_name);
-            ------%WTPLSQL_end_ignore_lines%------
-          end case;
       end if;
    end loop;
 end init;

@@ -713,17 +713,10 @@ end insert_hooks;
 procedure delete_hooks
 is
 begin
-   delete from hooks
-    where hook_name  = 'before_test_run'
-     and  run_string = 'begin wt_test_run.initialize; end;';
-   delete from hooks
-    where hook_name  = 'after_test_run'
-     and  run_string = 'begin wt_test_run.finalize1; end;';
-   delete from hooks
-    where hook_name  = 'after_test_run'
-     and  run_string = 'begin wt_test_run.finalize2; end;';
-   commit;
+   delete from hooks where run_string like '% wt_test_run.%';
+   dbms_output.put_line(SQL%ROWCOUNT || ' "wt_test_run" rows deleted from HOOKS table.');
    hook.init;
+   commit;
 end delete_hooks;
 
 

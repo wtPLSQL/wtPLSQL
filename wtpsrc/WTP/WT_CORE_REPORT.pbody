@@ -53,7 +53,7 @@ begin
                                        ' ' || core_data.g_run_rec.dbout_owner ||
                                        '.' || core_data.g_run_rec.dbout_name  );
    end if;
-   p('  --------------------------------------------------------------');
+   p('  ------------------------------------------------------------------');
    --
    asrt_cnt  := nvl(core_data.g_run_rec.asrt_cnt     ,0);
    asrt_fail := nvl(core_data.g_run_rec.asrt_fail    ,0);
@@ -72,16 +72,16 @@ begin
                else tc_yield := nvl(100*(1-(tc_fail/tc_cnt)),0);
    end case;
    --
-   p('  Minimum Elapsed msec: ' || to_char(min_msec ,'9999999') ||
-     '      Total Assertions: ' || to_char(asrt_cnt ,'9999999') );
-   p('  Average Elapsed msec: ' || to_char(avg_msec ,'9999999') ||
-     '     Failed Assertions: ' || to_char(asrt_fail,'9999999') );
-   p('  Maximum Elapsed msec: ' || to_char(max_msec ,'9999999') ||
-     '       Total Testcases: ' || to_char(tc_cnt   ,'9999999') );
-   p('  Total Run Time (sec): ' || to_char(run_sec  ,'99990.9') ||
-     '      Failed Testcases: ' || to_char(tc_fail  ,'9999999') );
-   p('                        ' ||                  '        '  ||
-     '        Testcase Yield: ' || to_char(tc_yield ,'9999999') || '%');
+   p('  Minimum Elapsed msec: ' || to_char(min_msec ,'999999999') ||
+     '      Total Assertions: ' || to_char(asrt_cnt ,'999999999') );
+   p('  Average Elapsed msec: ' || to_char(avg_msec ,'999999999') ||
+     '     Failed Assertions: ' || to_char(asrt_fail,'999999999') );
+   p('  Maximum Elapsed msec: ' || to_char(max_msec ,'999999999') ||
+     '       Total Testcases: ' || to_char(tc_cnt   ,'999999999') );
+   p('  Total Run Time (sec): ' || to_char(run_sec  ,'9999990.9') ||
+     '      Failed Testcases: ' || to_char(tc_fail  ,'999999999') );
+   p('                        ' ||                  '          '  ||
+     '        Testcase Yield: ' || to_char(tc_yield ,'999999999') || '%');
    --
    if core_data.g_run_rec.error_message is not null
    then
@@ -100,6 +100,12 @@ is
    old_testcase  core_data.long_name;
    show_header   boolean := TRUE;
 begin
+   -- Check Test Results Array
+   if NOT core_data.g_results_nt.EXISTS(1)
+   then
+      p(' * NOTE: No Data in Test Results Array "core_data.g_results_nt"');
+      return;
+   end if;
    -- Loop through all results
    for i in 1 .. core_data.g_results_nt.COUNT
    loop
@@ -165,24 +171,6 @@ end dbms_out;
 
 
 ------------------------------------------------------------
-procedure ad_hoc_result
-is
-begin
-   p(wt_assert.g_rec.last_msg);
-   p(' Assertion ' || wt_assert.g_rec.last_assert ||
-                     case wt_assert.last_pass
-                     when TRUE then ' PASSED.'
-                               else ' FAILED.'
-                     end);
-   if wt_assert.g_testcase is not null
-   then
-      p(' Testcase: ' || wt_assert.g_testcase);
-   end if;
-   p(          ' ' || wt_assert.g_rec.last_details);
-end ad_hoc_result;
-
-
-------------------------------------------------------------
 function format_test_result
       (in_rec  in core_data.results_rec_type)
    return varchar2
@@ -228,7 +216,7 @@ is
 begin
    delete_hooks;
    insert into hooks (hook_name, seq, run_string)
-      values ('ad_hoc_report', 20, 'begin wt_core_report.dbms_out(20); end;');
+      values ('ad_hoc_report', 20, 'begin wt_core_report.ad_hoc_result; end;');
    commit;
    hook.init;
 end insert_hooks;
@@ -238,9 +226,8 @@ end insert_hooks;
 procedure delete_hooks
 is
 begin
-   delete from hooks
-    where hook_name  = 'ad_hoc_report'
-     and  run_string = 'begin wt_core_report.dbms_out(20); end;';
+   delete from hooks where run_string like '% wt_core_report.%';
+   dbms_output.put_line(SQL%ROWCOUNT || ' "wt_core_report" rows deleted from HOOKS table.');
    hook.init;
    commit;
 end delete_hooks;

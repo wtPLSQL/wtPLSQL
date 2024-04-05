@@ -39,6 +39,7 @@ VERSION="${2}"
 CDB_SYS="SYS/${PDB_PASS}@//${HOST_NAME_PORT}/${CDB_NAME} as sysdba"
 PDB_SYS="SYS/${PDB_PASS}@//${HOST_NAME_PORT}/${PDB_NAME} as sysdba"
 PDB_SYSTEM="SYSTEM/${PDB_PASS}@//${HOST_NAME_PORT}/${PDB_NAME}"
+PDB_WTP="WTP/WTP@//${HOST_NAME_PORT}/${PDB_NAME}"
 ###
 echo ""
 echo "Capture Version"
@@ -123,36 +124,40 @@ function run_build {
    }
 
 ########################################
-function set_plsql_ccflags {
-   ATTR_NAME="${1}"
-   ATTR_VAL="${2}"
+function setup_for_test {
    echo ""
-   echo "../util/update_PLSQL_CCFLAGS.sql '${ATTR_NAME}' '${ATTR_VAL}'"
-   sqlplus /nolog "@../util/update_PLSQL_CCFLAGS.sql" "${ATTR_NAME}" "${ATTR_VAL}" "${PDB_SYS}"
-   retcd="${?}"
-   if [ "${retcd}" != "0" ]
-   then
-      echo "SQL*Plus returned ${retcd}.  Aborting"
-      exit "${retcd}"
-   fi
+   echo "Running ../util/setup_for_test.sql from ${PWD}"
+   sqlplus "${PDB_SYSTEM}" "@../util/setup_for_test.sql"
    }
 
 ########################################
-function run_tests {
+function run_core_test {
    echo ""
-   echo "../util/run_tests.sql"
-   sqlplus /nolog "@../util/run_tests.sql" "${PDB_SYSTEM}"
+   echo "Running ../util/run_core_test.sql from ${PWD}"
+   echo sqlplus "${PDB_WTP}" "@../util/run_core_test.sql"
    }
 
 ########################################
-#set_plsql_ccflags WTPLSQL_ENABLE TRUE
+function run_junit_test {
+   echo ""
+   echo "Running ../util/run_junit_test.sql from ${PWD}"
+   echo sqlplus "${PDB_WTP}" "@../util/run_junit_test.sql"
+   }
+
+########################################
+function run_save_test {
+   echo ""
+   echo "Running ../util/run_save_test.sql from ${PWD}"
+   echo sqlplus "${PDB_WTP}" "@../util/run_save_test.sql"
+   }
+
+########################################
 run_build 'wtpsrc'
 run_build 'wtptst'
-#set_plsql_ccflags WTPLSQL_SELFTEST TRUE
-#run_tests
-run_build 'wtpjun'
-#run_tests
 run_build 'wtpsav'
-#run_tests
+setup_for_test
+run_core_test
+run_junit_test
+run_save_test
 run_build 'grbsrc'
 run_build 'wtpgrb'

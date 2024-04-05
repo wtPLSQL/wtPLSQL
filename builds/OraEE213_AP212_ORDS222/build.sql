@@ -27,11 +27,20 @@ set echo off
 set timing on
 
 @"&BUTIL_PATH./new_session.sql" "&PDB_SYS." "" ""
+
 set timing off
 @"install.sql" "&PDB_SYSTEM." "" ""
-insert into WTP.wt_versions (component, version, action)
-   values ('&INSTALL_TYPE.', '&APP_VERSION.', 'INSTALL');
-commit;
+
+begin
+   if '&INSTALL_TYPE.' like 'wtp%'
+   then
+      insert into WTP.wt_versions (component, version, action)
+         values ('&INSTALL_TYPE.', '&APP_VERSION.', 'INSTALL');
+      commit;
+   end if;
+end;
+/
+
 @"&BUTIL_PATH./fix_invalid_public_synonyms.sql"
 
 exit

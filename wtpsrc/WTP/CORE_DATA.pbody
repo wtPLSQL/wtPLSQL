@@ -214,11 +214,11 @@ begin
    l_interval_buff             := l_current_tstamp -
                                      nvl(l_results_rec.executed_dtm
                                         ,g_first_executed_dtm);
-   l_results_rec.interval_msec := (extract(second from l_interval_buff) +
-                                   60 * ( extract(minute from l_interval_buff) +
-                                         60 * ( extract(hour from l_interval_buff) +
-                                               24 * ( extract(day from l_interval_buff)
-                                  )     )     )     ) * 1000;
+   l_results_rec.interval_msec := 1000*(           extract(second from l_interval_buff) +
+                                        60*(       extract(minute from l_interval_buff) +
+                                            60*(   extract(hour   from l_interval_buff) +
+                                                24*extract(day    from l_interval_buff)
+                                       )   )   );
    l_results_rec.executed_dtm  := l_current_tstamp;
    ------------------------------------------------------------
    --  Add New Element
@@ -501,7 +501,7 @@ begin
       end loop;
    end if;
    --
-   if g_results_nt.COUNT > 0
+   if g_results_nt.EXISTS(1)
    then
       g_run_rec.asrt_fst_dtm := g_results_nt(1).executed_dtm;
       g_run_rec.asrt_lst_dtm := g_results_nt(g_results_nt.COUNT).executed_dtm;

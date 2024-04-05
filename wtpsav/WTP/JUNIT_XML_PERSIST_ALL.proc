@@ -77,7 +77,7 @@ begin
             p('    <testcase name="' || nvl(cases.testcase,'NULL') ||
                       '" classname="' || suites.package_name || '.' || suites.class_name ||
                            '" time="' || cases.tot_interval_msec || '">');
-            p('      <error message="' || nvl(cases.failures,'No') || ' assertion failures. ' ||
+            p('      <error message="' || nvl(to_char(cases.failures),'No') || ' assertion failures. ' ||
                                           suites.error_message || '">');
             -- Print each of the non-passing results
             for asrts in (

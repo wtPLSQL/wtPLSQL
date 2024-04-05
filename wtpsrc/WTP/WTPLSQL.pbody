@@ -496,11 +496,13 @@ begin
    check_runner;
    --
    $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
+      -- This will avoid running the hook for some self-tests
       if NOT wtplsql_skip_test then
-         -- This will avoid running the hook for some self-tests
-   --
-   hook.before_test_run;
-   --
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
+         --
+         hook.before_test_run;
+         --
+   $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
       end if;
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    --
@@ -517,11 +519,13 @@ begin
    g_DBOUT := '';
    --
    $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
+      -- This will avoid running the hook for some self-tests
       if NOT wtplsql_skip_test then
-         -- This will avoid running the hook for some self-tests
-   --
-   hook.after_test_run;
-   --
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
+         --
+         hook.after_test_run;
+         --
+   $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
       end if;
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    --
@@ -543,11 +547,13 @@ is
 begin
    --
    $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
+      -- This will avoid running the hook for some self-tests
       if NOT wtplsql_skip_test then
-         -- This will avoid running the hook for some self-tests
-   --
-   hook.before_test_all;
-   --
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
+         --
+         hook.before_test_all;
+         --
+   $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
       end if;
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    --
@@ -564,11 +570,13 @@ begin
    end loop;
    --
    $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
+      -- This will avoid running the hook for some self-tests
       if NOT wtplsql_skip_test then
-         -- This will avoid running the hook for some self-tests
-   --
-   hook.after_test_all;
-   --
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
+         --
+         hook.after_test_all;
+         --
+   $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
       end if;
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    --
