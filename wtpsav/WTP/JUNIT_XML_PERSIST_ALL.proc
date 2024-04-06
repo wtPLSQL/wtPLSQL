@@ -48,8 +48,7 @@ begin
                   '" tests="' || suites.tc_cnt ||
                '" failures="' || suites.tc_fail ||
                    '" time="' || suites.tot_interval_msec ||
-              '" timestamp="' || to_char(suites.start_dtm,'YYYY-MM-DD"T"HH24:MI:SS.FF3') ||
-                                 to_char(systimestamp,'TZH:TZM') ||
+              '" timestamp="' || to_char(suites.start_dtm,'YYYY-MM-DD"T"HH24:MI:SS') ||
                          '">' );
       for cases in (
          select run.id

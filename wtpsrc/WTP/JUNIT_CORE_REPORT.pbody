@@ -96,8 +96,7 @@ begin
                   '" tests="' ||         core_data.g_run_rec.tc_cnt             ||
                '" failures="' ||         core_data.g_run_rec.tc_fail            ||
                    '" time="' ||         core_data.g_run_rec.runner_sec         ||
-              '" timestamp="' || to_char(core_data.g_run_rec.start_dtm,'YYYY-MM-DD') || 'T' ||
-                                 to_char(core_data.g_run_rec.start_dtm,'HH24:MI:SS.FF3') ||
+              '" timestamp="' || to_char(core_data.g_run_rec.start_dtm,'YYYY-MM-DD"T"HH24:MI:SS') ||
                          '">' );
       l_testcase := core_data.g_tcases_aa.FIRST;
       loop
