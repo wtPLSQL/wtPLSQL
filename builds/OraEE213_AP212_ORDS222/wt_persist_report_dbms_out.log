@@ -1,121 +1,82 @@
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.CORE_DATA
-  Run ID 3: 05-Apr-2024 02:27:21 PM
+  Run ID 3: 06-Apr-2024 09:06:17 PM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:       64
-  Average Elapsed msec:        0     Failed Assertions:        1
+  Average Elapsed msec:        0     Failed Assertions:        0
   Maximum Elapsed msec:        3       Total Testcases:        9
-  Total Run Time (sec):      0.2      Failed Testcases:        1
-                                        Testcase Yield:       89%
+  Total Run Time (sec):      0.2      Failed Testcases:        0
+                                        Testcase Yield:      100%
 
   Code Coverage for PACKAGE BODY WTP.CORE_DATA
   ----------------------------------------------------------------
           Ignored Lines:      184   Total Profiled Lines:      263
          Excluded Lines:        1   Total Executed Lines:       73
   Minimum LineExec usec:        0     Not Executed Lines:        0
-  Average LineExec usec:       17          Unknown Lines:        5
-  Maximum LineExec usec:     1163          Code Coverage:    100.0%
+  Average LineExec usec:       16          Unknown Lines:        5
+  Maximum LineExec usec:     1055          Code Coverage:    100.0%
   Trigger Source Offset:        0
-
-  WTP.CORE_DATA Test Result Details
-  Test Run ID: 3
-  --------------------------------------------------------------
----***  Add Procedure Happy Path 1  ***-----------------------------------------
-#FAIL#.046ms l_run_recTEST.asrt_tot_msec = l_run_recSAVE.asrt_tot_msec + l_results_ntTEST(lt).interval_msec. EQ - Expected "3.085" and got "3"
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.HOOK
-  Run ID 4: 05-Apr-2024 02:27:22 PM
+  Run ID 4: 06-Apr-2024 09:06:18 PM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:       23
-  Average Elapsed msec:        0     Failed Assertions:        9
+  Average Elapsed msec:        0     Failed Assertions:        0
   Maximum Elapsed msec:        2       Total Testcases:        5
-  Total Run Time (sec):      0.3      Failed Testcases:        2
-                                        Testcase Yield:       60%
+  Total Run Time (sec):      0.1      Failed Testcases:        0
+                                        Testcase Yield:      100%
 
   Code Coverage for PACKAGE BODY WTP.HOOK
   ----------------------------------------------------------------
-          Ignored Lines:       66   Total Profiled Lines:      104
-         Excluded Lines:        1   Total Executed Lines:       27
-  Minimum LineExec usec:        0     Not Executed Lines:        1
-  Average LineExec usec:       22          Unknown Lines:        9
-  Maximum LineExec usec:      240          Code Coverage:     96.4%
+          Ignored Lines:       68   Total Profiled Lines:       86
+         Excluded Lines:        1   Total Executed Lines:       14
+  Minimum LineExec usec:        0     Not Executed Lines:        0
+  Average LineExec usec:       23          Unknown Lines:        3
+  Maximum LineExec usec:      338          Code Coverage:    100.0%
   Trigger Source Offset:        0
-
-  WTP.HOOK Test Result Details
-  Test Run ID: 4
-  --------------------------------------------------------------
----***  All Hooks Off  ***------------------------------------------------------
-#FAIL# .21ms before_test_all is not active. ISNULL - Expected NULL and got "before_test_all"
-#FAIL#.141ms before_test_run is not active. ISNULL - Expected NULL and got "before_test_run"
-#FAIL#.129ms execute_test_runner is not active. ISNULL - Expected NULL and got "execute_test_runner"
-#FAIL#.166ms after_test_run is not active. ISNULL - Expected NULL and got "after_test_run"
-#FAIL#.129ms after_test_all is not active. ISNULL - Expected NULL and got "after_test_all"
-#FAIL#.125ms ad_hoc_report is not active. ISNULL - Expected NULL and got "ad_hoc_report"
----***  Hooks Sad Path 1  ***---------------------------------------------------
-#FAIL#2.04ms Test Exception Handler. RAISES/THROWS - No exception was expected. Exception raised was "ORA-20000: Hook Error in "ad_hoc_report", SEQ 1.\nORA-01476: divisor is equal to zero\nORA-06512: at line 1\nORA-06512: at line 1\nORA-06512: at "WTP.HOOK", line 30". Exception raised by: "begin hook.ad_hoc_report; end;". Error Stack: ORA-20000: Hook Error in "ad_hoc_report", SEQ 1.\nORA-01476: divisor is equal to zero\nORA-06512: at line 1\nORA-06512: at line 1\nORA-06512: at "WTP.HOOK", line 30\nORA-06512: at "WTP.HOOK", line 34\nORA-06512: at "WTP.HOOK", line 108\nORA-06512: at line 1\nORA-06512: at "WTP.HOOK", line 34\nORA-06512: at "WTP.HOOK", line 108\nORA-06512: at line 1\nORA-06512: at "WTP.WT_ASSERT", line 2413\n
-#FAIL#.098ms Confirm core_data.run_error. ISNOTNULL - Expected NOT NULL and got ""
-#FAIL# .06ms l_err_msgTEST like 'Hook Error in "ad_hoc_report", SEQ 1.\nORA-01476: divisor is equal to zero\nORA-06512: at line 1%'. THIS - Expected "TRUE" and got ""
-
-  WTP.HOOK PACKAGE BODY Code Coverage Details
-  Test Run ID: 4
-  ----------------------------------------------------------------
-Source               TotTime MinTime   MaxTime     
-  Line Stat Occurs    (usec)  (usec)    (usec) Text
------- ---- ------ --------- ------- --------- ------------
-    39#NOTX#     0         0       0         0       end;
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.WTPLSQL
-  Run ID 5: 05-Apr-2024 02:27:23 PM
+  Run ID 5: 06-Apr-2024 09:06:19 PM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:       32
-  Average Elapsed msec:       16     Failed Assertions:        0
-  Maximum Elapsed msec:      117       Total Testcases:       15
-  Total Run Time (sec):      0.5      Failed Testcases:        0
+  Average Elapsed msec:       18     Failed Assertions:        0
+  Maximum Elapsed msec:      154       Total Testcases:       15
+  Total Run Time (sec):      0.6      Failed Testcases:        0
                                         Testcase Yield:      100%
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.WT_ASSERT
-  Run ID 6: 05-Apr-2024 02:27:23 PM
+  Run ID 6: 06-Apr-2024 09:06:19 PM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:      414
-  Average Elapsed msec:       12     Failed Assertions:        4
-  Maximum Elapsed msec:     2500       Total Testcases:      152
-  Total Run Time (sec):      5.0      Failed Testcases:        2
-                                        Testcase Yield:       99%
+  Average Elapsed msec:       12     Failed Assertions:        0
+  Maximum Elapsed msec:     2492       Total Testcases:      152
+  Total Run Time (sec):      4.9      Failed Testcases:        0
+                                        Testcase Yield:      100%
 
   Code Coverage for PACKAGE BODY WTP.WT_ASSERT
   ----------------------------------------------------------------
-          Ignored Lines:     1145   Total Profiled Lines:     1515
+          Ignored Lines:     1150   Total Profiled Lines:     1520
          Excluded Lines:        2   Total Executed Lines:      314
   Minimum LineExec usec:        0     Not Executed Lines:        0
-  Average LineExec usec:      191          Unknown Lines:       54
-  Maximum LineExec usec:    36010          Code Coverage:    100.0%
+  Average LineExec usec:      179          Unknown Lines:       54
+  Maximum LineExec usec:    29714          Code Coverage:    100.0%
   Trigger Source Offset:        0
-
-  WTP.WT_ASSERT Test Result Details
-  Test Run ID: 6
-  --------------------------------------------------------------
----***  Raises Tests Happy Path 1  ***------------------------------------------
-#FAIL#.036ms temp_rec.last_details. EQ - Expected "Expected exception "%PLS-00302: component 'BOGUS' must be declared%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared\nORA-06550: line 1, column 7:\nPL/SQL: Statement ignored". Exception raised by: "begin wt_assert.bogus; end;"." and got "Expected exception "%PLS-00302: component 'BOGUS' must be declared%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared". Exception raised by: "begin wt_assert.bogus; end;"."
----***  Raises Tests Happy Path 2  ***------------------------------------------
-#FAIL#.059ms temp_rec.last_details value. EQ - Expected "Expected exception "%-00302%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared\nORA-06550: line 1, column 7:\nPL/SQL: Statement ignored". Exception raised by: "begin wt_assert.bogus; end;"." and got "Expected exception "%-00302%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared". Exception raised by: "begin wt_assert.bogus; end;"."
-#FAIL#.054ms temp_rec.last_details value. EQ - Expected "Expected exception "%PLS-00302: component 'BOGUS' must be declared%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared\nORA-06550: line 1, column 7:\nPL/SQL: Statement ignored". Exception raised by: "begin wt_assert.bogus; end;"." and got "Expected exception "%PLS-00302: component 'BOGUS' must be declared%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared". Exception raised by: "begin wt_assert.bogus; end;"."
-#FAIL#.056ms temp_rec.last_details value. EQ - Expected "Expected exception "%-00302%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared\nORA-06550: line 1, column 7:\nPL/SQL: Statement ignored". Exception raised by: "begin wt_assert.bogus; end;"." and got "Expected exception "%-00302%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared". Exception raised by: "begin wt_assert.bogus; end;"."
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.WT_DBOUT
-  Run ID 7: 05-Apr-2024 02:27:30 PM
+  Run ID 7: 06-Apr-2024 09:06:26 PM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:       15
-  Average Elapsed msec:        1     Failed Assertions:        0
-  Maximum Elapsed msec:        2       Total Testcases:       12
+  Average Elapsed msec:        0     Failed Assertions:        0
+  Maximum Elapsed msec:        1       Total Testcases:       12
   Total Run Time (sec):      0.2      Failed Testcases:        0
                                         Testcase Yield:      100%
 
@@ -124,36 +85,29 @@ Source               TotTime MinTime   MaxTime
           Ignored Lines:       55   Total Profiled Lines:       82
          Excluded Lines:        2   Total Executed Lines:       22
   Minimum LineExec usec:        0     Not Executed Lines:        0
-  Average LineExec usec:       34          Unknown Lines:        3
-  Maximum LineExec usec:      332          Code Coverage:    100.0%
+  Average LineExec usec:       32          Unknown Lines:        3
+  Maximum LineExec usec:      518          Code Coverage:    100.0%
   Trigger Source Offset:        0
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.WT_JOB
-  Run ID 8: 05-Apr-2024 02:27:30 PM
+  Run ID 8: 06-Apr-2024 09:06:26 PM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:       21
-  Average Elapsed msec:       53     Failed Assertions:        2
-  Maximum Elapsed msec:     1062       Total Testcases:        3
-  Total Run Time (sec):      1.3      Failed Testcases:        1
-                                        Testcase Yield:       67%
+  Average Elapsed msec:       10     Failed Assertions:        0
+  Maximum Elapsed msec:      119       Total Testcases:        3
+  Total Run Time (sec):      0.3      Failed Testcases:        0
+                                        Testcase Yield:      100%
 
   Code Coverage for PACKAGE BODY WTP.WT_JOB
   ----------------------------------------------------------------
           Ignored Lines:       48   Total Profiled Lines:       92
          Excluded Lines:        3   Total Executed Lines:       18
   Minimum LineExec usec:        0     Not Executed Lines:       18
-  Average LineExec usec:      224          Unknown Lines:        5
-  Maximum LineExec usec:     2218          Code Coverage:     50.0%
+  Average LineExec usec:      311          Unknown Lines:        5
+  Maximum LineExec usec:     2605          Code Coverage:     50.0%
   Trigger Source Offset:        0
-
-  WTP.WT_JOB Test Result Details
-  Test Run ID: 8
-  --------------------------------------------------------------
----***  Create and Drop DB Link  ***--------------------------------------------
-#FAIL#1061ms Number of Rows from WT_SELF_TEST@WTP. EQQUERYVALUE - Exception raised for Query: select count(*) from WT_SELF_TEST@WTP\nORA-01017: invalid username/password; logon denied\nORA-02063: preceding line from WTP\nORA-06512: at "WTP.WT_ASSERT", line 2673\n
-#FAIL#.552ms Close the Database Link. RAISES/THROWS - No exception was expected. Exception raised was "ORA-02081: database link is not open". Exception raised by: "alter session close database link WTP". Error Stack: ORA-02081: database link is not open\nORA-06512: at "WTP.WT_ASSERT", line 2413\n
 
   WTP.WT_JOB PACKAGE BODY Code Coverage Details
   Test Run ID: 8
@@ -183,11 +137,11 @@ Source               TotTime MinTime   MaxTime
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.WT_PROFILE
-  Run ID 9: 05-Apr-2024 02:27:32 PM
+  Run ID 9: 06-Apr-2024 09:06:27 PM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:       46
   Average Elapsed msec:        0     Failed Assertions:        0
-  Maximum Elapsed msec:        2       Total Testcases:        4
+  Maximum Elapsed msec:        3       Total Testcases:        4
   Total Run Time (sec):      0.1      Failed Testcases:        0
                                         Testcase Yield:      100%
 
@@ -196,8 +150,8 @@ Source               TotTime MinTime   MaxTime
           Ignored Lines:      116   Total Profiled Lines:      261
          Excluded Lines:       11   Total Executed Lines:       14
   Minimum LineExec usec:        0     Not Executed Lines:      117
-  Average LineExec usec:       30          Unknown Lines:        3
-  Maximum LineExec usec:      197          Code Coverage:     10.7%
+  Average LineExec usec:       27          Unknown Lines:        3
+  Maximum LineExec usec:      144          Code Coverage:     10.7%
   Trigger Source Offset:        0
 
   WTP.WT_PROFILE PACKAGE BODY Code Coverage Details
@@ -339,11 +293,11 @@ Source               TotTime MinTime   MaxTime
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.WT_RESULT
-  Run ID 10: 05-Apr-2024 02:27:33 PM
+  Run ID 10: 06-Apr-2024 09:06:28 PM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:       20
   Average Elapsed msec:        1     Failed Assertions:        0
-  Maximum Elapsed msec:        5       Total Testcases:        3
+  Maximum Elapsed msec:        7       Total Testcases:        3
   Total Run Time (sec):      0.1      Failed Testcases:        0
                                         Testcase Yield:      100%
 
@@ -352,18 +306,18 @@ Source               TotTime MinTime   MaxTime
           Ignored Lines:       89   Total Profiled Lines:      133
          Excluded Lines:        0   Total Executed Lines:       42
   Minimum LineExec usec:        0     Not Executed Lines:        0
-  Average LineExec usec:       12          Unknown Lines:        2
-  Maximum LineExec usec:     1367          Code Coverage:    100.0%
+  Average LineExec usec:       16          Unknown Lines:        2
+  Maximum LineExec usec:      453          Code Coverage:    100.0%
   Trigger Source Offset:        0
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.WT_TESTCASE
-  Run ID 11: 05-Apr-2024 02:27:33 PM
+  Run ID 11: 06-Apr-2024 09:06:28 PM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:       15
   Average Elapsed msec:        0     Failed Assertions:        0
-  Maximum Elapsed msec:        2       Total Testcases:       12
+  Maximum Elapsed msec:        1       Total Testcases:       12
   Total Run Time (sec):      0.1      Failed Testcases:        0
                                         Testcase Yield:      100%
 
@@ -372,8 +326,8 @@ Source               TotTime MinTime   MaxTime
           Ignored Lines:       54   Total Profiled Lines:       88
          Excluded Lines:        4   Total Executed Lines:       17
   Minimum LineExec usec:        0     Not Executed Lines:       12
-  Average LineExec usec:       38          Unknown Lines:        1
-  Maximum LineExec usec:      218          Code Coverage:     58.6%
+  Average LineExec usec:       35          Unknown Lines:        1
+  Maximum LineExec usec:      203          Code Coverage:     58.6%
   Trigger Source Offset:        0
 
   WTP.WT_TEST_RUNNER PACKAGE BODY Code Coverage Details
@@ -398,30 +352,22 @@ Source               TotTime MinTime   MaxTime
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.WT_TEST_RUN
-  Run ID 13: 05-Apr-2024 02:27:33 PM
+  Run ID 13: 06-Apr-2024 09:06:28 PM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:       52
-  Average Elapsed msec:        1     Failed Assertions:        2
-  Maximum Elapsed msec:        6       Total Testcases:       16
-  Total Run Time (sec):      0.2      Failed Testcases:        2
-                                        Testcase Yield:       88%
+  Average Elapsed msec:        1     Failed Assertions:        0
+  Maximum Elapsed msec:        5       Total Testcases:       16
+  Total Run Time (sec):      0.2      Failed Testcases:        0
+                                        Testcase Yield:      100%
 
   Code Coverage for PACKAGE BODY WTP.WT_TEST_RUN
   ----------------------------------------------------------------
-          Ignored Lines:      176   Total Profiled Lines:      275
+          Ignored Lines:      178   Total Profiled Lines:      277
          Excluded Lines:        7   Total Executed Lines:       60
   Minimum LineExec usec:        0     Not Executed Lines:       26
   Average LineExec usec:       19          Unknown Lines:        6
-  Maximum LineExec usec:      367          Code Coverage:     69.8%
+  Maximum LineExec usec:      310          Code Coverage:     69.8%
   Trigger Source Offset:        0
-
-  WTP.WT_TEST_RUN Test Result Details
-  Test Run ID: 13
-  --------------------------------------------------------------
----***  SET_LAST_RUN Happy Path 1  ***------------------------------------------
-#FAIL#.373ms Test Run ID of Last Run. EQQUERYVALUE - Expected "-11" and got "3" for Query: select id from wt_test_runs where is_last_run = 'Y'
----***  SET_LAST_RUN Happy Path 2  ***------------------------------------------
-#FAIL#.278ms Test Run ID of Last Run. EQQUERYVALUE - Expected "-12" and got "3" for Query: select id from wt_test_runs where is_last_run = 'Y'
 
   WTP.WT_TEST_RUN PACKAGE BODY Code Coverage Details
   Test Run ID: 13
@@ -441,28 +387,28 @@ Source               TotTime MinTime   MaxTime
    463#NOTX#     0         0       0         0    return C_LAST_RUN_FLAG;
    464#NOTX#     0         0       0         0 end get_last_run_flag;
    492#NOTX#     0         0       0         0       clear_last_run(in_test_runner_id);
-   611#NOTX#     0         0       0         0 exception when NO_DATA_FOUND then
-   612#NOTX#     0         0       0         0    null;  -- Ignore Error
-   690#NOTX#     0         0       0         0    delete_hooks;
-   691#NOTX#     0         0       0         0    insert into hooks (hook_name, seq, run_string)
-   693#NOTX#     0         0       0         0    insert into hooks (hook_name, seq, run_string)
+   615#NOTX#     0         0       0         0 exception when NO_DATA_FOUND then
+   616#NOTX#     0         0       0         0    null;  -- Ignore Error
+   694#NOTX#     0         0       0         0    delete_hooks;
    695#NOTX#     0         0       0         0    insert into hooks (hook_name, seq, run_string)
-   697#NOTX#     0         0       0         0    commit;
-   698#NOTX#     0         0       0         0    hook.init;
-   699#NOTX#     0         0       0         0 end insert_hooks;
-   706#NOTX#     0         0       0         0    delete from hooks where run_string like '% wt_test_run.%';
-   707#NOTX#     0         0       0         0    dbms_output.put_line(SQL%ROWCOUNT || ' "wt_test_run" rows deleted from HOOKS table.');
-   708#NOTX#     0         0       0         0    hook.init;
+   697#NOTX#     0         0       0         0    insert into hooks (hook_name, seq, run_string)
+   699#NOTX#     0         0       0         0    insert into hooks (hook_name, seq, run_string)
+   701#NOTX#     0         0       0         0    commit;
+   702#NOTX#     0         0       0         0    hook.init;
+   703#NOTX#     0         0       0         0 end insert_hooks;
+   710#NOTX#     0         0       0         0    delete from hooks where run_string like '% wt_test_run.%';
+   711#NOTX#     0         0       0         0    dbms_output.put_line(SQL%ROWCOUNT || ' "wt_test_run" rows deleted from HOOKS table.');
+   712#NOTX#     0         0       0         0    hook.init;
 Source               TotTime MinTime   MaxTime     
   Line Stat Occurs    (usec)  (usec)    (usec) Text
 ------ ---- ------ --------- ------- --------- ------------
-   709#NOTX#     0         0       0         0    commit;
-   710#NOTX#     0         0       0         0 end delete_hooks;
+   713#NOTX#     0         0       0         0    commit;
+   714#NOTX#     0         0       0         0 end delete_hooks;
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.WT_TEST_RUNNER
-  Run ID 14: 05-Apr-2024 02:27:34 PM
+  Run ID 14: 06-Apr-2024 09:06:29 PM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:       15
   Average Elapsed msec:        0     Failed Assertions:        0
@@ -475,8 +421,8 @@ Source               TotTime MinTime   MaxTime
           Ignored Lines:       54   Total Profiled Lines:       88
          Excluded Lines:        3   Total Executed Lines:       21
   Minimum LineExec usec:        0     Not Executed Lines:        8
-  Average LineExec usec:       26          Unknown Lines:        2
-  Maximum LineExec usec:      316          Code Coverage:     72.4%
+  Average LineExec usec:       28          Unknown Lines:        2
+  Maximum LineExec usec:      448          Code Coverage:     72.4%
   Trigger Source Offset:        0
 
   WTP.WT_TEST_RUNNER PACKAGE BODY Code Coverage Details

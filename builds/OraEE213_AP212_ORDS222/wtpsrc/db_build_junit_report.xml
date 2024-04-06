@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="WTP_schema_build" tests="27" failures="2" time="0" timestamp="2024-04-05T14:25:54">
+  <testsuite name="WTP_schema_build" tests="27" failures="0" time="0" timestamp="2024-04-06T21:04:52">
     <testcase name="INDEX:db_object_status" classname="WTP.HOOKS_PK" time="0"/>
     <testcase name="INDEX:db_object_status" classname="WTP.WT_VERSIONS_PK" time="0"/>
     <testcase name="PACKAGE:db_object_status" classname="WTP.CORE_DATA" time="0"/>
@@ -19,18 +19,10 @@
     <testcase name="PROCEDURE:db_object_status" classname="WTP.WT_EXECUTE_TEST_RUNNER" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.UTASSERT" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WTPLSQL" time="0"/>
-    <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_AD_HOC_REPORT" time="0">
-      <error message="PUBLIC_SYNONYM failed">
-** Object Status is INVALID
-      </error>
-    </testcase>
+    <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_AD_HOC_REPORT" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_CORE_REPORT" time="0"/>
-    <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_EXECUTE_TEST_RUNNER" time="0">
-      <error message="PUBLIC_SYNONYM failed">
-** Object Status is INVALID
-      </error>
-    </testcase>
+    <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_EXECUTE_TEST_RUNNER" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_VERSION" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_WTPLSQL" time="0"/>
     <testcase name="TABLE:db_object_status" classname="WTP.HOOKS" time="0"/>

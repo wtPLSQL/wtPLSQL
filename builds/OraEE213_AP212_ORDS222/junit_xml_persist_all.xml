@@ -3,67 +3,48 @@
 <!-- http://nelsonwells.net/2012/09/how-jenkins-ci-parses-and-displays-junit-output/ -->
 <!-- Jenkins identifies the failed tests as {package}.{class}.{test}. -->
 <testsuites>
-  <testsuite name="WTP.CORE_DATA" tests="9" failures="1" time="244" timestamp="2024-04-05T14:27:21.660+00:00">
-    <testcase name="Add Procedure Happy Path 1" classname="WTP.CORE_DATA:PACKAGE BODY" time="0">
-      <error message="1 assertion failures. ">
-  30: FAIL .046ms l_run_recTEST.asrt_tot_msec = l_run_recSAVE.asrt_tot_msec + l_results_ntTEST(lt).interval_msec. EQ - Expected "3.085" and got "3".
-      </error>
-    </testcase>
+  <testsuite name="WTP.CORE_DATA" tests="9" failures="0" time="224" timestamp="2024-04-06T21:06:17">
+    <testcase name="Add Procedure Happy Path 1" classname="WTP.CORE_DATA" time="1"/>
     <testcase name="Add Procedure Happy Path 2" classname="WTP.CORE_DATA" time="0"/>
-    <testcase name="FINAL "One" Happy Path" classname="WTP.CORE_DATA" time="0"/>
-    <testcase name="INIT "One" Happy Path 1" classname="WTP.CORE_DATA" time="3"/>
+    <testcase name="FINAL "One" Happy Path" classname="WTP.CORE_DATA" time="1"/>
+    <testcase name="INIT "One" Happy Path 1" classname="WTP.CORE_DATA" time="4"/>
     <testcase name="INIT "Two" Happy Path 1" classname="WTP.CORE_DATA" time="0"/>
     <testcase name="RUN_ERROR Happy Path 1" classname="WTP.CORE_DATA" time="0"/>
     <testcase name="RUN_ERROR Happy Path 2" classname="WTP.CORE_DATA" time="0"/>
     <testcase name="RUN_ERROR Happy Path 3" classname="WTP.CORE_DATA" time="0"/>
     <testcase name="RUN_ERROR Happy Path 4" classname="WTP.CORE_DATA" time="0"/>
-  <testsuite name="WTP.HOOK" tests="5" failures="2" time="257" timestamp="2024-04-05T14:27:22.647+00:00">
-    <testcase name="All Hooks Off" classname="WTP.HOOK:PACKAGE BODY" time="1">
-      <error message="6 assertion failures. ">
-  11: FAIL  .21ms before_test_all is not active. ISNULL - Expected NULL and got "before_test_all".
-  12: FAIL .141ms before_test_run is not active. ISNULL - Expected NULL and got "before_test_run".
-  13: FAIL .129ms execute_test_runner is not active. ISNULL - Expected NULL and got "execute_test_runner".
-  15: FAIL .166ms after_test_run is not active. ISNULL - Expected NULL and got "after_test_run".
-  16: FAIL .129ms after_test_all is not active. ISNULL - Expected NULL and got "after_test_all".
-  17: FAIL .125ms ad_hoc_report is not active. ISNULL - Expected NULL and got "ad_hoc_report".
-      </error>
-    </testcase>
-    <testcase name="All Hooks On" classname="WTP.HOOK" time="0"/>
-    <testcase name="Hooks Sad Path 1" classname="WTP.HOOK:PACKAGE BODY" time="2">
-      <error message="3 assertion failures. ">
-  20: FAIL 2.04ms Test Exception Handler. RAISES/THROWS - No exception was expected. Exception raised was "ORA-20000: Hook Error in "ad_hoc_report", SEQ 1.\nORA-01476: divisor is equal to zero\nORA-06512: at line 1\nORA-06512: at line 1\nORA-06512: at "WTP.HOOK", line 30". Exception raised by: "begin hook.ad_hoc_report; end;". Error Stack: ORA-20000: Hook Error in "ad_hoc_report", SEQ 1.\nORA-01476: divisor is equal to zero\nORA-06512: at line 1\nORA-06512: at line 1\nORA-06512: at "WTP.HOOK", line 30\nORA-06512: at "WTP.HOOK", line 34\nORA-06512: at "WTP.HOOK", line 108\nORA-06512: at line 1\nORA-06512: at "WTP.HOOK", line 34\nORA-06512: at "WTP.HOOK", line 108\nORA-06512: at line 1\nORA-06512: at "WTP.WT_ASSERT", line 2413\n.
-  21: FAIL .098ms Confirm core_data.run_error. ISNOTNULL - Expected NOT NULL and got "".
-  22: FAIL  .06ms l_err_msgTEST like 'Hook Error in "ad_hoc_report", SEQ 1.\nORA-01476: divisor is equal to zero\nORA-06512: at line 1%'. THIS - Expected "TRUE" and got "".
-      </error>
-    </testcase>
+  <testsuite name="WTP.HOOK" tests="5" failures="0" time="128" timestamp="2024-04-06T21:06:18">
+    <testcase name="All Hooks Off" classname="WTP.HOOK" time="1"/>
+    <testcase name="All Hooks On" classname="WTP.HOOK" time="1"/>
+    <testcase name="Hooks Sad Path 1" classname="WTP.HOOK" time="2"/>
     <testcase name="Setup" classname="WTP.HOOK" time="3"/>
     <testcase name="Teardown" classname="WTP.HOOK" time="1"/>
-  <testsuite name="WTP.WTPLSQL" tests="15" failures="0" time="512" timestamp="2024-04-05T14:27:23.201+00:00">
+  <testsuite name="WTP.WTPLSQL" tests="15" failures="0" time="580" timestamp="2024-04-06T21:06:19">
     <testcase name="CHECK_RUNNER Happy Path 1" classname="WTP.WTPLSQL" time="2"/>
     <testcase name="CHECK_RUNNER Sad Path 1" classname="WTP.WTPLSQL" time="0"/>
     <testcase name="CHECK_RUNNER Sad Path 2" classname="WTP.WTPLSQL" time="1"/>
     <testcase name="Find DBOUT Happy Path 1" classname="WTP.WTPLSQL" time="0"/>
-    <testcase name="Find DBOUT Happy Path 2" classname="WTP.WTPLSQL" time="117"/>
-    <testcase name="Find DBOUT Happy Path 3" classname="WTP.WTPLSQL" time="112"/>
-    <testcase name="Find DBOUT Happy Path 4" classname="WTP.WTPLSQL" time="116"/>
-    <testcase name="Find DBOUT Sad Path 1" classname="WTP.WTPLSQL" time="117"/>
-    <testcase name="Find DBOUT Sad Path 2" classname="WTP.WTPLSQL" time="12"/>
+    <testcase name="Find DBOUT Happy Path 2" classname="WTP.WTPLSQL" time="120"/>
+    <testcase name="Find DBOUT Happy Path 3" classname="WTP.WTPLSQL" time="109"/>
+    <testcase name="Find DBOUT Happy Path 4" classname="WTP.WTPLSQL" time="142"/>
+    <testcase name="Find DBOUT Sad Path 1" classname="WTP.WTPLSQL" time="155"/>
+    <testcase name="Find DBOUT Sad Path 2" classname="WTP.WTPLSQL" time="17"/>
     <testcase name="Show Version Happy Path 1" classname="WTP.WTPLSQL" time="1"/>
     <testcase name="Show Version Happy Path 2" classname="WTP.WTPLSQL" time="1"/>
-    <testcase name="Show Version Happy Path 3" classname="WTP.WTPLSQL" time="0"/>
+    <testcase name="Show Version Happy Path 3" classname="WTP.WTPLSQL" time="1"/>
     <testcase name="Show Version Setup" classname="WTP.WTPLSQL" time="1"/>
     <testcase name="Show Version Teardown" classname="WTP.WTPLSQL" time="1"/>
-    <testcase name="TEST_ALL Happy Path" classname="WTP.WTPLSQL" time="21"/>
-  <testsuite name="WTP.WT_ASSERT" tests="152" failures="2" time="4963" timestamp="2024-04-05T14:27:23.800+00:00">
-    <testcase name="Ad Hoc Report Happy Path" classname="WTP.WT_ASSERT" time="0"/>
+    <testcase name="TEST_ALL Happy Path" classname="WTP.WTPLSQL" time="23"/>
+  <testsuite name="WTP.WT_ASSERT" tests="152" failures="0" time="4886" timestamp="2024-04-06T21:06:19">
+    <testcase name="Ad Hoc Report Happy Path" classname="WTP.WT_ASSERT" time="1"/>
     <testcase name="BOOLEAN_TO_STATUS" classname="WTP.WT_ASSERT" time="2"/>
-    <testcase name="COMPARE_QUERIES Bad Query Test 1" classname="WTP.WT_ASSERT" time="3"/>
-    <testcase name="COMPARE_QUERIES Bad Query Test 2" classname="WTP.WT_ASSERT" time="49"/>
-    <testcase name="EQ BLOB Happy Path 1" classname="WTP.WT_ASSERT" time="0"/>
+    <testcase name="COMPARE_QUERIES Bad Query Test 1" classname="WTP.WT_ASSERT" time="2"/>
+    <testcase name="COMPARE_QUERIES Bad Query Test 2" classname="WTP.WT_ASSERT" time="48"/>
+    <testcase name="EQ BLOB Happy Path 1" classname="WTP.WT_ASSERT" time="1"/>
     <testcase name="EQ BLOB Happy Path 2" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="EQ BLOB Happy Path 3" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="EQ BLOB Sad Path 1" classname="WTP.WT_ASSERT" time="0"/>
-    <testcase name="EQ BLOB Sad Path 2" classname="WTP.WT_ASSERT" time="0"/>
+    <testcase name="EQ BLOB Sad Path 2" classname="WTP.WT_ASSERT" time="1"/>
     <testcase name="EQ BLOB Sad Path 3" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="EQ BLOB Sad Path 4" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="EQ BOOLEAN Happy Path 1" classname="WTP.WT_ASSERT" time="0"/>
@@ -73,12 +54,12 @@
     <testcase name="EQ BOOLEAN Happy Sad 2" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="EQ BOOLEAN Happy Sad 3" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="EQ BOOLEAN Happy Sad 4" classname="WTP.WT_ASSERT" time="0"/>
-    <testcase name="EQ CLOB Happy Path 1" classname="WTP.WT_ASSERT" time="1"/>
+    <testcase name="EQ CLOB Happy Path 1" classname="WTP.WT_ASSERT" time="2"/>
     <testcase name="EQ CLOB Happy Path 2" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="EQ CLOB Happy Path 3" classname="WTP.WT_ASSERT" time="0"/>
-    <testcase name="EQ CLOB Sad Path 1" classname="WTP.WT_ASSERT" time="0"/>
-    <testcase name="EQ CLOB Sad Path 2" classname="WTP.WT_ASSERT" time="0"/>
-    <testcase name="EQ CLOB Sad Path 3" classname="WTP.WT_ASSERT" time="0"/>
+    <testcase name="EQ CLOB Sad Path 1" classname="WTP.WT_ASSERT" time="1"/>
+    <testcase name="EQ CLOB Sad Path 2" classname="WTP.WT_ASSERT" time="1"/>
+    <testcase name="EQ CLOB Sad Path 3" classname="WTP.WT_ASSERT" time="1"/>
     <testcase name="EQ CLOB Sad Path 4" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="EQ DATE Happy Path 1" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="EQ DATE Sad Path 1" classname="WTP.WT_ASSERT" time="0"/>
@@ -90,12 +71,12 @@
     <testcase name="EQ LONG RAW Happy Path 1" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="EQ LONG RAW Sad Path 1" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="EQ LONG Sad Path 1" classname="WTP.WT_ASSERT" time="0"/>
-    <testcase name="EQ NCLOB Happy Path 1" classname="WTP.WT_ASSERT" time="4"/>
-    <testcase name="EQ NCLOB Happy Path 2" classname="WTP.WT_ASSERT" time="4"/>
+    <testcase name="EQ NCLOB Happy Path 1" classname="WTP.WT_ASSERT" time="6"/>
+    <testcase name="EQ NCLOB Happy Path 2" classname="WTP.WT_ASSERT" time="5"/>
     <testcase name="EQ NCLOB Happy Path 3" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="EQ NCLOB Sad Path 1" classname="WTP.WT_ASSERT" time="4"/>
     <testcase name="EQ NCLOB Sad Path 2" classname="WTP.WT_ASSERT" time="2"/>
-    <testcase name="EQ NCLOB Sad Path 3" classname="WTP.WT_ASSERT" time="3"/>
+    <testcase name="EQ NCLOB Sad Path 3" classname="WTP.WT_ASSERT" time="4"/>
     <testcase name="EQ NCLOB Sad Path 4" classname="WTP.WT_ASSERT" time="3"/>
     <testcase name="EQ NUMBER Happy Path 1" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="EQ NUMBER Happy Path 2" classname="WTP.WT_ASSERT" time="0"/>
@@ -122,50 +103,50 @@
     <testcase name="EQ VARCHAR2 Sad Path 4" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="EQ VARCHAR2 Sad Path 5" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="EQ VARCHAR2 Sad Path 6" classname="WTP.WT_ASSERT" time="0"/>
-    <testcase name="EQ XMLTYPE Happy Path 1" classname="WTP.WT_ASSERT" time="50"/>
-    <testcase name="EQ XMLTYPE Sad Path 1" classname="WTP.WT_ASSERT" time="18"/>
-    <testcase name="EQ XMLTYPE Sad Path 2" classname="WTP.WT_ASSERT" time="14"/>
-    <testcase name="EQQUERY Tests Happy Path 1" classname="WTP.WT_ASSERT" time="46"/>
-    <testcase name="EQQUERY Tests Sad Path 1" classname="WTP.WT_ASSERT" time="24"/>
-    <testcase name="EQQUERY Tests Sad Path 2" classname="WTP.WT_ASSERT" time="21"/>
+    <testcase name="EQ XMLTYPE Happy Path 1" classname="WTP.WT_ASSERT" time="36"/>
+    <testcase name="EQ XMLTYPE Sad Path 1" classname="WTP.WT_ASSERT" time="23"/>
+    <testcase name="EQ XMLTYPE Sad Path 2" classname="WTP.WT_ASSERT" time="11"/>
+    <testcase name="EQQUERY Tests Happy Path 1" classname="WTP.WT_ASSERT" time="44"/>
+    <testcase name="EQQUERY Tests Sad Path 1" classname="WTP.WT_ASSERT" time="22"/>
+    <testcase name="EQQUERY Tests Sad Path 2" classname="WTP.WT_ASSERT" time="20"/>
     <testcase name="EQQUERY Tests Sad Path 3" classname="WTP.WT_ASSERT" time="3"/>
     <testcase name="EQQUERYVALUE BLOB Happy Path 1" classname="WTP.WT_ASSERT" time="1"/>
     <testcase name="EQQUERYVALUE BLOB Happy Path 2" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="EQQUERYVALUE BLOB Sad Path 1" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="EQQUERYVALUE BLOB Sad Path 2" classname="WTP.WT_ASSERT" time="1"/>
-    <testcase name="EQQUERYVALUE BLOB Sad Path 3" classname="WTP.WT_ASSERT" time="1"/>
+    <testcase name="EQQUERYVALUE BLOB Sad Path 3" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="EQQUERYVALUE CLOB Happy Path 1" classname="WTP.WT_ASSERT" time="2"/>
     <testcase name="EQQUERYVALUE CLOB Happy Path 2" classname="WTP.WT_ASSERT" time="0"/>
-    <testcase name="EQQUERYVALUE CLOB Sad Path 1" classname="WTP.WT_ASSERT" time="0"/>
+    <testcase name="EQQUERYVALUE CLOB Sad Path 1" classname="WTP.WT_ASSERT" time="1"/>
     <testcase name="EQQUERYVALUE CLOB Sad Path 2" classname="WTP.WT_ASSERT" time="1"/>
-    <testcase name="EQQUERYVALUE CLOB Sad Path 3" classname="WTP.WT_ASSERT" time="0"/>
+    <testcase name="EQQUERYVALUE CLOB Sad Path 3" classname="WTP.WT_ASSERT" time="1"/>
     <testcase name="EQQUERYVALUE VARCHAR2 Happy Path 1" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="EQQUERYVALUE VARCHAR2 Happy Path 2" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="EQQUERYVALUE VARCHAR2 Sad Path 1" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="EQQUERYVALUE VARCHAR2 Sad Path 2" classname="WTP.WT_ASSERT" time="0"/>
-    <testcase name="EQQUERYVALUE VARCHAR2 Sad Path 3" classname="WTP.WT_ASSERT" time="0"/>
-    <testcase name="EQQUERYVALUE XMLTYPE Happy Path 1" classname="WTP.WT_ASSERT" time="28"/>
+    <testcase name="EQQUERYVALUE VARCHAR2 Sad Path 3" classname="WTP.WT_ASSERT" time="1"/>
+    <testcase name="EQQUERYVALUE XMLTYPE Happy Path 1" classname="WTP.WT_ASSERT" time="27"/>
     <testcase name="EQQUERYVALUE XMLTYPE Sad Path 1" classname="WTP.WT_ASSERT" time="10"/>
-    <testcase name="EQQUERYVALUE XMLTYPE Sad Path 2" classname="WTP.WT_ASSERT" time="11"/>
+    <testcase name="EQQUERYVALUE XMLTYPE Sad Path 2" classname="WTP.WT_ASSERT" time="10"/>
     <testcase name="EQQUERYVALUE XMLTYPE Sad Path 3" classname="WTP.WT_ASSERT" time="1"/>
     <testcase name="EQTABCOUNT Sad Path 1" classname="WTP.WT_ASSERT" time="14"/>
     <testcase name="EQTABCOUNT Sad Path 2" classname="WTP.WT_ASSERT" time="14"/>
-    <testcase name="EQTABCOUNT Sad Path 3" classname="WTP.WT_ASSERT" time="51"/>
+    <testcase name="EQTABCOUNT Sad Path 3" classname="WTP.WT_ASSERT" time="50"/>
     <testcase name="EQTABCOUNT Sad Path 4" classname="WTP.WT_ASSERT" time="1"/>
-    <testcase name="EQTABCOUNT Tests Happy Path 1" classname="WTP.WT_ASSERT" time="28"/>
-    <testcase name="EQTABCOUNT Tests Happy Path 2" classname="WTP.WT_ASSERT" time="34"/>
-    <testcase name="EQTABLE Sad Path 1" classname="WTP.WT_ASSERT" time="2500"/>
-    <testcase name="EQTABLE Sad Path 2" classname="WTP.WT_ASSERT" time="281"/>
-    <testcase name="EQTABLE Sad Path 3" classname="WTP.WT_ASSERT" time="3"/>
-    <testcase name="EQTABLE Tests Happy Path 1" classname="WTP.WT_ASSERT" time="38"/>
-    <testcase name="EQTABLE Tests Happy Path 2" classname="WTP.WT_ASSERT" time="1538"/>
+    <testcase name="EQTABCOUNT Tests Happy Path 1" classname="WTP.WT_ASSERT" time="38"/>
+    <testcase name="EQTABCOUNT Tests Happy Path 2" classname="WTP.WT_ASSERT" time="35"/>
+    <testcase name="EQTABLE Sad Path 1" classname="WTP.WT_ASSERT" time="2492"/>
+    <testcase name="EQTABLE Sad Path 2" classname="WTP.WT_ASSERT" time="276"/>
+    <testcase name="EQTABLE Sad Path 3" classname="WTP.WT_ASSERT" time="4"/>
+    <testcase name="EQTABLE Tests Happy Path 1" classname="WTP.WT_ASSERT" time="39"/>
+    <testcase name="EQTABLE Tests Happy Path 2" classname="WTP.WT_ASSERT" time="1478"/>
     <testcase name="ISNOTNULL BLOB Happy Path 1" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="ISNOTNULL BLOB Sad Path 1" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="ISNOTNULL BLOB Sad Path 2" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="ISNOTNULL BOOLEAN Happy Path 1" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="ISNOTNULL BOOLEAN Sad Path 1" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="ISNOTNULL BOOLEAN Sad Path 2" classname="WTP.WT_ASSERT" time="0"/>
-    <testcase name="ISNOTNULL CLOB Happy Path 1" classname="WTP.WT_ASSERT" time="0"/>
+    <testcase name="ISNOTNULL CLOB Happy Path 1" classname="WTP.WT_ASSERT" time="1"/>
     <testcase name="ISNOTNULL CLOB Sad Path 1" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="ISNOTNULL CLOB Sad Path 2" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="ISNOTNULL VARCHAR2 Happy Path 1" classname="WTP.WT_ASSERT" time="2"/>
@@ -179,7 +160,7 @@
     <testcase name="ISNULL BOOLEAN Sad Path 2" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="ISNULL CLOB Happy Path 1" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="ISNULL CLOB Sad Path 1" classname="WTP.WT_ASSERT" time="0"/>
-    <testcase name="ISNULL CLOB Sad Path 2" classname="WTP.WT_ASSERT" time="0"/>
+    <testcase name="ISNULL CLOB Sad Path 2" classname="WTP.WT_ASSERT" time="1"/>
     <testcase name="ISNULL VARCHAR2 Happy Path 1" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="ISNULL VARCHAR2 Sad Path 1" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="ISNULL VARCHAR2 Sad Path 2" classname="WTP.WT_ASSERT" time="0"/>
@@ -197,19 +178,9 @@
     <testcase name="OBJNOTEXISTS Sad Path 1" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="OBJNOTEXISTS Sad Path 2" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="RESET_GLOBALS" classname="WTP.WT_ASSERT" time="0"/>
-    <testcase name="Raises Tests Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE BODY" time="2">
-      <error message="1 assertion failures. ">
- 274: FAIL .036ms temp_rec.last_details. EQ - Expected "Expected exception "%PLS-00302: component 'BOGUS' must be declared%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared\nORA-06550: line 1, column 7:\nPL/SQL: Statement ignored". Exception raised by: "begin wt_assert.bogus; end;"." and got "Expected exception "%PLS-00302: component 'BOGUS' must be declared%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared". Exception raised by: "begin wt_assert.bogus; end;".".
-      </error>
-    </testcase>
-    <testcase name="Raises Tests Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE BODY" time="3">
-      <error message="3 assertion failures. ">
- 276: FAIL .059ms temp_rec.last_details value. EQ - Expected "Expected exception "%-00302%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared\nORA-06550: line 1, column 7:\nPL/SQL: Statement ignored". Exception raised by: "begin wt_assert.bogus; end;"." and got "Expected exception "%-00302%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared". Exception raised by: "begin wt_assert.bogus; end;".".
- 278: FAIL .054ms temp_rec.last_details value. EQ - Expected "Expected exception "%PLS-00302: component 'BOGUS' must be declared%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared\nORA-06550: line 1, column 7:\nPL/SQL: Statement ignored". Exception raised by: "begin wt_assert.bogus; end;"." and got "Expected exception "%PLS-00302: component 'BOGUS' must be declared%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared". Exception raised by: "begin wt_assert.bogus; end;".".
- 280: FAIL .056ms temp_rec.last_details value. EQ - Expected "Expected exception "%-00302%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared\nORA-06550: line 1, column 7:\nPL/SQL: Statement ignored". Exception raised by: "begin wt_assert.bogus; end;"." and got "Expected exception "%-00302%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared". Exception raised by: "begin wt_assert.bogus; end;".".
-      </error>
-    </testcase>
-    <testcase name="Raises Tests Happy Path 3" classname="WTP.WT_ASSERT" time="0"/>
+    <testcase name="Raises Tests Happy Path 1" classname="WTP.WT_ASSERT" time="2"/>
+    <testcase name="Raises Tests Happy Path 2" classname="WTP.WT_ASSERT" time="4"/>
+    <testcase name="Raises Tests Happy Path 3" classname="WTP.WT_ASSERT" time="1"/>
     <testcase name="Raises Tests Sad Path 1" classname="WTP.WT_ASSERT" time="1"/>
     <testcase name="Raises Tests Sad Path 2" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="Test Process Assertion" classname="WTP.WT_ASSERT" time="0"/>
@@ -217,52 +188,47 @@
     <testcase name="This Sad Path 1" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="This Sad Path 2" classname="WTP.WT_ASSERT" time="0"/>
     <testcase name="This Sad Path 3" classname="WTP.WT_ASSERT" time="0"/>
-  <testsuite name="WTP.WT_DBOUT" tests="12" failures="0" time="178" timestamp="2024-04-05T14:27:30.451+00:00">
+  <testsuite name="WTP.WT_DBOUT" tests="12" failures="0" time="150" timestamp="2024-04-06T21:06:26">
     <testcase name="t_delete_records Happy Path 1" classname="WTP.WT_DBOUT" time="1"/>
-    <testcase name="t_delete_records Happy Path 2" classname="WTP.WT_DBOUT" time="1"/>
+    <testcase name="t_delete_records Happy Path 2" classname="WTP.WT_DBOUT" time="0"/>
     <testcase name="t_delete_records Setup" classname="WTP.WT_DBOUT" time="1"/>
-    <testcase name="t_dim_id Happy Path 1" classname="WTP.WT_DBOUT" time="1"/>
+    <testcase name="t_dim_id Happy Path 1" classname="WTP.WT_DBOUT" time="0"/>
     <testcase name="t_dim_id Happy Path 2" classname="WTP.WT_DBOUT" time="0"/>
     <testcase name="t_dim_id Sad Path 1" classname="WTP.WT_DBOUT" time="0"/>
     <testcase name="t_dim_id Setup" classname="WTP.WT_DBOUT" time="0"/>
     <testcase name="t_dim_id Teardown" classname="WTP.WT_DBOUT" time="0"/>
     <testcase name="t_get_id Happy Path 1" classname="WTP.WT_DBOUT" time="0"/>
-    <testcase name="t_get_id Happy Path 2" classname="WTP.WT_DBOUT" time="1"/>
-    <testcase name="t_get_id Setup" classname="WTP.WT_DBOUT" time="3"/>
+    <testcase name="t_get_id Happy Path 2" classname="WTP.WT_DBOUT" time="0"/>
+    <testcase name="t_get_id Setup" classname="WTP.WT_DBOUT" time="2"/>
     <testcase name="t_get_id Teardown" classname="WTP.WT_DBOUT" time="0"/>
-  <testsuite name="WTP.WT_JOB" tests="3" failures="1" time="1262" timestamp="2024-04-05T14:27:30.865+00:00">
-    <testcase name="Create and Drop DB Link" classname="WTP.WT_JOB:PACKAGE BODY" time="1073">
-      <error message="2 assertion failures. ">
-   4: FAIL 1061ms Number of Rows from WT_SELF_TEST@WTP. EQQUERYVALUE - Exception raised for Query: select count(*) from WT_SELF_TEST@WTP\nORA-01017: invalid username/password; logon denied\nORA-02063: preceding line from WTP\nORA-06512: at "WTP.WT_ASSERT", line 2673\n.
-   5: FAIL .552ms Close the Database Link. RAISES/THROWS - No exception was expected. Exception raised was "ORA-02081: database link is not open". Exception raised by: "alter session close database link WTP". Error Stack: ORA-02081: database link is not open\nORA-06512: at "WTP.WT_ASSERT", line 2413\n.
-      </error>
-    </testcase>
-    <testcase name="Drop Nonexistent DB Link" classname="WTP.WT_JOB" time="1"/>
-    <testcase name="Run and Wait for Job" classname="WTP.WT_JOB" time="47"/>
-  <testsuite name="WTP.WT_PROFILE" tests="4" failures="0" time="139" timestamp="2024-04-05T14:27:32.394+00:00">
-    <testcase name="Delete PL/SQL Profiler Records Happy Path 1" classname="WTP.WT_PROFILE" time="2"/>
-    <testcase name="Delete PL/SQL Profiler Records Happy Path 2" classname="WTP.WT_PROFILE" time="3"/>
-    <testcase name="Delete PL/SQL Profiler Records Happy Path 3" classname="WTP.WT_PROFILE" time="3"/>
+  <testsuite name="WTP.WT_JOB" tests="3" failures="0" time="326" timestamp="2024-04-06T21:06:26">
+    <testcase name="Create and Drop DB Link" classname="WTP.WT_JOB" time="140"/>
+    <testcase name="Drop Nonexistent DB Link" classname="WTP.WT_JOB" time="3"/>
+    <testcase name="Run and Wait for Job" classname="WTP.WT_JOB" time="68"/>
+  <testsuite name="WTP.WT_PROFILE" tests="4" failures="0" time="138" timestamp="2024-04-06T21:06:27">
+    <testcase name="Delete PL/SQL Profiler Records Happy Path 1" classname="WTP.WT_PROFILE" time="3"/>
+    <testcase name="Delete PL/SQL Profiler Records Happy Path 2" classname="WTP.WT_PROFILE" time="8"/>
+    <testcase name="Delete PL/SQL Profiler Records Happy Path 3" classname="WTP.WT_PROFILE" time="6"/>
     <testcase name="Initialize Happy Path 1" classname="WTP.WT_PROFILE" time="0"/>
-  <testsuite name="WTP.WT_RESULT" tests="3" failures="0" time="131" timestamp="2024-04-05T14:27:33.195+00:00">
+  <testsuite name="WTP.WT_RESULT" tests="3" failures="0" time="139" timestamp="2024-04-06T21:06:28">
     <testcase name="Delete Records Happy Path" classname="WTP.WT_RESULT" time="1"/>
-    <testcase name="Finalize Happy Path" classname="WTP.WT_RESULT" time="7"/>
+    <testcase name="Finalize Happy Path" classname="WTP.WT_RESULT" time="10"/>
     <testcase name="Initialize Happy Path" classname="WTP.WT_RESULT" time="2"/>
-  <testsuite name="WTP.WT_TESTCASE" tests="12" failures="0" time="127" timestamp="2024-04-05T14:27:33.532+00:00">
+  <testsuite name="WTP.WT_TESTCASE" tests="12" failures="0" time="143" timestamp="2024-04-06T21:06:28">
     <testcase name="t_delete_records Happy Path 1" classname="WTP.WT_TESTCASE" time="1"/>
     <testcase name="t_delete_records Happy Path 2" classname="WTP.WT_TESTCASE" time="0"/>
-    <testcase name="t_delete_records Setup" classname="WTP.WT_TESTCASE" time="0"/>
+    <testcase name="t_delete_records Setup" classname="WTP.WT_TESTCASE" time="1"/>
     <testcase name="t_dim_id Happy Path 1" classname="WTP.WT_TESTCASE" time="0"/>
     <testcase name="t_dim_id Happy Path 2" classname="WTP.WT_TESTCASE" time="0"/>
     <testcase name="t_dim_id Sad Path 1" classname="WTP.WT_TESTCASE" time="0"/>
     <testcase name="t_dim_id Setup" classname="WTP.WT_TESTCASE" time="0"/>
     <testcase name="t_dim_id Teardown" classname="WTP.WT_TESTCASE" time="0"/>
     <testcase name="t_get_id Happy Path 1" classname="WTP.WT_TESTCASE" time="0"/>
-    <testcase name="t_get_id Happy Path 2" classname="WTP.WT_TESTCASE" time="1"/>
+    <testcase name="t_get_id Happy Path 2" classname="WTP.WT_TESTCASE" time="0"/>
     <testcase name="t_get_id Setup" classname="WTP.WT_TESTCASE" time="2"/>
     <testcase name="t_get_id Teardown" classname="WTP.WT_TESTCASE" time="0"/>
-  <testsuite name="WTP.WT_TEST_RUN" tests="16" failures="2" time="172" timestamp="2024-04-05T14:27:33.935+00:00">
-    <testcase name="Clear Last Run Happy Path 1" classname="WTP.WT_TEST_RUN" time="4"/>
+  <testsuite name="WTP.WT_TEST_RUN" tests="16" failures="0" time="187" timestamp="2024-04-06T21:06:28">
+    <testcase name="Clear Last Run Happy Path 1" classname="WTP.WT_TEST_RUN" time="5"/>
     <testcase name="DELETE_RUNS Happy Path 1" classname="WTP.WT_TEST_RUN" time="8"/>
     <testcase name="DELETE_RUNS Sad Path 1" classname="WTP.WT_TEST_RUN" time="1"/>
     <testcase name="DELETE_RUNS Setup" classname="WTP.WT_TEST_RUN" time="0"/>
@@ -270,23 +236,15 @@
     <testcase name="DELETE_RUN_ID Sad Path 1" classname="WTP.WT_TEST_RUN" time="0"/>
     <testcase name="DELETE_RUN_ID Setup" classname="WTP.WT_TEST_RUN" time="0"/>
     <testcase name="Finalization Testing" classname="WTP.WT_TEST_RUN" time="0"/>
-    <testcase name="INSERT_TEST_RUN Happy Path 1" classname="WTP.WT_TEST_RUN" time="1"/>
-    <testcase name="INSERT_TEST_RUN Happy Path 2" classname="WTP.WT_TEST_RUN" time="0"/>
+    <testcase name="INSERT_TEST_RUN Happy Path 1" classname="WTP.WT_TEST_RUN" time="2"/>
+    <testcase name="INSERT_TEST_RUN Happy Path 2" classname="WTP.WT_TEST_RUN" time="1"/>
     <testcase name="Initialization Testing" classname="WTP.WT_TEST_RUN" time="0"/>
-    <testcase name="SET_LAST_RUN Happy Path 1" classname="WTP.WT_TEST_RUN:PACKAGE BODY" time="8">
-      <error message="1 assertion failures. ">
-  38: FAIL .373ms Test Run ID of Last Run. EQQUERYVALUE - Expected "-11" and got "3" for Query: select id from wt_test_runs where is_last_run = 'Y'.
-      </error>
-    </testcase>
-    <testcase name="SET_LAST_RUN Happy Path 2" classname="WTP.WT_TEST_RUN:PACKAGE BODY" time="2">
-      <error message="1 assertion failures. ">
-  42: FAIL .278ms Test Run ID of Last Run. EQQUERYVALUE - Expected "-12" and got "3" for Query: select id from wt_test_runs where is_last_run = 'Y'.
-      </error>
-    </testcase>
+    <testcase name="SET_LAST_RUN Happy Path 1" classname="WTP.WT_TEST_RUN" time="11"/>
+    <testcase name="SET_LAST_RUN Happy Path 2" classname="WTP.WT_TEST_RUN" time="2"/>
     <testcase name="SET_LAST_RUN Happy Path 3" classname="WTP.WT_TEST_RUN" time="1"/>
     <testcase name="SET_LAST_RUN Setup" classname="WTP.WT_TEST_RUN" time="0"/>
-    <testcase name="Set g_test_run_rec Happy Path 1" classname="WTP.WT_TEST_RUN" time="2"/>
-  <testsuite name="WTP.WT_TEST_RUNNER" tests="12" failures="0" time="127" timestamp="2024-04-05T14:27:34.507+00:00">
+    <testcase name="Set g_test_run_rec Happy Path 1" classname="WTP.WT_TEST_RUN" time="3"/>
+  <testsuite name="WTP.WT_TEST_RUNNER" tests="12" failures="0" time="125" timestamp="2024-04-06T21:06:29">
     <testcase name="t_delete_records Happy Path 1" classname="WTP.WT_TEST_RUNNER" time="1"/>
     <testcase name="t_delete_records Happy Path 2" classname="WTP.WT_TEST_RUNNER" time="0"/>
     <testcase name="t_delete_records Setup" classname="WTP.WT_TEST_RUNNER" time="0"/>
@@ -296,7 +254,7 @@
     <testcase name="t_dim_id Setup" classname="WTP.WT_TEST_RUNNER" time="0"/>
     <testcase name="t_dim_id Teardown" classname="WTP.WT_TEST_RUNNER" time="0"/>
     <testcase name="t_get_id Happy Path 1" classname="WTP.WT_TEST_RUNNER" time="0"/>
-    <testcase name="t_get_id Happy Path 2" classname="WTP.WT_TEST_RUNNER" time="1"/>
+    <testcase name="t_get_id Happy Path 2" classname="WTP.WT_TEST_RUNNER" time="0"/>
     <testcase name="t_get_id Setup" classname="WTP.WT_TEST_RUNNER" time="2"/>
     <testcase name="t_get_id Teardown" classname="WTP.WT_TEST_RUNNER" time="0"/>
   </testsuite>

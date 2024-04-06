@@ -1,32 +1,53 @@
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
-  Start Date/Time: 05-Apr-2024 02:26:59 PM
+  Start Date/Time: 06-Apr-2024 09:05:55 PM
+  Test Results for WTP.CORE_DATA
+  Database Object Under Test is PACKAGE BODY WTP.CORE_DATA
+  ------------------------------------------------------------------
+  Minimum Elapsed msec:          0      Total Assertions:         64
+  Average Elapsed msec:          0     Failed Assertions:          0
+  Maximum Elapsed msec:          3       Total Testcases:          9
+  Total Run Time (sec):        0.5      Failed Testcases:          0
+                                          Testcase Yield:        100%
+
+
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
+  Start Date/Time: 06-Apr-2024 09:05:56 PM
+  Test Results for WTP.HOOK
+  Database Object Under Test is PACKAGE BODY WTP.HOOK
+  ------------------------------------------------------------------
+  Minimum Elapsed msec:          0      Total Assertions:         23
+  Average Elapsed msec:          1     Failed Assertions:          0
+  Maximum Elapsed msec:          7       Total Testcases:          5
+  Total Run Time (sec):        0.1      Failed Testcases:          0
+                                          Testcase Yield:        100%
+
+
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
+  Start Date/Time: 06-Apr-2024 09:05:56 PM
+  Test Results for WTP.WTPLSQL
+  ------------------------------------------------------------------
+  Minimum Elapsed msec:          0      Total Assertions:         32
+  Average Elapsed msec:         17     Failed Assertions:          0
+  Maximum Elapsed msec:        142       Total Testcases:         15
+  Total Run Time (sec):        0.6      Failed Testcases:          0
+                                          Testcase Yield:        100%
+
+
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
+  Start Date/Time: 06-Apr-2024 09:05:57 PM
   Test Results for WTP.WT_ASSERT
   Database Object Under Test is PACKAGE BODY WTP.WT_ASSERT
   ------------------------------------------------------------------
   Minimum Elapsed msec:          0      Total Assertions:        414
-  Average Elapsed msec:         23     Failed Assertions:          8
-  Maximum Elapsed msec:       3074       Total Testcases:        152
-  Total Run Time (sec):        9.5      Failed Testcases:          3
-                                          Testcase Yield:         98%
-
-  WTP.WT_ASSERT Test Runner Details
-  --------------------------------------------------------------
----***  Ad Hoc Report Happy Path  ***-------------------------------------------
-#FAIL#.034ms Ad Hoc Line 1 Line. EQ - Expected "Ad Hoc Report Happy Path" and got ""
-#FAIL#.022ms Ad Hoc Line 2 Line. EQ - Expected " Assertion THIS PASSED." and got "  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003"
-#FAIL#.026ms Ad Hoc Line 3 Line. EQ - Expected " Testcase: Ad Hoc Report Happy Path" and got "  Start Date/Time: 05-Apr-2024 02:26:58 PM"
-#FAIL#.021ms Ad Hoc Line 4 Line. EQ - Expected " Expected "PASS" and got "PASS"" and got "  Test Results for WTP.CORE_DATA"
----***  Raises Tests Happy Path 1  ***------------------------------------------
-#FAIL#.027ms temp_rec.last_details. EQ - Expected "Expected exception "%PLS-00302: component 'BOGUS' must be declared%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared\nORA-06550: line 1, column 7:\nPL/SQL: Statement ignored". Exception raised by: "begin wt_assert.bogus; end;"." and got "Expected exception "%PLS-00302: component 'BOGUS' must be declared%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared". Exception raised by: "begin wt_assert.bogus; end;"."
----***  Raises Tests Happy Path 2  ***------------------------------------------
-#FAIL#.064ms temp_rec.last_details value. EQ - Expected "Expected exception "%-00302%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared\nORA-06550: line 1, column 7:\nPL/SQL: Statement ignored". Exception raised by: "begin wt_assert.bogus; end;"." and got "Expected exception "%-00302%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared". Exception raised by: "begin wt_assert.bogus; end;"."
-#FAIL#.038ms temp_rec.last_details value. EQ - Expected "Expected exception "%PLS-00302: component 'BOGUS' must be declared%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared\nORA-06550: line 1, column 7:\nPL/SQL: Statement ignored". Exception raised by: "begin wt_assert.bogus; end;"." and got "Expected exception "%PLS-00302: component 'BOGUS' must be declared%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared". Exception raised by: "begin wt_assert.bogus; end;"."
-#FAIL#.038ms temp_rec.last_details value. EQ - Expected "Expected exception "%-00302%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared\nORA-06550: line 1, column 7:\nPL/SQL: Statement ignored". Exception raised by: "begin wt_assert.bogus; end;"." and got "Expected exception "%-00302%". Actual exception raised was "ORA-06550: line 1, column 17:\nPLS-00302: component 'BOGUS' must be declared". Exception raised by: "begin wt_assert.bogus; end;"."
+  Average Elapsed msec:         22     Failed Assertions:          0
+  Maximum Elapsed msec:       3006       Total Testcases:        152
+  Total Run Time (sec):        9.4      Failed Testcases:          0
+                                          Testcase Yield:        100%
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
-  Start Date/Time: 05-Apr-2024 02:27:09 PM
+  Start Date/Time: 06-Apr-2024 09:06:06 PM
   Test Results for WTP.WT_DBOUT
   Database Object Under Test is PACKAGE BODY WTP.WT_DBOUT
   ------------------------------------------------------------------
@@ -38,49 +59,43 @@
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
-  Start Date/Time: 05-Apr-2024 02:27:09 PM
+  Start Date/Time: 06-Apr-2024 09:06:07 PM
   Test Results for WTP.WT_JOB
   Database Object Under Test is PACKAGE BODY WTP.WT_JOB
   ------------------------------------------------------------------
   Minimum Elapsed msec:          0      Total Assertions:         21
-  Average Elapsed msec:         70     Failed Assertions:          2
-  Maximum Elapsed msec:       1065       Total Testcases:          3
-  Total Run Time (sec):        1.7      Failed Testcases:          1
-                                          Testcase Yield:         67%
-
-  WTP.WT_JOB Test Runner Details
-  --------------------------------------------------------------
----***  Create and Drop DB Link  ***--------------------------------------------
-#FAIL#1064ms Number of Rows from WT_SELF_TEST@WTP. EQQUERYVALUE - Exception raised for Query: select count(*) from WT_SELF_TEST@WTP\nORA-01017: invalid username/password; logon denied\nORA-02063: preceding line from WTP\nORA-06512: at "WTP.WT_ASSERT", line 2673\n
-#FAIL#1.64ms Close the Database Link. RAISES/THROWS - No exception was expected. Exception raised was "ORA-02081: database link is not open". Exception raised by: "alter session close database link WTP". Error Stack: ORA-02081: database link is not open\nORA-06512: at "WTP.WT_ASSERT", line 2413\n
+  Average Elapsed msec:         55     Failed Assertions:          0
+  Maximum Elapsed msec:        615       Total Testcases:          3
+  Total Run Time (sec):        1.4      Failed Testcases:          0
+                                          Testcase Yield:        100%
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
-  Start Date/Time: 05-Apr-2024 02:27:11 PM
+  Start Date/Time: 06-Apr-2024 09:06:08 PM
   Test Results for WTP.WT_PROFILE
   Database Object Under Test is PACKAGE BODY WTP.WT_PROFILE
   ------------------------------------------------------------------
   Minimum Elapsed msec:          0      Total Assertions:         46
   Average Elapsed msec:          2     Failed Assertions:          0
-  Maximum Elapsed msec:         27       Total Testcases:          4
+  Maximum Elapsed msec:         23       Total Testcases:          4
   Total Run Time (sec):        0.3      Failed Testcases:          0
                                           Testcase Yield:        100%
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
-  Start Date/Time: 05-Apr-2024 02:27:11 PM
+  Start Date/Time: 06-Apr-2024 09:06:08 PM
   Test Results for WTP.WT_RESULT
   Database Object Under Test is PACKAGE BODY WTP.WT_RESULT
   ------------------------------------------------------------------
   Minimum Elapsed msec:          0      Total Assertions:         20
-  Average Elapsed msec:          4     Failed Assertions:          0
-  Maximum Elapsed msec:         38       Total Testcases:          3
+  Average Elapsed msec:          3     Failed Assertions:          0
+  Maximum Elapsed msec:         31       Total Testcases:          3
   Total Run Time (sec):        0.2      Failed Testcases:          0
                                           Testcase Yield:        100%
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
-  Start Date/Time: 05-Apr-2024 02:27:11 PM
+  Start Date/Time: 06-Apr-2024 09:06:08 PM
   Test Results for WTP.WT_TESTCASE
   Database Object Under Test is PACKAGE BODY WTP.WT_TEST_RUNNER
   ------------------------------------------------------------------
@@ -92,25 +107,25 @@
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
-  Start Date/Time: 05-Apr-2024 02:27:12 PM
+  Start Date/Time: 06-Apr-2024 09:06:08 PM
   Test Results for WTP.WT_TEST_RUN
   Database Object Under Test is PACKAGE BODY WTP.WT_TEST_RUN
   ------------------------------------------------------------------
   Minimum Elapsed msec:          0      Total Assertions:         52
-  Average Elapsed msec:          3     Failed Assertions:          0
-  Maximum Elapsed msec:         33       Total Testcases:         16
+  Average Elapsed msec:          2     Failed Assertions:          0
+  Maximum Elapsed msec:         32       Total Testcases:         16
   Total Run Time (sec):        0.3      Failed Testcases:          0
                                           Testcase Yield:        100%
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
-  Start Date/Time: 05-Apr-2024 02:27:12 PM
+  Start Date/Time: 06-Apr-2024 09:06:09 PM
   Test Results for WTP.WT_TEST_RUNNER
   Database Object Under Test is PACKAGE BODY WTP.WT_TEST_RUNNER
   ------------------------------------------------------------------
   Minimum Elapsed msec:          0      Total Assertions:         15
-  Average Elapsed msec:          1     Failed Assertions:          0
-  Maximum Elapsed msec:         12       Total Testcases:         12
-  Total Run Time (sec):        0.3      Failed Testcases:          0
+  Average Elapsed msec:          3     Failed Assertions:          0
+  Maximum Elapsed msec:         23       Total Testcases:         12
+  Total Run Time (sec):        0.4      Failed Testcases:          0
                                           Testcase Yield:        100%
 

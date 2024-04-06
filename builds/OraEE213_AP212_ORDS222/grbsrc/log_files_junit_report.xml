@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="install_grbsrc.log" tests="81" errors="0" hostname="EE213CDB" id="2" time="14" timestamp="2024-04-05T14:28:06">
+  <testsuite name="install_grbsrc.log" tests="81" errors="0" hostname="EE213CDB" id="2" time="20" timestamp="2024-04-06T21:07:06">
     <testcase name="./installation_finalize.sql" assertions="" classname="..sql" status="PASS" time="">
     </testcase>
     <testcase name="./installation_prepare.sql" assertions="5" classname="..sql" status="PASS" time="0">
@@ -9,7 +9,7 @@
 Create_Temp_Publicly_Updateable_Table_SQL
 Table created.
 Grant succeeded.
-=== DBI Completed at 2024-04-05T14:27:40 for a duration of .14 seconds (started at 2024-04-05T14:27:40)
+=== DBI Completed at 2024-04-06T21:06:35 for a duration of .18 seconds (started at 2024-04-06T21:06:35)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/AQ_SYSTEM_PRIVS_VW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -17,28 +17,28 @@ Grant succeeded.
 === DBI Started: ODBCAPTURE/AQ_SYSTEM_PRIVS_VW.vw
 View created.
 View created.
-=== DBI Completed at 2024-04-05T14:27:59 for a duration of .1 seconds (started at 2024-04-05T14:27:59)
+=== DBI Completed at 2024-04-06T21:06:59 for a duration of .11 seconds (started at 2024-04-06T21:06:59)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/COMMON_UTIL.pbody" assertions="3" classname="ODBCAPTURE.pbody" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/COMMON_UTIL.pbody
 Package body created.
-=== DBI Completed at 2024-04-05T14:28:03 for a duration of .15 seconds (started at 2024-04-05T14:28:03)
+=== DBI Completed at 2024-04-06T21:07:03 for a duration of .17 seconds (started at 2024-04-06T21:07:03)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/COMMON_UTIL.pspec" assertions="3" classname="ODBCAPTURE.pspec" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/COMMON_UTIL.pspec
 Package created.
-=== DBI Completed at 2024-04-05T14:27:40 for a duration of .06 seconds (started at 2024-04-05T14:27:40)
+=== DBI Completed at 2024-04-06T21:06:35 for a duration of .07 seconds (started at 2024-04-06T21:06:35)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/DBA_DEPENDENCIES_TAB.tab" assertions="3" classname="ODBCAPTURE.tab" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/DBA_DEPENDENCIES_TAB.tab
 Table created.
-=== DBI Completed at 2024-04-05T14:27:40 for a duration of .07 seconds (started at 2024-04-05T14:27:40)
+=== DBI Completed at 2024-04-06T21:06:36 for a duration of .07 seconds (started at 2024-04-06T21:06:36)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/DBA_DEPENDENCIES_TAB.tabind" assertions="4" classname="ODBCAPTURE.tabind" status="PASS" time="0">
@@ -46,7 +46,7 @@ Table created.
 === DBI Started: ODBCAPTURE/DBA_DEPENDENCIES_TAB.tabind
 Index created.
 Index created.
-=== DBI Completed at 2024-04-05T14:27:58 for a duration of .11 seconds (started at 2024-04-05T14:27:58)
+=== DBI Completed at 2024-04-06T21:06:57 for a duration of .12 seconds (started at 2024-04-06T21:06:57)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/DBA_DEPENDENCIES_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -54,21 +54,21 @@ Index created.
 === DBI Started: ODBCAPTURE/DBA_DEPENDENCIES_VIEW.vw
 View created.
 View created.
-=== DBI Completed at 2024-04-05T14:27:59 for a duration of .1 seconds (started at 2024-04-05T14:27:59)
+=== DBI Completed at 2024-04-06T21:06:59 for a duration of .11 seconds (started at 2024-04-06T21:06:59)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/DBA_OBJECTS_TAB.tab" assertions="3" classname="ODBCAPTURE.tab" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/DBA_OBJECTS_TAB.tab
 Table created.
-=== DBI Completed at 2024-04-05T14:27:40 for a duration of .05 seconds (started at 2024-04-05T14:27:40)
+=== DBI Completed at 2024-04-06T21:06:36 for a duration of .06 seconds (started at 2024-04-06T21:06:36)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/DBA_OBJECTS_TAB.tabind" assertions="3" classname="ODBCAPTURE.tabind" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/DBA_OBJECTS_TAB.tabind
 Index created.
-=== DBI Completed at 2024-04-05T14:27:58 for a duration of .06 seconds (started at 2024-04-05T14:27:58)
+=== DBI Completed at 2024-04-06T21:06:57 for a duration of .07 seconds (started at 2024-04-06T21:06:57)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/DBA_OBJECTS_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -76,21 +76,21 @@ Index created.
 === DBI Started: ODBCAPTURE/DBA_OBJECTS_VIEW.vw
 View created.
 View created.
-=== DBI Completed at 2024-04-05T14:28:00 for a duration of .35 seconds (started at 2024-04-05T14:27:59)
+=== DBI Completed at 2024-04-06T21:06:59 for a duration of .24 seconds (started at 2024-04-06T21:06:59)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/DBA_TAB_PRIVS_TAB.tab" assertions="3" classname="ODBCAPTURE.tab" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/DBA_TAB_PRIVS_TAB.tab
 Table created.
-=== DBI Completed at 2024-04-05T14:27:40 for a duration of .06 seconds (started at 2024-04-05T14:27:40)
+=== DBI Completed at 2024-04-06T21:06:36 for a duration of .06 seconds (started at 2024-04-06T21:06:36)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/DBA_TAB_PRIVS_TAB.tabind" assertions="3" classname="ODBCAPTURE.tabind" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/DBA_TAB_PRIVS_TAB.tabind
 Index created.
-=== DBI Completed at 2024-04-05T14:27:58 for a duration of .06 seconds (started at 2024-04-05T14:27:58)
+=== DBI Completed at 2024-04-06T21:06:57 for a duration of .06 seconds (started at 2024-04-06T21:06:57)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/DBA_TAB_PRIVS_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -98,20 +98,20 @@ Index created.
 === DBI Started: ODBCAPTURE/DBA_TAB_PRIVS_VIEW.vw
 View created.
 Warning: View created with compilation errors.
-=== DBI Completed at 2024-04-05T14:28:00 for a duration of .13 seconds (started at 2024-04-05T14:28:00)
+=== DBI Completed at 2024-04-06T21:06:59 for a duration of .09 seconds (started at 2024-04-06T21:06:59)
       </system-out>
     </testcase>
-    <testcase name="ODBCAPTURE/DLOAD_CONF.cdl" assertions="8" classname="ODBCAPTURE.cdl" status="PASS" time="2">
+    <testcase name="ODBCAPTURE/DLOAD_CONF.cdl" assertions="8" classname="ODBCAPTURE.cdl" status="PASS" time="3">
       <system-out>
 === DBI Started: ODBCAPTURE/DLOAD_CONF.cdl
 Disable Triggers and Foreign Keys
 PL/SQL procedure successfully completed.
 sqlldr_control=ODBCAPTURE/DLOAD_CONF.ctl
 PL/SQL procedure successfully completed.
-=== DBI Completed at 2024-04-05T14:27:46 for a duration of 2.33 seconds (started at 2024-04-05T14:27:44)
+=== DBI Completed at 2024-04-06T21:06:43 for a duration of 2.94 seconds (started at 2024-04-06T21:06:40)
 ### SQL*Loader Log File: ODBCAPTURE/DLOAD_CONF.log
 
-SQL*Loader: Release 21.0.0.0.0 - Production on Fri Apr 5 14:27:45 2024
+SQL*Loader: Release 21.0.0.0.0 - Production on Sat Apr 6 21:06:41 2024
 Version 21.3.0.0.0
 Copyright (c) 1982, 2021, Oracle and/or its affiliates.  All rights reserved.
 Control File:   ODBCAPTURE/DLOAD_CONF.ctl
@@ -153,10 +153,10 @@ Total logical records skipped:          1
 Total logical records read:             6
 Total logical records rejected:         0
 Total logical records discarded:        0
-Run began on Fri Apr 05 14:27:45 2024
-Run ended on Fri Apr 05 14:27:45 2024
+Run began on Sat Apr 06 21:06:41 2024
+Run ended on Sat Apr 06 21:06:42 2024
 Elapsed time was:     00:00:00.45
-CPU time was:         00:00:00.04
+CPU time was:         00:00:00.05
 
       </system-out>
     </testcase>
@@ -174,7 +174,7 @@ Comment created.
 Comment created.
 Comment created.
 Comment created.
-=== DBI Completed at 2024-04-05T14:27:41 for a duration of .38 seconds (started at 2024-04-05T14:27:40)
+=== DBI Completed at 2024-04-06T21:06:36 for a duration of .37 seconds (started at 2024-04-06T21:06:36)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/DLOAD_CONF.tabfk" assertions="4" classname="ODBCAPTURE.tabfk" status="PASS" time="0">
@@ -182,41 +182,41 @@ Comment created.
 === DBI Started: ODBCAPTURE/DLOAD_CONF.tabfk
 Table altered.
 Table altered.
-=== DBI Completed at 2024-04-05T14:28:05 for a duration of .14 seconds (started at 2024-04-05T14:28:04)
+=== DBI Completed at 2024-04-06T21:07:04 for a duration of .15 seconds (started at 2024-04-06T21:07:04)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/GRAB_SCRIPTS.pbody" assertions="3" classname="ODBCAPTURE.pbody" status="PASS" time="1">
       <system-out>
 === DBI Started: ODBCAPTURE/GRAB_SCRIPTS.pbody
 Package body created.
-=== DBI Completed at 2024-04-05T14:28:04 for a duration of .87 seconds (started at 2024-04-05T14:28:03)
+=== DBI Completed at 2024-04-06T21:07:04 for a duration of .91 seconds (started at 2024-04-06T21:07:03)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/GRAB_SCRIPTS.pspec" assertions="3" classname="ODBCAPTURE.pspec" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/GRAB_SCRIPTS.pspec
 Package created.
-=== DBI Completed at 2024-04-05T14:27:40 for a duration of .08 seconds (started at 2024-04-05T14:27:40)
+=== DBI Completed at 2024-04-06T21:06:36 for a duration of .1 seconds (started at 2024-04-06T21:06:35)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/INSTALL_TYPE_TIMING.tab" assertions="3" classname="ODBCAPTURE.tab" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/INSTALL_TYPE_TIMING.tab
 Table created.
-=== DBI Completed at 2024-04-05T14:27:41 for a duration of .23 seconds (started at 2024-04-05T14:27:41)
+=== DBI Completed at 2024-04-06T21:06:36 for a duration of .08 seconds (started at 2024-04-06T21:06:36)
       </system-out>
     </testcase>
-    <testcase name="ODBCAPTURE/OBJECT_CONF.cdl" assertions="8" classname="ODBCAPTURE.cdl" status="PASS" time="2">
+    <testcase name="ODBCAPTURE/OBJECT_CONF.cdl" assertions="8" classname="ODBCAPTURE.cdl" status="PASS" time="3">
       <system-out>
 === DBI Started: ODBCAPTURE/OBJECT_CONF.cdl
 Disable Triggers and Foreign Keys
 PL/SQL procedure successfully completed.
 sqlldr_control=ODBCAPTURE/OBJECT_CONF.ctl
 PL/SQL procedure successfully completed.
-=== DBI Completed at 2024-04-05T14:27:48 for a duration of 2.29 seconds (started at 2024-04-05T14:27:46)
+=== DBI Completed at 2024-04-06T21:06:46 for a duration of 2.9 seconds (started at 2024-04-06T21:06:43)
 ### SQL*Loader Log File: ODBCAPTURE/OBJECT_CONF.log
 
-SQL*Loader: Release 21.0.0.0.0 - Production on Fri Apr 5 14:27:47 2024
+SQL*Loader: Release 21.0.0.0.0 - Production on Sat Apr 6 21:06:44 2024
 Version 21.3.0.0.0
 Copyright (c) 1982, 2021, Oracle and/or its affiliates.  All rights reserved.
 Control File:   ODBCAPTURE/OBJECT_CONF.ctl
@@ -255,10 +255,10 @@ Total logical records skipped:          1
 Total logical records read:             0
 Total logical records rejected:         0
 Total logical records discarded:        0
-Run began on Fri Apr 05 14:27:47 2024
-Run ended on Fri Apr 05 14:27:48 2024
-Elapsed time was:     00:00:00.33
-CPU time was:         00:00:00.04
+Run began on Sat Apr 06 21:06:44 2024
+Run ended on Sat Apr 06 21:06:45 2024
+Elapsed time was:     00:00:00.36
+CPU time was:         00:00:00.05
 
       </system-out>
     </testcase>
@@ -274,7 +274,7 @@ Comment created.
 Comment created.
 Comment created.
 Comment created.
-=== DBI Completed at 2024-04-05T14:27:41 for a duration of .37 seconds (started at 2024-04-05T14:27:41)
+=== DBI Completed at 2024-04-06T21:06:37 for a duration of .36 seconds (started at 2024-04-06T21:06:36)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJECT_CONF.tabfk" assertions="5" classname="ODBCAPTURE.tabfk" status="PASS" time="0">
@@ -283,21 +283,21 @@ Comment created.
 Table altered.
 Table altered.
 Table altered.
-=== DBI Completed at 2024-04-05T14:28:05 for a duration of .2 seconds (started at 2024-04-05T14:28:05)
+=== DBI Completed at 2024-04-06T21:07:04 for a duration of .19 seconds (started at 2024-04-06T21:07:04)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_COMMENTS_TAB.tab" assertions="3" classname="ODBCAPTURE.tab" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_COMMENTS_TAB.tab
 Table created.
-=== DBI Completed at 2024-04-05T14:27:41 for a duration of .06 seconds (started at 2024-04-05T14:27:41)
+=== DBI Completed at 2024-04-06T21:06:37 for a duration of .22 seconds (started at 2024-04-06T21:06:37)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_COMMENTS_TAB.tabind" assertions="3" classname="ODBCAPTURE.tabind" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_COMMENTS_TAB.tabind
 Index created.
-=== DBI Completed at 2024-04-05T14:27:58 for a duration of .06 seconds (started at 2024-04-05T14:27:58)
+=== DBI Completed at 2024-04-06T21:06:57 for a duration of .07 seconds (started at 2024-04-06T21:06:57)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_COMMENTS_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -305,21 +305,21 @@ Index created.
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_COMMENTS_VIEW.vw
 View created.
 Warning: View created with compilation errors.
-=== DBI Completed at 2024-04-05T14:28:00 for a duration of .15 seconds (started at 2024-04-05T14:28:00)
+=== DBI Completed at 2024-04-06T21:06:59 for a duration of .13 seconds (started at 2024-04-06T21:06:59)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_CONTEXT_TAB.tab" assertions="3" classname="ODBCAPTURE.tab" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_CONTEXT_TAB.tab
 Table created.
-=== DBI Completed at 2024-04-05T14:27:42 for a duration of .08 seconds (started at 2024-04-05T14:27:41)
+=== DBI Completed at 2024-04-06T21:06:37 for a duration of .17 seconds (started at 2024-04-06T21:06:37)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_CONTEXT_TAB.tabind" assertions="3" classname="ODBCAPTURE.tabind" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_CONTEXT_TAB.tabind
 Index created.
-=== DBI Completed at 2024-04-05T14:27:58 for a duration of .21 seconds (started at 2024-04-05T14:27:58)
+=== DBI Completed at 2024-04-06T21:06:58 for a duration of .06 seconds (started at 2024-04-06T21:06:57)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_CONTEXT_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -327,21 +327,21 @@ Index created.
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_CONTEXT_VIEW.vw
 View created.
 View created.
-=== DBI Completed at 2024-04-05T14:28:00 for a duration of .11 seconds (started at 2024-04-05T14:28:00)
+=== DBI Completed at 2024-04-06T21:06:59 for a duration of .12 seconds (started at 2024-04-06T21:06:59)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_DATA_LOAD_TAB.tab" assertions="3" classname="ODBCAPTURE.tab" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_DATA_LOAD_TAB.tab
 Table created.
-=== DBI Completed at 2024-04-05T14:27:42 for a duration of .07 seconds (started at 2024-04-05T14:27:42)
+=== DBI Completed at 2024-04-06T21:06:37 for a duration of .08 seconds (started at 2024-04-06T21:06:37)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_DATA_LOAD_TAB.tabind" assertions="3" classname="ODBCAPTURE.tabind" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_DATA_LOAD_TAB.tabind
 Index created.
-=== DBI Completed at 2024-04-05T14:27:58 for a duration of .15 seconds (started at 2024-04-05T14:27:58)
+=== DBI Completed at 2024-04-06T21:06:58 for a duration of .07 seconds (started at 2024-04-06T21:06:58)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_DATA_LOAD_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -349,21 +349,21 @@ Index created.
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_DATA_LOAD_VIEW.vw
 View created.
 View created.
-=== DBI Completed at 2024-04-05T14:28:00 for a duration of .11 seconds (started at 2024-04-05T14:28:00)
+=== DBI Completed at 2024-04-06T21:07:00 for a duration of .15 seconds (started at 2024-04-06T21:06:59)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_FKEY_TAB.tab" assertions="3" classname="ODBCAPTURE.tab" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_FKEY_TAB.tab
 Table created.
-=== DBI Completed at 2024-04-05T14:27:42 for a duration of .06 seconds (started at 2024-04-05T14:27:42)
+=== DBI Completed at 2024-04-06T21:06:37 for a duration of .07 seconds (started at 2024-04-06T21:06:37)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_FKEY_TAB.tabind" assertions="3" classname="ODBCAPTURE.tabind" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_FKEY_TAB.tabind
 Index created.
-=== DBI Completed at 2024-04-05T14:27:59 for a duration of .06 seconds (started at 2024-04-05T14:27:59)
+=== DBI Completed at 2024-04-06T21:06:58 for a duration of .06 seconds (started at 2024-04-06T21:06:58)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_FKEY_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -371,21 +371,21 @@ Index created.
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_FKEY_VIEW.vw
 View created.
 View created.
-=== DBI Completed at 2024-04-05T14:28:00 for a duration of .13 seconds (started at 2024-04-05T14:28:00)
+=== DBI Completed at 2024-04-06T21:07:00 for a duration of .14 seconds (started at 2024-04-06T21:07:00)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_INDEX_TAB.tab" assertions="3" classname="ODBCAPTURE.tab" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_INDEX_TAB.tab
 Table created.
-=== DBI Completed at 2024-04-05T14:27:42 for a duration of .06 seconds (started at 2024-04-05T14:27:42)
+=== DBI Completed at 2024-04-06T21:06:37 for a duration of .06 seconds (started at 2024-04-06T21:06:37)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_INDEX_TAB.tabind" assertions="3" classname="ODBCAPTURE.tabind" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_INDEX_TAB.tabind
 Index created.
-=== DBI Completed at 2024-04-05T14:27:59 for a duration of .06 seconds (started at 2024-04-05T14:27:59)
+=== DBI Completed at 2024-04-06T21:06:58 for a duration of .06 seconds (started at 2024-04-06T21:06:58)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_INDEX_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -393,21 +393,21 @@ Index created.
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_INDEX_VIEW.vw
 View created.
 View created.
-=== DBI Completed at 2024-04-05T14:28:01 for a duration of .1 seconds (started at 2024-04-05T14:28:00)
+=== DBI Completed at 2024-04-06T21:07:00 for a duration of .11 seconds (started at 2024-04-06T21:07:00)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_OBJECT_TAB.tab" assertions="3" classname="ODBCAPTURE.tab" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_OBJECT_TAB.tab
 Table created.
-=== DBI Completed at 2024-04-05T14:27:42 for a duration of .06 seconds (started at 2024-04-05T14:27:42)
+=== DBI Completed at 2024-04-06T21:06:37 for a duration of .06 seconds (started at 2024-04-06T21:06:37)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_OBJECT_TAB.tabind" assertions="3" classname="ODBCAPTURE.tabind" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_OBJECT_TAB.tabind
 Index created.
-=== DBI Completed at 2024-04-05T14:27:59 for a duration of .07 seconds (started at 2024-04-05T14:27:59)
+=== DBI Completed at 2024-04-06T21:06:58 for a duration of .06 seconds (started at 2024-04-06T21:06:58)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_OBJECT_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -415,14 +415,14 @@ Index created.
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_OBJECT_VIEW.vw
 View created.
 View created.
-=== DBI Completed at 2024-04-05T14:28:01 for a duration of .16 seconds (started at 2024-04-05T14:28:01)
+=== DBI Completed at 2024-04-06T21:07:00 for a duration of .16 seconds (started at 2024-04-06T21:07:00)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_SYNONYM_TAB.tab" assertions="3" classname="ODBCAPTURE.tab" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_SYNONYM_TAB.tab
 Table created.
-=== DBI Completed at 2024-04-05T14:27:42 for a duration of .07 seconds (started at 2024-04-05T14:27:42)
+=== DBI Completed at 2024-04-06T21:06:38 for a duration of .07 seconds (started at 2024-04-06T21:06:38)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_SYNONYM_TAB.tabind" assertions="4" classname="ODBCAPTURE.tabind" status="PASS" time="0">
@@ -430,7 +430,7 @@ Table created.
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_SYNONYM_TAB.tabind
 Index created.
 Index created.
-=== DBI Completed at 2024-04-05T14:27:59 for a duration of .13 seconds (started at 2024-04-05T14:27:59)
+=== DBI Completed at 2024-04-06T21:06:58 for a duration of .1 seconds (started at 2024-04-06T21:06:58)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_SYNONYM_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -438,14 +438,14 @@ Index created.
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_SYNONYM_VIEW.vw
 View created.
 View created.
-=== DBI Completed at 2024-04-05T14:28:01 for a duration of .1 seconds (started at 2024-04-05T14:28:01)
+=== DBI Completed at 2024-04-06T21:07:00 for a duration of .09 seconds (started at 2024-04-06T21:07:00)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_TRIGGER_TAB.tab" assertions="3" classname="ODBCAPTURE.tab" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_TRIGGER_TAB.tab
 Table created.
-=== DBI Completed at 2024-04-05T14:27:42 for a duration of .06 seconds (started at 2024-04-05T14:27:42)
+=== DBI Completed at 2024-04-06T21:06:38 for a duration of .06 seconds (started at 2024-04-06T21:06:38)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_TRIGGER_TAB.tabind" assertions="4" classname="ODBCAPTURE.tabind" status="PASS" time="0">
@@ -453,7 +453,7 @@ Table created.
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_TRIGGER_TAB.tabind
 Index created.
 Index created.
-=== DBI Completed at 2024-04-05T14:27:59 for a duration of .12 seconds (started at 2024-04-05T14:27:59)
+=== DBI Completed at 2024-04-06T21:06:58 for a duration of .42 seconds (started at 2024-04-06T21:06:58)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/OBJ_INSTALL_TRIGGER_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -461,20 +461,20 @@ Index created.
 === DBI Started: ODBCAPTURE/OBJ_INSTALL_TRIGGER_VIEW.vw
 View created.
 View created.
-=== DBI Completed at 2024-04-05T14:28:01 for a duration of .14 seconds (started at 2024-04-05T14:28:01)
+=== DBI Completed at 2024-04-06T21:07:00 for a duration of .11 seconds (started at 2024-04-06T21:07:00)
       </system-out>
     </testcase>
-    <testcase name="ODBCAPTURE/OTYPE_CONF.cdl" assertions="8" classname="ODBCAPTURE.cdl" status="PASS" time="2">
+    <testcase name="ODBCAPTURE/OTYPE_CONF.cdl" assertions="8" classname="ODBCAPTURE.cdl" status="PASS" time="3">
       <system-out>
 === DBI Started: ODBCAPTURE/OTYPE_CONF.cdl
 Disable Triggers and Foreign Keys
 PL/SQL procedure successfully completed.
 sqlldr_control=ODBCAPTURE/OTYPE_CONF.ctl
 PL/SQL procedure successfully completed.
-=== DBI Completed at 2024-04-05T14:27:51 for a duration of 2.27 seconds (started at 2024-04-05T14:27:48)
+=== DBI Completed at 2024-04-06T21:06:48 for a duration of 2.91 seconds (started at 2024-04-06T21:06:46)
 ### SQL*Loader Log File: ODBCAPTURE/OTYPE_CONF.log
 
-SQL*Loader: Release 21.0.0.0.0 - Production on Fri Apr 5 14:27:50 2024
+SQL*Loader: Release 21.0.0.0.0 - Production on Sat Apr 6 21:06:47 2024
 Version 21.3.0.0.0
 Copyright (c) 1982, 2021, Oracle and/or its affiliates.  All rights reserved.
 Control File:   ODBCAPTURE/OTYPE_CONF.ctl
@@ -516,9 +516,9 @@ Total logical records skipped:          1
 Total logical records read:            35
 Total logical records rejected:         0
 Total logical records discarded:        0
-Run began on Fri Apr 05 14:27:50 2024
-Run ended on Fri Apr 05 14:27:50 2024
-Elapsed time was:     00:00:00.36
+Run began on Sat Apr 06 21:06:47 2024
+Run ended on Sat Apr 06 21:06:48 2024
+Elapsed time was:     00:00:00.34
 CPU time was:         00:00:00.04
 
       </system-out>
@@ -538,7 +538,7 @@ Comment created.
 Comment created.
 Comment created.
 Comment created.
-=== DBI Completed at 2024-04-05T14:27:42 for a duration of .36 seconds (started at 2024-04-05T14:27:42)
+=== DBI Completed at 2024-04-06T21:06:38 for a duration of .36 seconds (started at 2024-04-06T21:06:38)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/PRIV_OBJ_DIR_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -546,7 +546,7 @@ Comment created.
 === DBI Started: ODBCAPTURE/PRIV_OBJ_DIR_VIEW.vw
 View created.
 Warning: View created with compilation errors.
-=== DBI Completed at 2024-04-05T14:28:01 for a duration of .13 seconds (started at 2024-04-05T14:28:01)
+=== DBI Completed at 2024-04-06T21:07:00 for a duration of .12 seconds (started at 2024-04-06T21:07:00)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/PRIV_OBJ_INSTALL_VW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -554,7 +554,7 @@ Warning: View created with compilation errors.
 === DBI Started: ODBCAPTURE/PRIV_OBJ_INSTALL_VW.vw
 View created.
 Warning: View created with compilation errors.
-=== DBI Completed at 2024-04-05T14:28:01 for a duration of .13 seconds (started at 2024-04-05T14:28:01)
+=== DBI Completed at 2024-04-06T21:07:01 for a duration of .17 seconds (started at 2024-04-06T21:07:00)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/PRIV_OBJ_JAVA_FG_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -562,7 +562,7 @@ Warning: View created with compilation errors.
 === DBI Started: ODBCAPTURE/PRIV_OBJ_JAVA_FG_VIEW.vw
 View created.
 Warning: View created with compilation errors.
-=== DBI Completed at 2024-04-05T14:28:01 for a duration of .1 seconds (started at 2024-04-05T14:28:01)
+=== DBI Completed at 2024-04-06T21:07:01 for a duration of .13 seconds (started at 2024-04-06T21:07:01)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/PRIV_OBJ_QUEUE_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -570,7 +570,7 @@ Warning: View created with compilation errors.
 === DBI Started: ODBCAPTURE/PRIV_OBJ_QUEUE_VIEW.vw
 View created.
 Warning: View created with compilation errors.
-=== DBI Completed at 2024-04-05T14:28:02 for a duration of .11 seconds (started at 2024-04-05T14:28:01)
+=== DBI Completed at 2024-04-06T21:07:01 for a duration of .14 seconds (started at 2024-04-06T21:07:01)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/PRIV_OBJ_XDBACL_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -578,7 +578,7 @@ Warning: View created with compilation errors.
 === DBI Started: ODBCAPTURE/PRIV_OBJ_XDBACL_VIEW.vw
 View created.
 Warning: View created with compilation errors.
-=== DBI Completed at 2024-04-05T14:28:02 for a duration of .11 seconds (started at 2024-04-05T14:28:02)
+=== DBI Completed at 2024-04-06T21:07:01 for a duration of .13 seconds (started at 2024-04-06T21:07:01)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/PRIV_QUEUE_REGISTER_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -586,7 +586,7 @@ Warning: View created with compilation errors.
 === DBI Started: ODBCAPTURE/PRIV_QUEUE_REGISTER_VIEW.vw
 View created.
 Warning: View created with compilation errors.
-=== DBI Completed at 2024-04-05T14:28:02 for a duration of .12 seconds (started at 2024-04-05T14:28:02)
+=== DBI Completed at 2024-04-06T21:07:01 for a duration of .12 seconds (started at 2024-04-06T21:07:01)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/PRIV_QUEUE_SUBSCRIBE_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -594,7 +594,7 @@ Warning: View created with compilation errors.
 === DBI Started: ODBCAPTURE/PRIV_QUEUE_SUBSCRIBE_VIEW.vw
 View created.
 Warning: View created with compilation errors.
-=== DBI Completed at 2024-04-05T14:28:02 for a duration of .16 seconds (started at 2024-04-05T14:28:02)
+=== DBI Completed at 2024-04-06T21:07:01 for a duration of .15 seconds (started at 2024-04-06T21:07:01)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/PRIV_QUEUE_SYSPRIVS_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -602,7 +602,7 @@ Warning: View created with compilation errors.
 === DBI Started: ODBCAPTURE/PRIV_QUEUE_SYSPRIVS_VIEW.vw
 View created.
 Warning: View created with compilation errors.
-=== DBI Completed at 2024-04-05T14:28:02 for a duration of .1 seconds (started at 2024-04-05T14:28:02)
+=== DBI Completed at 2024-04-06T21:07:01 for a duration of .12 seconds (started at 2024-04-06T21:07:01)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/PRIV_ROLE_PRIVILEGES_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -610,7 +610,7 @@ Warning: View created with compilation errors.
 === DBI Started: ODBCAPTURE/PRIV_ROLE_PRIVILEGES_VIEW.vw
 View created.
 Warning: View created with compilation errors.
-=== DBI Completed at 2024-04-05T14:28:02 for a duration of .13 seconds (started at 2024-04-05T14:28:02)
+=== DBI Completed at 2024-04-06T21:07:02 for a duration of .14 seconds (started at 2024-04-06T21:07:01)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/PRIV_SYSOBJ_PRIVILEGES_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -618,7 +618,7 @@ Warning: View created with compilation errors.
 === DBI Started: ODBCAPTURE/PRIV_SYSOBJ_PRIVILEGES_VIEW.vw
 View created.
 View created.
-=== DBI Completed at 2024-04-05T14:28:02 for a duration of .12 seconds (started at 2024-04-05T14:28:02)
+=== DBI Completed at 2024-04-06T21:07:02 for a duration of .13 seconds (started at 2024-04-06T21:07:02)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/PRIV_SYSTEM_PRIVILEGES_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -626,20 +626,20 @@ View created.
 === DBI Started: ODBCAPTURE/PRIV_SYSTEM_PRIVILEGES_VIEW.vw
 View created.
 Warning: View created with compilation errors.
-=== DBI Completed at 2024-04-05T14:28:02 for a duration of .12 seconds (started at 2024-04-05T14:28:02)
+=== DBI Completed at 2024-04-06T21:07:02 for a duration of .12 seconds (started at 2024-04-06T21:07:02)
       </system-out>
     </testcase>
-    <testcase name="ODBCAPTURE/ROLE_CONF.cdl" assertions="8" classname="ODBCAPTURE.cdl" status="PASS" time="2">
+    <testcase name="ODBCAPTURE/ROLE_CONF.cdl" assertions="8" classname="ODBCAPTURE.cdl" status="PASS" time="3">
       <system-out>
 === DBI Started: ODBCAPTURE/ROLE_CONF.cdl
 Disable Triggers and Foreign Keys
 PL/SQL procedure successfully completed.
 sqlldr_control=ODBCAPTURE/ROLE_CONF.ctl
 PL/SQL procedure successfully completed.
-=== DBI Completed at 2024-04-05T14:27:53 for a duration of 2.32 seconds (started at 2024-04-05T14:27:51)
+=== DBI Completed at 2024-04-06T21:06:51 for a duration of 2.9 seconds (started at 2024-04-06T21:06:48)
 ### SQL*Loader Log File: ODBCAPTURE/ROLE_CONF.log
 
-SQL*Loader: Release 21.0.0.0.0 - Production on Fri Apr 5 14:27:52 2024
+SQL*Loader: Release 21.0.0.0.0 - Production on Sat Apr 6 21:06:50 2024
 Version 21.3.0.0.0
 Copyright (c) 1982, 2021, Oracle and/or its affiliates.  All rights reserved.
 Control File:   ODBCAPTURE/ROLE_CONF.ctl
@@ -676,8 +676,8 @@ Total logical records skipped:          1
 Total logical records read:           105
 Total logical records rejected:         0
 Total logical records discarded:        0
-Run began on Fri Apr 05 14:27:52 2024
-Run ended on Fri Apr 05 14:27:52 2024
+Run began on Sat Apr 06 21:06:50 2024
+Run ended on Sat Apr 06 21:06:51 2024
 Elapsed time was:     00:00:00.35
 CPU time was:         00:00:00.04
 
@@ -692,41 +692,41 @@ Comment created.
 Comment created.
 Comment created.
 Comment created.
-=== DBI Completed at 2024-04-05T14:27:43 for a duration of .24 seconds (started at 2024-04-05T14:27:42)
+=== DBI Completed at 2024-04-06T21:06:38 for a duration of .22 seconds (started at 2024-04-06T21:06:38)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/ROLE_CONF.tabfk" assertions="3" classname="ODBCAPTURE.tabfk" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/ROLE_CONF.tabfk
 Table altered.
-=== DBI Completed at 2024-04-05T14:28:05 for a duration of .07 seconds (started at 2024-04-05T14:28:05)
+=== DBI Completed at 2024-04-06T21:07:04 for a duration of .06 seconds (started at 2024-04-06T21:07:04)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/ROOT_SCRIPTS.pbody" assertions="3" classname="ODBCAPTURE.pbody" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/ROOT_SCRIPTS.pbody
 Package body created.
-=== DBI Completed at 2024-04-05T14:28:04 for a duration of .09 seconds (started at 2024-04-05T14:28:04)
+=== DBI Completed at 2024-04-06T21:07:04 for a duration of .1 seconds (started at 2024-04-06T21:07:04)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/ROOT_SCRIPTS.pspec" assertions="3" classname="ODBCAPTURE.pspec" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/ROOT_SCRIPTS.pspec
 Package created.
-=== DBI Completed at 2024-04-05T14:27:40 for a duration of .06 seconds (started at 2024-04-05T14:27:40)
+=== DBI Completed at 2024-04-06T21:06:36 for a duration of .07 seconds (started at 2024-04-06T21:06:36)
       </system-out>
     </testcase>
-    <testcase name="ODBCAPTURE/SCHEMA_CONF.cdl" assertions="8" classname="ODBCAPTURE.cdl" status="PASS" time="2">
+    <testcase name="ODBCAPTURE/SCHEMA_CONF.cdl" assertions="8" classname="ODBCAPTURE.cdl" status="PASS" time="3">
       <system-out>
 === DBI Started: ODBCAPTURE/SCHEMA_CONF.cdl
 Disable Triggers and Foreign Keys
 PL/SQL procedure successfully completed.
 sqlldr_control=ODBCAPTURE/SCHEMA_CONF.ctl
 PL/SQL procedure successfully completed.
-=== DBI Completed at 2024-04-05T14:27:55 for a duration of 2.27 seconds (started at 2024-04-05T14:27:53)
+=== DBI Completed at 2024-04-06T21:06:54 for a duration of 2.85 seconds (started at 2024-04-06T21:06:51)
 ### SQL*Loader Log File: ODBCAPTURE/SCHEMA_CONF.log
 
-SQL*Loader: Release 21.0.0.0.0 - Production on Fri Apr 5 14:27:54 2024
+SQL*Loader: Release 21.0.0.0.0 - Production on Sat Apr 6 21:06:53 2024
 Version 21.3.0.0.0
 Copyright (c) 1982, 2021, Oracle and/or its affiliates.  All rights reserved.
 Control File:   ODBCAPTURE/SCHEMA_CONF.ctl
@@ -765,14 +765,14 @@ Total logical records skipped:          1
 Total logical records read:             9
 Total logical records rejected:         0
 Total logical records discarded:        0
-Run began on Fri Apr 05 14:27:54 2024
-Run ended on Fri Apr 05 14:27:55 2024
-Elapsed time was:     00:00:00.37
-CPU time was:         00:00:00.04
+Run began on Sat Apr 06 21:06:53 2024
+Run ended on Sat Apr 06 21:06:53 2024
+Elapsed time was:     00:00:00.34
+CPU time was:         00:00:00.03
 
       </system-out>
     </testcase>
-    <testcase name="ODBCAPTURE/SCHEMA_CONF.tab" assertions="12" classname="ODBCAPTURE.tab" status="PASS" time="1">
+    <testcase name="ODBCAPTURE/SCHEMA_CONF.tab" assertions="12" classname="ODBCAPTURE.tab" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/SCHEMA_CONF.tab
 Table created.
@@ -785,14 +785,14 @@ Comment created.
 Comment created.
 Comment created.
 Comment created.
-=== DBI Completed at 2024-04-05T14:27:43 for a duration of .62 seconds (started at 2024-04-05T14:27:43)
+=== DBI Completed at 2024-04-06T21:06:39 for a duration of .34 seconds (started at 2024-04-06T21:06:38)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/SCHEMA_CONF.tabfk" assertions="3" classname="ODBCAPTURE.tabfk" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/SCHEMA_CONF.tabfk
 Table altered.
-=== DBI Completed at 2024-04-05T14:28:05 for a duration of .07 seconds (started at 2024-04-05T14:28:05)
+=== DBI Completed at 2024-04-06T21:07:04 for a duration of .07 seconds (started at 2024-04-06T21:07:04)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/SCHEMA_OBJECTS_VW.vw" assertions="9" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -805,20 +805,20 @@ Comment created.
 Comment created.
 Comment created.
 Comment created.
-=== DBI Completed at 2024-04-05T14:28:03 for a duration of .21 seconds (started at 2024-04-05T14:28:02)
+=== DBI Completed at 2024-04-06T21:07:02 for a duration of .22 seconds (started at 2024-04-06T21:07:02)
       </system-out>
     </testcase>
-    <testcase name="ODBCAPTURE/TYPE_CONF.cdl" assertions="8" classname="ODBCAPTURE.cdl" status="PASS" time="2">
+    <testcase name="ODBCAPTURE/TYPE_CONF.cdl" assertions="8" classname="ODBCAPTURE.cdl" status="PASS" time="3">
       <system-out>
 === DBI Started: ODBCAPTURE/TYPE_CONF.cdl
 Disable Triggers and Foreign Keys
 PL/SQL procedure successfully completed.
 sqlldr_control=ODBCAPTURE/TYPE_CONF.ctl
 PL/SQL procedure successfully completed.
-=== DBI Completed at 2024-04-05T14:27:58 for a duration of 2.39 seconds (started at 2024-04-05T14:27:55)
+=== DBI Completed at 2024-04-06T21:06:57 for a duration of 2.83 seconds (started at 2024-04-06T21:06:54)
 ### SQL*Loader Log File: ODBCAPTURE/TYPE_CONF.log
 
-SQL*Loader: Release 21.0.0.0.0 - Production on Fri Apr 5 14:27:57 2024
+SQL*Loader: Release 21.0.0.0.0 - Production on Sat Apr 6 21:06:56 2024
 Version 21.3.0.0.0
 Copyright (c) 1982, 2021, Oracle and/or its affiliates.  All rights reserved.
 Control File:   ODBCAPTURE/TYPE_CONF.ctl
@@ -855,10 +855,10 @@ Total logical records skipped:          1
 Total logical records read:             3
 Total logical records rejected:         0
 Total logical records discarded:        0
-Run began on Fri Apr 05 14:27:57 2024
-Run ended on Fri Apr 05 14:27:57 2024
-Elapsed time was:     00:00:00.35
-CPU time was:         00:00:00.05
+Run began on Sat Apr 06 21:06:56 2024
+Run ended on Sat Apr 06 21:06:56 2024
+Elapsed time was:     00:00:00.37
+CPU time was:         00:00:00.04
 
       </system-out>
     </testcase>
@@ -871,14 +871,14 @@ Table altered.
 Comment created.
 Comment created.
 Comment created.
-=== DBI Completed at 2024-04-05T14:27:44 for a duration of .25 seconds (started at 2024-04-05T14:27:43)
+=== DBI Completed at 2024-04-06T21:06:39 for a duration of .29 seconds (started at 2024-04-06T21:06:39)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/TYPE_CONF.tabfk" assertions="3" classname="ODBCAPTURE.tabfk" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/TYPE_CONF.tabfk
 Table altered.
-=== DBI Completed at 2024-04-05T14:28:05 for a duration of .07 seconds (started at 2024-04-05T14:28:05)
+=== DBI Completed at 2024-04-06T21:07:05 for a duration of .08 seconds (started at 2024-04-06T21:07:04)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/UOR_INSTALL_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -886,43 +886,43 @@ Table altered.
 === DBI Started: ODBCAPTURE/UOR_INSTALL_VIEW.vw
 View created.
 View created.
-=== DBI Completed at 2024-04-05T14:28:03 for a duration of .09 seconds (started at 2024-04-05T14:28:03)
+=== DBI Completed at 2024-04-06T21:07:02 for a duration of .1 seconds (started at 2024-04-06T21:07:02)
       </system-out>
     </testcase>
-    <testcase name="ODBCAPTURE/ZIP_FILES.tab" assertions="4" classname="ODBCAPTURE.tab" status="PASS" time="0">
+    <testcase name="ODBCAPTURE/ZIP_FILES.tab" assertions="4" classname="ODBCAPTURE.tab" status="PASS" time="1">
       <system-out>
 === DBI Started: ODBCAPTURE/ZIP_FILES.tab
 Table created.
 Table altered.
-=== DBI Completed at 2024-04-05T14:27:44 for a duration of .13 seconds (started at 2024-04-05T14:27:44)
+=== DBI Completed at 2024-04-06T21:06:40 for a duration of .59 seconds (started at 2024-04-06T21:06:39)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/ZIP_UTIL_PKG.pbody" assertions="3" classname="ODBCAPTURE.pbody" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/ZIP_UTIL_PKG.pbody
 Package body created.
-=== DBI Completed at 2024-04-05T14:28:04 for a duration of .14 seconds (started at 2024-04-05T14:28:04)
+=== DBI Completed at 2024-04-06T21:07:04 for a duration of .13 seconds (started at 2024-04-06T21:07:04)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/ZIP_UTIL_PKG.pspec" assertions="3" classname="ODBCAPTURE.pspec" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/ZIP_UTIL_PKG.pspec
 Package created.
-=== DBI Completed at 2024-04-05T14:27:40 for a duration of .07 seconds (started at 2024-04-05T14:27:40)
+=== DBI Completed at 2024-04-06T21:06:36 for a duration of .05 seconds (started at 2024-04-06T21:06:36)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/ZX_OBJ_INSTALL_TAB.tab" assertions="3" classname="ODBCAPTURE.tab" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/ZX_OBJ_INSTALL_TAB.tab
 Table created.
-=== DBI Completed at 2024-04-05T14:27:44 for a duration of .08 seconds (started at 2024-04-05T14:27:44)
+=== DBI Completed at 2024-04-06T21:06:40 for a duration of .07 seconds (started at 2024-04-06T21:06:40)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/ZX_OBJ_INSTALL_TAB.tabind" assertions="3" classname="ODBCAPTURE.tabind" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/ZX_OBJ_INSTALL_TAB.tabind
 Index created.
-=== DBI Completed at 2024-04-05T14:27:59 for a duration of .07 seconds (started at 2024-04-05T14:27:59)
+=== DBI Completed at 2024-04-06T21:06:58 for a duration of .06 seconds (started at 2024-04-06T21:06:58)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/ZX_OBJ_INSTALL_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -930,21 +930,21 @@ Index created.
 === DBI Started: ODBCAPTURE/ZX_OBJ_INSTALL_VIEW.vw
 View created.
 View created.
-=== DBI Completed at 2024-04-05T14:28:03 for a duration of .1 seconds (started at 2024-04-05T14:28:03)
+=== DBI Completed at 2024-04-06T21:07:02 for a duration of .12 seconds (started at 2024-04-06T21:07:02)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/ZX_PRIV_ALL_TAB.tab" assertions="3" classname="ODBCAPTURE.tab" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/ZX_PRIV_ALL_TAB.tab
 Table created.
-=== DBI Completed at 2024-04-05T14:27:44 for a duration of .06 seconds (started at 2024-04-05T14:27:44)
+=== DBI Completed at 2024-04-06T21:06:40 for a duration of .05 seconds (started at 2024-04-06T21:06:40)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/ZX_PRIV_ALL_TAB.tabind" assertions="3" classname="ODBCAPTURE.tabind" status="PASS" time="0">
       <system-out>
 === DBI Started: ODBCAPTURE/ZX_PRIV_ALL_TAB.tabind
 Index created.
-=== DBI Completed at 2024-04-05T14:27:59 for a duration of .06 seconds (started at 2024-04-05T14:27:59)
+=== DBI Completed at 2024-04-06T21:06:59 for a duration of .06 seconds (started at 2024-04-06T21:06:58)
       </system-out>
     </testcase>
     <testcase name="ODBCAPTURE/ZX_PRIV_ALL_VIEW.vw" assertions="4" classname="ODBCAPTURE.vw" status="PASS" time="0">
@@ -952,11 +952,11 @@ Index created.
 === DBI Started: ODBCAPTURE/ZX_PRIV_ALL_VIEW.vw
 View created.
 View created.
-=== DBI Completed at 2024-04-05T14:28:03 for a duration of .22 seconds (started at 2024-04-05T14:28:03)
+=== DBI Completed at 2024-04-06T21:07:03 for a duration of .22 seconds (started at 2024-04-06T21:07:02)
       </system-out>
     </testcase>
   </testsuite>
-  <testsuite name="install_sys.log" tests="1" errors="0" hostname="EE213CDB" id="1" time="4" timestamp="2024-04-05T14:28:06">
+  <testsuite name="install_sys.log" tests="1" errors="0" hostname="EE213CDB" id="1" time="4" timestamp="2024-04-06T21:07:06">
     <testcase name="SYS/ODBCAPTURE.usr" assertions="91" classname="SYS.usr" status="PASS" time="4">
       <system-out>
 === DBI Started: SYS/ODBCAPTURE.usr
@@ -1049,11 +1049,11 @@ Grant succeeded.
 Grant succeeded.
 Grant succeeded.
 Grant succeeded.
-=== DBI Completed at 2024-04-05T14:27:39 for a duration of 3.88 seconds (started at 2024-04-05T14:27:35)
+=== DBI Completed at 2024-04-06T21:06:35 for a duration of 4.3 seconds (started at 2024-04-06T21:06:30)
       </system-out>
     </testcase>
   </testsuite>
-  <testsuite name="install_system.log" tests="2" errors="0" hostname="EE213CDB" id="3" time="0" timestamp="2024-04-05T14:28:06">
+  <testsuite name="install_system.log" tests="2" errors="0" hostname="EE213CDB" id="3" time="0" timestamp="2024-04-06T21:07:06">
     <testcase name="SYSTEM/GRAB_SCRIPTS_DIR.dir" assertions="6" classname="SYSTEM.dir" status="PASS" time="0">
       <system-out>
 === DBI Started: SYSTEM/GRAB_SCRIPTS_DIR.dir
@@ -1061,7 +1061,7 @@ Directory created.
 Grant succeeded.
 Grant succeeded.
 Grant succeeded.
-=== DBI Completed at 2024-04-05T14:27:39 for a duration of .16 seconds (started at 2024-04-05T14:27:39)
+=== DBI Completed at 2024-04-06T21:06:35 for a duration of .16 seconds (started at 2024-04-06T21:06:35)
       </system-out>
     </testcase>
     <testcase name="SYSTEM/ODBCAPTURE_usr.grnt" assertions="10" classname="SYSTEM.grnt" status="PASS" time="0">
@@ -1075,7 +1075,7 @@ Grant succeeded.
 Grant succeeded.
 Grant succeeded.
 Grant succeeded.
-=== DBI Completed at 2024-04-05T14:27:40 for a duration of .29 seconds (started at 2024-04-05T14:27:39)
+=== DBI Completed at 2024-04-06T21:06:35 for a duration of .3 seconds (started at 2024-04-06T21:06:35)
       </system-out>
     </testcase>
   </testsuite>
