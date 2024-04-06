@@ -42,6 +42,9 @@ create view "ODBCAPTURE"."AQ_SYSTEM_PRIVS_VW"
 --DBMS_METADATA:ODBCAPTURE.AQ_SYSTEM_PRIVS_VW
 
 
+--  Grants
+
+
 --  Synonyms
 
 

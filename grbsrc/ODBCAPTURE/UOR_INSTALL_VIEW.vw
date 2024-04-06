@@ -46,6 +46,9 @@ select rl.install_type
 --DBMS_METADATA:ODBCAPTURE.UOR_INSTALL_VIEW
 
 
+--  Grants
+
+
 --  Synonyms
 
 

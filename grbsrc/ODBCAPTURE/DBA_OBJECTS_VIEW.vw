@@ -117,6 +117,9 @@ select sco.install_type          OBJECT_OWNER_INSTALL_TYPE
 --DBMS_METADATA:ODBCAPTURE.DBA_OBJECTS_VIEW
 
 
+--  Grants
+
+
 --  Synonyms
 
 

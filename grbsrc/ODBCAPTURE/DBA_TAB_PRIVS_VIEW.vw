@@ -53,6 +53,9 @@ create view "ODBCAPTURE"."DBA_TAB_PRIVS_VIEW"
 --DBMS_METADATA:ODBCAPTURE.DBA_TAB_PRIVS_VIEW
 
 
+--  Grants
+
+
 --  Synonyms
 
 

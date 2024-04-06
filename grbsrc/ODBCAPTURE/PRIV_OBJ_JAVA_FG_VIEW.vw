@@ -61,6 +61,9 @@ create view "ODBCAPTURE"."PRIV_OBJ_JAVA_FG_VIEW"
 --DBMS_METADATA:ODBCAPTURE.PRIV_OBJ_JAVA_FG_VIEW
 
 
+--  Grants
+
+
 --  Synonyms
 
 

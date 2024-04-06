@@ -81,6 +81,9 @@ create view "ODBCAPTURE"."OBJ_INSTALL_FKEY_VIEW"
 --DBMS_METADATA:ODBCAPTURE.OBJ_INSTALL_FKEY_VIEW
 
 
+--  Grants
+
+
 --  Synonyms
 
 

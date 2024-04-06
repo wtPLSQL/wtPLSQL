@@ -64,6 +64,9 @@ select d.install_type
 --DBMS_METADATA:ODBCAPTURE.OBJ_INSTALL_COMMENTS_VIEW
 
 
+--  Grants
+
+
 --  Synonyms
 
 

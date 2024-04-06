@@ -35,7 +35,7 @@ create view "ODBCAPTURE"."PRIV_QUEUE_REGISTER_VIEW"
        end                               INSTALL_TYPE_SELECTOR
       ,aq.install_type                   QUEUE_INSTALL_TYPE
       ,aq.object_owner                   QUEUE_OWNER
-      ,aq.object_name                    QUEUE_NAME         
+      ,aq.object_name                    QUEUE_NAME
       ,'QUEUE'                           OBJECT_TYPE
       ,uor.install_type                  CONSUMER_INSTALL_TYPE
       ,uor.user_or_role                  CONSUMER_NAME
@@ -76,6 +76,9 @@ create view "ODBCAPTURE"."PRIV_QUEUE_REGISTER_VIEW"
 --  Comments
 
 --DBMS_METADATA:ODBCAPTURE.PRIV_QUEUE_REGISTER_VIEW
+
+
+--  Grants
 
 
 --  Synonyms

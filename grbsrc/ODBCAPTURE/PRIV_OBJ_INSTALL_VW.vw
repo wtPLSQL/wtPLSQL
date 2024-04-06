@@ -73,6 +73,9 @@ create view "ODBCAPTURE"."PRIV_OBJ_INSTALL_VW"
 --DBMS_METADATA:ODBCAPTURE.PRIV_OBJ_INSTALL_VW
 
 
+--  Grants
+
+
 --  Synonyms
 
 

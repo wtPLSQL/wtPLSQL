@@ -44,6 +44,9 @@ create view "ODBCAPTURE"."SCHEMA_OBJECTS_VW"
    COMMENT ON TABLE "ODBCAPTURE"."SCHEMA_OBJECTS_VW"  IS 'All Installation Object Types in each Non-System Schema for all Installation Types.';
 
 
+--  Grants
+
+
 --  Synonyms
 
 

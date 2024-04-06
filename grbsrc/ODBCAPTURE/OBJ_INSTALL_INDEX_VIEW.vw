@@ -70,6 +70,9 @@ create view "ODBCAPTURE"."OBJ_INSTALL_INDEX_VIEW"
 --DBMS_METADATA:ODBCAPTURE.OBJ_INSTALL_INDEX_VIEW
 
 
+--  Grants
+
+
 --  Synonyms
 
 

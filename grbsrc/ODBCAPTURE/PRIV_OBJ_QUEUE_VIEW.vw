@@ -79,6 +79,9 @@ create view "ODBCAPTURE"."PRIV_OBJ_QUEUE_VIEW"
 --DBMS_METADATA:ODBCAPTURE.PRIV_OBJ_QUEUE_VIEW
 
 
+--  Grants
+
+
 --  Synonyms
 
 

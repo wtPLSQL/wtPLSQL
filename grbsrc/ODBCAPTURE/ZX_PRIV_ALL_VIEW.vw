@@ -95,6 +95,9 @@ select install_type
 --DBMS_METADATA:ODBCAPTURE.ZX_PRIV_ALL_VIEW
 
 
+--  Grants
+
+
 --  Synonyms
 
 

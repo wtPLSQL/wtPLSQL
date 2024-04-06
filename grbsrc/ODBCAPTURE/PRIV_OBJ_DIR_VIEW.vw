@@ -71,7 +71,7 @@ select uor.install_type
       ,NULL                    ONAME_FILTER
       ,'sys'                   DIRECTORY_INSTALL_TYPE
       ,'SYS'                   DIRECTORY_OWNER
-      ,dir.directory_name 
+      ,dir.directory_name
       ,'DIRECTORY'             OBJECT_TYPE
       ,dir.directory_path      DIRECTORY_PATH
       ,uor.install_type        GRANTEE_INSTALL_TYPE
@@ -106,6 +106,9 @@ select "INSTALL_TYPE","INSTALL_TIMING","ONAME_FILTER","DIRECTORY_INSTALL_TYPE","
 --  Comments
 
 --DBMS_METADATA:ODBCAPTURE.PRIV_OBJ_DIR_VIEW
+
+
+--  Grants
 
 
 --  Synonyms
