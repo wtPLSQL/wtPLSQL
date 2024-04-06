@@ -145,7 +145,7 @@ $THEN
          msg_in          => 'Create the Database Link',
          check_call_in   => 'begin wt_job.create_db_link(''' ||
                                    g_current_user || ''',''' ||
-                                   lower(g_current_user) || '''); end;',
+                                   upper(g_current_user) || '''); end;',
          against_exc_in  => '');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (

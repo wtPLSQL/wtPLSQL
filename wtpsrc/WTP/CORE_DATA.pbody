@@ -193,7 +193,7 @@ is
    l_results_rec      results_rec_type;
    l_results_recNULL  results_rec_type;
    l_tcases_rec       tcases_rec_type;
-   l_current_tstamp   timestamp(6) := systimestamp;
+   l_current_tstamp   timestamp(6) with local time zone := systimestamp;
    l_interval_buff    interval day(9) to second(6);
 begin
    ------------------------------------------------------------
@@ -388,9 +388,9 @@ $THEN
          (msg_in          => 'l_run_recTEST.asrt_max_msec'
          ,check_this_in   =>  l_run_recTEST.asrt_max_msec);
       wt_assert.this
-         (msg_in          => 'l_run_recTEST.asrt_max_msec <= ' ||
+         (msg_in          => 'l_run_recTEST.asrt_max_msec >= ' ||
                              'l_run_recSAVE.asrt_max_msec'
-         ,check_this_in   =>  l_run_recTEST.asrt_max_msec <=
+         ,check_this_in   =>  l_run_recTEST.asrt_max_msec >=
                               l_run_recSAVE.asrt_max_msec);
       --------------------------------------  WTPLSQL Testing --
       -- l_tcases_aa Testing

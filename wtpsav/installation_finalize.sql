@@ -16,6 +16,14 @@ prompt Drop_Temp_Publicly_Updateable_Table_SQL
 drop table SYSTEM.TEMP_PUBLICLY_UPDATEABLE_TABLE purge;
 
 prompt
+prompt fix_invalid_public_synonyms
+@"fix_invalid_public_synonyms.sql" ""
+
+prompt
+prompt compile_all
+@"compile_all.sql" ""
+
+prompt
 prompt alter_foreign_keys_ENABLE
 @"alter_foreign_keys.sql" "ENABLE"
 
@@ -38,7 +46,3 @@ prompt update_id_sequences
 prompt
 prompt Load Installation Files
 @"odbcapture_installation_logs.cdl" "&FINAL_SYSTEM_CONNECT."
-
-prompt
-prompt compile_all
-@"compile_all.sql" ""

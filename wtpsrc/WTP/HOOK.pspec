@@ -12,13 +12,9 @@ set define off
    authid definer
 as
 
-   procedure before_test_all;
-   procedure before_test_run;
-   procedure execute_test_runner;
-   procedure after_assertion;
-   procedure after_test_run;
-   procedure after_test_all;
-   procedure ad_hoc_report;
+   procedure run
+         (in_hook_name  in varchar2);
+
    procedure init;
 
    --   WtPLSQL Self Test Procedures

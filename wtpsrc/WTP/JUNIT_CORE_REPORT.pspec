@@ -14,8 +14,8 @@ as
 
    g_in_process  boolean := FALSE;
 
-   TYPE xml_aa_type is table of varchar2(4000) index by pls_integer;
-   xml_aa   xml_aa_type;
+   TYPE vc_aa_type is table of varchar2(4000) index by pls_integer;
+   vc_aa   vc_aa_type;
 
    procedure xml_header;
 

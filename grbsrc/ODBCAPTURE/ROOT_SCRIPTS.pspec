@@ -40,6 +40,9 @@ as
       (in_install_type  in varchar2)
    return varchar2;
 
+   function fix_invalid_public_synonyms_sql
+   return varchar2;
+
    function installation_finalize_sql
       (in_install_type  in varchar2)
    return varchar2;

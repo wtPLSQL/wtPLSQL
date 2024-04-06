@@ -41,6 +41,4 @@ begin
 end;
 /
 
-@"&BUTIL_PATH./fix_invalid_public_synonyms.sql"
-
 exit

@@ -7,6 +7,7 @@
 prompt
 prompt Re-create Invalid Public Synonyms
 set serveroutput on size unlimited format wrapped
+set linesize 2499
 
 Declare
    sql_txt varchar(2000);
@@ -45,3 +46,4 @@ Begin
   end loop;
 end;
 /
+

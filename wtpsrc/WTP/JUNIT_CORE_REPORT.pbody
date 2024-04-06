@@ -23,7 +23,12 @@ procedure p
       (in_line in varchar2)
 is
 begin
-   xml_aa(xml_aa.COUNT + 1) := in_line;
+   if g_in_process
+   then
+      vc_aa(vc_aa.COUNT + 1) := in_line;
+   else
+      dbms_output.put_line(in_line);
+   end if;
 end p;
 
 
@@ -168,17 +173,6 @@ end xml_trailer;
 
 
 ------------------------------------------------------------
-procedure before_test_all
-is
-begin
-   xml_aa.DELETE;
-   xml_aa(1) := '';
-   xml_header;
-   g_in_process := TRUE;
-end before_test_all;
-
-
-------------------------------------------------------------
 -- This can be used as an
 procedure show_current
 is
@@ -200,16 +194,23 @@ end show_current;
 
 
 ------------------------------------------------------------
+procedure before_test_all
+is
+begin
+   vc_aa.DELETE;
+   g_in_process := TRUE;
+   xml_header;
+end before_test_all;
+
+
+------------------------------------------------------------
 procedure after_test_all
 is
 begin
-   if g_in_process
-   then
-      xml_trailer;
-   end if;
-   for i in 2 .. xml_aa.COUNT
+   xml_trailer;
+   for i in 1 .. vc_aa.COUNT
    loop
-      dbms_output.put_line(xml_aa(i));
+      dbms_output.put_line(vc_aa(i));
    end loop;
    g_in_process := FALSE;
 end after_test_all;

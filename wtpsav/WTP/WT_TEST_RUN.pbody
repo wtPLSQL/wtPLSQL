@@ -552,11 +552,13 @@ $THEN
       wt_assert.eqqueryvalue (
          msg_in           => 'Test Run ID of Last Run',
          check_query_in   => 'select id from wt_test_runs' ||
-                             ' where is_last_run = ''Y''',
+                             ' where test_runner_id = ' || l_tr_id ||
+                             ' and is_last_run = ''Y''',
          against_value_in => -11);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'SET_LAST_RUN Happy Path 2';
       delete from wt_test_runs where id = -11;
+      COMMIT;
       wt_assert.eqqueryvalue (
          msg_in           => 'Number of Test Records',
          check_query_in   => 'select count(*) from wt_test_runs' ||
@@ -579,11 +581,13 @@ $THEN
       wt_assert.eqqueryvalue (
          msg_in           => 'Test Run ID of Last Run',
          check_query_in   => 'select id from wt_test_runs' ||
-                             ' where is_last_run = ''Y''',
+                             ' where test_runner_id = ' || l_tr_id ||
+                             ' and is_last_run = ''Y''',
          against_value_in => -12);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'SET_LAST_RUN Happy Path 3';
       delete from wt_test_runs where id = -12;
+      COMMIT;
       wt_assert.eqqueryvalue (
          msg_in           => 'Number of Test Records',
          check_query_in   => 'select count(*) from wt_test_runs' ||

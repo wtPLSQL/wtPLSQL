@@ -128,8 +128,9 @@ function setup_for_test {
    echo ""
    echo "Running ../util/setup_for_test.sql from ${PWD}"
    sqlplus "${PDB_SYSTEM}" "@../util/setup_for_test.sql"
-   echo "Running ../util/setup_db_links.sql from ${PWD}"
-   sqlplus "${PDB_WTP}" "@../util/setup_db_links.sql.sql"
+   # Unit Testing Expects NO DB Links
+   #echo "Running ../util/setup_db_links.sql from ${PWD}"
+   #sqlplus "${PDB_WTP}" "@../util/setup_db_links.sql"
    }
 
 ########################################

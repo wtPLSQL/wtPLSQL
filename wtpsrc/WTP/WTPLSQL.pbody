@@ -500,7 +500,7 @@ begin
       if NOT wtplsql_skip_test then
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
          --
-         hook.before_test_run;
+         hook.run('before_test_run');
          --
    $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
       end if;
@@ -510,7 +510,7 @@ begin
    core_data.init2;
    g_DBOUT := '';
    --
-   hook.execute_test_runner;
+   hook.run('execute_test_runner');
    --
    -- Primary Finalize
    wt_assert.g_testcase := '';
@@ -523,7 +523,7 @@ begin
       if NOT wtplsql_skip_test then
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
          --
-         hook.after_test_run;
+         hook.run('after_test_run');
          --
    $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
       end if;
@@ -551,7 +551,7 @@ begin
       if NOT wtplsql_skip_test then
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
          --
-         hook.before_test_all;
+         hook.run('before_test_all');
          --
    $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
       end if;
@@ -574,7 +574,7 @@ begin
       if NOT wtplsql_skip_test then
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
          --
-         hook.after_test_all;
+         hook.run('after_test_all');
          --
    $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
       end if;

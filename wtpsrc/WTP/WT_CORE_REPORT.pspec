@@ -24,6 +24,11 @@ as
    -- DATE data type format for Report Header
    g_date_format  varchar2(100) := 'DD-Mon-YYYY HH:MI:SS PM';
 
+   -- True While Processing a TEST_ALL
+   g_in_process  boolean := FALSE;
+   TYPE vc_aa_type is table of varchar2(4000) index by pls_integer;
+   vc_aa   vc_aa_type;
+
    procedure dbms_out
       (in_detail_level   in  number   default 0
       ,in_summary_last   in  boolean  default FALSE);
@@ -36,6 +41,9 @@ as
       --  * 20 or more - Full Detail
       --     * Assertion results summary.
       --     * All assertion result details.
+
+   procedure before_test_all;
+   procedure after_test_all;
 
    function format_test_result
       (in_rec  in core_data.results_rec_type)

@@ -97,7 +97,7 @@ is
 begin
    if core_data.g_run_rec.test_runner_name is null
    then
-      hook.ad_hoc_report;
+      hook.run('ad_hoc_report');
       return;
    end if;
    --
@@ -116,7 +116,7 @@ begin
       end if;
    $END  ----------------%WTPLSQL_end_ignore_lines%----------------
    --
-   hook.after_assertion;
+   hook.run('after_assertion');
    if     g_rec.raise_exception
       and not g_rec.last_pass
    then

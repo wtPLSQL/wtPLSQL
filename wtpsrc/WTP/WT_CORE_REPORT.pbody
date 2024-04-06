@@ -22,7 +22,12 @@ procedure p
       (in_text  in  varchar2)
 is
 begin
-   dbms_output.put_line(in_text);
+   if g_in_process
+   then
+      vc_aa(vc_aa.COUNT + 1) := in_text;
+   else
+      dbms_output.put_line(in_text);
+   end if;
 end p;
 
 ------------------------------------------------------------
@@ -171,6 +176,27 @@ end dbms_out;
 
 
 ------------------------------------------------------------
+procedure before_test_all
+is
+begin
+   vc_aa.DELETE;
+   g_in_process := TRUE;
+end before_test_all;
+
+
+------------------------------------------------------------
+procedure after_test_all
+is
+begin
+   for i in 1 .. vc_aa.COUNT
+   loop
+      dbms_output.put_line(vc_aa(i));
+   end loop;
+   g_in_process := FALSE;
+end after_test_all;
+
+
+------------------------------------------------------------
 function format_test_result
       (in_rec  in core_data.results_rec_type)
    return varchar2
@@ -216,7 +242,11 @@ is
 begin
    delete_hooks;
    insert into hooks (hook_name, seq, run_string)
+      values ('before_test_all', 20, 'begin wt_core_report.before_test_all; end;');
+   insert into hooks (hook_name, seq, run_string)
       values ('after_test_run', 20, 'begin wt_core_report.dbms_out(in_detail_level => 10); end;');
+   insert into hooks (hook_name, seq, run_string)
+      values ('after_test_all', 20, 'begin wt_core_report.after_test_all; end;');
    commit;
    hook.init;
 end insert_hooks;

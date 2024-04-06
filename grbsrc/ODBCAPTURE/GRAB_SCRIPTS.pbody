@@ -2997,6 +2997,15 @@ begin
                ,in_max_len => common_util.MAX_SQL_LEN);
    script_close(fh);
    --
+   fh := script_open(in_filename     => 'fix_invalid_public_synonyms.sql'
+                    ,in_otype        => 'INSTALL_SCRIPT'
+                    ,in_max_linesize => common_util.MAX_SQL_LEN);
+   big_put_line(in_fh      => fh
+               ,in_loc     => l_loc
+               ,in_txt     => root_scripts.fix_invalid_public_synonyms_sql
+               ,in_max_len => common_util.MAX_SQL_LEN);
+   script_close(fh);
+   --
    fh := script_open(in_filename     => 'installation_finalize.sql'
                     ,in_otype        => 'INSTALL_SCRIPT'
                     ,in_max_linesize => common_util.MAX_SQL_LEN);

@@ -1,8 +1,8 @@
 
 --
---  Setup for Unit Testing
+--  Setup Datbase Linkgs for Unit Testing
 --
---  Run as SYS or SYSTEM
+--  Run as WTP Schema/User
 --
 
 set serveroutput on size unlimited format wrapped

@@ -22,13 +22,24 @@ as
 --  Private Procedures
 ----------------------
 
+---------------------
+--  Public Procedures
+---------------------
 
 ------------------------------------------------------------
-procedure run_hooks
+procedure run
       (in_hook_name  in varchar2)
 is
    l_error_stack          varchar2(32000);
 begin
+   $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+   $THEN
+      if NOT g_run_assert_hook
+         AND in_hook_name = 'after_assertion'
+      then
+         return;
+      end if;
+   $END  ------%WTPLSQL_end_ignore_lines%------
    if NOT g_run_aa.EXISTS(in_hook_name)
    then
       --dbms_output.put_line('No hook for ' || in_hook_name);
@@ -38,91 +49,23 @@ begin
    loop
       begin
          execute immediate g_run_aa(in_hook_name)(i).run_string;
-      exception
-         when OTHERS
-         then
-            raise_application_error(-20000, 'Hook Error in "' || in_hook_name ||
-                                            '", SEQ ' || g_run_aa(in_hook_name)(i).seq ||
-                                            '.' || CHR(10) ||
-                                            dbms_utility.format_error_stack ||
-                                            dbms_utility.format_error_backtrace);
+      exception when OTHERS then
+         l_error_stack := 'Hook Error in "' || in_hook_name ||
+                           '", SEQ ' || g_run_aa(in_hook_name)(i).seq ||
+                                 '.' || CHR(10) ||
+                           dbms_utility.format_error_stack ||
+                           dbms_utility.format_error_backtrace;
+         core_data.run_error(l_error_stack);
       end;
    end loop;
-end run_hooks;
-
-
----------------------
---  Public Procedures
----------------------
-
-
-------------------------------------------------------------
-procedure before_test_all
-is
-begin
-   run_hooks('before_test_all');
-end before_test_all;
-
-------------------------------------------------------------
-procedure before_test_run
-is
-begin
-   run_hooks('before_test_run');
-end before_test_run;
-
-------------------------------------------------------------
-procedure execute_test_runner
-is
-begin
-   run_hooks('execute_test_runner');
-end execute_test_runner;
-
-------------------------------------------------------------
-procedure after_assertion
-is
-begin
-   --
-$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
-$THEN
-   if g_run_assert_hook
-   then
-$END  ------%WTPLSQL_end_ignore_lines%------
-   --
-   run_hooks('after_assertion');
-   --
-$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
-$THEN
-   end if;
-$END  ------%WTPLSQL_end_ignore_lines%------
-   --
-end after_assertion;
-
-------------------------------------------------------------
-procedure after_test_run
-is
-begin
-   run_hooks('after_test_run');
-end after_test_run;
-
-------------------------------------------------------------
-procedure after_test_all
-is
-begin
-   run_hooks('after_test_all');
-end after_test_all;
-
-------------------------------------------------------------
-procedure ad_hoc_report
-is
-begin
-   run_hooks('ad_hoc_report');
-end ad_hoc_report;
+end run;
 
 ------------------------------------------------------------
 procedure init
 is
    l_run_nt  run_nt_type;
 begin
+   g_run_aa.DELETE;
    for buff in (
       select hook_name
        from  hooks
@@ -203,7 +146,7 @@ $THEN
       loop
          g_test_hook_msg := '';
          g_run_assert_hook := TRUE;
-         execute immediate 'begin hook.' || l_hname_nt(i) || '; end;';
+         hook.run(l_hname_nt(i));
          g_run_assert_hook := FALSE;
          wt_assert.eq
             (msg_in          => l_hname_nt(i) || ' is active'
@@ -223,7 +166,7 @@ $THEN
       for i in 1 .. l_hname_nt.COUNT
       loop
          g_test_hook_msg := '';
-         execute immediate 'begin hook.' || l_hname_nt(i) || '; end;';
+         hook.run(l_hname_nt(i));
          wt_assert.isnull
             (msg_in          => l_hname_nt(i) || ' is not active'
             ,check_this_in   => g_test_hook_msg);
@@ -250,7 +193,7 @@ $THEN
       core_data.g_run_rec.error_message := '';
       wt_assert.raises
          (msg_in         => 'Test Exception Handler'
-         ,check_call_in  => 'begin hook.ad_hoc_report; end;'
+         ,check_call_in  => 'begin hook.run(''ad_hoc_report''); end;'
          ,against_exc_in => '');
       l_err_msgTEST := core_data.g_run_rec.error_message;
       core_data.g_run_rec.error_message := l_err_msgSAVE;
