@@ -219,7 +219,7 @@ $THEN
    is
    begin
       --------------------------------------  WTPLSQL Testing --
-      wtplsql.g_DBOUT := 'WT_TEST_RUNNER:PACKAGE BODY';
+      wtplsql.g_DBOUT := 'WT_TESTCASE:PACKAGE BODY';
       t_get_id;
       t_dim_id;
       t_delete_records;

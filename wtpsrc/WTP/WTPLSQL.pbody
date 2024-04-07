@@ -610,6 +610,8 @@ $THEN
    is
    begin
       --------------------------------------  WTPLSQL Testing --
+      --  Can't set wtplsql.g_DBOUT because it is used for Unit Testing
+      --wtplsql.g_DBOUT := 'WTPLSQL:PACKAGE BODY';
       t_check_runner;
       t_check_dbout;
       t_show_version;
