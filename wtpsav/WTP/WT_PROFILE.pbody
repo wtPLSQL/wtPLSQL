@@ -805,6 +805,7 @@ $THEN
       l_profileTEST  wt_profiles%ROWTYPE;
       l_sqlerrm      varchar2(4000);
    begin
+      wt_assert.g_testcase := 'Add Profile Testing';
       --------------------------------------  WTPLSQL Testing --
       -- Overview:
       -- 1) Save results in temporary variables
@@ -821,10 +822,6 @@ $THEN
       l_profileTEST.exec_max_usec := 20;
       l_profileTEST.exec_tot_usec := 30;
       l_profileTEST.exec_cnt      := 1;
-      l_profileTEST.status := 'EXEC';
-      add_dbout_run(l_profileTEST);
-      l_profileTEST.status := 'EXEC';
-      add_dbout_run(l_profileTEST);
       --------------------------------------  WTPLSQL Testing --
       l_profileTEST.status := 'EXEC';
       add_dbout_run(l_profileTEST);
@@ -832,15 +829,20 @@ $THEN
       add_dbout_run(l_profileTEST);
       l_profileTEST.status := 'EXEC';
       add_dbout_run(l_profileTEST);
-      l_profileTEST.status := 'IGNR';
+      l_profileTEST.status := 'EXEC';
       add_dbout_run(l_profileTEST);
-      l_profileTEST.status := 'IGNR';
+      l_profileTEST.status := 'EXEC';
       add_dbout_run(l_profileTEST);
       --------------------------------------  WTPLSQL Testing --
       l_profileTEST.status := 'IGNR';
       add_dbout_run(l_profileTEST);
       l_profileTEST.status := 'IGNR';
       add_dbout_run(l_profileTEST);
+      l_profileTEST.status := 'IGNR';
+      add_dbout_run(l_profileTEST);
+      l_profileTEST.status := 'IGNR';
+      add_dbout_run(l_profileTEST);
+      --------------------------------------  WTPLSQL Testing --
       l_profileTEST.status := 'NOTX';
       add_dbout_run(l_profileTEST);
       l_profileTEST.status := 'NOTX';
@@ -865,48 +867,46 @@ $THEN
       l_recTEST := g_rec;
       g_rec     := l_recSAVE;
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Add Profile Testing';
       wt_assert.eq (
          msg_in          => 'l_recTEST.profiled_lines',
          check_this_in   =>  l_recTEST.profiled_lines,
          against_this_in => 15);
-      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in          => 'l_recTEST.exec_min_usec',
          check_this_in   =>  l_recTEST.exec_min_usec,
          against_this_in => 10);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in          => 'l_recTEST.exec_max_usec',
          check_this_in   =>  l_recTEST.exec_max_usec,
          against_this_in => 20);
-      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in          => 'l_recTEST.exec_tot_usec',
          check_this_in   =>  l_recTEST.exec_tot_usec,
          against_this_in => 150);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in          => 'l_recTEST.executed_lines',
          check_this_in   =>  l_recTEST.executed_lines,
          against_this_in => 5);
-      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in          => 'l_recTEST.ignored_lines',
          check_this_in   =>  l_recTEST.ignored_lines,
          against_this_in => 4);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in          => 'l_recTEST.notexec_lines',
          check_this_in   =>  l_recTEST.notexec_lines,
          against_this_in => 3);
-      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in          => 'l_recTEST.excluded_lines',
          check_this_in   =>  l_recTEST.excluded_lines,
          against_this_in => 2);
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in          => 'l_recTEST.unknown_lines',
          check_this_in   =>  l_recTEST.unknown_lines,
          against_this_in => 1);
-      --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
           msg_in          => 'Add Result Sad Path 1',
           check_this_in   => 'ORA-20011: Unknown Profile status "ABC"',
@@ -938,6 +938,20 @@ begin
          return 'EXCL';
       elsif     in_prof_rec.line = in_max_line
             AND regexp_like(in_prof_rec.text, 'END', 'i')
+      then
+         return 'EXCL';
+      -- ^ - Anchored to start of line
+      -- [[:space:]]* - Zero or more spaces
+      -- [Ee][Nn][Dd] - casefolded "end"
+      -- (   [[:space:]]*           - Zero or more spaces
+      --  |                         - OR
+      --     [[:space:]]+           - One or more spaces followed by
+      --     [A-Za-z0-9_$#]{1,128}) - String of 1 to 128 characters
+      -- )                                                   
+      -- [[:space:]]* - Zero or more spaces
+      -- [;] - Semicolon character
+      -- $ - Anchored to end of line
+      elsif regexp_like(in_prof_rec.text, '^[[:space:]]*[Ee][Nn][Dd]([[:space:]]*|[[:space:]]+[A-Za-z0-9_$#]{1,128})[[:space:]]*[;]$')
       then
          return 'EXCL';
       else
@@ -1007,9 +1021,9 @@ $THEN
       l_prof_rec.text          := '   end set_prof_status_testing;';
       l_prof_rec.line          := 3;
       wt_assert.eq(
-         msg_in          => 'Not Executed Status 2',
+         msg_in          => 'Excluded Status 2',
          check_this_in   => set_prof_status(l_prof_rec, 10),
-         against_this_in => 'NOTX');
+         against_this_in => 'EXCL');
       --------------------------------------  WTPLSQL Testing --
       l_prof_rec.exec_cnt      := 0;
       l_prof_rec.exec_tot_usec := 1;
@@ -1124,6 +1138,12 @@ begin
       add_dbout_run(l_prof_rec); -- Updates g_rec
       insert into wt_profiles values l_prof_rec;
    end loop;
+   -- Update Aggregates in g_rec
+   g_rec.coverage_pct := calc_pct_coverage(g_rec.test_run_id);
+   if nvl(g_rec.executed_lines,0) != 0
+   then
+      g_rec.exec_avg_usec := round(g_rec.exec_tot_usec / g_rec.executed_lines, 2);
+   end if;
 end insert_wt_profile;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -1133,6 +1153,7 @@ $THEN
       units_rec       plsql_profiler_units%ROWTYPE;
       data_rec        plsql_profiler_data%ROWTYPE;
       l_recSAVE       wt_dbout_runs%ROWTYPE;
+      l_recTEST       wt_dbout_runs%ROWTYPE;
       l_recNULL       wt_dbout_runs%ROWTYPE;
       c_test_run_id   constant number := -97;
       l_pname         varchar2(128) := 'WT_PROFILE_INSERT_DBOUT';
@@ -1265,10 +1286,19 @@ $THEN
          l_err_stack := dbms_utility.format_error_stack     ||
                         dbms_utility.format_error_backtrace ;
       end;
+      l_recTEST := g_rec;
       g_rec := l_recSAVE;
       wt_assert.isnull (
-         msg_in          => 'SQLERRM',
+         msg_in          => 'insert_wt_profile SQLERRM',
          check_this_in   => l_err_stack);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq (
+         msg_in          => 'Check Coverage Percent',
+         check_this_in   => l_recTEST.coverage_pct,
+         against_this_in => 75);
+      wt_assert.isnotnull (
+         msg_in          => 'Check Line Execution Average Microseconds',
+         check_this_in   => l_recTEST.exec_avg_usec);
       --------------------------------------  WTPLSQL Testing --
       test_dbout_profiler(1, 'STATUS', 'EXCL');
       test_dbout_profiler(1, 'TEXT',   'package body WT_PROFILE_INSERT_DBOUT is' || CHR(10));
@@ -1557,10 +1587,9 @@ $THEN
       l_profile.status       := 'EXCL';
       l_profile.text         := 'Testing ' || l_profile.line;
       tl_insert_wt_profiles(l_profile);
-      wt_assert.eq (
+      wt_assert.isnull (
          msg_in          => 'Main Test',
-         check_this_in   => calc_pct_coverage(c_test_run_id),
-         against_this_in => -1);
+         check_this_in   => calc_pct_coverage(c_test_run_id));
       tl_delete_wt_profiles(c_test_run_id);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Calculate Percent Coverage Sad Path';
@@ -1629,6 +1658,7 @@ $THEN
       l_recTEST      wt_dbout_runs%ROWTYPE;
       l_sqlerrm      varchar2(4000);
    begin
+      wt_assert.g_testcase := 'Initialize Happy Path 1';
       --------------------------------------  WTPLSQL Testing --
       l_cdr_recSAVE := core_data.g_run_rec;
       l_recSAVE     := g_rec;
@@ -1640,7 +1670,6 @@ $THEN
       l_recTEST := g_rec;
       g_rec     := l_recSAVE;
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 'Initialize Happy Path 1';
       wt_assert.isnull (
          msg_in          => 'l_recTEST.test_run_id',
          check_this_in   =>  l_recTEST.test_run_id);
@@ -1657,7 +1686,6 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 procedure finalize
       (in_test_run_id   in number)
 is
-   coverage_lines  number;
 begin
    -- Return if not profiling
    if g_rec.profiler_runid is null
@@ -1696,12 +1724,6 @@ begin
       insert_wt_profile(core_data.g_run_rec.dbout_owner
                        ,core_data.g_run_rec.dbout_name
                        ,core_data.g_run_rec.dbout_type);
-      coverage_lines := g_rec.executed_lines + g_rec.notexec_lines;
-      g_rec.coverage_pct := calc_pct_coverage(in_test_run_id);
-      if nvl(g_rec.executed_lines,0) != 0
-      then
-         g_rec.exec_avg_usec := round(g_rec.exec_tot_usec / g_rec.executed_lines, 2);
-      end if;
       -- Save g_rec
       insert into wt_dbout_runs values g_rec;
       commit;
@@ -1759,7 +1781,7 @@ $THEN
       tl_delete_test_runs(-1);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
-         msg_in          => 'SQLERRM',
+         msg_in          => 'finalize(-1) SQLERRM',
          check_this_in   => l_err_stack);
       wt_assert.isnull (
          msg_in          => 'l_cdr_recTEST.error_message',
@@ -1800,12 +1822,12 @@ $THEN
       tl_delete_test_runs(-2);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
-         msg_in          => 'SQLERRM',
+         msg_in          => 'finalize(-2) SQLERRM',
          check_this_in   => l_err_stack);
       wt_assert.isnull (
          msg_in          => 'l_cdr_recTEST.error_message',
          check_this_in   =>  l_cdr_recTEST.error_message);
-      wt_assert.isnull (
+      wt_assert.isnotnull (
          msg_in          => 'l_recTEST.profiler_runid',
          check_this_in   =>  l_recTEST.profiler_runid);
       --------------------------------------  WTPLSQL Testing --
@@ -1824,7 +1846,7 @@ $THEN
       core_data.g_run_rec.dbout_name  := 'WT_PROFILE';
       core_data.g_run_rec.dbout_type  := 'PACKAGE BODY';
       core_data.g_run_rec.error_message := NULL;
-      g_rec.profiler_runid := 33;
+      g_rec.profiler_runid := -33;
       g_rec.trigger_offset := -33;
       --------------------------------------  WTPLSQL Testing --
       wtplsql_skip_test := TRUE;
@@ -1847,7 +1869,7 @@ $THEN
       tl_delete_test_runs(-3);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
-         msg_in          => 'SQLERRM',
+         msg_in          => 'finalize(-3) SQLERRM',
          check_this_in   => l_err_stack);
       wt_assert.isnull (
          msg_in          => 'l_cdr_recTEST.error_message',
@@ -1880,7 +1902,7 @@ $THEN
       l_recTEST := g_rec;
       g_rec     := l_recSAVE;
       wt_assert.eq (
-         msg_in          => 'SQLERRM',
+         msg_in          => 'finalize(null) SQLERRM',
          check_this_in   => l_sqlerrm,
          against_this_in => 'ORA-20004: i_test_run_id is null');
    end t_finalize;
@@ -1946,7 +1968,7 @@ $THEN
       end;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
-         msg_in        => 'SQLERRM',
+         msg_in        => 'delete_run_id(' || c_test_run_id || ') SQLERRM',
          check_this_in => l_err_stack);
       wt_assert.eqqueryvalue (
          msg_in           => 'wt_profiles Count 2',
@@ -1966,7 +1988,7 @@ $THEN
       end;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
-         msg_in        => 'SQLERRM',
+         msg_in        => 'delete_run_id(-9876) SQLERRM',
          check_this_in => l_err_stack);
       wt_assert.eqqueryvalue (
          msg_in           => 'wt_profiles Count 2',
@@ -1985,7 +2007,7 @@ $THEN
       end;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.isnull (
-         msg_in        => 'SQLERRM',
+         msg_in        => 'delete_run_id(NULL) SQLERRM',
          check_this_in => l_err_stack);
       wt_assert.eqqueryvalue (
          msg_in           => 'wt_profiles Count 2',
@@ -2007,18 +2029,18 @@ $THEN
       wtplsql.g_DBOUT := 'WT_PROFILE:PACKAGE BODY';
       select username into g_current_user from user_users;
       --------------------------------------  WTPLSQL Testing --
-      --t_get_error_msg;
+      t_get_error_msg;
       t_clear_plsql_profiler_recs;
-      --t_load_ignr_aa;
-      --t_add_dbout_run;
-      --t_set_prof_status;
-      --t_insert_wt_profile;
-      --t_is_profilable;
-      --t_trigger_offset;
-      --t_calc_pct_coverage;
+      t_load_ignr_aa;
+      t_add_dbout_run;
+      t_set_prof_status;
+      t_insert_wt_profile;
+      t_is_profilable;
+      t_trigger_offset;
+      t_calc_pct_coverage;
       t_initialize;
-      --t_finalize;
-      --t_delete_run_id;
+      t_finalize;
+      t_delete_run_id;
    end WTPLSQL_RUN;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--
