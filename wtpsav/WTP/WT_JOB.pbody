@@ -205,8 +205,7 @@ begin
    for i in 1 .. max_intervals
    loop
       select count(*) into num_jobs
-       from  wt_scheduler_jobs_vw
-       where status = 'RUNNING';
+       from  user_scheduler_running_jobs;
       exit when num_jobs = 0;
       dbms_lock.sleep(in_check_interval_seconds);
    end loop;
@@ -216,6 +215,101 @@ begin
                                        num_jobs || ' jobs still running');
    end if;
 end wait_for_all_tests;
+
+
+------------------------------------------------------------
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_wait_for_all_tests
+   is
+      procedure launch_job (in_timeout in number) is
+         plsql_block    varchar2(32000);
+      begin
+         plsql_block := 
+            'declare'                                    || CHR(10) ||
+            '   l_msg    varchar2(2000);'                || CHR(10) ||
+            '   l_stat   integer;'                       || CHR(10) ||
+            'begin'                                      || CHR(10) ||
+            '   dbms_alert.register'                     || CHR(10) ||
+            '      (name    => ''WT_JOB_WAIT_UT_ALRT' ||
+                                 in_timeout || ''''      || CHR(10) ||
+            '      ,cleanup => TRUE);'                   || CHR(10) ||
+            '   dbms_alert.waitone'                      || CHR(10) ||
+            '      (name    => ''WT_JOB_WAIT_UT_ALRT' ||
+                                 in_timeout || ''''      || CHR(10) ||
+            '      ,message => l_msg'                    || CHR(10) ||
+            '      ,status  => l_stat'                   || CHR(10) ||
+            '      ,timeout => ' || in_timeout || ');'   || CHR(10) ||
+            '   dbms_alert.remove'                       || CHR(10) ||
+            '      (name    => ''WT_JOB_WAIT_UT_ALRT' ||
+                                 in_timeout || ''');'    || CHR(10) ||
+            'end;';
+         dbms_scheduler.create_job
+            (job_name   => 'WT_JOB_WAIT_UT_' || in_timeout
+            ,job_type   => 'PLSQL_BLOCK'
+            ,job_action => plsql_block
+            ,enabled    => TRUE);
+         dbms_lock.sleep(1);   -- Must give job a chance to startup
+      exception when others then
+         wt_assert.isnotnull (
+            msg_in        => 't_wait_for_all_tests: "launch_job" Error',
+            check_this_in => SQLERRM);
+      end launch_job;
+      procedure stop_jobs is
+      begin
+         for buff in (select name from sys.DBMS_ALERT_INFO)
+         loop
+            dbms_alert.signal(name    => buff.name
+                             ,message => 'STOP');
+         end loop;
+         dbms_lock.sleep(1);     -- Must give job a chance to process signal
+         dbms_alert.removeall;   -- Not sure why this is necessary
+         for buff in (select job_name from user_scheduler_running_jobs)
+         loop
+            dbms_scheduler.stop_job(job_name         => buff.job_name
+                                   ,force            => TRUE
+                                   ,commit_semantics => 'STOP_ON_FIRST_ERROR');
+         end loop;
+      exception when others then
+         wt_assert.isnotnull (
+            msg_in        => 't_wait_for_all_tests: "launch_job" Error',
+            check_this_in => SQLERRM);
+      end stop_jobs;
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Wait for All Tests Happy Path';
+      launch_job(1);
+      wt_assert.eqqueryvalue (
+         msg_in           => 'Number of Test Runs After',
+         check_query_in   => 'select count(*) from user_scheduler_running_jobs',
+         against_value_in => 1);
+      wt_assert.raises(msg_in         => 'Wait for All Tests Expected Exception'
+                      ,check_call_in  => 'begin wt_job.wait_for_all_tests(in_timeout_seconds => 1' ||
+                                                                ', in_check_interval_seconds => 0.5); end;'
+                      ,against_exc_in => cast (NULL as number));
+      stop_jobs;
+      wt_assert.eqqueryvalue (
+         msg_in           => 'Number of Test Runs After',
+         check_query_in   => 'select count(*) from user_scheduler_running_jobs',
+         against_value_in => 0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Wait for All Tests Timeout';
+      launch_job(10);
+      wt_assert.eqqueryvalue (
+         msg_in           => 'Number of Test Runs After',
+         check_query_in   => 'select count(*) from user_scheduler_running_jobs',
+         against_value_in => 1);
+      wt_assert.raises(msg_in         => 'Wait for All Tests Expected Exception'
+                      ,check_call_in  => 'begin wt_job.wait_for_all_tests(in_timeout_seconds => 1' ||
+                                                                ', in_check_interval_seconds => 0.5); end;'
+                      ,against_exc_in => -20000);
+      stop_jobs;
+      wt_assert.eqqueryvalue (
+         msg_in           => 'Number of Test Runs After',
+         check_query_in   => 'select count(*) from user_scheduler_running_jobs',
+         against_value_in => 0);
+   end t_wait_for_all_tests;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
@@ -294,11 +388,17 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 ------------------------------------------------------------
 -- Run all test runners in a different schema
 -- Returns before all test runners are complete
-procedure test_all
+--  NOTE: Unit Testing requires full repeat testing of WTP
+--        OR or highly modified testing.  Skipping Unit Test
+procedure test_all  ------%WTPLSQL_begin_ignore_lines%------
       (in_schema_name   in  varchar2)
 is
    plsql_block    varchar2(32000);
 begin
+   if in_schema_name is null
+   then
+      raise_application_error(-20000, 'in_schema_name must not be null');
+   end if;
    plsql_block := 
       'begin'                                          || CHR(10) ||
       '   wtplsql.test_all@' || in_schema_name  || ';' || CHR(10) ||
@@ -308,13 +408,15 @@ begin
                            ,1,128)
       ,job_type   => 'PLSQL_BLOCK'
       ,job_action => plsql_block);
-end test_all;
+end test_all;  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
 -- Run all test runners in all schema in sequence
 -- Returns before all test runners are complete
-procedure test_all_sequential
+--  NOTE: Unit Testing requires full repeat testing of WTP
+--        OR or highly modified testing.  Skipping Unit Test
+procedure test_all_sequential  ------%WTPLSQL_begin_ignore_lines%------
 is
    plsql_block    varchar2(32000);
 begin
@@ -333,13 +435,15 @@ begin
       (job_name   => 'WT_TEST_ALL_SEQUENTIAL'
       ,job_type   => 'PLSQL_BLOCK'
       ,job_action => plsql_block);
-end test_all_sequential;
+end test_all_sequential;  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
 -- Run all test runners in all schema in parallel
 -- Returns before all test runners are complete
-procedure test_all_parallel
+--  NOTE: Unit Testing requires full repeat testing of WTP
+--        OR or highly modified testing.  Skipping Unit Test
+procedure test_all_parallel  ------%WTPLSQL_begin_ignore_lines%------
 is
 begin
    for buff in (
@@ -349,7 +453,7 @@ begin
    loop
       test_all(buff.owner);
    end loop;
-end test_all_parallel;
+end test_all_parallel;  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 --==============================================================--
@@ -362,6 +466,7 @@ $THEN
       select username into g_current_user from user_users;
       --------------------------------------  WTPLSQL Testing --
       t_create_drop_db_link;
+      t_wait_for_all_tests;
       t_run_and_wait_for_job;
    end WTPLSQL_RUN;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
