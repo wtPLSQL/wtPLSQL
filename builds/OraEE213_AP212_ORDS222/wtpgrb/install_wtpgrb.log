@@ -7,7 +7,7 @@ Table created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-06T21:07:12 for a duration of .12 seconds (started at 2024-04-06T21:07:11)
+=== DBI Completed at 2024-04-10T02:41:24 for a duration of .11 seconds (started at 2024-04-10T02:41:24)
 === DBI Started: ODBCAPTURE/DLOAD_CONF.cdl
 
 Disable Triggers and Foreign Keys
@@ -22,7 +22,7 @@ sqlldr_control=ODBCAPTURE/DLOAD_CONF.ctl
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-06T21:07:13 for a duration of 1.27 seconds (started at 2024-04-06T21:07:12)
+=== DBI Completed at 2024-04-10T02:41:25 for a duration of 1.4 seconds (started at 2024-04-10T02:41:24)
 === DBI Started: ODBCAPTURE/OBJECT_CONF.cdl
 
 Disable Triggers and Foreign Keys
@@ -38,7 +38,7 @@ sqlldr_control=ODBCAPTURE/OBJECT_CONF.ctl
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-06T21:07:14 for a duration of 1.26 seconds (started at 2024-04-06T21:07:13)
+=== DBI Completed at 2024-04-10T02:41:27 for a duration of 1.45 seconds (started at 2024-04-10T02:41:26)
 === DBI Started: ODBCAPTURE/ROLE_CONF.cdl
 
 Disable Triggers and Foreign Keys
@@ -52,7 +52,7 @@ sqlldr_control=ODBCAPTURE/ROLE_CONF.ctl
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-06T21:07:15 for a duration of 1.3 seconds (started at 2024-04-06T21:07:14)
+=== DBI Completed at 2024-04-10T02:41:28 for a duration of 1.24 seconds (started at 2024-04-10T02:41:27)
 === DBI Started: ODBCAPTURE/SCHEMA_CONF.cdl
 
 Disable Triggers and Foreign Keys
@@ -66,7 +66,7 @@ sqlldr_control=ODBCAPTURE/SCHEMA_CONF.ctl
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-06T21:07:17 for a duration of 1.27 seconds (started at 2024-04-06T21:07:15)
+=== DBI Completed at 2024-04-10T02:41:29 for a duration of 1.22 seconds (started at 2024-04-10T02:41:28)
 === DBI Started: ODBCAPTURE/TYPE_CONF.cdl
 
 Disable Triggers and Foreign Keys
@@ -80,7 +80,7 @@ sqlldr_control=ODBCAPTURE/TYPE_CONF.ctl
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-06T21:07:18 for a duration of 1.27 seconds (started at 2024-04-06T21:07:17)
+=== DBI Completed at 2024-04-10T02:41:31 for a duration of 1.25 seconds (started at 2024-04-10T02:41:29)
 === DBI Started: ./installation_finalize.sql
 
 Drop_Temp_Publicly_Updateable_Table_SQL
@@ -143,4 +143,4 @@ sqlldr_control=./odbcapture_installation_logs.ctl
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-06T21:07:21 for a duration of 3.05 seconds (started at 2024-04-06T21:07:18)
+=== DBI Completed at 2024-04-10T02:41:34 for a duration of 3.04 seconds (started at 2024-04-10T02:41:31)

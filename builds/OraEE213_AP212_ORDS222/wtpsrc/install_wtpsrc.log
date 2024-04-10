@@ -7,7 +7,7 @@ Table created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-06T21:04:51 for a duration of .17 seconds (started at 2024-04-06T21:04:51)
+=== DBI Completed at 2024-04-10T02:38:30 for a duration of .16 seconds (started at 2024-04-10T02:38:30)
 === DBI Started: WTP/WT_AD_HOC_REPORT.proc
 
 Warning: Procedure created with compilation errors.
@@ -18,7 +18,7 @@ Grant succeeded.
 
 Synonym created.
 
-=== DBI Completed at 2024-04-06T21:04:51 for a duration of .25 seconds (started at 2024-04-06T21:04:51)
+=== DBI Completed at 2024-04-10T02:38:30 for a duration of .28 seconds (started at 2024-04-10T02:38:30)
 === DBI Started: WTP/WT_EXECUTE_TEST_RUNNER.proc
 
 Warning: Procedure created with compilation errors.
@@ -29,22 +29,22 @@ Grant succeeded.
 
 Synonym created.
 
-=== DBI Completed at 2024-04-06T21:04:51 for a duration of .17 seconds (started at 2024-04-06T21:04:51)
+=== DBI Completed at 2024-04-10T02:38:30 for a duration of .15 seconds (started at 2024-04-10T02:38:30)
 === DBI Started: WTP/CORE_DATA.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-06T21:04:51 for a duration of .17 seconds (started at 2024-04-06T21:04:51)
+=== DBI Completed at 2024-04-10T02:38:31 for a duration of .15 seconds (started at 2024-04-10T02:38:30)
 === DBI Started: WTP/HOOK.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-06T21:04:52 for a duration of .06 seconds (started at 2024-04-06T21:04:51)
+=== DBI Completed at 2024-04-10T02:38:31 for a duration of .06 seconds (started at 2024-04-10T02:38:31)
 === DBI Started: WTP/JUNIT_CORE_REPORT.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-06T21:04:52 for a duration of .06 seconds (started at 2024-04-06T21:04:52)
+=== DBI Completed at 2024-04-10T02:38:31 for a duration of .07 seconds (started at 2024-04-10T02:38:31)
 === DBI Started: WTP/WTPLSQL.pspec
 
 Package created.
@@ -58,7 +58,7 @@ Synonym created.
 
 Synonym created.
 
-=== DBI Completed at 2024-04-06T21:04:52 for a duration of .15 seconds (started at 2024-04-06T21:04:52)
+=== DBI Completed at 2024-04-10T02:38:31 for a duration of .15 seconds (started at 2024-04-10T02:38:31)
 === DBI Started: WTP/WT_ASSERT.pspec
 
 Package created.
@@ -72,7 +72,7 @@ Synonym created.
 
 Synonym created.
 
-=== DBI Completed at 2024-04-06T21:04:52 for a duration of .23 seconds (started at 2024-04-06T21:04:52)
+=== DBI Completed at 2024-04-10T02:38:31 for a duration of .23 seconds (started at 2024-04-10T02:38:31)
 === DBI Started: WTP/WT_CORE_REPORT.pspec
 
 Package created.
@@ -83,7 +83,7 @@ Grant succeeded.
 
 Synonym created.
 
-=== DBI Completed at 2024-04-06T21:04:52 for a duration of .13 seconds (started at 2024-04-06T21:04:52)
+=== DBI Completed at 2024-04-10T02:38:31 for a duration of .12 seconds (started at 2024-04-10T02:38:31)
 === DBI Started: WTP/HOOKS.tab
 
 Table created.
@@ -112,7 +112,7 @@ Comment created.
 
 Comment created.
 
-=== DBI Completed at 2024-04-06T21:05:09 for a duration of 16.59 seconds (started at 2024-04-06T21:04:52)
+=== DBI Completed at 2024-04-10T02:38:49 for a duration of 18.08 seconds (started at 2024-04-10T02:38:31)
 === DBI Started: WTP/WT_VERSIONS.tab
 
 Table created.
@@ -147,7 +147,7 @@ Grant succeeded.
 
 Synonym created.
 
-=== DBI Completed at 2024-04-06T21:05:09 for a duration of .36 seconds (started at 2024-04-06T21:05:09)
+=== DBI Completed at 2024-04-10T02:38:50 for a duration of .36 seconds (started at 2024-04-10T02:38:49)
 === DBI Started: WTP/HOOKS.cdl
 
 Disable Triggers and Foreign Keys
@@ -160,7 +160,7 @@ sqlldr_control=WTP/HOOKS.ctl
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-06T21:05:13 for a duration of 3.52 seconds (started at 2024-04-06T21:05:09)
+=== DBI Completed at 2024-04-10T02:38:56 for a duration of 5.73 seconds (started at 2024-04-10T02:38:50)
 === DBI Started: WTP/WT_QUAL_TEST_RUNNERS_VW.vw
 
 View created.
@@ -183,37 +183,37 @@ Comment created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-06T21:05:13 for a duration of .38 seconds (started at 2024-04-06T21:05:13)
+=== DBI Completed at 2024-04-10T02:38:56 for a duration of .47 seconds (started at 2024-04-10T02:38:56)
 === DBI Started: WTP/CORE_DATA.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-06T21:05:13 for a duration of .13 seconds (started at 2024-04-06T21:05:13)
+=== DBI Completed at 2024-04-10T02:38:56 for a duration of .12 seconds (started at 2024-04-10T02:38:56)
 === DBI Started: WTP/HOOK.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-06T21:05:13 for a duration of .07 seconds (started at 2024-04-06T21:05:13)
+=== DBI Completed at 2024-04-10T02:38:56 for a duration of .09 seconds (started at 2024-04-10T02:38:56)
 === DBI Started: WTP/JUNIT_CORE_REPORT.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-06T21:05:13 for a duration of .08 seconds (started at 2024-04-06T21:05:13)
+=== DBI Completed at 2024-04-10T02:38:56 for a duration of .1 seconds (started at 2024-04-10T02:38:56)
 === DBI Started: WTP/WTPLSQL.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-06T21:05:13 for a duration of .11 seconds (started at 2024-04-06T21:05:13)
+=== DBI Completed at 2024-04-10T02:38:56 for a duration of .12 seconds (started at 2024-04-10T02:38:56)
 === DBI Started: WTP/WT_ASSERT.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-06T21:05:14 for a duration of .21 seconds (started at 2024-04-06T21:05:14)
+=== DBI Completed at 2024-04-10T02:38:57 for a duration of .26 seconds (started at 2024-04-10T02:38:56)
 === DBI Started: WTP/WT_CORE_REPORT.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-06T21:05:14 for a duration of .1 seconds (started at 2024-04-06T21:05:14)
+=== DBI Completed at 2024-04-10T02:38:57 for a duration of .12 seconds (started at 2024-04-10T02:38:57)
 === DBI Started: ./installation_finalize.sql
 
 Drop_Temp_Publicly_Updateable_Table_SQL
@@ -282,4 +282,4 @@ sqlldr_control=./odbcapture_installation_logs.ctl
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-06T21:05:22 for a duration of 7.75 seconds (started at 2024-04-06T21:05:14)
+=== DBI Completed at 2024-04-10T02:39:05 for a duration of 8.42 seconds (started at 2024-04-10T02:38:57)

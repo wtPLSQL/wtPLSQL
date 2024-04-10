@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="install_sys.log" tests="0" errors="0" hostname="EE213CDB" id="1" time="0" timestamp="2024-04-06T21:05:32">
+  <testsuite name="install_sys.log" tests="0" errors="0" hostname="EE213CDB" id="1" time="0" timestamp="2024-04-10T02:39:16">
   </testsuite>
-  <testsuite name="install_system.log" tests="0" errors="0" hostname="EE213CDB" id="2" time="0" timestamp="2024-04-06T21:05:32">
+  <testsuite name="install_system.log" tests="0" errors="0" hostname="EE213CDB" id="2" time="0" timestamp="2024-04-10T02:39:16">
   </testsuite>
-  <testsuite name="install_wtptst.log" tests="4" errors="0" hostname="EE213CDB" id="3" time="6" timestamp="2024-04-06T21:05:32">
+  <testsuite name="install_wtptst.log" tests="4" errors="0" hostname="EE213CDB" id="3" time="7" timestamp="2024-04-10T02:39:16">
     <testcase name="./installation_finalize.sql" assertions="" classname="..sql" status="PASS" time="">
     </testcase>
     <testcase name="./installation_prepare.sql" assertions="5" classname="..sql" status="PASS" time="0">
@@ -13,10 +13,10 @@
 Create_Temp_Publicly_Updateable_Table_SQL
 Table created.
 Grant succeeded.
-=== DBI Completed at 2024-04-06T21:05:23 for a duration of .09 seconds (started at 2024-04-06T21:05:23)
+=== DBI Completed at 2024-04-10T02:39:07 for a duration of .12 seconds (started at 2024-04-10T02:39:07)
       </system-out>
     </testcase>
-    <testcase name="WTP/WT_SELF_TEST.cdl" assertions="10" classname="WTP.cdl" status="PASS" time="4">
+    <testcase name="WTP/WT_SELF_TEST.cdl" assertions="10" classname="WTP.cdl" status="PASS" time="5">
       <system-out>
 === DBI Started: WTP/WT_SELF_TEST.cdl
 Disable Triggers and Foreign Keys
@@ -25,10 +25,10 @@ sqlldr_control=WTP/WT_SELF_TEST.ctl
 PL/SQL procedure successfully completed.
 PL/SQL procedure successfully completed.
 Commit complete.
-=== DBI Completed at 2024-04-06T21:05:30 for a duration of 4.48 seconds (started at 2024-04-06T21:05:25)
+=== DBI Completed at 2024-04-10T02:39:14 for a duration of 4.99 seconds (started at 2024-04-10T02:39:09)
 ### SQL*Loader Log File: WTP/WT_SELF_TEST.log
 
-SQL*Loader: Release 21.0.0.0.0 - Production on Sat Apr 6 21:05:26 2024
+SQL*Loader: Release 21.0.0.0.0 - Production on Wed Apr 10 02:39:11 2024
 Version 21.3.0.0.0
 Copyright (c) 1982, 2021, Oracle and/or its affiliates.  All rights reserved.
 Control File:   WTP/WT_SELF_TEST.ctl
@@ -71,10 +71,10 @@ Total logical records skipped:          1
 Total logical records read:             2
 Total logical records rejected:         0
 Total logical records discarded:        0
-Run began on Sat Apr 06 21:05:26 2024
-Run ended on Sat Apr 06 21:05:29 2024
-Elapsed time was:     00:00:03.22
-CPU time was:         00:00:00.05
+Run began on Wed Apr 10 02:39:11 2024
+Run ended on Wed Apr 10 02:39:14 2024
+Elapsed time was:     00:00:02.94
+CPU time was:         00:00:00.06
 
       </system-out>
     </testcase>
@@ -89,7 +89,7 @@ Comment created.
 Comment created.
 Comment created.
 Comment created.
-=== DBI Completed at 2024-04-06T21:05:25 for a duration of 1.63 seconds (started at 2024-04-06T21:05:23)
+=== DBI Completed at 2024-04-10T02:39:09 for a duration of 1.76 seconds (started at 2024-04-10T02:39:07)
       </system-out>
     </testcase>
     <testcase name="WTP/WT_SELF_TEST.tabtrg" assertions="4" classname="WTP.tabtrg" status="PASS" time="0">
@@ -97,7 +97,7 @@ Comment created.
 === DBI Started: WTP/WT_SELF_TEST.tabtrg
 Trigger created.
 Trigger altered.
-=== DBI Completed at 2024-04-06T21:05:30 for a duration of .11 seconds (started at 2024-04-06T21:05:30)
+=== DBI Completed at 2024-04-10T02:39:14 for a duration of .13 seconds (started at 2024-04-10T02:39:14)
       </system-out>
     </testcase>
   </testsuite>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="ODBCAPTURE_schema_build" tests="82" failures="0" time="0" timestamp="2024-04-06T21:06:35">
+  <testsuite name="ODBCAPTURE_schema_build" tests="82" failures="0" time="0" timestamp="2024-04-10T02:40:48">
     <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.DBA_DEPENDENCIES_TAB_IDX2" time="0"/>
     <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.DBA_DEPENDENCIES_TAB_IX1" time="0"/>
     <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.DBA_OBJECTS_TAB_IX1" time="0"/>
@@ -21,12 +21,12 @@
     <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.OTYPE_CONF_UK1" time="0"/>
     <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.ROLE_CONF_PK" time="0"/>
     <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.SCHEMA_CONF_PK" time="0"/>
-    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.SYS_IL0000075907C00004$$" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.SYS_IL0000075919C00004$$" time="0"/>
     <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.TYPE_CONF_PK" time="0"/>
     <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.ZIP_FILES_PK" time="0"/>
     <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.ZX_OBJ_INSTALL_TAB_IX1" time="0"/>
     <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.ZX_PRIV_ALL_TAB_IX1" time="0"/>
-    <testcase name="LOB:db_object_status" classname="ODBCAPTURE.SYS_LOB0000075907C00004$$" time="0"/>
+    <testcase name="LOB:db_object_status" classname="ODBCAPTURE.SYS_LOB0000075919C00004$$" time="0"/>
     <testcase name="PACKAGE:db_object_status" classname="ODBCAPTURE.COMMON_UTIL" time="0"/>
     <testcase name="PACKAGE:db_object_status" classname="ODBCAPTURE.GRAB_SCRIPTS" time="0"/>
     <testcase name="PACKAGE:db_object_status" classname="ODBCAPTURE.ROOT_SCRIPTS" time="0"/>
