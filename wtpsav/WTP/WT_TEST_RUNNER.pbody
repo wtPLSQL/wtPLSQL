@@ -190,9 +190,111 @@ begin
    return ret_num;
 end delete_records;
 
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_delete_records
+   is
+      l_runner_id  number := -99;
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_delete_records Setup';
+      delete from wt_test_runners
+       where owner = C_OWNER
+        and  name  = C_NAME;
+      wt_assert.isnotnull
+         (msg_in          => 'Number of wt_test_runners Rows deleted'  
+         ,check_this_in   => SQL%ROWCOUNT);
+      delete from wt_test_runs
+       where id             = l_runner_id
+        and  test_runner_id = l_runner_id;
+      wt_assert.isnotnull
+         (msg_in          => 'Number of wt_test_runs Rows deleted'  
+         ,check_this_in   => SQL%ROWCOUNT);
+      --------------------------------------  WTPLSQL Testing --
+      insert into wt_test_runners (id, owner, name)
+         values (l_runner_id, C_OWNER, C_NAME);
+      wt_assert.eqqueryvalue
+         (msg_in           => 'Number of wt_test_runners Rows should be 1'
+         ,check_query_in   => 'select count(*) from wt_test_runners' || 
+                              ' where owner = ''' || C_OWNER ||
+                              ''' and name  = ''' || C_NAME  || ''''
+         ,against_value_in => 1);
+      --------------------------------------  WTPLSQL Testing --
+      insert into wt_test_runs (id, test_runner_id, start_dtm)
+         values (l_runner_id, l_runner_id, sysdate);
+      wt_assert.eqqueryvalue
+         (msg_in           => 'Number of wt_test_runs Rows should be 1'
+         ,check_query_in   => 'select count(*) from wt_test_runs' || 
+                              ' where id = ' || l_runner_id ||
+                              ' and test_runner_id = ' || l_runner_id
+         ,against_value_in => 1);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_delete_records Happy Path 1';
+      begin
+         wt_assert.eq (
+            msg_in          => 'Run delete_records(' || l_runner_id || ')',
+            check_this_in   => delete_records(l_runner_id),
+            against_this_in => 2);
+      exception when others then
+         wt_assert.isnull(
+            msg_in        => 'Run delete_records(' || l_runner_id || ') Exception',
+            check_this_in => dbms_utility.format_error_stack ||
+                             dbms_utility.format_error_backtrace);
+      end;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eqqueryvalue
+         (msg_in           => 'delete_records(' || l_runner_id || ') Number of wt_test_runners Rows should be 0'
+         ,check_query_in   => 'select count(*) from wt_test_runners' || 
+                              ' where owner = ''' || C_OWNER ||
+                              ''' and name  = ''' || C_NAME  || ''''
+         ,against_value_in => 0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_delete_records Happy Path 2';
+      begin
+         wt_assert.eq (
+            msg_in          => 'Run delete_records(NULL)',
+            check_this_in   => delete_records(NULL),
+            against_this_in => 0);
+      exception when others then
+         wt_assert.isnull(
+            msg_in        => 'Run delete_records(NULL) Exception',
+            check_this_in => dbms_utility.format_error_stack ||
+                             dbms_utility.format_error_backtrace);
+      end;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eqqueryvalue
+         (msg_in           => 'delete_records(NULL) Number of wt_test_runners Rows should be 0'
+         ,check_query_in   => 'select count(*) from wt_test_runners' || 
+                              ' where owner = ''' || C_OWNER ||
+                              ''' and name  = ''' || C_NAME  || ''''
+         ,against_value_in => 0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 't_delete_records Happy Path 3';
+      begin
+         wt_assert.eq (
+            msg_in          => 'Run delete_records(-9999)',
+            check_this_in   => delete_records(-9999),
+            against_this_in => 0);
+      exception when others then
+         wt_assert.isnull(
+            msg_in        => 'Run delete_records(-9999) Exception',
+            check_this_in => dbms_utility.format_error_stack ||
+                             dbms_utility.format_error_backtrace);
+      end;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eqqueryvalue
+         (msg_in           => 'delete_records(-9999) Number of wt_test_runners Rows should be 0'
+         ,check_query_in   => 'select count(*) from wt_test_runners' || 
+                              ' where owner = ''' || C_OWNER ||
+                              ''' and name  = ''' || C_NAME  || ''''
+         ,against_value_in => 0);
+      commit;
+   end t_delete_records;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 
 ------------------------------------------------------------
-function delete_records
+function cleanup_records
    return number
 is
 begin
@@ -202,15 +304,15 @@ begin
           MINUS
           select distinct test_runner_id ID from wt_test_runs);
    return SQL%ROWCOUNT;
-end delete_records;
+end cleanup_records;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
 $THEN
-   procedure t_delete_records
+   procedure t_cleanup_records
    is
    begin
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 't_delete_records Setup';
+      wt_assert.g_testcase := 't_cleanup_records Setup';
       delete from wt_test_runners
        where owner = C_OWNER
         and  name  = C_NAME;
@@ -227,14 +329,14 @@ $THEN
                               ''' and name  = ''' || C_NAME  || ''''
          ,against_value_in => 1);
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 't_delete_records Happy Path 1';
+      wt_assert.g_testcase := 't_cleanup_records Happy Path 1';
       begin
          wt_assert.isnotnull (
-            msg_in          => 'Run delete_records 1',
-            check_this_in   => delete_records);
+            msg_in          => 'Run cleanup_records 1',
+            check_this_in   => cleanup_records);
       exception when others then
          wt_assert.isnull(
-            msg_in        => 'Run delete_records 1 Exception',
+            msg_in        => 'Run cleanup_records 1 Exception',
             check_this_in => dbms_utility.format_error_stack ||
                              dbms_utility.format_error_backtrace);
       end;
@@ -246,15 +348,15 @@ $THEN
                               ''' and name  = ''' || C_NAME  || ''''
          ,against_value_in => 0);
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.g_testcase := 't_delete_records Happy Path 2';
+      wt_assert.g_testcase := 't_cleanup_records Happy Path 2';
       begin
          wt_assert.eq (
-            msg_in          => 'Run delete_records 2',
-            check_this_in   => delete_records,
+            msg_in          => 'Run cleanup_records 2',
+            check_this_in   => cleanup_records,
             against_this_in => 0);
       exception when others then
          wt_assert.isnull(
-            msg_in        => 'Run delete_records 2 Exception',
+            msg_in        => 'Run cleanup_records 2 Exception',
             check_this_in => dbms_utility.format_error_stack ||
                              dbms_utility.format_error_backtrace);
       end;
@@ -266,7 +368,7 @@ $THEN
                               ''' and name  = ''' || C_NAME  || ''''
          ,against_value_in => 0);
       commit;
-   end t_delete_records;
+   end t_cleanup_records;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
@@ -281,6 +383,7 @@ $THEN
       t_get_id;
       t_dim_id;
       t_delete_records;
+      t_cleanup_records;
    end;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--

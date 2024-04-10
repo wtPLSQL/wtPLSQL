@@ -32,7 +32,7 @@ as
    return number;
 
    -- Delete all records with no child records
-   function delete_records
+   function cleanup_records
    return number;
 
    --   WtPLSQL Self Test Procedures
