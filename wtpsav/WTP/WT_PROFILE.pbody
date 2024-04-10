@@ -407,9 +407,11 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
-procedure clear_plsql_profiler_recs
+function clear_plsql_profiler_recs
       (in_test_run_id  in  number default NULL)
+   return number
 is
+   num_recs  number := 0;
 begin
    for buff in (
       select runid
@@ -420,13 +422,14 @@ begin
              select profiler_runid from wt_dbout_runs
               where test_run_id = in_test_run_id     ) )
    loop
-      delete from plsql_profiler_data
-       where runid = buff.runid;
-      delete from plsql_profiler_units
-       where runid = buff.runid;
-      delete from plsql_profiler_runs
-       where runid = buff.runid;
+      delete from plsql_profiler_data  where runid = buff.runid;
+      num_recs := num_recs + SQL%ROWCOUNT;
+      delete from plsql_profiler_units where runid = buff.runid;
+      num_recs := num_recs + SQL%ROWCOUNT;
+      delete from plsql_profiler_runs  where runid = buff.runid;
+      num_recs := num_recs + SQL%ROWCOUNT;
    end loop;
+   return num_recs;
 end clear_plsql_profiler_recs;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -434,23 +437,20 @@ $THEN
    procedure t_clear_plsql_profiler_recs
    is
       c_test_run_id   constant number := -99;
-      l_err_stack     varchar2(32000);
    begin
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Delete PL/SQL Profiler Records Happy Path 1';
       begin
-         clear_plsql_profiler_recs;  -- Should run without error
-         l_err_stack := dbms_utility.format_error_stack     ||
-                        dbms_utility.format_error_backtrace ;
+         wt_assert.eq (
+            msg_in          => 'Run clear_plsql_profiler_recs',
+            check_this_in   => clear_plsql_profiler_recs,
+            against_this_in => 0);
       exception when others then
-         l_err_stack := dbms_utility.format_error_stack     ||
-                        dbms_utility.format_error_backtrace ;
+         wt_assert.isnull(
+            msg_in        => 'Run clear_plsql_profiler_recs Exception',
+            check_this_in => dbms_utility.format_error_stack ||
+                             dbms_utility.format_error_backtrace);
       end;
-      --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull (
-         msg_in          => 'clear_plsql_profiler_recs 1',
-         check_this_in   => l_err_stack);
-      tl_count_plsql_profiler_recs(c_test_run_id, 0);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Delete PL/SQL Profiler Records Happy Path 2';
       tl_insert_test_runs(c_test_run_id, 'Delete Profiler Test 2');
@@ -459,17 +459,17 @@ $THEN
       tl_count_plsql_profiler_recs(c_test_run_id, 1);
       --------------------------------------  WTPLSQL Testing --
       begin
-         clear_plsql_profiler_recs(c_test_run_id);  -- Should run without error
-         l_err_stack := dbms_utility.format_error_stack     ||
-                        dbms_utility.format_error_backtrace ;
+         wt_assert.eq (
+            msg_in          => 'Run clear_plsql_profiler_recs(' || c_test_run_id || ')',
+            check_this_in   => clear_plsql_profiler_recs(c_test_run_id),
+            against_this_in => 3);
       exception when others then
-         l_err_stack := dbms_utility.format_error_stack     ||
-                        dbms_utility.format_error_backtrace ;
+         wt_assert.isnull(
+            msg_in        => 'Run clear_plsql_profiler_recs(' || c_test_run_id || ') Exception',
+            check_this_in => dbms_utility.format_error_stack ||
+                             dbms_utility.format_error_backtrace);
       end;
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull (
-         msg_in          => 'clear_plsql_profiler_recs 2',
-         check_this_in   => l_err_stack);
       tl_count_plsql_profiler_recs(c_test_run_id, 0);
       tl_delete_dbout_runs(c_test_run_id);
       tl_delete_test_runs(c_test_run_id);
@@ -481,17 +481,17 @@ $THEN
       tl_count_plsql_profiler_recs(c_test_run_id, 1);
       --------------------------------------  WTPLSQL Testing --
       begin
-         clear_plsql_profiler_recs;  -- Should run without error
-         l_err_stack := dbms_utility.format_error_stack     ||
-                        dbms_utility.format_error_backtrace ;
+         wt_assert.eq (
+            msg_in          => 'Run clear_plsql_profiler_recs',
+            check_this_in   => clear_plsql_profiler_recs,
+            against_this_in => 3);
       exception when others then
-         l_err_stack := dbms_utility.format_error_stack     ||
-                        dbms_utility.format_error_backtrace ;
+         wt_assert.isnull(
+            msg_in        => 'Run clear_plsql_profiler_recs Exception',
+            check_this_in => dbms_utility.format_error_stack ||
+                             dbms_utility.format_error_backtrace);
       end;
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull (
-         msg_in          => 'clear_plsql_profiler_recs 3',
-         check_this_in   => l_err_stack);
       tl_count_plsql_profiler_recs(c_test_run_id, 0);
       tl_delete_dbout_runs(c_test_run_id);
       tl_delete_test_runs(c_test_run_id);
@@ -1611,11 +1611,12 @@ procedure initialize
 is
    l_recNULL   wt_dbout_runs%ROWTYPE;
    l_retnum    binary_integer;
+   junk        number;
 begin
    -- Clear g_rec
    g_rec := l_recNULL;
    -- Clear PLSQL Profiler Results Older than 1 Day
-   clear_plsql_profiler_recs;
+   junk := clear_plsql_profiler_recs;
    -- Check Versions
    l_retnum := dbms_profiler.INTERNAL_VERSION_CHECK;
    if l_retnum <> 0 then
@@ -1686,6 +1687,7 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 procedure finalize
       (in_test_run_id   in number)
 is
+   junk  number;
 begin
    -- Return if not profiling
    if g_rec.profiler_runid is null
@@ -1735,7 +1737,7 @@ begin
    $END
    --
    -- Clear PLSQL Profiler Results for this Run
-   clear_plsql_profiler_recs(g_rec.test_run_id);
+   junk := clear_plsql_profiler_recs(g_rec.test_run_id);
    --
    $IF $$WTPLSQL_SELFTEST $THEN
       end if;
@@ -1910,18 +1912,21 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
-procedure delete_run_id
+function delete_run_id
       (in_test_run_id  in number)
+   return number
 is
+   num_recs  number;
 begin
-   delete from wt_profiles
-    where test_run_id = in_test_run_id;
-   delete from wt_dbout_runs
-    where test_run_id = in_test_run_id;
+   delete from wt_profiles   where test_run_id = in_test_run_id;
+   num_recs := SQL%ROWCOUNT;
+   delete from wt_dbout_runs where test_run_id = in_test_run_id;
+   num_recs := num_recs + SQL%ROWCOUNT;
    if in_test_run_id is not null
    then
-      clear_plsql_profiler_recs(in_test_run_id);
+      num_recs := num_recs + clear_plsql_profiler_recs(in_test_run_id);
    end if;
+   return num_recs;
 end delete_run_id;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -1931,7 +1936,6 @@ $THEN
       c_test_run_id  constant number := -98;
       l_run          wt_dbout_runs%ROWTYPE;
       l_profile      wt_profiles%ROWTYPE;
-      l_err_stack    varchar2(32000);
    begin
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Delete Records Setup';
@@ -1959,17 +1963,17 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Delete Records Happy Path 1';
       begin
-         delete_run_id(c_test_run_id);
-         l_err_stack := dbms_utility.format_error_stack     ||
-                        dbms_utility.format_error_backtrace ;
+         wt_assert.eq (
+            msg_in          => 'Run delete_run_id(' || c_test_run_id || ')',
+            check_this_in   => delete_run_id(c_test_run_id),
+            against_this_in => 1);
       exception when others then
-         l_err_stack := dbms_utility.format_error_stack     ||
-                        dbms_utility.format_error_backtrace ;
+         wt_assert.isnull(
+            msg_in        => 'Run delete_run_id(' || c_test_run_id || ') Exception',
+            check_this_in => dbms_utility.format_error_stack ||
+                             dbms_utility.format_error_backtrace);
       end;
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull (
-         msg_in        => 'delete_run_id(' || c_test_run_id || ') SQLERRM',
-         check_this_in => l_err_stack);
       wt_assert.eqqueryvalue (
          msg_in           => 'wt_profiles Count 2',
          check_query_in   => 'select count(*) from wt_profiles' ||
@@ -1979,17 +1983,17 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Delete Records Sad Path 1';
       begin
-         delete_run_id(-9876);
-         l_err_stack := dbms_utility.format_error_stack     ||
-                        dbms_utility.format_error_backtrace ;
+         wt_assert.eq (
+            msg_in          => 'Run delete_run_id(-9876)',
+            check_this_in   => delete_run_id(-9876),
+            against_this_in => 0);
       exception when others then
-         l_err_stack := dbms_utility.format_error_stack     ||
-                        dbms_utility.format_error_backtrace ;
+         wt_assert.isnull(
+            msg_in        => 'Run delete_run_id(-9876) Exception',
+            check_this_in => dbms_utility.format_error_stack ||
+                             dbms_utility.format_error_backtrace);
       end;
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull (
-         msg_in        => 'delete_run_id(-9876) SQLERRM',
-         check_this_in => l_err_stack);
       wt_assert.eqqueryvalue (
          msg_in           => 'wt_profiles Count 2',
          check_query_in   => 'select count(*) from wt_profiles' ||
@@ -1998,17 +2002,17 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Delete Records Sad Path 2';
       begin
-         delete_run_id(NULL);
-         l_err_stack := dbms_utility.format_error_stack     ||
-                        dbms_utility.format_error_backtrace ;
+         wt_assert.eq (
+            msg_in          => 'Run delete_run_id(NULL)',
+            check_this_in   => delete_run_id(NULL),
+            against_this_in => 0);
       exception when others then
-         l_err_stack := dbms_utility.format_error_stack     ||
-                        dbms_utility.format_error_backtrace ;
+         wt_assert.isnull(
+            msg_in        => 'Run delete_run_id(NULL) Exception',
+            check_this_in => dbms_utility.format_error_stack ||
+                             dbms_utility.format_error_backtrace);
       end;
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull (
-         msg_in        => 'delete_run_id(NULL) SQLERRM',
-         check_this_in => l_err_stack);
       wt_assert.eqqueryvalue (
          msg_in           => 'wt_profiles Count 2',
          check_query_in   => 'select count(*) from wt_profiles' ||

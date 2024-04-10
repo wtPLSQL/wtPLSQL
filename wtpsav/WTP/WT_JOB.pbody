@@ -410,6 +410,19 @@ begin
       ,job_action => plsql_block);
 end test_all;  ----------------%WTPLSQL_end_ignore_lines%----------------
 
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_test_all
+   is
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Test All Testing';
+      wt_assert.isnotnull (
+         msg_in        => 'Not Testing Test All',
+         check_this_in => 'Requires full repeat testing of WTP or highly modified testing');
+   end t_test_all;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 
 ------------------------------------------------------------
 -- Run all test runners in all schema in sequence
@@ -437,12 +450,25 @@ begin
       ,job_action => plsql_block);
 end test_all_sequential;  ----------------%WTPLSQL_end_ignore_lines%----------------
 
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_test_all_sequential
+   is
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Test All Sequential Testing';
+      wt_assert.isnotnull (
+         msg_in        => 'Not Testing Test All Sequential',
+         check_this_in => 'Requires full repeat testing of WTP or highly modified testing');
+   end t_test_all_sequential;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
 
 ------------------------------------------------------------
 -- Run all test runners in all schema in parallel
 -- Returns before all test runners are complete
 --  NOTE: Unit Testing requires full repeat testing of WTP
---        OR or highly modified testing.  Skipping Unit Test
+--        or highly modified testing.  Skipping Unit Test
 procedure test_all_parallel  ------%WTPLSQL_begin_ignore_lines%------
 is
 begin
@@ -454,6 +480,19 @@ begin
       test_all(buff.owner);
    end loop;
 end test_all_parallel;  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_test_all_parallel
+   is
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Test All Parallel Testing';
+      wt_assert.isnotnull (
+         msg_in        => 'Not Testing Test All Parallel',
+         check_this_in => 'Requires full repeat testing of WTP or highly modified testing');
+   end t_test_all_parallel;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 --==============================================================--
@@ -468,6 +507,9 @@ $THEN
       t_create_drop_db_link;
       t_wait_for_all_tests;
       t_run_and_wait_for_job;
+      t_test_all;
+      t_test_all_sequential;
+      t_test_all_parallel;
    end WTPLSQL_RUN;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 --==============================================================--

@@ -171,25 +171,29 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 ------------------------------------------------------------
 -- Delete all records for a test runner
-procedure delete_records
+function delete_records
       (in_test_runner_id  in number)
+   return number
 is
+   ret_num  number := 0;
 begin
    for buff in (
       select id from wt_test_runs
        where test_runner_id = in_test_runner_id )
    loop
-      wt_profile.delete_run_id(buff.id);
-      wt_result.delete_run_id(buff.id);
-      wt_test_run.delete_run_id(buff.id);
+      ret_num := ret_num + wt_profile.delete_run_id(buff.id);
+      ret_num := ret_num + wt_result.delete_run_id(buff.id);
+      ret_num := ret_num + wt_test_run.delete_run_id(buff.id);
    end loop;
-   delete from wt_test_runners
-    where id = in_test_runner_id;
+   delete from wt_test_runners where id = in_test_runner_id;
+   ret_num := ret_num + SQL%ROWCOUNT;
+   return ret_num;
 end delete_records;
 
 
 ------------------------------------------------------------
-procedure delete_records
+function delete_records
+   return number
 is
 begin
    delete from wt_test_runners
@@ -197,6 +201,7 @@ begin
           select id from wt_test_runners
           MINUS
           select distinct test_runner_id ID from wt_test_runs);
+   return SQL%ROWCOUNT;
 end delete_records;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -223,7 +228,17 @@ $THEN
          ,against_value_in => 1);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 't_delete_records Happy Path 1';
-      delete_records;
+      begin
+         wt_assert.isnotnull (
+            msg_in          => 'Run delete_records 1',
+            check_this_in   => delete_records);
+      exception when others then
+         wt_assert.isnull(
+            msg_in        => 'Run delete_records 1 Exception',
+            check_this_in => dbms_utility.format_error_stack ||
+                             dbms_utility.format_error_backtrace);
+      end;
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue
          (msg_in           => 'Number of Rows should be 0'
          ,check_query_in   => 'select count(*) from wt_test_runners' || 
@@ -232,7 +247,18 @@ $THEN
          ,against_value_in => 0);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 't_delete_records Happy Path 2';
-      delete_records;
+      begin
+         wt_assert.eq (
+            msg_in          => 'Run delete_records 2',
+            check_this_in   => delete_records,
+            against_this_in => 0);
+      exception when others then
+         wt_assert.isnull(
+            msg_in        => 'Run delete_records 2 Exception',
+            check_this_in => dbms_utility.format_error_stack ||
+                             dbms_utility.format_error_backtrace);
+      end;
+      --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue
          (msg_in           => 'Number of Rows should still be 0'
          ,check_query_in   => 'select count(*) from wt_test_runners' || 

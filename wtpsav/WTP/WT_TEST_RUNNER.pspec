@@ -27,11 +27,13 @@ as
    return number;
 
    -- Delete all records for a test runner
-   procedure delete_records
-      (in_test_runner_id  in number);
+   function delete_records
+      (in_test_runner_id  in number)
+   return number;
 
    -- Delete all records with no child records
-   procedure delete_records;
+   function delete_records
+   return number;
 
    --   WtPLSQL Self Test Procedures
    --

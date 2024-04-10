@@ -247,14 +247,17 @@ $END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
-procedure delete_run_id
+function delete_run_id
       (in_test_run_id  in number)
+   return number
 is
+   ret_num  number;
 begin
-   delete from wt_testcase_runs
-    where test_run_id = in_test_run_id;
-   delete from wt_results
-    where test_run_id = in_test_run_id;
+   delete from wt_testcase_runs  where test_run_id = in_test_run_id;
+   ret_num := SQL%ROWCOUNT;
+   delete from wt_results        where test_run_id = in_test_run_id;
+   ret_num := ret_num + SQL%ROWCOUNT;
+   return ret_num;
 end delete_run_id;
 
 $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
@@ -294,7 +297,17 @@ $THEN
          check_query_in    => 'select count(*) from wt_results' ||
                               ' where test_run_id = -99',
          against_value_in  => l_num_recs + 1);
-      delete_run_id(-99);
+      begin
+         wt_assert.eq (
+            msg_in          => 'Run delete_run_id(-99)',
+            check_this_in   => delete_run_id(-99),
+            against_this_in => 1);
+      exception when others then
+         wt_assert.isnull(
+            msg_in        => 'Run delete_run_id(-99) Exception',
+            check_this_in => dbms_utility.format_error_stack ||
+                             dbms_utility.format_error_backtrace);
+      end;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (
          msg_in            => 'After Test Count',

@@ -17,6 +17,9 @@ as
    function get_last_run_flag
       return varchar2 deterministic;
 
+   function set_last_run
+      (in_test_runner_id   in number)
+   return number;
    procedure set_last_run
       (in_test_runner_id   in number);
 
@@ -26,10 +29,13 @@ as
 
    procedure finalize1;
 
+   function finalize2
+   return number;
    procedure finalize2;
 
-   procedure delete_run_id
-      (in_test_run_id   in number);
+   function delete_run_id
+      (in_test_run_id   in number)
+   return number;
 
    procedure insert_hooks;
 

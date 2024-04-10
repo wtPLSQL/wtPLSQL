@@ -531,12 +531,18 @@ begin
    --
 end test_run;
 
-
---==============================================================--
--- No Unit Test for TEST_RUN.
---   Too complicated because testing occurs while the TEST_RUN
---   procedure is executing.  This also prevents 100% profiling.
---==============================================================--
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_test_run
+   is
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Test Run Testing';
+      wt_assert.isnotnull (
+         msg_in        => 'Not Testing Test Run',
+         check_this_in => 'Too complicated because testing occurs while the this procedure is actively running.');
+   end t_test_run;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
 
 
 ------------------------------------------------------------
@@ -615,6 +621,7 @@ $THEN
       t_check_runner;
       t_check_dbout;
       t_show_version;
+      t_test_run;
       t_test_all;
    end;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
