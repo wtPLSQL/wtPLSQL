@@ -1,0 +1,87 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableProxyOraclev20c class="oracle.dbtools.crest.model.design.storage.oracle.v20c.TableProxyOraclev20c" name="WT_PROFILES" directorySegmentName="seg_0" id="758A13CE-831B-0FF3-AF1D-6EFCB98A56C9">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:16 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<schemaObject>F3F68D51-50F9-4B34-B38E-4A24C8F25A04</schemaObject>
+<logging>YES</logging>
+<partitionedRowMovement>DISABLE</partitionedRowMovement>
+<segment>9ABA10BC-E32C-519C-DEC0-04F084280A2E</segment>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+<temporaryChanged>false</temporaryChanged>
+<accessDriverType>oracle_loader</accessDriverType>
+<rejectLimit></rejectLimit>
+<inMemory>NO</inMemory>
+<columnProxies itemClass="oracle.dbtools.crest.model.design.storage.oracle.v12c.ColumnProxyOraclev12c">
+<ColumnProxy name="TEXT" id="1A522A73-09A9-DADE-B9C7-033795B2BB73">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="EXEC_MIN_USEC" id="20B5B5E4-6E5E-A189-0264-ED60FED9F0ED">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="TEST_RUN_ID" id="26B9D345-2F5F-5001-0507-A3DC6750E361">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="EXEC_CNT" id="3734B96A-DE31-456A-0323-BBA1702870BE">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="EXEC_TOT_USEC" id="7D001A71-7FEB-9F08-7608-46FE6B96404D">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="LINE" id="884B2B12-D77B-8588-BA5F-B4C490C13F42">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="EXEC_MAX_USEC" id="9736387F-262C-D108-E534-ECE3AF554846">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="STATUS" id="EC7C07AC-1657-1B4B-D18C-258D1BB6F66D">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+</columnProxies>
+<indexProxies>
+<IndexProxy class="oracle.dbtools.crest.model.design.storage.oracle.v10g.IndexProxyOraclev10g" name="WT_PROFILES_PK" id="DB57788D-3B52-806E-A715-3DD110D30DC7">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:21 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<schemaObject>F3F68D51-50F9-4B34-B38E-4A24C8F25A04</schemaObject>
+<segment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</segment>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+</IndexProxy>
+</indexProxies>
+<foreignKeys>
+<ForeignKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.FKProxyOraclev10g" name="WT_PROFILES_FK1" id="D422577C-544C-70C3-EAD1-9F2A9AEA963C">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:26 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ForeignKey>
+</foreignKeys>
+<primaryKeys>
+<PrimaryKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PKProxyOraclev10g" name="WT_PROFILES_PK" id="22C4DB3A-81A8-DF94-3020-CFDF85D37BD8">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:23 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<segment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</segment>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+<existingIndex>DB57788D-3B52-806E-A715-3DD110D30DC7</existingIndex>
+<indexSegment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</indexSegment>
+<indexSort>SORTED</indexSort>
+<usingIndex>BY INDEX NAME</usingIndex>
+</PrimaryKey>
+</primaryKeys>
+</TableProxyOraclev20c>

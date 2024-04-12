@@ -1,0 +1,569 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<PackageOracle class="oracle.dbtools.crest.model.design.storage.oracle.PackageOracle" name="WT_JOB" directorySegmentName="seg_0" id="2C1448A2-A5F9-8AC2-F875-8DCAE7C46665">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_JOB</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:29 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<owner><![CDATA[0B8CEE14-5EF4-002A-AC5B-E55C89A47256]]></owner>
+<source>CREATE OR REPLACE PACKAGE       WTP.WT_JOB
+   authid definer
+as
+
+   -- Database Links are Required to
+   -- Run Jobs as Different Owners
+   procedure create_db_link
+      (in_schema_name  in varchar2
+      ,in_password     in varchar2);
+   procedure drop_db_link
+      (in_schema_name  in varchar2);
+
+   -- Waits for all test runners to complete
+   procedure wait_for_all_tests
+      (in_timeout_seconds         in number  default 3600
+      ,in_check_interval_seconds  in number  default 60);
+
+   -- Run a test runner in a different schema
+   -- Returns before the test runner is complete
+   procedure test_run
+      (in_schema_name  in  varchar2
+      ,in_runner_name  in  varchar2);
+
+   -- Run all test runners in a different schema
+   -- Returns before all test runners are complete
+   procedure test_all
+      (in_schema_name   in  varchar2);
+
+   -- Run all test runners in all schema in sequence
+   -- Returns before all test runners are complete
+   procedure test_all_sequential;
+
+   -- Run all test runners in all schema in parallel
+   -- Returns before all test runners are complete
+   procedure test_all_parallel;
+
+   $IF $$WTPLSQL_SELFTEST
+   $THEN
+      procedure WTPLSQL_RUN;
+   $END
+
+end wt_job;</source>
+<body class="oracle.dbtools.crest.model.design.storage.oracle.PackageBodyOracle" name="WT_JOB" id="2C1448A2-A5F9-8AC2-F875-8DCAE7C46665">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_JOB</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:29 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<owner><![CDATA[0B8CEE14-5EF4-002A-AC5B-E55C89A47256]]></owner>
+<source>CREATE OR REPLACE PACKAGE BODY       WTP.WT_JOB
+as
+
+   $IF $$WTPLSQL_SELFTEST $THEN  ------%WTPLSQL_begin_ignore_lines%------
+      g_current_user     varchar2(30);
+   $END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+----------------------
+--  Private Procedures
+----------------------
+
+--==============================================================--
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+
+   procedure tl_compile_db_object
+         (in_ptype   in varchar2
+         ,in_pname   in varchar2
+         ,in_source  in varchar2)
+   is
+      l_sql_txt  varchar2(4000);
+      l_errtxt   varchar2(32000) := &apos;&apos;;
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      -- Wrap in_source to complete the DDL statement
+      l_sql_txt := &apos;create &apos; || in_ptype  ||
+                         &apos; &apos; || in_pname  ||
+                      &apos; as &apos; || in_source ;
+      wt_assert.raises
+         (msg_in         =&gt; &apos;Compile &apos; || in_ptype || &apos; &apos; || in_pname
+         ,check_call_in  =&gt; l_sql_txt
+         ,against_exc_in =&gt; &apos;&apos;);
+      --------------------------------------  WTPLSQL Testing --
+      for buff in (select * from user_errors
+                    where attribute = &apos;ERROR&apos;
+                     and  name      = in_pname
+                     and  type      = in_ptype
+                    order by sequence)
+      loop
+         l_errtxt := l_errtxt || buff.line || &apos;, &apos; ||
+            buff.position || &apos;: &apos; || buff.text || CHR(10);
+      end loop;
+      wt_assert.isnull
+         (msg_in        =&gt; &apos;Compile &apos; || in_ptype || &apos; &apos; || in_pname ||
+                            &apos; Error&apos;
+         ,check_this_in =&gt; l_errtxt);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.objexists (
+         msg_in        =&gt; in_pname || &apos; &apos; || in_ptype,
+         obj_owner_in  =&gt; g_current_user,
+         obj_name_in   =&gt; upper(in_pname),
+         obj_type_in   =&gt; upper(in_ptype));
+   end tl_compile_db_object;
+--==============================================================--
+      --------------------------------------  WTPLSQL Testing --
+   procedure tl_drop_db_object
+      (in_ptype  in  varchar2,
+       in_pname  in  varchar2)
+   is
+      l_sql_txt  varchar2(4000);
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      l_sql_txt := &apos;drop &apos; || in_ptype || &apos; &apos; || in_pname;
+      wt_assert.raises
+         (msg_in         =&gt; &apos;drop &apos; || in_ptype || &apos; &apos; || in_pname
+         ,check_call_in  =&gt; l_sql_txt
+         ,against_exc_in =&gt; &apos;&apos;);
+      wt_assert.objnotexists (
+         msg_in        =&gt; in_pname || &apos; &apos; || in_ptype,
+         obj_owner_in  =&gt; g_current_user,
+         obj_name_in   =&gt; upper(in_pname),
+         obj_type_in   =&gt; upper(in_ptype));
+   end tl_drop_db_object;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+--==============================================================--
+
+
+---------------------
+--  Public Procedures
+---------------------
+
+
+------------------------------------------------------------
+procedure create_db_link
+      (in_schema_name  in varchar2
+      ,in_password     in varchar2)
+is
+   connect_string  varchar2(2000);
+begin
+    select &apos;//&apos; || &apos;localhost&apos; ||
+            &apos;:&apos; || 1521        ||
+            &apos;/&apos; || global_name
+    into  connect_string
+    from  global_name;
+   execute immediate
+      &apos;create database link &apos; || in_schema_name ||
+               &apos; connect to &apos; || in_schema_name ||
+            &apos; identified by &apos; || in_password    ||
+                  &apos; using &apos;&apos;&apos; || connect_string || &apos;&apos;&apos;&apos;;
+end create_db_link;
+
+
+------------------------------------------------------------
+procedure drop_db_link
+      (in_schema_name  in varchar2)
+is
+begin
+   execute immediate
+      &apos;drop database link &apos; || in_schema_name;
+exception when OTHERS then
+   if SQLERRM != &apos;ORA-02024: database link not found&apos;
+   then
+      ------%WTPLSQL_begin_ignore_lines%------
+      -- Can&apos;t Test This
+      raise;
+      -------%WTPLSQL_end_ignore_lines%-------
+   end if;
+end drop_db_link;
+
+
+------------------------------------------------------------
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_create_drop_db_link
+   is
+      num_rows  number;
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := &apos;Create and Drop DB Link&apos;;
+      wt_assert.eqqueryvalue (
+         msg_in           =&gt; &apos;Number of DB Links before testing&apos;,
+         check_query_in   =&gt; &apos;select count(*) from user_db_links&apos;,
+         against_value_in =&gt; 0);
+      wt_assert.raises (
+         msg_in          =&gt; &apos;Create the Database Link&apos;,
+         check_call_in   =&gt; &apos;begin wt_job.create_db_link(&apos;&apos;&apos; ||
+                                   g_current_user || &apos;&apos;&apos;,&apos;&apos;&apos; ||
+                                   upper(g_current_user) || &apos;&apos;&apos;); end;&apos;,
+         against_exc_in  =&gt; &apos;&apos;);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eqqueryvalue (
+         msg_in           =&gt; &apos;Number of DB Links during testing&apos;,
+         check_query_in   =&gt; &apos;select count(*) from user_db_links&apos;,
+         against_value_in =&gt; 1);
+      select count(*)
+       into  num_rows
+       from  wt_self_test;
+      wt_assert.eqqueryvalue (
+         msg_in           =&gt; &apos;Number of Rows from WT_SELF_TEST@&apos; || g_current_user,
+         check_query_in   =&gt; &apos;select count(*) from WT_SELF_TEST@&apos; || g_current_user,
+         against_value_in =&gt; num_rows);
+      --------------------------------------  WTPLSQL Testing --
+      rollback;
+      wt_assert.raises (
+         msg_in          =&gt; &apos;Close the Database Link&apos;,
+         check_call_in   =&gt; &apos;alter session close database link &apos; ||
+                                   g_current_user,
+         against_exc_in  =&gt; &apos;&apos;);
+      wt_assert.raises (
+         msg_in          =&gt; &apos;Drop the Database Link&apos;,
+         check_call_in   =&gt; &apos;begin wt_job.drop_db_link(&apos;&apos;&apos; ||
+                                   g_current_user || &apos;&apos;&apos;); end;&apos;,
+         against_exc_in  =&gt; &apos;&apos;);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.objnotexists (
+         msg_in        =&gt;  g_current_user || &apos; Database Link&apos;,
+         obj_owner_in  =&gt;  g_current_user,
+         obj_name_in   =&gt;  g_current_user,
+         obj_type_in   =&gt;  &apos;DATABASE LINK&apos;);
+      wt_assert.eqqueryvalue (
+         msg_in           =&gt; &apos;Number of DB Links after testing&apos;,
+         check_query_in   =&gt; &apos;select count(*) from user_db_links&apos;,
+         against_value_in =&gt; 0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := &apos;Drop Nonexistent DB Link&apos;;
+      wt_assert.raises (
+         msg_in          =&gt; &apos;Drop BOGUS Database Link&apos;,
+         check_call_in   =&gt; &apos;begin wt_job.drop_db_link(&apos;&apos;BOGUS&apos;&apos;); end;&apos;,
+         against_exc_in  =&gt; &apos;&apos;);
+   end t_create_drop_db_link;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
+------------------------------------------------------------
+-- Waits for all test runners to complete
+procedure wait_for_all_tests
+      (in_timeout_seconds         in number  default 3600
+      ,in_check_interval_seconds  in number  default 60)
+is
+   num_jobs       number := 0;
+   max_intervals  pls_integer;
+begin
+   max_intervals := nvl(in_timeout_seconds,3600) /
+                    nvl(in_check_interval_seconds,60);
+   for i in 1 .. max_intervals
+   loop
+      select count(*) into num_jobs
+       from  user_scheduler_running_jobs;
+      exit when num_jobs = 0;
+      dbms_lock.sleep(in_check_interval_seconds);
+   end loop;
+   if num_jobs &gt; 0
+   then
+      raise_application_error(-20000, &apos;WAIT_FOR_ALL_TESTS timeout, &apos; ||
+                                       num_jobs || &apos; jobs still running&apos;);
+   end if;
+end wait_for_all_tests;
+
+
+------------------------------------------------------------
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_wait_for_all_tests
+   is
+      procedure launch_job (in_timeout in number) is
+         plsql_block    varchar2(32000);
+      begin
+         plsql_block :=
+            &apos;declare&apos;                                    || CHR(10) ||
+            &apos;   l_msg    varchar2(2000);&apos;                || CHR(10) ||
+            &apos;   l_stat   integer;&apos;                       || CHR(10) ||
+            &apos;begin&apos;                                      || CHR(10) ||
+            &apos;   dbms_alert.register&apos;                     || CHR(10) ||
+            &apos;      (name    =&gt; &apos;&apos;WT_JOB_WAIT_UT_ALRT&apos; ||
+                                 in_timeout || &apos;&apos;&apos;&apos;      || CHR(10) ||
+            &apos;      ,cleanup =&gt; TRUE);&apos;                   || CHR(10) ||
+            &apos;   dbms_alert.waitone&apos;                      || CHR(10) ||
+            &apos;      (name    =&gt; &apos;&apos;WT_JOB_WAIT_UT_ALRT&apos; ||
+                                 in_timeout || &apos;&apos;&apos;&apos;      || CHR(10) ||
+            &apos;      ,message =&gt; l_msg&apos;                    || CHR(10) ||
+            &apos;      ,status  =&gt; l_stat&apos;                   || CHR(10) ||
+            &apos;      ,timeout =&gt; &apos; || in_timeout || &apos;);&apos;   || CHR(10) ||
+            &apos;   dbms_alert.remove&apos;                       || CHR(10) ||
+            &apos;      (name    =&gt; &apos;&apos;WT_JOB_WAIT_UT_ALRT&apos; ||
+                                 in_timeout || &apos;&apos;&apos;);&apos;    || CHR(10) ||
+            &apos;end;&apos;;
+         dbms_scheduler.create_job
+            (job_name   =&gt; &apos;WT_JOB_WAIT_UT_&apos; || in_timeout
+            ,job_type   =&gt; &apos;PLSQL_BLOCK&apos;
+            ,job_action =&gt; plsql_block
+            ,enabled    =&gt; TRUE);
+         dbms_lock.sleep(1);   -- Must give job a chance to startup
+      exception when others then
+         wt_assert.isnotnull (
+            msg_in        =&gt; &apos;t_wait_for_all_tests: &quot;launch_job&quot; Error&apos;,
+            check_this_in =&gt; SQLERRM);
+      end launch_job;
+      procedure stop_jobs is
+      begin
+         for buff in (select name from sys.DBMS_ALERT_INFO)
+         loop
+            dbms_alert.signal(name    =&gt; buff.name
+                             ,message =&gt; &apos;STOP&apos;);
+         end loop;
+         dbms_lock.sleep(1);     -- Must give job a chance to process signal
+         dbms_alert.removeall;   -- Not sure why this is necessary
+         for buff in (select job_name from user_scheduler_running_jobs)
+         loop
+            dbms_scheduler.stop_job(job_name         =&gt; buff.job_name
+                                   ,force            =&gt; TRUE
+                                   ,commit_semantics =&gt; &apos;STOP_ON_FIRST_ERROR&apos;);
+         end loop;
+      exception when others then
+         wt_assert.isnotnull (
+            msg_in        =&gt; &apos;t_wait_for_all_tests: &quot;launch_job&quot; Error&apos;,
+            check_this_in =&gt; SQLERRM);
+      end stop_jobs;
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := &apos;Wait for All Tests Happy Path&apos;;
+      launch_job(1);
+      wt_assert.eqqueryvalue (
+         msg_in           =&gt; &apos;Number of Test Runs After&apos;,
+         check_query_in   =&gt; &apos;select count(*) from user_scheduler_running_jobs&apos;,
+         against_value_in =&gt; 1);
+      wt_assert.raises(msg_in         =&gt; &apos;Wait for All Tests Expected Exception&apos;
+                      ,check_call_in  =&gt; &apos;begin wt_job.wait_for_all_tests(in_timeout_seconds =&gt; 1&apos; ||
+                                                                &apos;, in_check_interval_seconds =&gt; 0.5); end;&apos;
+                      ,against_exc_in =&gt; cast (NULL as number));
+      stop_jobs;
+      wt_assert.eqqueryvalue (
+         msg_in           =&gt; &apos;Number of Test Runs After&apos;,
+         check_query_in   =&gt; &apos;select count(*) from user_scheduler_running_jobs&apos;,
+         against_value_in =&gt; 0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := &apos;Wait for All Tests Timeout&apos;;
+      launch_job(10);
+      wt_assert.eqqueryvalue (
+         msg_in           =&gt; &apos;Number of Test Runs After&apos;,
+         check_query_in   =&gt; &apos;select count(*) from user_scheduler_running_jobs&apos;,
+         against_value_in =&gt; 1);
+      wt_assert.raises(msg_in         =&gt; &apos;Wait for All Tests Expected Exception&apos;
+                      ,check_call_in  =&gt; &apos;begin wt_job.wait_for_all_tests(in_timeout_seconds =&gt; 1&apos; ||
+                                                                &apos;, in_check_interval_seconds =&gt; 0.5); end;&apos;
+                      ,against_exc_in =&gt; -20000);
+      stop_jobs;
+      wt_assert.eqqueryvalue (
+         msg_in           =&gt; &apos;Number of Test Runs After&apos;,
+         check_query_in   =&gt; &apos;select count(*) from user_scheduler_running_jobs&apos;,
+         against_value_in =&gt; 0);
+   end t_wait_for_all_tests;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
+------------------------------------------------------------
+-- Run a test runner in a different schema
+-- Returns before the test runner is complete
+procedure test_run
+      (in_schema_name  in  varchar2
+      ,in_runner_name  in  varchar2)
+is
+   plsql_block    varchar2(32000);
+begin
+   plsql_block :=
+      &apos;begin&apos;                                          || CHR(10) ||
+      &apos;   wtplsql.test_run@&apos; || in_schema_name ||
+                         &apos;(&apos; || in_runner_name || &apos;);&apos; || CHR(10) ||
+      &apos;end;&apos;;
+   dbms_scheduler.create_job
+      (job_name   =&gt; substr(&apos;WT_TEST_RUN$&apos; || in_schema_name ||
+                                       &apos;$&apos; || in_runner_name
+                           ,1,30)
+      ,job_type   =&gt; &apos;PLSQL_BLOCK&apos;
+      ,job_action =&gt; plsql_block
+      ,enabled    =&gt; TRUE);
+end test_run;
+
+
+------------------------------------------------------------
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_run_and_wait_for_job
+   is
+      num_rows  number;
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := &apos;Run and Wait for Job&apos;;
+      tl_compile_db_object (&apos;PACKAGE&apos;, &apos;WT_RUN_AND_WAIT_TEST&apos;,&apos;
+            procedure wtplsql_run;
+         end WT_RUN_AND_WAIT_TEST;&apos;);
+      tl_compile_db_object (&apos;PACKAGE BODY&apos;, &apos;WT_RUN_AND_WAIT_TEST&apos;,&apos;
+         procedure wtplsql_run is
+         begin
+            wt_assert.isnotnull (
+               msg_in        =&gt; &apos;&apos;Test1&apos;&apos;,
+               check_this_in =&gt; &apos;&apos;Test1&apos;&apos;);
+         end wtplsql_run;
+         end WT_RUN_AND_WAIT_TEST;&apos;);
+      select count(*) into num_rows
+       from  wt_test_runs_vw
+       where test_runner_owner = g_current_user
+        and  test_runner_name  = &apos;WT_RUN_AND_WAIT_TEST&apos;;
+      wt_assert.isnotnull (
+         msg_in        =&gt; &apos;Number of Test Runs Before&apos;,
+         check_this_in =&gt; num_rows);
+      wt_assert.raises
+         (msg_in         =&gt; &apos;wt_job.test_run&apos;
+         ,check_call_in  =&gt; &apos;begin wt_job.test_run(&apos;&apos;&apos; || g_current_user ||
+                            &apos;&apos;&apos;, &apos;&apos;WT_RUN_AND_WAIT_TEST&apos;&apos;); end;&apos;
+         ,against_exc_in =&gt; &apos;&apos;);
+
+      wt_assert.raises
+         (msg_in         =&gt; &apos;wait_for_all_tests&apos;
+         ,check_call_in  =&gt; &apos;begin wt_job.wait_for_all_tests(2,0.5); end;&apos;
+         ,against_exc_in =&gt; &apos;&apos;);
+      wt_assert.eqqueryvalue (
+         msg_in           =&gt; &apos;Number of Test Runs After&apos;,
+         check_query_in   =&gt; &apos;select count(*) from wt_test_runs_vw
+                               where test_runner_id = wt_test_runner.get_id(&apos;&apos;&apos; ||
+                                                      g_current_user ||
+                                               &apos;&apos;&apos;, &apos;&apos;WT_RUN_AND_WAIT_TEST&apos;&apos;)&apos;,
+         against_value_in =&gt; num_rows);
+      tl_drop_db_object(&apos;PACKAGE&apos;, &apos;WT_RUN_AND_WAIT_TEST&apos;);
+   end t_run_and_wait_for_job;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
+------------------------------------------------------------
+-- Run all test runners in a different schema
+-- Returns before all test runners are complete
+--  NOTE: Unit Testing requires full repeat testing of WTP
+--        OR or highly modified testing.  Skipping Unit Test
+procedure test_all  ------%WTPLSQL_begin_ignore_lines%------
+      (in_schema_name   in  varchar2)
+is
+   plsql_block    varchar2(32000);
+begin
+   if in_schema_name is null
+   then
+      raise_application_error(-20000, &apos;in_schema_name must not be null&apos;);
+   end if;
+   plsql_block :=
+      &apos;begin&apos;                                          || CHR(10) ||
+      &apos;   wtplsql.test_all@&apos; || in_schema_name  || &apos;;&apos; || CHR(10) ||
+      &apos;end;&apos;;
+   dbms_scheduler.create_job
+      (job_name   =&gt; substr(&apos;WT_TEST_ALL$&apos; || in_schema_name
+                           ,1,128)
+      ,job_type   =&gt; &apos;PLSQL_BLOCK&apos;
+      ,job_action =&gt; plsql_block);
+end test_all;  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_test_all
+   is
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := &apos;Test All Testing&apos;;
+      wt_assert.isnotnull (
+         msg_in        =&gt; &apos;Not Testing Test All&apos;,
+         check_this_in =&gt; &apos;Requires full repeat testing of WTP or highly modified testing&apos;);
+   end t_test_all;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
+------------------------------------------------------------
+-- Run all test runners in all schema in sequence
+-- Returns before all test runners are complete
+--  NOTE: Unit Testing requires full repeat testing of WTP
+--        OR or highly modified testing.  Skipping Unit Test
+procedure test_all_sequential  ------%WTPLSQL_begin_ignore_lines%------
+is
+   plsql_block    varchar2(32000);
+begin
+   plsql_block := &apos;begin&apos; || CHR(10);
+   for buff in (
+      select owner
+       from  wt_qual_test_runners_vw
+       group by owner)
+   loop
+      plsql_block := plsql_block ||
+         &apos;   wtplsql.test_all@&apos; || buff.owner || &apos;;&apos; || CHR(10);
+   end loop;
+   plsql_block := plsql_block ||
+      &apos;end;&apos;;
+   dbms_scheduler.create_job
+      (job_name   =&gt; &apos;WT_TEST_ALL_SEQUENTIAL&apos;
+      ,job_type   =&gt; &apos;PLSQL_BLOCK&apos;
+      ,job_action =&gt; plsql_block);
+end test_all_sequential;  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_test_all_sequential
+   is
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := &apos;Test All Sequential Testing&apos;;
+      wt_assert.isnotnull (
+         msg_in        =&gt; &apos;Not Testing Test All Sequential&apos;,
+         check_this_in =&gt; &apos;Requires full repeat testing of WTP or highly modified testing&apos;);
+   end t_test_all_sequential;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
+------------------------------------------------------------
+-- Run all test runners in all schema in parallel
+-- Returns before all test runners are complete
+--  NOTE: Unit Testing requires full repeat testing of WTP
+--        or highly modified testing.  Skipping Unit Test
+procedure test_all_parallel  ------%WTPLSQL_begin_ignore_lines%------
+is
+begin
+   for buff in (
+      select owner
+       from  wt_qual_test_runners_vw
+       group by owner)
+   loop
+      test_all(buff.owner);
+   end loop;
+end test_all_parallel;  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_test_all_parallel
+   is
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := &apos;Test All Parallel Testing&apos;;
+      wt_assert.isnotnull (
+         msg_in        =&gt; &apos;Not Testing Test All Parallel&apos;,
+         check_this_in =&gt; &apos;Requires full repeat testing of WTP or highly modified testing&apos;);
+   end t_test_all_parallel;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
+--==============================================================--
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure WTPLSQL_RUN
+   is
+   begin
+      wtplsql.g_DBOUT := &apos;WT_JOB:PACKAGE BODY&apos;;
+      select username into g_current_user from user_users;
+      --------------------------------------  WTPLSQL Testing --
+      t_create_drop_db_link;
+      t_wait_for_all_tests;
+      t_run_and_wait_for_job;
+      t_test_all;
+      t_test_all_sequential;
+      t_test_all_parallel;
+   end WTPLSQL_RUN;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+--==============================================================--
+
+
+end wt_job;</source>
+</body>
+</PackageOracle>

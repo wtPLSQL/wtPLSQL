@@ -1,0 +1,14 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<SequenceOraclev10g class="oracle.dbtools.crest.model.design.storage.oracle.v10g.SequenceOraclev10g" name="WT_DBOUTS_SEQ" directorySegmentName="seg_0" id="76C4919A-C6EC-E9CB-295E-FC5F7A9D6CBB">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_DBOUTS_SEQ</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:11 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<cache>20</cache>
+<incrementBy>1</incrementBy>
+<maxValue>9999999999999999999999999999</maxValue>
+<minValue>1</minValue>
+<user>0B8CEE14-5EF4-002A-AC5B-E55C89A47256</user>
+</SequenceOraclev10g>

@@ -1,0 +1,183 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="AD852798-2151-9B8D-72B3-69C9049EC985" schemaObject="F3F68D51-50F9-4B34-B38E-4A24C8F25A04" name="PLSQL_PROFILER_RUNS">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>PLSQL_PROFILER_RUNS</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:16 UTC</createdTime>
+<commentInRDBMS><![CDATA[Table of profiler runs for DBMS_PROFILER]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="RUNID" id="9A3DB689-FF01-641C-6AEE-5C1BE8614A85">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>PLSQL_PROFILER_RUNS</sourceObjSchema>
+<sourceObjName>RUNID</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[(PRIMARY KEY) Unique run identifier from plsql_profiler_runnumber]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="RELATED_RUN" id="EB27DE11-1511-E226-BE83-70871D50021F">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>PLSQL_PROFILER_RUNS</sourceObjSchema>
+<sourceObjName>RELATED_RUN</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Runid of related run (for client/server correlation)]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="RUN_OWNER" id="D3DD9DDF-93CF-0F3C-0872-B2BF518CA584">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>PLSQL_PROFILER_RUNS</sourceObjSchema>
+<sourceObjName>RUN_OWNER</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[User who started run]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>32 BYTE</dataTypeSize>
+<ownDataTypeParameters>32 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="RUN_DATE" id="2AECF9C0-30F7-18E6-3C4A-747AB8432B00">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>PLSQL_PROFILER_RUNS</sourceObjSchema>
+<sourceObjName>RUN_DATE</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Start time of run]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="RUN_COMMENT" id="DA7B5FC6-316E-0496-1A2C-3D1F01F9E18F">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>PLSQL_PROFILER_RUNS</sourceObjSchema>
+<sourceObjName>RUN_COMMENT</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[User provided comment for this run]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>2047 BYTE</dataTypeSize>
+<ownDataTypeParameters>2047 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="RUN_TOTAL_TIME" id="B56C2558-B8BB-8914-54B0-7D7C9727DE00">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>PLSQL_PROFILER_RUNS</sourceObjSchema>
+<sourceObjName>RUN_TOTAL_TIME</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Elapsed time for this run in nanoseconds]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="RUN_SYSTEM_INFO" id="AD98CFEE-1C8B-AA48-FDA5-6D86FE5F189D">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>PLSQL_PROFILER_RUNS</sourceObjSchema>
+<sourceObjName>RUN_SYSTEM_INFO</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Currently unused]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>2047 BYTE</dataTypeSize>
+<ownDataTypeParameters>2047 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="RUN_COMMENT1" id="6D7C60EA-C1D6-C2A3-15C0-47A3E737DE63">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>PLSQL_PROFILER_RUNS</sourceObjSchema>
+<sourceObjName>RUN_COMMENT1</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Additional comment]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>2047 BYTE</dataTypeSize>
+<ownDataTypeParameters>2047 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="SPARE1" id="97B740BF-1EE8-1C3C-FDBF-B882A4CB6A1C">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>PLSQL_PROFILER_RUNS</sourceObjSchema>
+<sourceObjName>SPARE1</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Unused]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>256 BYTE</dataTypeSize>
+<ownDataTypeParameters>256 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="5A049952-A879-06D7-F379-105EAD71A713" schemaObject="F3F68D51-50F9-4B34-B38E-4A24C8F25A04" name="PLSQL_PROFILER_RUNS_PK">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>SYS_C008234</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:21 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="9A3DB689-FF01-641C-6AEE-5C1BE8614A85"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="38CC37E6-5EE0-4A61-D3B2-B99411D95B27" schemaObject="F3F68D51-50F9-4B34-B38E-4A24C8F25A04" name="PLSQL_PROFILER_RUNS_IDX1">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>PLSQL_PROFILER_RUNS_IDX1</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:21 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="2AECF9C0-30F7-18E6-3C4A-747AB8432B00"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

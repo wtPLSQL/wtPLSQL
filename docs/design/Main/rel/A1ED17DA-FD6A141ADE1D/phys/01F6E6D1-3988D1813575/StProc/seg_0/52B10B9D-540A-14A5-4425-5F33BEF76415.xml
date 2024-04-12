@@ -1,0 +1,43 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<StoredProcedureOraclev10g class="oracle.dbtools.crest.model.design.storage.oracle.v10g.StoredProcedureOraclev10g" name="WT_AD_HOC_REPORT" directorySegmentName="seg_0" id="52B10B9D-540A-14A5-4425-5F33BEF76415">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_AD_HOC_REPORT</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:28 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<owner><![CDATA[0B8CEE14-5EF4-002A-AC5B-E55C89A47256]]></owner>
+<source>CREATE OR REPLACE PROCEDURE       WTP.WT_AD_HOC_REPORT
+   authid current_user
+   -- AUTHID CURRENT_USER is required for assertions with
+   --   dynamic PL/SQL execution.
+is
+begin
+   dbms_output.put_line(wt_assert.g_rec.last_msg);
+   dbms_output.put_line(&apos; Assertion &apos; || wt_assert.g_rec.last_assert ||
+                     case wt_assert.last_pass
+                     when TRUE then &apos; PASSED.&apos;
+                               else &apos; FAILED.&apos;
+                     end);
+   if wt_assert.g_testcase is not null
+   then
+      dbms_output.put_line(&apos; Testcase: &apos; || wt_assert.g_testcase);
+   end if;
+   dbms_output.put_line(          &apos; &apos; || wt_assert.g_rec.last_details);
+end wt_ad_hoc_report;</source>
+<synonyms>
+<Synonym class="oracle.dbtools.crest.model.design.storage.oracle.v10g.SynonymOraclev10g" name="WT_AD_HOC_REPORT" id="DAE4FF8C-B0B6-4D83-5C0D-D359A01D9EC0">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>PUBLIC</sourceObjSchema>
+<sourceObjName>WT_AD_HOC_REPORT</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:28 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<objectName>WT_AD_HOC_REPORT</objectName>
+<objectUser>0B8CEE14-5EF4-002A-AC5B-E55C89A47256</objectUser>
+<public>YES</public>
+<user>PUBLIC</user>
+<referredObjectID>52B10B9D-540A-14A5-4425-5F33BEF76415</referredObjectID>
+</Synonym>
+</synonyms>
+</StoredProcedureOraclev10g>

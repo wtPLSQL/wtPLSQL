@@ -1,0 +1,321 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="8B85014B-3DC9-977A-759E-DFE1810940A6" schemaObject="F3F68D51-50F9-4B34-B38E-4A24C8F25A04" name="WT_DBOUT_RUNS">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_DBOUT_RUNS</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:16 UTC</createdTime>
+<commentInRDBMS><![CDATA[Database Object Under Test Run data for each Test Run.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="TEST_RUN_ID" id="384B03B3-A3D6-C254-9DED-093296962DE9">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS</sourceObjSchema>
+<sourceObjName>TEST_RUN_ID</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Primary (Surrogate) Key of each Test Run]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>38</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,38,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<notNullConstraintName>WT_DBOUT_RUNS_NN1</notNullConstraintName>
+<associations>
+<colAssociation fkAssociation="A82B8171-DCB9-A30B-1B7E-CD8971A17F0E" referredColumn="1F7E6D3E-2BF6-839B-0718-64EFF43265D5"/>
+</associations>
+</Column>
+<Column name="PROFILER_RUNID" id="F7E17E4F-72FB-2237-B81A-454CB77CF9AE">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS</sourceObjSchema>
+<sourceObjName>PROFILER_RUNID</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[(Required) DBMS_PROFILER unique run identifier from plsql_profiler_runnumber sequence]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>38</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,38,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<notNullConstraintName>WT_DBOUT_RUNS_NN2</notNullConstraintName>
+</Column>
+<Column name="TRIGGER_OFFSET" id="FD80BDD1-F571-43E2-E44D-A9FD53AB7594">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS</sourceObjSchema>
+<sourceObjName>TRIGGER_OFFSET</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Calculated offset from start of Trigger Source to start of Trigger PL/SQL Block.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>6</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,6,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="COVERAGE_PCT" id="FD42894C-C7E7-35DC-77EB-D2DA314771C6">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS</sourceObjSchema>
+<sourceObjName>COVERAGE_PCT</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Percentage of executed lines to non-ignored, non-excluded lines]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>4</dataTypePrecision>
+<dataTypeScale>1</dataTypeScale>
+<ownDataTypeParameters>,4,1</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="PROFILED_LINES" id="EA42B83F-7825-C69A-3199-23F2758A4F1E">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS</sourceObjSchema>
+<sourceObjName>PROFILED_LINES</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Total number of source lines as counted by DBMS_PROFILER]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>6</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,6,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="EXECUTED_LINES" id="3D3EAABA-89BF-2CDD-A7B8-B6FC127E1130">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS</sourceObjSchema>
+<sourceObjName>EXECUTED_LINES</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Number of source lines executed]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>6</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,6,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="IGNORED_LINES" id="814FF55F-DAEA-A4F8-2C0A-B2A69A2F9E69">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS</sourceObjSchema>
+<sourceObjName>IGNORED_LINES</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Number of source lines ignored as uncountable]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>6</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,6,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="EXCLUDED_LINES" id="C5DFF22B-A984-C67B-A2F5-456CA679934C">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS</sourceObjSchema>
+<sourceObjName>EXCLUDED_LINES</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Number of declaration source lines (non-executable) excluded]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>6</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,6,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NOTEXEC_LINES" id="B3EC6BA3-EB9C-0367-8ED8-B6A1C43CF4CB">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS</sourceObjSchema>
+<sourceObjName>NOTEXEC_LINES</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Number of source lines not executed]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>6</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,6,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="UNKNOWN_LINES" id="2650D4C2-6698-9AAC-F4AC-09325BEEA077">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS</sourceObjSchema>
+<sourceObjName>UNKNOWN_LINES</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Number of source lines with unknown DBMS_PROFILER metrics]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>6</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,6,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="EXEC_MIN_USEC" id="2359EF30-7E13-93F6-4E5D-B1C46A5302E4">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS</sourceObjSchema>
+<sourceObjName>EXEC_MIN_USEC</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Minumum execution time for a line of source in microseconds]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>11</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,11,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="EXEC_AVG_USEC" id="7CB8A6EA-5D09-A112-F9CF-BFD197514992">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS</sourceObjSchema>
+<sourceObjName>EXEC_AVG_USEC</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Average execution time for a line of source in microseconds]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>11</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,11,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="EXEC_MAX_USEC" id="B3496CED-FABA-40B4-EE1E-34FCF625A1F2">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS</sourceObjSchema>
+<sourceObjName>EXEC_MAX_USEC</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Maximum execution time for a line of source in microseconds]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>11</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,11,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="EXEC_TOT_USEC" id="51162AEE-1419-9012-1569-0840DE11E099">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS</sourceObjSchema>
+<sourceObjName>EXEC_TOT_USEC</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Total (Sum) of execution times for a line of source in microseconds]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>11</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,11,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="7AB26D6E-4B64-384B-B3EF-61585B4F4DB0" name="WT_DBOUT_RUNS_PK">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_DBOUT_RUNS_PK</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:23 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="384B03B3-A3D6-C254-9DED-093296962DE9"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="281C2706-8BA6-BE91-9032-28D1EAD47705" name="WT_DBOUT_RUNS_NK1">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_DBOUT_RUNS_NK1</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:23 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<indexState>Unique Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="F7E17E4F-72FB-2237-B81A-454CB77CF9AE"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="5854E86D-CA12-D05E-5A4F-703318A938A3" schemaObject="F3F68D51-50F9-4B34-B38E-4A24C8F25A04" name="WT_DBOUT_RUNS_NK1">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_DBOUT_RUNS_NK1</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:21 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="F7E17E4F-72FB-2237-B81A-454CB77CF9AE"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="279A4402-57A7-30E7-A5C2-9FA6CE0E5B86" schemaObject="F3F68D51-50F9-4B34-B38E-4A24C8F25A04" name="WT_DBOUT_RUNS_PK">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_DBOUT_RUNS_PK</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:21 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="384B03B3-A3D6-C254-9DED-093296962DE9"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="21FFD646-CDBD-68B6-0D9B-5D3A0D82387A" name="WT_DBOUT_RUNS_FK1">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:26 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="384B03B3-A3D6-C254-9DED-093296962DE9"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

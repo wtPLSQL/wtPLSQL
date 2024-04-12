@@ -1,0 +1,113 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<StoredProcedureOraclev10g class="oracle.dbtools.crest.model.design.storage.oracle.v10g.StoredProcedureOraclev10g" name="JUNIT_XML_PERSIST_ALL" directorySegmentName="seg_0" id="81A99C6A-CD5F-82BB-64DD-096AB242711A">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>JUNIT_XML_PERSIST_ALL</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:28 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<owner><![CDATA[0B8CEE14-5EF4-002A-AC5B-E55C89A47256]]></owner>
+<source>CREATE OR REPLACE PROCEDURE       WTP.JUNIT_XML_PERSIST_ALL
+is
+   procedure p (in_line in varchar2) is
+   begin
+      DBMS_OUTPUT.PUT_LINE(in_line);
+   end p;
+begin
+   p(&apos;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&apos;);
+   p(&apos;&lt;!-- http://dmdiet.com - Adapted to SQLDeveloper Unit Test Utility --&gt;&apos;);
+   p(&apos;&lt;!-- http://nelsonwells.net/2012/09/how-jenkins-ci-parses-and-displays-junit-output/ --&gt;&apos;);
+   p(&apos;&lt;!-- Jenkins identifies the failed tests as {package}.{class}.{test}. --&gt;&apos;);
+   p(&apos;&lt;testsuites&gt;&apos;);
+   for suites in (
+      select run.start_dtm
+            ,run.end_dtm
+            ,run.id
+            ,tr.owner || &apos;.&apos; || tr.name      SUITE_NAME
+            ,nvl(db.owner, tr.owner)         PACKAGE_NAME
+            ,case when db.name || db.type is null
+                  then &apos;TEST_RUNNER&apos;
+                  else db.name || &apos;:&apos; || db.type
+             end                             CLASS_NAME
+            ,run.tc_cnt
+            ,run.tc_fail
+            ,extract(day from (run.end_dtm -
+                               run.start_dtm) * 86400000)
+                                             TOT_INTERVAL_MSEC
+            ,run.error_message
+       from  wt_test_runs  run
+             join wt_test_runners  tr
+                  on tr.id = run.test_runner_id
+        left join wt_dbouts  db
+                  on  db.id = run.dbout_id
+       where run.is_last_run = wt_test_run.get_last_run_flag
+       order by run.start_dtm, run.id )
+   loop
+      p(&apos;  &lt;testsuite name=&quot;&apos; || suites.suite_name ||
+                  &apos;&quot; tests=&quot;&apos; || suites.tc_cnt ||
+               &apos;&quot; failures=&quot;&apos; || suites.tc_fail ||
+                   &apos;&quot; time=&quot;&apos; || suites.tot_interval_msec ||
+              &apos;&quot; timestamp=&quot;&apos; || to_char(suites.start_dtm,&apos;YYYY-MM-DD&quot;T&quot;HH24:MI:SS&apos;) ||
+                         &apos;&quot;&gt;&apos; );
+      for cases in (
+         select run.id
+               ,tc.testcase
+               ,tcr.testcase_id
+               ,tcr.asrt_cnt                    ASSERTS
+               ,tcr.asrt_fail                   FAILURES
+               ,nvl(tcr.asrt_tot_msec
+                   ,suites.tot_interval_msec)   TOT_INTERVAL_MSEC
+          from  wt_test_runs  run
+           left join wt_testcase_runs  tcr
+                     on  tcr.test_run_id = run.id
+           left join wt_testcases  tc
+                     on  tc.id = tcr.testcase_id
+          where run.id = suites.id
+          order by testcase )
+      loop
+         if     nvl(cases.failures,1) = 0
+            and suites.error_message is null
+         then
+            p(&apos;    &lt;testcase name=&quot;&apos; || nvl(cases.testcase,&apos;NULL&apos;) ||
+                      &apos;&quot; classname=&quot;&apos; || suites.suite_name ||
+                      &apos;&quot; time=&quot;&apos; || cases.tot_interval_msec || &apos;&quot;/&gt;&apos;);
+         else
+            p(&apos;    &lt;testcase name=&quot;&apos; || nvl(cases.testcase,&apos;NULL&apos;) ||
+                      &apos;&quot; classname=&quot;&apos; || suites.package_name || &apos;.&apos; || suites.class_name ||
+                           &apos;&quot; time=&quot;&apos; || cases.tot_interval_msec || &apos;&quot;&gt;&apos;);
+            p(&apos;      &lt;error message=&quot;&apos; || nvl(to_char(cases.failures),&apos;No&apos;) || &apos; assertion failures. &apos; ||
+                                          suites.error_message || &apos;&quot;&gt;&apos;);
+            -- Print each of the non-passing results
+            for asrts in (
+               select wtr.result_seq
+                     ,wtr.status
+                     ,wtr.interval_msec
+                     ,wtr.message
+                     ,wtr.assertion
+                     ,wtr.details
+                from  wt_results  wtr
+                where wtr.test_run_id = suites.id
+                 and  (   (  cases.testcase_id is null
+                           and wtr.testcase_id is null)
+                       or wtr.testcase_id = cases.testcase_id)
+                 and  wtr.status != &apos;PASS&apos;
+                order by wtr.result_seq )
+            loop
+               p(lpad(asrts.result_seq,4)    || &apos;: &apos;  ||
+                 rpad(asrts.status,4)        || &apos; &apos;   ||
+                 lpad(asrts.interval_msec,4) || &apos;ms &apos; ||
+                 asrts.message               ||  &apos;. &apos; ||
+                 asrts.assertion             || &apos; - &apos; ||
+                 replace(replace(asrts.details
+                                ,CHR(13),&apos;\r&apos;)
+                        ,CHR(10),&apos;\n&apos;)       || &apos;.&apos;   );
+            end loop;
+            p(&apos;      &lt;/error&gt;&apos;);
+            p(&apos;    &lt;/testcase&gt;&apos;);
+         end if;
+      end loop;
+   end loop;
+   p(&apos;  &lt;/testsuite&gt;&apos;);
+   p(&apos;&lt;/testsuites&gt;&apos;);
+end junit_xml_persist_all;</source>
+</StoredProcedureOraclev10g>

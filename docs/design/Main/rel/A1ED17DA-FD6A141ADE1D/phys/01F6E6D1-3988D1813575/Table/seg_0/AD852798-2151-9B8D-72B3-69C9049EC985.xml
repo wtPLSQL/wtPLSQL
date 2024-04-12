@@ -1,0 +1,85 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableProxyOraclev20c class="oracle.dbtools.crest.model.design.storage.oracle.v20c.TableProxyOraclev20c" name="PLSQL_PROFILER_RUNS" directorySegmentName="seg_0" id="AD852798-2151-9B8D-72B3-69C9049EC985">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:16 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<schemaObject>F3F68D51-50F9-4B34-B38E-4A24C8F25A04</schemaObject>
+<logging>YES</logging>
+<partitionedRowMovement>DISABLE</partitionedRowMovement>
+<segment>9ABA10BC-E32C-519C-DEC0-04F084280A2E</segment>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+<temporaryChanged>false</temporaryChanged>
+<accessDriverType>oracle_loader</accessDriverType>
+<rejectLimit></rejectLimit>
+<inMemory>NO</inMemory>
+<columnProxies itemClass="oracle.dbtools.crest.model.design.storage.oracle.v12c.ColumnProxyOraclev12c">
+<ColumnProxy name="RUN_DATE" id="2AECF9C0-30F7-18E6-3C4A-747AB8432B00">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="RUN_COMMENT1" id="6D7C60EA-C1D6-C2A3-15C0-47A3E737DE63">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="SPARE1" id="97B740BF-1EE8-1C3C-FDBF-B882A4CB6A1C">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="RUNID" id="9A3DB689-FF01-641C-6AEE-5C1BE8614A85">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="RUN_SYSTEM_INFO" id="AD98CFEE-1C8B-AA48-FDA5-6D86FE5F189D">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="RUN_TOTAL_TIME" id="B56C2558-B8BB-8914-54B0-7D7C9727DE00">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="RUN_OWNER" id="D3DD9DDF-93CF-0F3C-0872-B2BF518CA584">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="RUN_COMMENT" id="DA7B5FC6-316E-0496-1A2C-3D1F01F9E18F">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="RELATED_RUN" id="EB27DE11-1511-E226-BE83-70871D50021F">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+</columnProxies>
+<indexProxies>
+<IndexProxy class="oracle.dbtools.crest.model.design.storage.oracle.v10g.IndexProxyOraclev10g" name="PLSQL_PROFILER_RUNS_IDX1" id="38CC37E6-5EE0-4A61-D3B2-B99411D95B27">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:21 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<schemaObject>F3F68D51-50F9-4B34-B38E-4A24C8F25A04</schemaObject>
+<segment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</segment>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+</IndexProxy>
+</indexProxies>
+<primaryKeys>
+<PrimaryKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PKProxyOraclev10g" name="PLSQL_PROFILER_RUNS_PK" id="5A049952-A879-06D7-F379-105EAD71A713">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:23 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<schemaObject>F3F68D51-50F9-4B34-B38E-4A24C8F25A04</schemaObject>
+<segment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</segment>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+<indexSegment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</indexSegment>
+<indexSort>SORTED</indexSort>
+<usingIndex>BY INDEX NAME</usingIndex>
+</PrimaryKey>
+</primaryKeys>
+</TableProxyOraclev20c>

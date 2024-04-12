@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="45A573B2-CD43-F1F9-77A0-8B668F99BA02" containerWithKeyObject="1DEC1727-6653-3CF8-958B-90000528613A" localFKIndex="1B8AD371-535E-CAAB-2A5E-7DF3BEA2D229" name="PLSQL_PROFILER_UNITS_FK1">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>PLSQL_PROFILER_UNITS_FK1</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:26 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<referredTableLongName>WTP.PLSQL_PROFILER_RUNS</referredTableLongName>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>AD852798-2151-9B8D-72B3-69C9049EC985</referredTableID>
+<keyObject>5A049952-A879-06D7-F379-105EAD71A713</keyObject>
+<referredKeyID>5A049952-A879-06D7-F379-105EAD71A713</referredKeyID>
+<mandatory>true</mandatory>
+<refColNames>RUNID</refColNames>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

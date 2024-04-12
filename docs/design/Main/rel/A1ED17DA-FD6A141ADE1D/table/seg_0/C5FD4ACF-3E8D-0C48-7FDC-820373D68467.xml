@@ -1,0 +1,126 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="C5FD4ACF-3E8D-0C48-7FDC-820373D68467" schemaObject="F3F68D51-50F9-4B34-B38E-4A24C8F25A04" name="HOOKS">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>HOOKS</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:16 UTC</createdTime>
+<commentInRDBMS><![CDATA[wtPLSQL Hooks.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="HOOK_NAME" id="8DEC6D51-A724-E987-81D1-196B6C714D3E">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>HOOKS</sourceObjSchema>
+<sourceObjName>HOOK_NAME</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Primary Key for each Hook Name]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<constraintName>HOOKS_CK1</constraintName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>20 BYTE</dataTypeSize>
+<listOfValues>
+<valueDef value="&apos;ad_hoc_report&apos;" description=""/>
+<valueDef value="&apos;after_assertion&apos;" description=""/>
+<valueDef value="&apos;after_test_all&apos;" description=""/>
+<valueDef value="&apos;after_test_run&apos;" description=""/>
+<valueDef value="&apos;before_test_all&apos;" description=""/>
+<valueDef value="&apos;before_test_run&apos;" description=""/>
+<valueDef value="&apos;execute_test_runner&apos;" description=""/>
+</listOfValues>
+<ownDataTypeParameters>20 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<notNullConstraintName>WT_HOOKS_NN1</notNullConstraintName>
+</Column>
+<Column name="SEQ" id="AE70CF90-263B-4205-6D8A-71A4071F9DAF">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>HOOKS</sourceObjSchema>
+<sourceObjName>SEQ</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Primary Key for the sequence of the Hook]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<constraintName>HOOKS_CK2</constraintName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>2</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<checkConstraint>
+<implementationDef dbType="Generic Constraint" definition="seq &gt; 0"/>
+<implementationDef dbType="Oracle Database 21c" definition="seq &gt; 0"/>
+</checkConstraint>
+<ownDataTypeParameters>,2,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<notNullConstraintName>WT_HOOKS_NN2</notNullConstraintName>
+</Column>
+<Column name="RUN_STRING" id="4E9BA2B9-4D63-EB72-DB4D-CB4D51B75EF8">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>HOOKS</sourceObjSchema>
+<sourceObjName>RUN_STRING</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Procedure Name or Un-named PL/SQL Block for EXECUTE IMMEDIATE]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>4000 BYTE</dataTypeSize>
+<ownDataTypeParameters>4000 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<notNullConstraintName>WT_HOOKS_NN3</notNullConstraintName>
+</Column>
+<Column name="DESCRIPTION" id="2F91B617-159F-9A48-C4AC-DFFAAAB9F31E">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>HOOKS</sourceObjSchema>
+<sourceObjName>DESCRIPTION</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Description of this Hook.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>1000 BYTE</dataTypeSize>
+<ownDataTypeParameters>1000 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="4750F6CF-503D-DBBA-8EFC-8D274A75448B" name="HOOKS_PK">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>HOOKS_PK</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:23 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="8DEC6D51-A724-E987-81D1-196B6C714D3E"/>
+<colUsage columnID="AE70CF90-263B-4205-6D8A-71A4071F9DAF"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="93AA493D-C723-42F3-1B2F-B9D20027DF7F" schemaObject="F3F68D51-50F9-4B34-B38E-4A24C8F25A04" name="HOOKS_PK">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>HOOKS_PK</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:21 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="8DEC6D51-A724-E987-81D1-196B6C714D3E"/>
+<colUsage columnID="AE70CF90-263B-4205-6D8A-71A4071F9DAF"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

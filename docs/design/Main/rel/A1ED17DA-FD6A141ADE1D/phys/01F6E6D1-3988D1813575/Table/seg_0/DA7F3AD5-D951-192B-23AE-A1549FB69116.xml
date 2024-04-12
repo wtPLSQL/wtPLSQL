@@ -1,0 +1,89 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableProxyOraclev20c class="oracle.dbtools.crest.model.design.storage.oracle.v20c.TableProxyOraclev20c" name="WT_DBOUTS" directorySegmentName="seg_0" id="DA7F3AD5-D951-192B-23AE-A1549FB69116">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:16 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<schemaObject>F3F68D51-50F9-4B34-B38E-4A24C8F25A04</schemaObject>
+<logging>YES</logging>
+<partitionedRowMovement>DISABLE</partitionedRowMovement>
+<segment>9ABA10BC-E32C-519C-DEC0-04F084280A2E</segment>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+<temporaryChanged>false</temporaryChanged>
+<accessDriverType>oracle_loader</accessDriverType>
+<rejectLimit></rejectLimit>
+<inMemory>NO</inMemory>
+<columnProxies itemClass="oracle.dbtools.crest.model.design.storage.oracle.v12c.ColumnProxyOraclev12c">
+<ColumnProxy name="NAME" id="268475C7-85C7-4338-E1E2-7900C7B649AD">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="ID" id="A52CB371-631A-A573-8123-E2E22ABC048B">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="OWNER" id="DADB3602-7145-455F-C41F-2B725692BE08">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="TYPE" id="E6B60496-298B-0491-C501-A8F06CCA3A28">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+</columnProxies>
+<indexProxies>
+<IndexProxy class="oracle.dbtools.crest.model.design.storage.oracle.v10g.IndexProxyOraclev10g" name="WT_DBOUTS_NK1" id="2A8838C5-C51F-648F-3E04-0142CD1D810B">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:21 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<schemaObject>F3F68D51-50F9-4B34-B38E-4A24C8F25A04</schemaObject>
+<segment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</segment>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+</IndexProxy>
+<IndexProxy class="oracle.dbtools.crest.model.design.storage.oracle.v10g.IndexProxyOraclev10g" name="WT_DBOUTS_PK" id="2C2E601F-2BF6-032F-AD32-F023AFB88417">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:21 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<schemaObject>F3F68D51-50F9-4B34-B38E-4A24C8F25A04</schemaObject>
+<segment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</segment>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+</IndexProxy>
+<IndexProxy class="oracle.dbtools.crest.model.design.storage.oracle.v10g.IndexProxyOraclev10g" name="WT_DBOUTS_IX1" id="E384E9AE-F01A-318B-C17A-6E37A246AF1C">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:21 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<schemaObject>F3F68D51-50F9-4B34-B38E-4A24C8F25A04</schemaObject>
+<segment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</segment>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+</IndexProxy>
+</indexProxies>
+<primaryKeys>
+<PrimaryKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PKProxyOraclev10g" name="WT_DBOUTS_PK" id="EEFF3F3D-7BFE-D1B4-82CE-FAD11C3F8E40">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:23 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<segment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</segment>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+<existingIndex>2C2E601F-2BF6-032F-AD32-F023AFB88417</existingIndex>
+<indexSegment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</indexSegment>
+<indexSort>SORTED</indexSort>
+<usingIndex>BY INDEX NAME</usingIndex>
+</PrimaryKey>
+</primaryKeys>
+<uniqueKeys>
+<UniqueKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.UniqueOraclev10g" name="WT_DBOUTS_NK1" id="2262C25D-361F-9EB9-E75C-F7FDFDDB7756">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:23 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<segment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</segment>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+<existingIndex>2A8838C5-C51F-648F-3E04-0142CD1D810B</existingIndex>
+<indexSegment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</indexSegment>
+<indexSort>SORTED</indexSort>
+<usingIndex>BY INDEX NAME</usingIndex>
+</UniqueKey>
+</uniqueKeys>
+</TableProxyOraclev20c>

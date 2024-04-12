@@ -1,0 +1,71 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableProxyOraclev20c class="oracle.dbtools.crest.model.design.storage.oracle.v20c.TableProxyOraclev20c" name="WT_TESTCASES" directorySegmentName="seg_0" id="75C40BBC-950A-B117-05CF-FF327E9C0952">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:16 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<schemaObject>F3F68D51-50F9-4B34-B38E-4A24C8F25A04</schemaObject>
+<logging>YES</logging>
+<partitionedRowMovement>DISABLE</partitionedRowMovement>
+<segment>9ABA10BC-E32C-519C-DEC0-04F084280A2E</segment>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+<temporaryChanged>false</temporaryChanged>
+<accessDriverType>oracle_loader</accessDriverType>
+<rejectLimit></rejectLimit>
+<inMemory>NO</inMemory>
+<columnProxies itemClass="oracle.dbtools.crest.model.design.storage.oracle.v12c.ColumnProxyOraclev12c">
+<ColumnProxy name="TESTCASE" id="4638A115-B74D-2A1B-C113-F8116DF5F2C9">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="ID" id="E08DCCDB-E929-EA3B-2E79-CE450F045637">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+</columnProxies>
+<indexProxies>
+<IndexProxy class="oracle.dbtools.crest.model.design.storage.oracle.v10g.IndexProxyOraclev10g" name="WT_TESTCASES_PK" id="57364B35-063C-7D55-AB08-72AA47779E52">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:21 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<schemaObject>F3F68D51-50F9-4B34-B38E-4A24C8F25A04</schemaObject>
+<segment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</segment>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+</IndexProxy>
+<IndexProxy class="oracle.dbtools.crest.model.design.storage.oracle.v10g.IndexProxyOraclev10g" name="WT_TESTCASES_NK1" id="D60F8FA2-B8FA-3E87-0E6C-E1AB31EEDFF3">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:21 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<schemaObject>F3F68D51-50F9-4B34-B38E-4A24C8F25A04</schemaObject>
+<segment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</segment>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+</IndexProxy>
+</indexProxies>
+<primaryKeys>
+<PrimaryKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PKProxyOraclev10g" name="WT_TESTCASES_PK" id="77F4B4E9-7DA5-C427-B6CB-B8503E836FBB">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:23 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<segment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</segment>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+<existingIndex>57364B35-063C-7D55-AB08-72AA47779E52</existingIndex>
+<indexSegment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</indexSegment>
+<indexSort>SORTED</indexSort>
+<usingIndex>BY INDEX NAME</usingIndex>
+</PrimaryKey>
+</primaryKeys>
+<uniqueKeys>
+<UniqueKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.UniqueOraclev10g" name="WT_TESTCASES_NK1" id="B5D4E0DF-AE24-7A6B-E27A-05E9893E0293">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:23 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<segment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</segment>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+<existingIndex>D60F8FA2-B8FA-3E87-0E6C-E1AB31EEDFF3</existingIndex>
+<indexSegment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</indexSegment>
+<indexSort>SORTED</indexSort>
+<usingIndex>BY INDEX NAME</usingIndex>
+</UniqueKey>
+</uniqueKeys>
+</TableProxyOraclev20c>

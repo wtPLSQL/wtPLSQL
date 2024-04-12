@@ -1,0 +1,14 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<SequenceOraclev10g class="oracle.dbtools.crest.model.design.storage.oracle.v10g.SequenceOraclev10g" name="PLSQL_PROFILER_RUNNUMBER" directorySegmentName="seg_0" id="C9725AFA-3D17-2B47-2FC4-82A3C54A04E7">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>PLSQL_PROFILER_RUNNUMBER</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:11 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<incrementBy>1</incrementBy>
+<maxValue>9999999999999999999999999999</maxValue>
+<minValue>1</minValue>
+<noCache>YES</noCache>
+<user>0B8CEE14-5EF4-002A-AC5B-E55C89A47256</user>
+</SequenceOraclev10g>

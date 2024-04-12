@@ -1,0 +1,109 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableProxyOraclev20c class="oracle.dbtools.crest.model.design.storage.oracle.v20c.TableProxyOraclev20c" name="WT_SELF_TEST" directorySegmentName="seg_0" id="47D50FCD-FE02-67DD-23DD-EFF91FD5D711">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:16 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<schemaObject>F3F68D51-50F9-4B34-B38E-4A24C8F25A04</schemaObject>
+<logging>YES</logging>
+<partitionedRowMovement>DISABLE</partitionedRowMovement>
+<segment>9ABA10BC-E32C-519C-DEC0-04F084280A2E</segment>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+<temporaryChanged>false</temporaryChanged>
+<accessDriverType>oracle_loader</accessDriverType>
+<rejectLimit></rejectLimit>
+<inMemory>NO</inMemory>
+<columnProxies itemClass="oracle.dbtools.crest.model.design.storage.oracle.v12c.ColumnProxyOraclev12c">
+<ColumnProxy name="TEMP_BLOB" id="0888B1F2-1668-5AE0-6D62-9FDF3E62BC8F">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="ID" id="10411DF7-A403-7819-E117-63093DAB7420">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="TEMP_CLOB" id="354D2845-D4D6-A4DF-D584-E1DBC8FB0890">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="TEMP_XML" id="A01B64C3-7FA7-E832-4909-7BD7FDF59AD2">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<cache>NOCACHE</cache>
+<allowAnySchema>NO</allowAnySchema>
+<allowNonSchema>YES</allowNonSchema>
+</ColumnProxy>
+<ColumnProxy name="TEMP_NCLOB" id="B53275F8-70CC-DA1D-1C3D-71E57860D300">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</ColumnProxy>
+</columnProxies>
+<indexProxies>
+<IndexProxy class="oracle.dbtools.crest.model.design.storage.oracle.v10g.IndexProxyOraclev10g" name="WT_SELF_TEST_PK" id="CC6EA31D-8C6D-43CA-48AD-647942BF5D40">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:21 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<schemaObject>F3F68D51-50F9-4B34-B38E-4A24C8F25A04</schemaObject>
+<segment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</segment>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+</IndexProxy>
+</indexProxies>
+<lobStorages>
+<LobStorage class="oracle.dbtools.crest.model.design.storage.oracle.v11g.LobStorageOraclev11g" name="SYS_LOB0000075776C00002$$" id="71F2B031-F469-ECE5-7D2B-E682740CC300">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:26 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<cache>NOCACHE</cache>
+<chunk>8192</chunk>
+<column>TEMP_CLOB</column>
+<compression>NO</compression>
+<duplication>KEEP_DUPLICATES</duplication>
+<logging>YES</logging>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+<lobStorageType>SECUREFILE</lobStorageType>
+</LobStorage>
+<LobStorage class="oracle.dbtools.crest.model.design.storage.oracle.v11g.LobStorageOraclev11g" name="SYS_LOB0000075776C00003$$" id="CE3A2947-B4E1-52B6-EABD-D53743EC8635">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:26 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<cache>NOCACHE</cache>
+<chunk>8192</chunk>
+<column>TEMP_NCLOB</column>
+<compression>NO</compression>
+<duplication>KEEP_DUPLICATES</duplication>
+<logging>YES</logging>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+<lobStorageType>SECUREFILE</lobStorageType>
+</LobStorage>
+<LobStorage class="oracle.dbtools.crest.model.design.storage.oracle.v11g.LobStorageOraclev11g" name="SYS_LOB0000075776C00006$$" id="BD34F0B8-3DE4-DD55-9326-9732ED61FFBF">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:26 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<cache>NOCACHE</cache>
+<chunk>8192</chunk>
+<column>TEMP_BLOB</column>
+<compression>NO</compression>
+<duplication>KEEP_DUPLICATES</duplication>
+<logging>YES</logging>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+<lobStorageType>SECUREFILE</lobStorageType>
+</LobStorage>
+</lobStorages>
+<primaryKeys>
+<PrimaryKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PKProxyOraclev10g" name="WT_SELF_TEST_PK" id="A5605BA7-E82B-307F-158C-519ACC003558">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:23 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<segment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</segment>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+<existingIndex>CC6EA31D-8C6D-43CA-48AD-647942BF5D40</existingIndex>
+<indexSegment>CB5DC202-4437-7272-A4FF-0AA23BAB0E6F</indexSegment>
+<indexSort>SORTED</indexSort>
+<usingIndex>BY INDEX NAME</usingIndex>
+</PrimaryKey>
+</primaryKeys>
+</TableProxyOraclev20c>

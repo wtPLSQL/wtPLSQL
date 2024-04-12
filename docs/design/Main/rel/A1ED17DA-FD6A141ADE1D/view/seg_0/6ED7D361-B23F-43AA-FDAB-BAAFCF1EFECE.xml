@@ -1,0 +1,172 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableView class="oracle.dbtools.crest.model.design.relational.TableView" directorySegmentName="seg_0" id="6ED7D361-B23F-43AA-FDAB-BAAFCF1EFECE" schemaObject="F3F68D51-50F9-4B34-B38E-4A24C8F25A04" name="WT_SCHEDULER_JOBS_VW">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_SCHEDULER_JOBS_VW</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[User Scheduler Jobs, including running and not running jobs.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<userDefined>true</userDefined>
+<userDefinedSQL><![CDATA[CREATE OR REPLACE VIEW WT_SCHEDULER_JOBS_VW
+AS 
+select round(log_id)                  LOG_ID
+      ,systimestamp - elapsed_time    START_DATE
+      ,job_name
+      ,'RUNNING'                      STATUS
+      ,running_instance               INST
+      ,session_id
+      ,slave_process_id               OS_PID
+      ,NULL                           ERROR_NUM
+      ,NULL                           ADDITIONAL_INFO
+ from  user_scheduler_running_jobs
+union all
+select log_id
+      ,actual_start_date  START_DATE
+      ,job_name
+      ,status
+      ,instance_id        INST
+      ,NULL               SESSION_ID
+      ,NULL               OS_PID
+      ,error#             ERROR_NUM
+      ,additional_info
+ from  user_scheduler_job_run_details]]></userDefinedSQL>
+<parsed>true</parsed>
+<viewElements>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="LOG_ID" id="DAAAEE63-11AB-1FD9-746B-80E33DB34E75">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_SCHEDULER_JOBS_VW</sourceObjSchema>
+<sourceObjName>LOG_ID</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Unique identifier of the log entry (foreign key of the *_SCHEDULER_JOB_LOG views)]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>LOG_ID</alias>
+<dataType>NUMBER</dataType>
+<headerAlias>LOG_ID</headerAlias>
+<reference>false</reference>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="START_DATE" id="D97156C7-148B-F8B0-83C8-C30E3881C95B">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_SCHEDULER_JOBS_VW</sourceObjSchema>
+<sourceObjName>START_DATE</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Actual date on which the job was run]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>START_DATE</alias>
+<dataType>TIMESTAMP(9) WITH TIME ZONE</dataType>
+<headerAlias>START_DATE</headerAlias>
+<reference>false</reference>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="JOB_NAME" id="3A26D2F8-CF19-BFB3-CD5B-CEEE5363B803">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_SCHEDULER_JOBS_VW</sourceObjSchema>
+<sourceObjName>JOB_NAME</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Name of the Scheduler job]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>JOB_NAME</alias>
+<dataType>VARCHAR2 (1044 BYTE)</dataType>
+<headerAlias>JOB_NAME</headerAlias>
+<reference>false</reference>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="STATUS" id="B484DE86-C83B-41B7-22F7-715882FA8ED4">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_SCHEDULER_JOBS_VW</sourceObjSchema>
+<sourceObjName>STATUS</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Status of the job run]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>STATUS</alias>
+<dataType>VARCHAR2 (30 BYTE)</dataType>
+<headerAlias>STATUS</headerAlias>
+<reference>false</reference>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="INST" id="08EE1CBE-3580-1A68-ED76-10CEE362A4CF">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_SCHEDULER_JOBS_VW</sourceObjSchema>
+<sourceObjName>INST</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Identifier of the instance on which the job was run]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>INST</alias>
+<dataType>NUMBER</dataType>
+<headerAlias>INST</headerAlias>
+<reference>false</reference>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="SESSION_ID" id="4337D292-A33D-BC3C-A8ED-B22B25E47A50">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_SCHEDULER_JOBS_VW</sourceObjSchema>
+<sourceObjName>SESSION_ID</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Identifier of the session running the Scheduler job]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>SESSION_ID</alias>
+<dataType>NUMBER</dataType>
+<headerAlias>SESSION_ID</headerAlias>
+<reference>false</reference>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="OS_PID" id="9E42FA32-F2DA-FB73-F519-C33F79F7BF92">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_SCHEDULER_JOBS_VW</sourceObjSchema>
+<sourceObjName>OS_PID</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Process number of the slave process running the Scheduler job]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>OS_PID</alias>
+<dataType>NUMBER</dataType>
+<headerAlias>OS_PID</headerAlias>
+<reference>false</reference>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="ERROR_NUM" id="812CAABF-78EE-B132-FEA8-A07B38DED18C">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_SCHEDULER_JOBS_VW</sourceObjSchema>
+<sourceObjName>ERROR_NUM</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Error number in the case of an error]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>ERROR_NUM</alias>
+<dataType>NUMBER</dataType>
+<headerAlias>ERROR_NUM</headerAlias>
+<reference>false</reference>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="ADDITIONAL_INFO" id="489F392F-5C8C-D948-A61D-D97CA55C429D">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_SCHEDULER_JOBS_VW</sourceObjSchema>
+<sourceObjName>ADDITIONAL_INFO</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Additional information on the job run, if applicable]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>ADDITIONAL_INFO</alias>
+<dataType>VARCHAR2 (4000 BYTE)</dataType>
+<headerAlias>ADDITIONAL_INFO</headerAlias>
+<reference>false</reference>
+</viewElement>
+</viewElements>
+</TableView>

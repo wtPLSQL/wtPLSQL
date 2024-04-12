@@ -1,0 +1,152 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="DA7F3AD5-D951-192B-23AE-A1549FB69116" schemaObject="F3F68D51-50F9-4B34-B38E-4A24C8F25A04" name="WT_DBOUTS">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_DBOUTS</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:16 UTC</createdTime>
+<commentInRDBMS><![CDATA[List of Database Objects Under Test (DBOUT).]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID" id="A52CB371-631A-A573-8123-E2E22ABC048B">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUTS</sourceObjSchema>
+<sourceObjName>ID</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Primary (Surrogate) Key for each Database Objects Under Test (DBOUT)]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>38</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,38,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<notNullConstraintName>WT_DBOUTS_NN1</notNullConstraintName>
+</Column>
+<Column name="OWNER" id="DADB3602-7145-455F-C41F-2B725692BE08">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUTS</sourceObjSchema>
+<sourceObjName>OWNER</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Owner of the Database Object Under Test (DBOUT).]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>128 BYTE</dataTypeSize>
+<ownDataTypeParameters>128 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<notNullConstraintName>WT_DBOUTS_NN2</notNullConstraintName>
+</Column>
+<Column name="NAME" id="268475C7-85C7-4338-E1E2-7900C7B649AD">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUTS</sourceObjSchema>
+<sourceObjName>NAME</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Name of the Database Object Under Test (DBOUT).]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>128 BYTE</dataTypeSize>
+<ownDataTypeParameters>128 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<notNullConstraintName>WT_DBOUTS_NN3</notNullConstraintName>
+</Column>
+<Column name="TYPE" id="E6B60496-298B-0491-C501-A8F06CCA3A28">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUTS</sourceObjSchema>
+<sourceObjName>TYPE</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Type of the Database Object Under Test (DBOUT).]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>20 BYTE</dataTypeSize>
+<ownDataTypeParameters>20 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<notNullConstraintName>WT_DBOUTS_NN4</notNullConstraintName>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="EEFF3F3D-7BFE-D1B4-82CE-FAD11C3F8E40" name="WT_DBOUTS_PK">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_DBOUTS_PK</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:23 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="A52CB371-631A-A573-8123-E2E22ABC048B"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="2262C25D-361F-9EB9-E75C-F7FDFDDB7756" name="WT_DBOUTS_NK1">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_DBOUTS_NK1</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:23 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<indexState>Unique Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="DADB3602-7145-455F-C41F-2B725692BE08"/>
+<colUsage columnID="268475C7-85C7-4338-E1E2-7900C7B649AD"/>
+<colUsage columnID="E6B60496-298B-0491-C501-A8F06CCA3A28"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="E384E9AE-F01A-318B-C17A-6E37A246AF1C" schemaObject="F3F68D51-50F9-4B34-B38E-4A24C8F25A04" name="WT_DBOUTS_IX1">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_DBOUTS_IX1</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:21 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="E6B60496-298B-0491-C501-A8F06CCA3A28"/>
+<colUsage columnID="DADB3602-7145-455F-C41F-2B725692BE08"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="2A8838C5-C51F-648F-3E04-0142CD1D810B" schemaObject="F3F68D51-50F9-4B34-B38E-4A24C8F25A04" name="WT_DBOUTS_NK1">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_DBOUTS_NK1</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:21 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="DADB3602-7145-455F-C41F-2B725692BE08"/>
+<colUsage columnID="268475C7-85C7-4338-E1E2-7900C7B649AD"/>
+<colUsage columnID="E6B60496-298B-0491-C501-A8F06CCA3A28"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="2C2E601F-2BF6-032F-AD32-F023AFB88417" schemaObject="F3F68D51-50F9-4B34-B38E-4A24C8F25A04" name="WT_DBOUTS_PK">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_DBOUTS_PK</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:21 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="A52CB371-631A-A573-8123-E2E22ABC048B"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

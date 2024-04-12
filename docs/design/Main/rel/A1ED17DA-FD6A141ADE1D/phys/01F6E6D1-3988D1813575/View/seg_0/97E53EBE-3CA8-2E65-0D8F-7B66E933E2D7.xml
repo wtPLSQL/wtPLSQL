@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableViewProxyOraclev10g class="oracle.dbtools.crest.model.design.storage.oracle.v10g.TableViewProxyOraclev10g" name="WT_QUAL_TEST_RUNNERS_VW" directorySegmentName="seg_0" id="97E53EBE-3CA8-2E65-0D8F-7B66E933E2D7">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<schemaObject>F3F68D51-50F9-4B34-B38E-4A24C8F25A04</schemaObject>
+</TableViewProxyOraclev10g>

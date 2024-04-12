@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="A82B8171-DCB9-A30B-1B7E-CD8971A17F0E" containerWithKeyObject="8B85014B-3DC9-977A-759E-DFE1810940A6" localFKIndex="21FFD646-CDBD-68B6-0D9B-5D3A0D82387A" name="WT_DBOUT_RUNS_FK1">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_DBOUT_RUNS_FK1</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:26 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<referredTableLongName>WTP.WT_TEST_RUNS</referredTableLongName>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>9636F0E1-B48A-756B-7277-A09DA3C8A191</referredTableID>
+<keyObject>134E95C8-D278-1B3C-D6F9-16362A405CBF</keyObject>
+<referredKeyID>134E95C8-D278-1B3C-D6F9-16362A405CBF</referredKeyID>
+<mandatory>true</mandatory>
+<refColNames>ID</refColNames>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

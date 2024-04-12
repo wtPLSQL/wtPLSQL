@@ -1,0 +1,375 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<PackageOracle class="oracle.dbtools.crest.model.design.storage.oracle.PackageOracle" name="WT_PERSIST_REPORT" directorySegmentName="seg_0" id="4E67ABAA-5705-70EF-C5BD-1EB1A0556FEB">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_PERSIST_REPORT</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:29 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<owner><![CDATA[0B8CEE14-5EF4-002A-AC5B-E55C89A47256]]></owner>
+<source>CREATE OR REPLACE PACKAGE       WTP.WT_PERSIST_REPORT authid definer
+as
+
+   --   To report a Test Runner result details:
+   -- begin
+   --    wt_persist_report.dbms_out(&apos;RUNNER_OWNER&apos;, &apos;RUNNER&apos;, 30);
+   -- end;
+   -- /
+
+--  &quot;in_detail_level&quot; settings for DBMS_OUT procedure:
+--  * Less than 10 (including null) - No Detail
+--     * Assertion results summary.
+--     * Profiled lines summary.
+--  * 10 to 19 - Minimal Detail
+--     * Assertion results summary.
+--     * Profiled lines summary.
+--     * Failed assertion result details.
+--     * Profiled source lines that were &quot;not executed&quot;.
+--  * 20 to 29 - Partial Full Detail
+--     * Assertion results summary.
+--     * Profiled lines summary.
+--     * All assertion result details.
+--     * Profiled source lines that were &quot;not executed&quot;.
+--  * 30 or more - Full Detail
+--     * Assertion results summary.
+--     * Profiled lines summary.
+--     * All assertion result details.
+--     * All profiled source lines.
+
+   procedure dbms_out
+      (in_runner_owner   in  varchar2  default USER
+      ,in_runner_name    in  varchar2  default null
+      ,in_detail_level   in  number    default 0
+      ,in_summary_last   in  boolean   default FALSE);
+
+end wt_persist_report;</source>
+<body class="oracle.dbtools.crest.model.design.storage.oracle.PackageBodyOracle" name="WT_PERSIST_REPORT" id="4E67ABAA-5705-70EF-C5BD-1EB1A0556FEB">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_PERSIST_REPORT</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:30 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<owner><![CDATA[0B8CEE14-5EF4-002A-AC5B-E55C89A47256]]></owner>
+<source>CREATE OR REPLACE PACKAGE BODY       WTP.WT_PERSIST_REPORT
+as
+
+   g_test_runs_rec       wt_test_runs_vw%ROWTYPE;
+   g_dbout_runs_rec      wt_dbout_runs_vw%ROWTYPE;
+
+
+----------------------
+--  Private Procedures
+----------------------
+
+------------------------------------------------------------
+procedure p
+      (in_text  in  varchar2)
+is
+begin
+   dbms_output.put_line(in_text);
+end p;
+
+------------------------------------------------------------
+procedure summary_out
+is
+   asrt_cnt        number;
+   asrt_fail       number;
+   runner_sec      number;
+   tc_cnt          number;
+   tc_fail         number;
+   tc_yield_pct    number;
+   asrt_min_msec   number;
+   asrt_max_msec   number;
+   asrt_tot_msec   number;
+   asrt_avg_msec   number;
+   --
+   ignored_lines   number;
+   profiled_lines  number;
+   excluded_lines  number;
+   executed_lines  number;
+   notexec_lines   number;
+   unknown_lines   number;
+   coverage_pct    number;
+   trigger_offset  number;
+   exec_min_usec   number;
+   exec_avg_usec   number;
+   exec_max_usec   number;
+begin
+   p(&apos;&apos;);
+   p(&apos;  wtPLSQL &apos; || wtplsql.show_version);
+   p(&apos;  Test Results for &apos; || g_test_runs_rec.test_runner_owner ||
+                       &apos;.&apos; || g_test_runs_rec.test_runner_name  );
+   p(&apos;  Run ID &apos; || g_test_runs_rec.test_run_id ||
+            &apos;: &apos; || to_char(g_test_runs_rec.start_dtm
+                           ,wt_core_report.g_date_format));
+   p(&apos;  --------------------------------------------------------------&apos;);
+   --
+   asrt_cnt       := nvl(g_test_runs_rec.asrt_cnt     ,0);
+   asrt_fail      := nvl(g_test_runs_rec.asrt_fail    ,0);
+   runner_sec     := nvl(g_test_runs_rec.runner_sec   ,0);
+   tc_cnt         := nvl(g_test_runs_rec.tc_cnt       ,0);
+   tc_fail        := nvl(g_test_runs_rec.tc_fail      ,0);
+   tc_yield_pct   := nvl(g_test_runs_rec.tc_yield_pct ,0);
+   asrt_min_msec  := nvl(g_test_runs_rec.asrt_min_msec,0);
+   asrt_max_msec  := nvl(g_test_runs_rec.asrt_max_msec,0);
+   asrt_tot_msec  := nvl(g_test_runs_rec.asrt_tot_msec,0);
+   asrt_avg_msec  := nvl(g_test_runs_rec.asrt_avg_msec,0);
+   --
+   p(&apos;  Minimum Elapsed msec: &apos; || to_char(asrt_min_msec,&apos;9999999&apos;) ||
+     &apos;      Total Assertions: &apos; || to_char(asrt_cnt     ,&apos;9999999&apos;) );
+   p(&apos;  Average Elapsed msec: &apos; || to_char(asrt_avg_msec,&apos;9999999&apos;) ||
+     &apos;     Failed Assertions: &apos; || to_char(asrt_fail    ,&apos;9999999&apos;) );
+   p(&apos;  Maximum Elapsed msec: &apos; || to_char(asrt_max_msec,&apos;9999999&apos;) ||
+     &apos;       Total Testcases: &apos; || to_char(tc_cnt       ,&apos;9999999&apos;) );
+   p(&apos;  Total Run Time (sec): &apos; || to_char(runner_sec   ,&apos;99990.9&apos;) ||
+     &apos;      Failed Testcases: &apos; || to_char(tc_fail      ,&apos;9999999&apos;) );
+   p(&apos;                        &apos; ||                      &apos;        &apos;  ||
+     &apos;        Testcase Yield: &apos; || to_char(tc_yield_pct ,&apos;9999999&apos;) || &apos;%&apos;);
+   --
+   if     g_dbout_runs_rec.dbout_name is not null
+      AND g_dbout_runs_rec.profiler_runid is null
+   then
+      p(&apos;&apos;);
+      p(&apos;  Note: &apos; || g_dbout_runs_rec.dbout_type  || &apos; &apos; ||
+                      g_dbout_runs_rec.dbout_owner || &apos;.&apos; ||
+                      g_dbout_runs_rec.dbout_name  || &apos; was not profiled.&apos;);
+   end if;
+   --
+   if g_test_runs_rec.error_message is not null
+   then
+      p(&apos;&apos;);
+      p(&apos;  *** Test Runner Error ***&apos;);
+      p(g_test_runs_rec.error_message);
+   end if;
+   ----------------------------------------
+   if g_dbout_runs_rec.profiler_runid is null
+   then
+      return;
+   end if;
+   p(&apos;&apos;);
+   p(&apos;  Code Coverage for &apos; || g_dbout_runs_rec.dbout_type  ||
+                        &apos; &apos; || g_dbout_runs_rec.dbout_owner ||
+                        &apos;.&apos; || g_dbout_runs_rec.dbout_name  );
+   p(&apos;  ----------------------------------------------------------------&apos;);
+   --
+   ignored_lines  := nvl(g_dbout_runs_rec.ignored_lines,  0);
+   profiled_lines := nvl(g_dbout_runs_rec.profiled_lines, 0);
+   excluded_lines := nvl(g_dbout_runs_rec.excluded_lines, 0);
+   executed_lines := nvl(g_dbout_runs_rec.executed_lines, 0);
+   notexec_lines  := nvl(g_dbout_runs_rec.notexec_lines,  0);
+   unknown_lines  := nvl(g_dbout_runs_rec.unknown_lines,  0);
+   coverage_pct   := nvl(g_dbout_runs_rec.coverage_pct,   0);
+   trigger_offset := nvl(g_dbout_runs_rec.trigger_offset, 0);
+   exec_min_usec  := nvl(g_dbout_runs_rec.exec_min_usec,  0);
+   exec_avg_usec  := nvl(g_dbout_runs_rec.exec_avg_usec,  0);
+   exec_max_usec  := nvl(g_dbout_runs_rec.exec_max_usec,  0);
+   --
+   p(&apos;          Ignored Lines: &apos; || to_char(ignored_lines,  &apos;9999999&apos;) ||
+     &apos;   Total Profiled Lines: &apos; || to_char(profiled_lines, &apos;9999999&apos;) );
+   p(&apos;         Excluded Lines: &apos; || to_char(excluded_lines, &apos;9999999&apos;) ||
+     &apos;   Total Executed Lines: &apos; || to_char(executed_lines, &apos;9999999&apos;) );
+   p(&apos;  Minimum LineExec usec: &apos; || to_char(exec_min_usec,  &apos;9999999&apos;) ||
+     &apos;     Not Executed Lines: &apos; || to_char(notexec_lines,  &apos;9999999&apos;) );
+   p(&apos;  Average LineExec usec: &apos; || to_char(exec_avg_usec,  &apos;9999999&apos;) ||
+     &apos;          Unknown Lines: &apos; || to_char(unknown_lines,  &apos;9999999&apos;) );
+   p(&apos;  Maximum LineExec usec: &apos; || to_char(exec_max_usec,  &apos;9999999&apos;) ||
+     &apos;          Code Coverage: &apos; || to_char(coverage_pct,   &apos;99990.9&apos;) || &apos;%&apos;);
+   p(&apos;  Trigger Source Offset: &apos; || to_char(trigger_offset, &apos;9999999&apos;) ||
+     &apos;                         &apos; ||                        &apos;        &apos;  );
+end summary_out;
+
+------------------------------------------------------------
+procedure results_out
+      (in_show_pass  in boolean)
+is
+   l_rec            core_data.results_rec_type;
+   l_show_pass_txt  varchar2(1);
+   old_testcase     core_data.long_name;
+   show_header      boolean := TRUE;
+begin
+   if in_show_pass
+   then
+      l_show_pass_txt := &apos;Y&apos;;
+   else
+      l_show_pass_txt := &apos;N&apos;;
+   end if;
+   for buff in (
+      select * from wt_results_vw
+       where test_run_id = g_test_runs_rec.test_run_id
+       and  (   l_show_pass_txt = &apos;Y&apos;
+             or status         != &apos;PASS&apos;)
+       order by result_seq )
+   loop
+      -- Load l_rec
+      l_rec.assertion      := buff.assertion;
+      l_rec.pass           := (buff.status = &apos;PASS&apos;);
+      l_rec.details        := buff.details;
+      l_rec.testcase       := buff.testcase;
+      l_rec.message        := buff.message;
+      l_rec.interval_msec  := buff.interval_msec;
+      -- Remove Consecutive Testcases
+      if l_rec.testcase = old_testcase
+      then
+         l_rec.testcase := &apos;&apos;;
+      else
+         old_testcase := l_rec.testcase;
+      end if;
+      -- Display header if needed
+      if show_header
+      then
+         p(&apos;&apos;);
+         p(&apos;  &apos; || g_test_runs_rec.test_runner_owner  ||
+            &apos;.&apos; || g_test_runs_rec.test_runner_name   ||
+                 &apos; Test Result Details&apos;               );
+         p(&apos;  Test Run ID: &apos;              ||
+              g_test_runs_rec.test_run_id );
+         p(&apos;  --------------------------------------------------------------&apos;);
+         show_header := FALSE;
+      end if;
+      -- Display the result
+      p(wt_core_report.format_test_result(l_rec));
+   end loop;
+end results_out;
+
+------------------------------------------------------------
+procedure profile_out
+      (in_show_aux  in boolean)
+is
+   l_header_txt  CONSTANT varchar2(2000) :=
+      &apos;Source               TotTime MinTime   MaxTime     &apos; || chr(10) ||
+      &apos;  Line Stat Occurs    (usec)  (usec)    (usec) Text&apos; || chr(10) ||
+      &apos;------ ---- ------ --------- ------- --------- ------------&apos;;
+   l_show_aux_txt  varchar2(1);
+   header_shown     boolean;
+   procedure l_show_header is begin
+      p(&apos;&apos;);
+      p(&apos;  &apos; || g_dbout_runs_rec.dbout_owner ||
+         &apos;.&apos; || g_dbout_runs_rec.dbout_name  ||
+         &apos; &apos; || g_dbout_runs_rec.dbout_type  ||
+              &apos; Code Coverage Details&apos;       );
+      p(&apos;  Test Run ID: &apos;              ||
+           g_test_runs_rec.test_run_id );
+      p(&apos;  ----------------------------------------------------------------&apos;);
+   end l_show_header;
+begin
+   if g_dbout_runs_rec.profiler_runid is null
+   then
+      return;
+   end if;
+   if in_show_aux
+   then
+      l_show_aux_txt := &apos;Y&apos;;
+   else
+      l_show_aux_txt := &apos;N&apos;;
+   end if;
+   header_shown := FALSE;
+   for buff in (
+      select line
+            ,status
+            ,exec_cnt
+            ,exec_tot_usec
+            ,exec_min_usec
+            ,exec_max_usec
+            ,text
+            ,rownum
+       from  wt_profiles
+       where test_run_id = g_dbout_runs_rec.test_run_id
+       and  (   l_show_aux_txt = &apos;Y&apos;
+             or status not in (&apos;EXEC&apos;,&apos;IGNR&apos;,&apos;UNKN&apos;,&apos;EXCL&apos;))
+       order by line  )
+   loop
+      if not header_shown
+      then
+         l_show_header;
+         p(l_header_txt);
+         header_shown := TRUE;
+      end if;
+      if mod(buff.rownum,25) = 0
+      then
+         p(l_header_txt);
+      end if;
+      p(to_char(buff.line,&apos;99999&apos;)             ||
+        case buff.status when &apos;NOTX&apos; then &apos;#NOTX#&apos;
+        else &apos; &apos; || rpad(buff.status,4) || &apos; &apos;
+        end                                    ||
+        to_char(buff.exec_cnt,&apos;99999&apos;)         || &apos; &apos; ||
+        to_char(buff.exec_tot_usec,&apos;99999999&apos;) || &apos; &apos; ||
+        to_char(buff.exec_min_usec,&apos;999999&apos;)   || &apos; &apos; ||
+        to_char(buff.exec_max_usec,&apos;99999999&apos;) || &apos; &apos; ||
+        replace(buff.text,CHR(10),&apos;&apos;)          );
+   end loop;
+end profile_out;
+
+
+---------------------
+--  Public Procedures
+---------------------
+
+------------------------------------------------------------
+procedure dbms_out
+      (in_runner_owner   in  varchar2   default USER
+      ,in_runner_name    in  varchar2   default null
+      ,in_detail_level   in  number     default 0
+      ,in_summary_last   in  boolean    default FALSE)
+is
+
+   g_dbout_runs_recNULL   wt_dbout_runs_vw%ROWTYPE;
+
+begin
+
+   for buff in (
+      -- MAX(t2.start_dtm) is a fail-safe if IS_LAST_RUN is not set.
+      select * from wt_test_runs_vw
+       where (          test_runner_name,        start_dtm) in
+             (select t2.test_runner_name, max(t2.start_dtm)
+               from  wt_test_runs_vw  t2
+               where (   (    in_runner_name is not null
+                          and in_runner_name = t2.test_runner_name)
+                      OR in_runner_name is null  )
+                and  t2.test_runner_owner = in_runner_owner
+               group by t2.test_runner_name )
+       order by start_dtm, test_runner_name )
+   loop
+
+      --  Load Test Run Record
+      g_test_runs_rec := buff;
+
+      --  Load the DBOUT Record
+      begin
+         select * into g_dbout_runs_rec
+          from  wt_dbout_runs_vw
+          where test_run_id = buff.test_run_id;
+      exception when NO_DATA_FOUND
+      then
+         g_dbout_runs_rec := g_dbout_runs_recNULL;
+      end;
+
+      --  Setup Display Order
+      if in_summary_last
+      then
+        if in_detail_level &gt;= 10
+         then
+            profile_out(in_detail_level &gt;= 30);
+            results_out(in_detail_level &gt;= 20);
+         end if;
+         summary_out;
+      else
+         summary_out;
+         if in_detail_level &gt;= 10
+         then
+            results_out(in_detail_level &gt;= 20);
+            profile_out(in_detail_level &gt;= 30);
+         end if;
+      end if;
+
+      p(&apos;&apos;);
+
+   end loop;
+
+end dbms_out;
+
+
+end wt_persist_report;</source>
+</body>
+</PackageOracle>

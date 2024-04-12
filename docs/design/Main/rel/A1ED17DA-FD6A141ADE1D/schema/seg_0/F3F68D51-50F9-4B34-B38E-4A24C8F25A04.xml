@@ -1,0 +1,6 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<SchemaObject class="oracle.dbtools.crest.model.design.relational.SchemaObject" name="WTP" directorySegmentName="seg_0" id="F3F68D51-50F9-4B34-B38E-4A24C8F25A04">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+</SchemaObject>

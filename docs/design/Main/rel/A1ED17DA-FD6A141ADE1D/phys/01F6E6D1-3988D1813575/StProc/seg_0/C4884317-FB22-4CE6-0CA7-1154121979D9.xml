@@ -1,0 +1,37 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<StoredProcedureOraclev10g class="oracle.dbtools.crest.model.design.storage.oracle.v10g.StoredProcedureOraclev10g" name="WT_EXECUTE_TEST_RUNNER" directorySegmentName="seg_0" id="C4884317-FB22-4CE6-0CA7-1154121979D9">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_EXECUTE_TEST_RUNNER</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:28 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<owner><![CDATA[0B8CEE14-5EF4-002A-AC5B-E55C89A47256]]></owner>
+<source>CREATE OR REPLACE PROCEDURE       WTP.WT_EXECUTE_TEST_RUNNER
+   authid current_user
+   -- AUTHID CURRENT_USER is required for assertions with
+   --   dynamic PL/SQL execution.
+is
+   sql_txt  varchar2(4000);
+begin
+   sql_txt := &apos;begin &quot;&apos; || core_data.g_run_rec.test_runner_name  ||
+                   &apos;&quot;.&apos; || wtplsql.C_RUNNER_ENTRY_POINT          || &apos;; end;&apos;;
+   --dbms_output.put_line(sql_txt);
+   execute immediate sql_txt;
+end wt_execute_test_runner;</source>
+<synonyms>
+<Synonym class="oracle.dbtools.crest.model.design.storage.oracle.v10g.SynonymOraclev10g" name="WT_EXECUTE_TEST_RUNNER" id="36E160A7-12A8-BA54-46D4-E20727FE505D">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>PUBLIC</sourceObjSchema>
+<sourceObjName>WT_EXECUTE_TEST_RUNNER</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:28 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<objectName>WT_EXECUTE_TEST_RUNNER</objectName>
+<objectUser>0B8CEE14-5EF4-002A-AC5B-E55C89A47256</objectUser>
+<public>YES</public>
+<user>PUBLIC</user>
+<referredObjectID>C4884317-FB22-4CE6-0CA7-1154121979D9</referredObjectID>
+</Synonym>
+</synonyms>
+</StoredProcedureOraclev10g>

@@ -1,0 +1,254 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="5EC59CF5-A3B7-D15B-B334-0DEBC25C7FB1" schemaObject="F3F68D51-50F9-4B34-B38E-4A24C8F25A04" name="WT_TESTCASE_RUNS">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_TESTCASE_RUNS</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:16 UTC</createdTime>
+<commentInRDBMS><![CDATA[Test Run data statistics for each testcase in the execution of a Test Runner.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="TEST_RUN_ID" id="56E444F2-E134-E369-242C-027796EDD9D8">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS</sourceObjSchema>
+<sourceObjName>TEST_RUN_ID</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Primary Key for each Test Run. Also the Test Runs Foreign Key.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>38</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,38,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<notNullConstraintName>WT_TESTCASE_RUNS_NN1</notNullConstraintName>
+<associations>
+<colAssociation fkAssociation="DC4188A2-3A69-F618-2B93-07D1466CF0CB" referredColumn="1F7E6D3E-2BF6-839B-0718-64EFF43265D5"/>
+</associations>
+</Column>
+<Column name="TESTCASE_ID" id="86C08030-DA4E-772E-88A8-13EB703339AC">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS</sourceObjSchema>
+<sourceObjName>TESTCASE_ID</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Primary Key (part 2) for each Test Case. Also the Test Cases Foreign Key.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>38</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,38,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<notNullConstraintName>WT_TESTCASE_RUNS_NN2</notNullConstraintName>
+<associations>
+<colAssociation fkAssociation="B2E2CA36-09C3-2527-1A40-542A657E6BB9" referredColumn="E08DCCDB-E929-EA3B-2E79-CE450F045637"/>
+</associations>
+</Column>
+<Column name="ASRT_YIELD_PCT" id="785E9A33-BFB2-9A04-F467-02225F041330">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS</sourceObjSchema>
+<sourceObjName>ASRT_YIELD_PCT</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Percentage of successful assertions to total assertions.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>3</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,3,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ASRT_CNT" id="A3E3D619-85BD-3862-2393-A7803E9CAA5E">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS</sourceObjSchema>
+<sourceObjName>ASRT_CNT</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Total number of assetions for the Test Case.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>7</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,7,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ASRT_FAIL" id="09945C69-5818-0DCF-AF02-C460B6C213D4">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS</sourceObjSchema>
+<sourceObjName>ASRT_FAIL</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Number of failed assertions for the Test Case.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>7</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,7,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ASRT_PASS" id="D9FA8939-98AA-5CFA-BB8D-5DE3E36748D9">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS</sourceObjSchema>
+<sourceObjName>ASRT_PASS</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Number of passed assertions for the Test Case.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>7</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,7,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ASRT_MIN_MSEC" id="87CBD83F-AE2D-3B16-6590-4724E552B6A2">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS</sourceObjSchema>
+<sourceObjName>ASRT_MIN_MSEC</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Minimum interval time between assertions in milliseconds for the Test Case]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,10,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ASRT_AVG_MSEC" id="F1931CFF-1796-6D94-C335-2194F623F7D8">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS</sourceObjSchema>
+<sourceObjName>ASRT_AVG_MSEC</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Average interval time between assertions in milliseconds for the Test Case]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,10,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ASRT_MAX_MSEC" id="4FFF72CB-9634-B8C0-F6A2-4FF0D364EEA0">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS</sourceObjSchema>
+<sourceObjName>ASRT_MAX_MSEC</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Maximum interval time between assertions in milliseconds for the Test Case]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,10,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ASRT_TOT_MSEC" id="88F9BA4A-EEE8-FF50-34BD-75C3EE390D17">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS</sourceObjSchema>
+<sourceObjName>ASRT_TOT_MSEC</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:17 UTC</createdTime>
+<commentInRDBMS><![CDATA[Total (sum) of interval times between assertions in milliseconds for the Test Case]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>10</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,10,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="F47AFFFF-050B-2709-3D81-B034DCA25682" name="WT_TESTCASE_RUNS_PK">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_TESTCASE_RUNS_PK</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:23 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="56E444F2-E134-E369-242C-027796EDD9D8"/>
+<colUsage columnID="86C08030-DA4E-772E-88A8-13EB703339AC"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="EC9619B2-BAAB-ADD1-CE32-6DCB1CBDC579" schemaObject="F3F68D51-50F9-4B34-B38E-4A24C8F25A04" name="WT_TESTCASE_RUNS_IX1">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_TESTCASE_RUNS_IX1</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:21 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="86C08030-DA4E-772E-88A8-13EB703339AC"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="3BC086E6-141B-F03D-5CC3-72D78263FAFD" schemaObject="F3F68D51-50F9-4B34-B38E-4A24C8F25A04" name="WT_TESTCASE_RUNS_PK">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_TESTCASE_RUNS_PK</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:21 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="56E444F2-E134-E369-242C-027796EDD9D8"/>
+<colUsage columnID="86C08030-DA4E-772E-88A8-13EB703339AC"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="D3F28016-8669-FA76-184B-FFDFB5FF5DF7" name="WT_TESTCASE_RUNS_FK1">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:26 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="56E444F2-E134-E369-242C-027796EDD9D8"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="2E1A8CE4-7626-835A-737C-5AFC0A9CD5C6" name="WT_TESTCASE_RUNS_FK2">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:26 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="86C08030-DA4E-772E-88A8-13EB703339AC"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

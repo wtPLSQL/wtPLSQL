@@ -1,0 +1,51 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableView class="oracle.dbtools.crest.model.design.relational.TableView" directorySegmentName="seg_0" id="97E53EBE-3CA8-2E65-0D8F-7B66E933E2D7" schemaObject="F3F68D51-50F9-4B34-B38E-4A24C8F25A04" name="WT_QUAL_TEST_RUNNERS_VW">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_QUAL_TEST_RUNNERS_VW</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[All PL/SQL Packages with the required Test Runner Entry Point.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<userDefined>true</userDefined>
+<userDefinedSQL><![CDATA[CREATE OR REPLACE VIEW WT_QUAL_TEST_RUNNERS_VW
+AS 
+select owner
+      ,object_name    PACKAGE_NAME
+ from  dba_procedures
+ where procedure_name = wtplsql.get_runner_entry_point
+  and  object_type    = 'PACKAGE']]></userDefinedSQL>
+<parsed>true</parsed>
+<viewElements>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="OWNER" id="2E3CE7C4-8ACE-74CB-CD3A-B5357C2CD899">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_QUAL_TEST_RUNNERS_VW</sourceObjSchema>
+<sourceObjName>OWNER</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Owner of the Qualified Test Runner Package]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>OWNER</alias>
+<dataType>VARCHAR2 (128 BYTE)</dataType>
+<headerAlias>OWNER</headerAlias>
+<reference>false</reference>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="PACKAGE_NAME" id="91FDF2D1-E327-B4BC-DED2-866FB0A6FE92">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_QUAL_TEST_RUNNERS_VW</sourceObjSchema>
+<sourceObjName>PACKAGE_NAME</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Name of the Qualified Test Runner Package]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>PACKAGE_NAME</alias>
+<dataType>VARCHAR2 (128 BYTE)</dataType>
+<headerAlias>PACKAGE_NAME</headerAlias>
+<reference>false</reference>
+</viewElement>
+</viewElements>
+</TableView>

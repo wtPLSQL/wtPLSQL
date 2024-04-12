@@ -1,0 +1,20 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<UserOraclev10g class="oracle.dbtools.crest.model.design.storage.oracle.v10g.UserOraclev10g" name="WTP" directorySegmentName="seg_0" id="0B8CEE14-5EF4-002A-AC5B-E55C89A47256">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjName>WTP</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:11 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<schemaObject>F3F68D51-50F9-4B34-B38E-4A24C8F25A04</schemaObject>
+<defTableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</defTableSpace>
+<privileges>CREATE JOB, CREATE TYPE, CREATE TRIGGER, CREATE PROCEDURE, CREATE DATABASE LINK, CREATE SEQUENCE, CREATE VIEW, CREATE PUBLIC SYNONYM, CREATE TABLE, CREATE SESSION</privileges>
+<quotaItems>
+<QuotaItem class="oracle.dbtools.crest.model.design.storage.oracle.v10g.QuotaItemOraclev10g" name="QuotaItem1" id="108F340A-000B-3B24-EB57-37A4E7AC4CA0">
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:11 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<size>536870912</size>
+<tableSpace>D5F08164-B74B-C1FD-B26F-24B803D8279B</tableSpace>
+</QuotaItem>
+</quotaItems>
+</UserOraclev10g>

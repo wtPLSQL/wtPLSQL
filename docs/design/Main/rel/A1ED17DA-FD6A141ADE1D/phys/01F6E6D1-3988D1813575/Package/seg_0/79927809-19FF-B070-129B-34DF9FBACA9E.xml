@@ -1,0 +1,775 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<PackageOracle class="oracle.dbtools.crest.model.design.storage.oracle.PackageOracle" name="CORE_DATA" directorySegmentName="seg_0" id="79927809-19FF-B070-129B-34DF9FBACA9E">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>CORE_DATA</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:28 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<owner><![CDATA[0B8CEE14-5EF4-002A-AC5B-E55C89A47256]]></owner>
+<source>CREATE OR REPLACE PACKAGE       WTP.CORE_DATA
+   authid definer
+is
+
+   SUBTYPE long_name is varchar2(128);
+
+   TYPE run_rec_type is record
+      (test_runner_owner  long_name                         -- Owner of the Test Runner
+      ,test_runner_name   long_name                         -- Name of the Test Runner
+      ,start_dtm          timestamp(3) with local time zone -- Test Runner Start Date/Time
+      ,end_dtm            timestamp(3) with local time zone -- Test Runner End Date/Time
+      ,runner_sec         number(6,1)    default 0          -- Total Runtime for Test Runner in Seconds
+      ,error_message      varchar2(4000)                    -- Error Message
+      ,tc_cnt             number(7)      default 0          -- Number of Test Cases
+      ,tc_fail            number(7)      default 0          -- Number of Failed Test Cases
+      ,asrt_fst_dtm       timestamp(3) with local time zone -- Date/Time of First Assertion
+      ,asrt_lst_dtm       timestamp(3) with local time zone -- Date/Time of Last Assertion
+      ,asrt_cnt           number(7)      default 0          -- Number of Assertions across all Test Cases
+      ,asrt_fail          number(7)      default 0          -- Number of Assertion Failures across all Test Cases
+      ,asrt_min_msec      number(10,3)                      -- Minumum Assertion Interval in Milliseconds across all Test Cases
+      ,asrt_max_msec      number(10,3)                      -- Maximum Assertion Interval in Milliseconds across all Test Cases
+      ,asrt_tot_msec      number(10,3)   default 0          -- Total Assertion Intervals in Milliseconds across all Test Cases
+      ,dbout_owner        long_name                         -- Owner of the Database Object Under Test
+      ,dbout_name         long_name                         -- Name of the Database Object Under Test
+      ,dbout_type         varchar2(20)                      -- Type of the Database Object Under Test
+      );
+   g_run_rec  run_rec_type;
+
+   TYPE tcases_rec_type is record
+      (asrt_cnt       number(7)      default 0          -- Number of Assertions in this Test Case
+      ,asrt_fail      number(7)      default 0          -- Number of Failed Assertsion in this Test Case
+      ,asrt_min_msec  number(10,3)                      -- Minumum Assertion Interval in Milliseconds in this Test Cases
+      ,asrt_max_msec  number(10,3)                      -- Maximum Assertion Interval in Milliseconds in this Test Cases
+      ,asrt_tot_msec  number(10,3)   default 0          -- Total Assertion Interval in Milliseconds in this Test Cases
+      );
+   TYPE tcases_aa_type is table of tcases_rec_type index by long_name;
+   g_tcases_aa   tcases_aa_type;
+
+   TYPE results_rec_type is record
+      (testcase      long_name                         -- Test Case Name of the Assertion
+      ,executed_dtm  timestamp(6) with local time zone -- Execution Date/Time of the Assertion
+      ,interval_msec number(10,3)   default 0          -- Interval from Previous Assertion in Milliseconds
+      ,assertion     varchar2(15)                      -- Name of the Assertion
+      ,pass          boolean                           -- Did the Assertion Pass? (TRUE/FALSE)
+      ,message       varchar2(200)                     -- Identification Message of the Assertion
+      ,details       varchar2(4000)                    -- Test Details of the Assertion
+      );
+   TYPE results_nt_type is table of results_rec_type;
+   g_results_nt    results_nt_type;
+
+   procedure init1
+      (in_package_name  in  varchar2);
+
+   procedure init2;
+
+   procedure add
+      (in_testcase   in varchar2
+      ,in_assertion  in varchar2
+      ,in_pass       in boolean
+      ,in_details    in varchar2
+      ,in_message    in varchar2);
+
+   procedure final1;
+
+   procedure run_error
+      (in_error_message  in  varchar2);
+
+   --   WtPLSQL Self Test Procedures
+   --
+   -- alter system set PLSQL_CCFLAGS =
+   --    &apos;WTPLSQL_SELFTEST:TRUE&apos;
+   --    scope=BOTH;
+   --
+   $IF $$WTPLSQL_SELFTEST
+   $THEN
+      procedure WTPLSQL_RUN;
+   $END
+
+end core_data;</source>
+<body class="oracle.dbtools.crest.model.design.storage.oracle.PackageBodyOracle" name="CORE_DATA" id="79927809-19FF-B070-129B-34DF9FBACA9E">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>CORE_DATA</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:28 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<owner><![CDATA[0B8CEE14-5EF4-002A-AC5B-E55C89A47256]]></owner>
+<source>CREATE OR REPLACE PACKAGE BODY       WTP.CORE_DATA
+is
+
+   g_first_executed_dtm timestamp(6) with local time zone;
+
+---------------------
+--  Public Procedures
+---------------------
+
+------------------------------------------------------------
+function get_testcase
+   return long_name
+is
+begin
+   return nvl(wt_assert.g_testcase
+             ,substr(core_data.g_run_rec.test_runner_owner || &apos;.&apos; ||
+                     core_data.g_run_rec.test_runner_name, 1, 128));
+end get_testcase;
+
+------------------------------------------------------------
+procedure init1
+      (in_package_name  in  varchar2)
+is
+   l_run_recNULL      run_rec_type;
+   l_testcase         long_name;
+begin
+   -- Initialize Test Run Record
+   g_run_rec  := l_run_recNULL;
+   g_run_rec.start_dtm        := systimestamp;
+   g_run_rec.test_runner_name := in_package_name;
+   -- These don&apos;t always work:
+   --   g_run_rec.test_runner_owner := USER;
+   --   g_run_rec.test_runner_owner := sys_context(&apos;userenv&apos;, &apos;current_schema&apos;);
+   select username into g_run_rec.test_runner_owner from user_users;
+   -- Initialize Test Cases Array
+   l_testcase := g_tcases_aa.LAST;
+   while l_testcase is not null
+   loop
+                    g_tcases_aa.DELETE(l_testcase);
+      l_testcase := g_tcases_aa.PRIOR(l_testcase);
+   end loop;
+   -- Initialize Test Results Array
+   g_results_nt := null;
+end init1;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_init1
+   is
+      l_run_recSAVE      run_rec_type;
+      l_tcases_aaSAVE    tcases_aa_type;
+      l_results_ntSAVE   results_nt_type;
+      l_run_recTEST      run_rec_type;
+      l_tcases_aaTEST    tcases_aa_type;
+      l_results_ntTEST   results_nt_type;
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := &apos;INIT &quot;One&quot; Happy Path 1&apos;;
+      l_run_recSAVE     := g_run_rec;
+      l_tcases_aaSAVE   := g_tcases_aa;
+      l_results_ntSAVE  := g_results_nt;
+      g_tcases_aa(&apos;INIT Happy 1 Test 1&apos;) := NULL;
+      g_tcases_aa(&apos;INIT Happy 1 Test 2&apos;) := NULL;
+      init1 (&apos;WTPLSQL&apos;);
+      l_run_recTEST     := g_run_rec;
+      l_tcases_aaTEST   := g_tcases_aa;
+      l_results_ntTEST  := g_results_nt;
+      g_run_rec         := l_run_recSAVE;
+      g_tcases_aa       := l_tcases_aaSAVE;
+      g_results_nt      := l_results_ntSAVE;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_run_recTEST.test_runner_owner&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.test_runner_owner
+         ,against_this_in =&gt;  USER);
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_run_recTEST.test_runner_name&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.test_runner_name
+         ,against_this_in =&gt; &apos;WTPLSQL&apos;);
+      wt_assert.isnotnull
+         (msg_in          =&gt; &apos;l_run_recTEST.start_dtm&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.start_dtm);
+      wt_assert.this
+         (msg_in          =&gt; &apos;l_run_recTEST.start_dtm &gt; l_run_recSAVE.start_dtm&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.start_dtm &gt; l_run_recSAVE.start_dtm);
+      wt_assert.isnull
+         (msg_in          =&gt; &apos;l_run_recTEST.end_dtm&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.end_dtm);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_run_recTEST.runner_sec&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.runner_sec
+         ,against_this_in =&gt;  0);
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_run_recTEST.runner_sec&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.runner_sec
+         ,against_this_in =&gt;  0);
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_run_recTEST.tc_cnt&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.tc_cnt
+         ,against_this_in =&gt;  0);
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_run_recTEST.tc_fail&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.tc_fail
+         ,against_this_in =&gt;  0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_run_recTEST.asrt_cnt&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.asrt_cnt
+         ,against_this_in =&gt;  0);
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_run_recTEST.asrt_fail&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.asrt_fail
+         ,against_this_in =&gt;  0);
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_run_recTEST.asrt_tot_msec&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.asrt_tot_msec
+         ,against_this_in =&gt;  0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnull
+         (msg_in          =&gt; &apos;l_tcases_aaTEST.FIRST&apos;
+         ,check_this_in   =&gt;  l_tcases_aaTEST.FIRST);
+      wt_assert.this
+         (msg_in          =&gt; &apos;l_results_ntTEST is null&apos;
+         ,check_this_in   =&gt; (l_results_ntTEST is NULL) );
+   end t_init1;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
+------------------------------------------------------------
+procedure init2
+is
+begin
+   g_first_executed_dtm := systimestamp;
+end init2;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_init2
+   is
+      l_run_recSAVE      run_rec_type;
+      l_tcases_aaSAVE    tcases_aa_type;
+      l_results_ntSAVE   results_nt_type;
+      l_run_recTEST      run_rec_type;
+      l_tcases_aaTEST    tcases_aa_type;
+      l_results_ntTEST   results_nt_type;
+      lt   PLS_INTEGER;
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := &apos;INIT &quot;Two&quot; Happy Path 1&apos;;
+      l_run_recSAVE     := g_run_rec;
+      l_tcases_aaSAVE   := g_tcases_aa;
+      l_results_ntSAVE  := g_results_nt;
+      -- lt points to the NULL record in g_results_nt
+      lt := g_results_nt.COUNT;
+      g_results_nt(lt).executed_dtm := null;
+      init2;
+      l_run_recTEST     := g_run_rec;
+      l_tcases_aaTEST   := g_tcases_aa;
+      l_results_ntTEST  := g_results_nt;
+      g_run_rec         := l_run_recSAVE;
+      g_tcases_aa       := l_tcases_aaSAVE;
+      g_results_nt      := l_results_ntSAVE;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnotnull
+         (msg_in          =&gt; &apos;l_results_ntTEST(1).executed_dtm&apos;
+         ,check_this_in   =&gt;  l_results_ntTEST(1).executed_dtm);
+      wt_assert.this
+         (msg_in          =&gt; &apos;l_results_ntTEST(1).executed_dtm &gt;= l_run_recTEST.start_dtm&apos;
+         ,check_this_in   =&gt;  l_results_ntTEST(1).executed_dtm &gt;= l_run_recTEST.start_dtm);
+   end t_init2;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
+------------------------------------------------------------
+procedure add
+      (in_testcase   in varchar2
+      ,in_assertion  in varchar2
+      ,in_pass       in boolean
+      ,in_details    in varchar2
+      ,in_message    in varchar2)
+is
+   l_results_rec      results_rec_type;
+   l_results_recNULL  results_rec_type;
+   l_tcases_rec       tcases_rec_type;
+   l_current_tstamp   timestamp(6) with local time zone := systimestamp;
+   l_interval_buff    interval day(9) to second(6);
+begin
+   ------------------------------------------------------------
+   --  Set and Update &quot;l_results_rec&quot;
+   if g_results_nt is null
+   then
+      l_results_rec := l_results_recNULL;
+   else
+      l_results_rec := g_results_nt(g_results_nt.COUNT);
+   end if;
+   l_results_rec.testcase   := nvl(in_testcase
+                                  ,substr(g_run_rec.test_runner_owner || &apos;.&apos; ||
+                                          g_run_rec.test_runner_name, 1, 128));
+   l_results_rec.assertion  := in_assertion;
+   l_results_rec.pass       := nvl(in_pass,FALSE);
+   l_results_rec.details    := in_details;
+   l_results_rec.message    := in_message;
+   l_interval_buff             := l_current_tstamp -
+                                     nvl(l_results_rec.executed_dtm
+                                        ,g_first_executed_dtm);
+   l_results_rec.interval_msec := 1000*(           extract(second from l_interval_buff) +
+                                        60*(       extract(minute from l_interval_buff) +
+                                            60*(   extract(hour   from l_interval_buff) +
+                                                24*extract(day    from l_interval_buff)
+                                       )   )   );
+   l_results_rec.executed_dtm  := l_current_tstamp;
+   ------------------------------------------------------------
+   --  Add New Element
+   if g_results_nt is null
+   then
+      -- Initialize the &quot;g_results_nt&quot; Array
+      g_results_nt := results_nt_type(l_results_rec);
+   else
+      --  Add New Element to &quot;g_results_nt&quot; Array
+      g_results_nt.extend;
+      g_results_nt(g_results_nt.COUNT) := l_results_rec;
+   end if;
+   -----------------------------------------------
+   --  Update &quot;g_run_rec&quot; based on &quot;l_results_rec&quot;
+   g_run_rec.asrt_cnt      := g_run_rec.asrt_cnt +  1;
+   if NOT l_results_rec.pass
+   then
+      g_run_rec.asrt_fail := g_run_rec.asrt_fail + 1;
+   end if;
+   g_run_rec.asrt_tot_msec := g_run_rec.asrt_tot_msec +
+                              l_results_rec.interval_msec;
+   if l_results_rec.interval_msec &lt; nvl(g_run_rec.asrt_min_msec,9999999)
+   then
+      g_run_rec.asrt_min_msec := l_results_rec.interval_msec;
+   end if;
+   if l_results_rec.interval_msec &gt; nvl(g_run_rec.asrt_max_msec,-1)
+   then
+      g_run_rec.asrt_max_msec := l_results_rec.interval_msec;
+   end if;
+   -----------------------------------------------------------------------
+   --  Set &quot;l_tcases_rec&quot; and update the appropriate &quot;g_tcases_aa&quot; element
+   --
+   if g_tcases_aa.EXISTS(l_results_rec.testcase)
+   then
+      l_tcases_rec := g_tcases_aa(l_results_rec.testcase);
+   end if;
+   l_tcases_rec.asrt_cnt      := l_tcases_rec.asrt_cnt + 1;
+   if NOT l_results_rec.pass
+   then
+      l_tcases_rec.asrt_fail  := l_tcases_rec.asrt_fail + 1;
+   end if;
+   l_tcases_rec.asrt_tot_msec := l_tcases_rec.asrt_tot_msec +
+                                 l_results_rec.interval_msec;
+   if l_results_rec.interval_msec &lt; nvl(l_tcases_rec.asrt_min_msec,9999999)
+   then
+      l_tcases_rec.asrt_min_msec := l_results_rec.interval_msec;
+   end if;
+   if l_results_rec.interval_msec &gt; nvl(l_tcases_rec.asrt_max_msec,-1)
+   then
+      l_tcases_rec.asrt_max_msec := l_results_rec.interval_msec;
+   end if;
+   g_tcases_aa(l_results_rec.testcase) := l_tcases_rec;
+   --
+end add;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_add
+   is
+      l_run_recSAVE      run_rec_type;
+      l_tcases_aaSAVE    tcases_aa_type;
+      l_results_ntSAVE   results_nt_type;
+      l_run_recTEST      run_rec_type;
+      l_tcases_aaTEST    tcases_aa_type;
+      l_results_ntTEST   results_nt_type;
+      lt   PLS_INTEGER;
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := &apos;Add Procedure Happy Path 1&apos;;
+      l_run_recSAVE     := g_run_rec;
+      l_tcases_aaSAVE   := g_tcases_aa;
+      l_results_ntSAVE  := g_results_nt;
+      add(in_testcase  =&gt; &apos;The Testcase&apos;
+         ,in_assertion =&gt; &apos;The Assert&apos;
+         ,in_pass      =&gt; TRUE
+         ,in_details   =&gt; &apos;The Details&apos;
+         ,in_message   =&gt; &apos;The Message&apos;);
+      --------------------------------------  WTPLSQL Testing --
+      l_run_recTEST     := g_run_rec;
+      l_tcases_aaTEST   := g_tcases_aa;
+      l_results_ntTEST  := g_results_nt;
+      g_run_rec         := l_run_recSAVE;
+      g_tcases_aa       := l_tcases_aaSAVE;
+      g_results_nt      := l_results_ntSAVE;
+      lt := l_results_ntTEST.COUNT;
+      wt_assert.isnotnull
+         (msg_in          =&gt; &apos;The last element in l_resultsTEST_nt&apos;
+         ,check_this_in   =&gt;  lt);
+      --------------------------------------  WTPLSQL Testing --
+      -- l_results_nt Testing
+      -----------------------
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_results_ntTEST.COUNT = &apos; ||
+                             &apos;l_results_ntSAVE.COUNT + 1&apos;
+         ,check_this_in   =&gt;  l_results_ntTEST.COUNT
+         ,against_this_in =&gt;  l_results_ntSAVE.COUNT + 1);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnotnull
+         (msg_in          =&gt; &apos;l_results_ntTEST(lt).interval_msec&apos;
+         ,check_this_in   =&gt;  l_results_ntTEST(lt).interval_msec);
+      wt_assert.this
+         (msg_in          =&gt; &apos;l_results_ntTEST(lt).interval_msec &gt;= 0&apos;
+         ,check_this_in   =&gt;  l_results_ntTEST(lt).interval_msec &gt;= 0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnotnull
+         (msg_in          =&gt; &apos;l_results_ntTEST(lt).executed_dtm&apos;
+         ,check_this_in   =&gt;  l_results_ntTEST(lt).executed_dtm);
+      wt_assert.this
+         (msg_in          =&gt; &apos;l_results_ntTEST(lt).executed_dtm &gt;= &apos; ||
+                             &apos;l_results_ntTEST(lt-1).executed_dtm&apos;
+         ,check_this_in   =&gt;  l_results_ntTEST(lt).executed_dtm &gt;=
+                              l_results_ntTEST(lt-1).executed_dtm);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_results_ntTEST(lt).testcase&apos;
+         ,check_this_in   =&gt;  l_results_ntTEST(lt).testcase
+         ,against_this_in =&gt; &apos;The Testcase&apos;);
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_results_ntTEST(lt).assertion&apos;
+         ,check_this_in   =&gt;  l_results_ntTEST(lt).assertion
+         ,against_this_in =&gt; &apos;The Assert&apos;);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_results_ntTEST(lt).pass&apos;
+         ,check_this_in   =&gt;  l_results_ntTEST(lt).pass
+         ,against_this_in =&gt; TRUE);
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_results_ntTEST(lt).details&apos;
+         ,check_this_in   =&gt;  l_results_ntTEST(lt).details
+         ,against_this_in =&gt; &apos;The Details&apos;);
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_results_ntTEST(lt).message&apos;
+         ,check_this_in   =&gt;  l_results_ntTEST(lt).message
+         ,against_this_in =&gt; &apos;The Message&apos;);
+      --------------------------------------  WTPLSQL Testing --
+      -- l_run_rec Testing
+      --------------------
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_run_recTEST.asrt_cnt = &apos; ||
+                             &apos;l_run_recSAVE.asrt_cnt + 1&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.asrt_cnt
+         ,against_this_in =&gt;  l_run_recSAVE.asrt_cnt + 1);
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_run_recTEST.asrt_fail = &apos; ||
+                             &apos;l_run_recSAVE.asrt_fail&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.asrt_fail
+         ,against_this_in =&gt;  l_run_recSAVE.asrt_fail);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_run_recTEST.asrt_tot_msec = &apos; ||
+                             &apos;l_run_recSAVE.asrt_tot_msec + &apos; ||
+                             &apos;l_results_ntTEST(lt).interval_msec&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.asrt_tot_msec
+         ,against_this_in =&gt;  l_run_recSAVE.asrt_tot_msec +
+                              l_results_ntTEST(lt).interval_msec);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnotnull
+         (msg_in          =&gt; &apos;l_run_recTEST.asrt_min_msec&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.asrt_min_msec);
+      wt_assert.this
+         (msg_in          =&gt; &apos;l_run_recTEST.asrt_min_msec &lt;= &apos; ||
+                             &apos;l_run_recSAVE.asrt_min_msec&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.asrt_min_msec &lt;=
+                              l_run_recSAVE.asrt_min_msec);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnotnull
+         (msg_in          =&gt; &apos;l_run_recTEST.asrt_max_msec&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.asrt_max_msec);
+      wt_assert.this
+         (msg_in          =&gt; &apos;l_run_recTEST.asrt_max_msec &gt;= &apos; ||
+                             &apos;l_run_recSAVE.asrt_max_msec&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.asrt_max_msec &gt;=
+                              l_run_recSAVE.asrt_max_msec);
+      --------------------------------------  WTPLSQL Testing --
+      -- l_tcases_aa Testing
+      ----------------------
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_tcases_aaTEST(&apos;&apos;The Testcase&apos;&apos;).asrt_cnt&apos;
+         ,check_this_in   =&gt;  l_tcases_aaTEST(&apos;The Testcase&apos;).asrt_cnt
+         ,against_this_in =&gt;  1);
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_tcases_aaTEST(&apos;&apos;The Testcase&apos;&apos;).asrt_fail&apos;
+         ,check_this_in   =&gt;  l_tcases_aaTEST(&apos;The Testcase&apos;).asrt_fail
+         ,against_this_in =&gt;  0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnotnull
+         (msg_in          =&gt; &apos;l_tcases_aaTEST(&apos;&apos;The Testcase&apos;&apos;).asrt_fail&apos;
+         ,check_this_in   =&gt;  l_tcases_aaTEST(&apos;The Testcase&apos;).asrt_fail);
+      wt_assert.isnotnull
+         (msg_in          =&gt; &apos;l_tcases_aaTEST(&apos;&apos;The Testcase&apos;&apos;).asrt_tot_msec&apos;
+         ,check_this_in   =&gt;  l_tcases_aaTEST(&apos;The Testcase&apos;).asrt_tot_msec);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnotnull
+         (msg_in          =&gt; &apos;l_tcases_aaTEST(&apos;&apos;The Testcase&apos;&apos;).asrt_min_msec&apos;
+         ,check_this_in   =&gt;  l_tcases_aaTEST(&apos;The Testcase&apos;).asrt_min_msec);
+      wt_assert.isnotnull
+         (msg_in          =&gt; &apos;l_tcases_aaTEST(&apos;&apos;The Testcase&apos;&apos;).asrt_max_msec&apos;
+         ,check_this_in   =&gt;  l_tcases_aaTEST(&apos;The Testcase&apos;).asrt_max_msec);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := &apos;Add Procedure Happy Path 2&apos;;
+      l_run_recSAVE     := g_run_rec;
+      l_tcases_aaSAVE   := g_tcases_aa;
+      l_results_ntSAVE  := g_results_nt;
+      add(in_testcase  =&gt; &apos;The Testcase&apos;
+         ,in_assertion =&gt; &apos;The Assert&apos;
+         ,in_pass      =&gt; FALSE
+         ,in_details   =&gt; &apos;The Details&apos;
+         ,in_message   =&gt; &apos;The Message&apos;);
+      --------------------------------------  WTPLSQL Testing --
+      l_run_recTEST     := g_run_rec;
+      l_tcases_aaTEST   := g_tcases_aa;
+      l_results_ntTEST  := g_results_nt;
+      g_run_rec         := l_run_recSAVE;
+      g_tcases_aa       := l_tcases_aaSAVE;
+      g_results_nt      := l_results_ntSAVE;
+      lt := l_results_ntTEST.COUNT;
+      wt_assert.isnotnull
+         (msg_in          =&gt; &apos;The last element in l_resultsTEST_nt&apos;
+         ,check_this_in   =&gt;  lt);
+      --------------------------------------  WTPLSQL Testing --
+      -- l_results_nt Testing
+      --------------------
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_run_recTEST.asrt_cnt = &apos; ||
+                             &apos;l_run_recSAVE.asrt_cnt + 1&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.asrt_cnt
+         ,against_this_in =&gt;  l_run_recSAVE.asrt_cnt + 1);
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_run_recTEST.asrt_fail = &apos; ||
+                             &apos;l_run_recSAVE.asrt_fail + 1&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.asrt_fail
+         ,against_this_in =&gt;  l_run_recSAVE.asrt_fail + 1);
+      --------------------------------------  WTPLSQL Testing --
+      -- l_run_rec Testing
+      --------------------
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_run_recTEST.asrt_cnt = &apos; ||
+                             &apos;l_run_recSAVE.asrt_cnt + 1&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.asrt_cnt
+         ,against_this_in =&gt;  l_run_recSAVE.asrt_cnt + 1);
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_run_recTEST.asrt_fail = &apos; ||
+                             &apos;l_run_recSAVE.asrt_fail + 1&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.asrt_fail
+         ,against_this_in =&gt;  l_run_recSAVE.asrt_fail + 1);
+      --------------------------------------  WTPLSQL Testing --
+      -- l_tcases_aa Testing
+      ----------------------
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_tcases_aaTEST(&apos;&apos;The Testcase&apos;&apos;).asrt_cnt&apos;
+         ,check_this_in   =&gt;  l_tcases_aaTEST(&apos;The Testcase&apos;).asrt_cnt
+         ,against_this_in =&gt;  1);
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_tcases_aaTEST(&apos;&apos;The Testcase&apos;&apos;).asrt_fail&apos;
+         ,check_this_in   =&gt;  l_tcases_aaTEST(&apos;The Testcase&apos;).asrt_fail
+         ,against_this_in =&gt;  1);
+   end t_add;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
+------------------------------------------------------------
+procedure final1
+is
+   l_testcase         long_name;
+   l_interval_buff    interval day(9) to second(6);
+begin
+   -- Update Test Case Data
+   g_run_rec.tc_cnt  := g_tcases_aa.COUNT;
+   g_run_rec.tc_fail := 0;
+   if g_tcases_aa.COUNT &gt; 0
+   then
+      l_testcase := g_tcases_aa.FIRST;
+      loop
+         if g_tcases_aa(l_testcase).asrt_fail &gt; 0
+         then
+            g_run_rec.tc_fail := g_run_rec.tc_fail + 1;
+         end if;
+         exit when l_testcase = g_tcases_aa.LAST;
+         l_testcase := g_tcases_aa.NEXT(l_testcase);
+      end loop;
+   end if;
+   --
+   if g_results_nt.EXISTS(1)
+   then
+      g_run_rec.asrt_fst_dtm := g_results_nt(1).executed_dtm;
+      g_run_rec.asrt_lst_dtm := g_results_nt(g_results_nt.COUNT).executed_dtm;
+   end if;
+   -- Update Test Run Data
+   g_run_rec.end_dtm       := systimestamp;
+   l_interval_buff         := g_run_rec.end_dtm - g_run_rec.start_dtm;
+   g_run_rec.runner_sec    := (extract(second from l_interval_buff) +
+                               60 * ( extract(minute from l_interval_buff) +
+                                     60 * ( extract(hour from l_interval_buff) +
+                                           24 * ( extract(day from l_interval_buff)
+                              )     )     )     );
+end final1;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_final1
+   is
+      l_run_recSAVE      run_rec_type;
+      l_tcases_aaSAVE    tcases_aa_type;
+      l_results_ntSAVE   results_nt_type;
+      l_run_recTEST      run_rec_type;
+      l_tcases_aaTEST    tcases_aa_type;
+      l_results_ntTEST   results_nt_type;
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := &apos;FINAL &quot;One&quot; Happy Path&apos;;
+      l_run_recSAVE     := g_run_rec;
+      l_tcases_aaSAVE   := g_tcases_aa;
+      l_results_ntSAVE  := g_results_nt;
+      g_tcases_aa(&apos;TC1&apos;).asrt_fail := 2;
+      final1;
+      l_run_recTEST     := g_run_rec;
+      l_tcases_aaTEST   := g_tcases_aa;
+      l_results_ntTEST  := g_results_nt;
+      g_run_rec         := l_run_recSAVE;
+      g_tcases_aa       := l_tcases_aaSAVE;
+      g_results_nt      := l_results_ntSAVE;
+      --------------------------------------  WTPLSQL Testing --
+      -- Update Test Case Data
+      wt_assert.isnotnull
+         (msg_in          =&gt; &apos;l_run_recTEST.tc_cnt&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.tc_cnt);
+      wt_assert.this
+         (msg_in          =&gt; &apos;l_run_recTEST.tc_cnt &gt; 0&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.tc_cnt &gt; 0);
+      wt_assert.isnotnull
+         (msg_in          =&gt; &apos;l_run_recTEST.tc_fail&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.tc_fail);
+      wt_assert.this
+         (msg_in          =&gt; &apos;l_run_recTEST.tc_fail &gt;= 0&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.tc_fail &gt;= 0);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnull
+         (msg_in          =&gt; &apos;l_run_recSAVE.asrt_fst_dtm&apos;
+         ,check_this_in   =&gt;  l_run_recSAVE.asrt_fst_dtm);
+      wt_assert.isnotnull
+         (msg_in          =&gt; &apos;l_run_recTEST.asrt_fst_dtm&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.asrt_fst_dtm);
+      wt_assert.isnull
+         (msg_in          =&gt; &apos;l_run_recSAVE.asrt_lst_dtm&apos;
+         ,check_this_in   =&gt;  l_run_recSAVE.asrt_lst_dtm);
+      wt_assert.isnotnull
+         (msg_in          =&gt; &apos;l_run_recTEST.asrt_lst_dtm&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.asrt_lst_dtm);
+      --------------------------------------  WTPLSQL Testing --
+      -- Update Test Run Data
+      wt_assert.isnull
+         (msg_in          =&gt; &apos;l_run_recSAVE.end_dtm&apos;
+         ,check_this_in   =&gt;  l_run_recSAVE.end_dtm);
+      wt_assert.isnotnull
+         (msg_in          =&gt; &apos;l_run_recTEST.end_dtm&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.end_dtm);
+      wt_assert.isnotnull
+         (msg_in          =&gt; &apos;l_run_recTEST.runner_sec&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.runner_sec);
+      wt_assert.this
+         (msg_in          =&gt; &apos;l_run_recTEST.runner_sec &gt;= l_run_recSAVE.runner_sec&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.runner_sec &gt;= l_run_recSAVE.runner_sec);
+   end t_final1;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
+------------------------------------------------------------
+procedure run_error
+      (in_error_message  in  varchar2)
+is
+begin
+   if g_run_rec.error_message is null
+   then
+      g_run_rec.error_message := substr(in_error_message,1,4000);
+   else
+      g_run_rec.error_message := substr(g_run_rec.error_message || CHR(10) ||
+                                        in_error_message,1,4000);
+   end if;
+end run_error;
+
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure t_run_error
+   is
+      l_run_recSAVE   run_rec_type;
+      l_run_recTEST   run_rec_type;
+      test_message    varchar2(32767);
+   begin
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := &apos;RUN_ERROR Happy Path 1&apos;;
+      l_run_recSAVE := g_run_rec;
+      g_run_rec.error_message := &apos;&apos;;
+      run_error(&apos;Simlple Message&apos;);
+      l_run_recTEST := g_run_rec;
+      g_run_rec     := l_run_recSAVE;
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_run_recTEST.error_message&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.error_message
+         ,against_this_in =&gt; &apos;Simlple Message&apos;);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := &apos;RUN_ERROR Happy Path 2&apos;;
+      l_run_recSAVE := g_run_rec;
+      g_run_rec.error_message := &apos;&apos;;
+      run_error(&apos;Message 1&apos;);
+      run_error(&apos;Message 2&apos;);
+      l_run_recTEST := g_run_rec;
+      g_run_rec     := l_run_recSAVE;
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_run_recTEST.error_message&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.error_message
+         ,against_this_in =&gt; &apos;Message 1&apos; || CHR(10) || &apos;Message 2&apos;);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := &apos;RUN_ERROR Happy Path 3&apos;;
+      for i in 1 .. 399
+      loop
+         test_message := test_message || &apos;1234567890&apos;;
+      end loop;
+      l_run_recSAVE := g_run_rec;
+      g_run_rec.error_message := &apos;&apos;;
+      run_error(test_message);
+      run_error(&apos;Longer than 10 characters.&apos;);
+      l_run_recTEST := g_run_rec;
+      g_run_rec     := l_run_recSAVE;
+      wt_assert.isnotnull
+         (msg_in          =&gt; &apos;substr(l_run_recTEST.error_message,3000)&apos;
+         ,check_this_in   =&gt;  substr(l_run_recTEST.error_message,3000));
+      wt_assert.this
+         (msg_in          =&gt; &apos;l_run_recTEST.error_message like &apos;&apos;%Longer th&apos;&apos;&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.error_message like &apos;%Longer th&apos;);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := &apos;RUN_ERROR Happy Path 4&apos;;
+      l_run_recSAVE := g_run_rec;
+      g_run_rec.error_message := &apos;&apos;;
+      run_error(&apos;&apos;);
+      run_error(&apos;Message&apos;);
+      run_error(&apos;&apos;);
+      l_run_recTEST := g_run_rec;
+      g_run_rec     := l_run_recSAVE;
+      wt_assert.eq
+         (msg_in          =&gt; &apos;l_run_recTEST.error_message&apos;
+         ,check_this_in   =&gt;  l_run_recTEST.error_message
+         ,against_this_in =&gt; &apos;Message&apos; || CHR(10));
+   end t_run_error;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+
+
+--==============================================================--
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   procedure WTPLSQL_RUN
+   is
+   begin
+      wtplsql.g_DBOUT := &apos;CORE_DATA:PACKAGE BODY&apos;;
+      --------------------------------------  WTPLSQL Testing --
+      t_init1;
+      t_init2;
+      t_add;
+      t_final1;
+      --t_final2;
+      t_run_error;
+   end;
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+--==============================================================--
+
+
+end core_data;</source>
+</body>
+</PackageOracle>

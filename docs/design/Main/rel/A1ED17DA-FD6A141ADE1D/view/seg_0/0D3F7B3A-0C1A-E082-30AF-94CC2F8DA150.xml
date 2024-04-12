@@ -1,0 +1,605 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableView class="oracle.dbtools.crest.model.design.relational.TableView" directorySegmentName="seg_0" id="0D3F7B3A-0C1A-E082-30AF-94CC2F8DA150" schemaObject="F3F68D51-50F9-4B34-B38E-4A24C8F25A04" name="WT_DBOUT_RUNS_VW">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_DBOUT_RUNS_VW</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Test Run data for each execution of a Test Runner.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<userDefined>true</userDefined>
+<userDefinedSQL><![CDATA[CREATE OR REPLACE VIEW WT_DBOUT_RUNS_VW
+AS 
+select run.id                TEST_RUN_ID
+      ,run.dbout_id
+      ,db.owner              DBOUT_OWNER
+      ,db.name               DBOUT_NAME
+      ,db.type               DBOUT_TYPE
+      ,run.test_runner_id
+      ,tr.owner              TEST_RUNNER_OWNER
+      ,tr.name               TEST_RUNNER_NAME
+      ,run.start_dtm
+      ,run.end_dtm
+      ,run.is_last_run
+      ,run.error_message
+      ,dbr.profiler_runid
+      ,dbr.trigger_offset
+      ,dbr.coverage_pct
+      ,dbr.profiled_lines
+      ,dbr.executed_lines
+      ,dbr.ignored_lines
+      ,dbr.excluded_lines
+      ,dbr.notexec_lines
+      ,dbr.unknown_lines
+      ,dbr.exec_min_usec
+      ,dbr.exec_avg_usec
+      ,dbr.exec_max_usec
+      ,dbr.exec_tot_usec
+ from  wt_test_runs  run
+       join wt_dbouts  db
+            on  db.id = run.dbout_id
+       join wt_test_runners  tr
+            on  tr.id = run.test_runner_id
+  left join wt_dbout_runs  dbr
+            on  run.id = dbr.test_run_id
+ where run.dbout_id is not null]]></userDefinedSQL>
+<parsed>true</parsed>
+<viewElements>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="TEST_RUN_ID" id="F11BD2C3-716A-AB5C-4DD4-4293EA2AC8B4">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>TEST_RUN_ID</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Primary (Surrogate) Key for each Test Run]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>TEST_RUN_ID</alias>
+<dataType>NUMBER (38)</dataType>
+<headerAlias>TEST_RUN_ID</headerAlias>
+<reference>false</reference>
+<referencedColumn>21D3050F-F203-BB95-67D1-C5928CC1A212</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="DBOUT_ID" id="47CEBC05-BA23-CDA7-A3EF-B06241F48FD5">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>DBOUT_ID</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Surrogate Key to the Database Object Under Test (DBOUT).]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>DBOUT_ID</alias>
+<dataType>NUMBER (38)</dataType>
+<headerAlias>DBOUT_ID</headerAlias>
+<reference>false</reference>
+<referencedColumn>7F636DE0-677F-1B19-1079-48C0D498AD7D</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="DBOUT_OWNER" id="1F68C910-757E-997D-CFE6-0DE211926277">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>DBOUT_OWNER</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Owner of the Database Object Under Test (DBOUT).]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>DBOUT_OWNER</alias>
+<dataType>TIMESTAMP (3) WITH LOCAL TIME ZONE</dataType>
+<headerAlias>DBOUT_OWNER</headerAlias>
+<reference>false</reference>
+<referencedColumn>06E82655-F87C-C9C7-64B0-2D58D23E8F80</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="DBOUT_NAME" id="C85F5674-D165-7858-83DC-C0808A46462D">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>DBOUT_NAME</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Name of the Database Object Under Test (DBOUT).]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>DBOUT_NAME</alias>
+<dataType>TIMESTAMP (3) WITH LOCAL TIME ZONE</dataType>
+<headerAlias>DBOUT_NAME</headerAlias>
+<reference>false</reference>
+<referencedColumn>8B807635-368C-F677-724E-DA46FF4DC43A</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="DBOUT_TYPE" id="05637EC9-FE71-88C1-2626-7D2507173C9D">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>DBOUT_TYPE</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Type of the Database Object Under Test (DBOUT).]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>DBOUT_TYPE</alias>
+<dataType>VARCHAR2 (1 BYTE)</dataType>
+<headerAlias>DBOUT_TYPE</headerAlias>
+<reference>false</reference>
+<referencedColumn>2388280C-DB94-5809-CC50-3D28CC81ED50</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="TEST_RUNNER_ID" id="43192688-CB77-623C-3502-8FD8E4AE2EE6">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>TEST_RUNNER_ID</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Surrogate Key the Test Runner package.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>TEST_RUNNER_ID</alias>
+<dataType>VARCHAR2 (4000 BYTE)</dataType>
+<headerAlias>TEST_RUNNER_ID</headerAlias>
+<reference>false</reference>
+<referencedColumn>14F097CA-2FC9-72CA-44AB-4C6405899B87</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="TEST_RUNNER_OWNER" id="2A6F5C62-B25A-70FB-A155-A0B336B9685B">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>TEST_RUNNER_OWNER</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Owner of the Test Runner package.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>TEST_RUNNER_OWNER</alias>
+<dataType>NUMBER (38)</dataType>
+<headerAlias>TEST_RUNNER_OWNER</headerAlias>
+<reference>false</reference>
+<referencedColumn>F7E17E4F-72FB-2237-B81A-454CB77CF9AE</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="TEST_RUNNER_NAME" id="51ECE92B-B70E-7C61-8CDD-923A9515170C">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>TEST_RUNNER_NAME</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Name of the Test Runner package.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>TEST_RUNNER_NAME</alias>
+<dataType>NUMBER (6)</dataType>
+<headerAlias>TEST_RUNNER_NAME</headerAlias>
+<reference>false</reference>
+<referencedColumn>FD80BDD1-F571-43E2-E44D-A9FD53AB7594</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="START_DTM" id="5363A249-E211-6D00-494D-C201ED4876A7">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>START_DTM</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Date/time (and fractional seconds) this Test Run started. Natural Key 1 part 2]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>START_DTM</alias>
+<dataType>NUMBER (4,1)</dataType>
+<headerAlias>START_DTM</headerAlias>
+<reference>false</reference>
+<referencedColumn>FD42894C-C7E7-35DC-77EB-D2DA314771C6</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="END_DTM" id="A4FAA5C9-706F-ADDE-5356-8960661EBAC3">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>END_DTM</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Date/time (and fractional seconds) this Test Run ended.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>END_DTM</alias>
+<dataType>NUMBER (6)</dataType>
+<headerAlias>END_DTM</headerAlias>
+<reference>false</reference>
+<referencedColumn>EA42B83F-7825-C69A-3199-23F2758A4F1E</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="IS_LAST_RUN" id="DEB7487B-A080-A307-5812-6E8E578BBF35">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>IS_LAST_RUN</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Optional Flag "Y" to indicate this is the most recent run for this package owner/name]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>IS_LAST_RUN</alias>
+<dataType>NUMBER (6)</dataType>
+<headerAlias>IS_LAST_RUN</headerAlias>
+<reference>false</reference>
+<referencedColumn>3D3EAABA-89BF-2CDD-A7B8-B6FC127E1130</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="ERROR_MESSAGE" id="9FA01B8C-81F6-68D2-19EA-FD5BB52DEC1A">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>ERROR_MESSAGE</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Optional Error messages from this Test Run.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>ERROR_MESSAGE</alias>
+<dataType>NUMBER (6)</dataType>
+<headerAlias>ERROR_MESSAGE</headerAlias>
+<reference>false</reference>
+<referencedColumn>814FF55F-DAEA-A4F8-2C0A-B2A69A2F9E69</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="PROFILER_RUNID" id="9C891B8E-76B7-6B99-77CA-5B0D14F9E6E1">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>PROFILER_RUNID</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[DBMS_PROFILER unique run identifier from plsql_profiler_runnumber sequence]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>PROFILER_RUNID</alias>
+<dataType>NUMBER (6)</dataType>
+<headerAlias>PROFILER_RUNID</headerAlias>
+<reference>false</reference>
+<referencedColumn>C5DFF22B-A984-C67B-A2F5-456CA679934C</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="TRIGGER_OFFSET" id="C67AF326-921D-65B7-A9C4-D5FA297FCD6A">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>TRIGGER_OFFSET</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Calculated offset from start of Trigger Source to start of Trigger PL/SQL Block.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>TRIGGER_OFFSET</alias>
+<dataType>NUMBER (6)</dataType>
+<headerAlias>TRIGGER_OFFSET</headerAlias>
+<reference>false</reference>
+<referencedColumn>B3EC6BA3-EB9C-0367-8ED8-B6A1C43CF4CB</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="COVERAGE_PCT" id="575843C3-D2BE-7A16-B911-491CCA54EDB1">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>COVERAGE_PCT</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Percentage of executed source lines to valid executable source lines.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>COVERAGE_PCT</alias>
+<dataType>NUMBER (6)</dataType>
+<headerAlias>COVERAGE_PCT</headerAlias>
+<reference>false</reference>
+<referencedColumn>2650D4C2-6698-9AAC-F4AC-09325BEEA077</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="PROFILED_LINES" id="3762EA2C-5F7B-2FBF-A4F4-53C75036019A">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>PROFILED_LINES</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Total number of source lines as counted by DBMS_PROFILER]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>PROFILED_LINES</alias>
+<dataType>NUMBER (11)</dataType>
+<headerAlias>PROFILED_LINES</headerAlias>
+<reference>false</reference>
+<referencedColumn>2359EF30-7E13-93F6-4E5D-B1C46A5302E4</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="EXECUTED_LINES" id="92AF15CA-AC1F-7E11-2C1C-DF152F1A1D8C">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>EXECUTED_LINES</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Number of source lines executed]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>EXECUTED_LINES</alias>
+<dataType>NUMBER (11)</dataType>
+<headerAlias>EXECUTED_LINES</headerAlias>
+<reference>false</reference>
+<referencedColumn>7CB8A6EA-5D09-A112-F9CF-BFD197514992</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="IGNORED_LINES" id="CCC84BA9-1A2E-6548-BD43-2EC36686BE2A">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>IGNORED_LINES</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Number of source lines ignored as uncountable]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>IGNORED_LINES</alias>
+<dataType>NUMBER (11)</dataType>
+<headerAlias>IGNORED_LINES</headerAlias>
+<reference>false</reference>
+<referencedColumn>B3496CED-FABA-40B4-EE1E-34FCF625A1F2</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="EXCLUDED_LINES" id="5648CFE3-A1D4-7936-2620-DAFF93AE33BD">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>EXCLUDED_LINES</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Number of source lines excluded due to unexplained DBMS_PROFILER metrics]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>EXCLUDED_LINES</alias>
+<dataType>NUMBER (11)</dataType>
+<headerAlias>EXCLUDED_LINES</headerAlias>
+<reference>false</reference>
+<referencedColumn>51162AEE-1419-9012-1569-0840DE11E099</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="NOTEXEC_LINES" id="12782837-3AAC-F90D-8710-211C0372A5A2">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>NOTEXEC_LINES</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Number of source lines not executed]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>NOTEXEC_LINES</alias>
+<dataType>NUMBER (6)</dataType>
+<headerAlias>NOTEXEC_LINES</headerAlias>
+<reference>false</reference>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="UNKNOWN_LINES" id="EC03E846-B7C1-59C5-D0C1-18BC92ADAF53">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>UNKNOWN_LINES</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Number of source lines that have unexplained DBMS_PROFILER metrics]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>UNKNOWN_LINES</alias>
+<dataType>NUMBER (6)</dataType>
+<headerAlias>UNKNOWN_LINES</headerAlias>
+<reference>false</reference>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="EXEC_MIN_USEC" id="1C58A2DC-559D-4333-E80F-C7B50DD562D9">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>EXEC_MIN_USEC</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Minumum execution time for a line of source in microseconds]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>EXEC_MIN_USEC</alias>
+<dataType>NUMBER (11)</dataType>
+<headerAlias>EXEC_MIN_USEC</headerAlias>
+<reference>false</reference>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="EXEC_AVG_USEC" id="8CE5093C-A826-14CB-F912-B0B8165D9571">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>EXEC_AVG_USEC</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Average execution time for a line of source in microseconds]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>EXEC_AVG_USEC</alias>
+<dataType>NUMBER (11)</dataType>
+<headerAlias>EXEC_AVG_USEC</headerAlias>
+<reference>false</reference>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="EXEC_MAX_USEC" id="CC81657D-1BDB-3D2B-29D0-98011B929701">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>EXEC_MAX_USEC</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Maximum execution time for a line of source in microseconds]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>EXEC_MAX_USEC</alias>
+<dataType>NUMBER (11)</dataType>
+<headerAlias>EXEC_MAX_USEC</headerAlias>
+<reference>false</reference>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="EXEC_TOT_USEC" id="AB2EBF8D-5CEF-0910-6C7C-19DB9369EBBA">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_DBOUT_RUNS_VW</sourceObjSchema>
+<sourceObjName>EXEC_TOT_USEC</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Total (Sum) of execution times for a line of source in microseconds]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>EXEC_TOT_USEC</alias>
+<dataType>NUMBER (11)</dataType>
+<headerAlias>EXEC_TOT_USEC</headerAlias>
+<reference>false</reference>
+</viewElement>
+</viewElements>
+<usedObjects>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="9636F0E1-B48A-756B-7277-A09DA3C8A191">
+<container>true</container>
+<schema>WTP</schema>
+<tableName>WT_TEST_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="DA7F3AD5-D951-192B-23AE-A1549FB69116">
+<container>true</container>
+<schema>WTP</schema>
+<tableName>WT_DBOUTS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="C619958B-4EFE-7A79-1530-39139BD2978B">
+<container>true</container>
+<schema>WTP</schema>
+<tableName>WT_TEST_RUNNERS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="8B85014B-3DC9-977A-759E-DFE1810940A6">
+<container>true</container>
+<schema>WTP</schema>
+<tableName>WT_DBOUT_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="21D3050F-F203-BB95-67D1-C5928CC1A212">
+<columnName>DBOUT_ID</columnName>
+<schema>WTP</schema>
+<tableName>WT_TEST_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="7F636DE0-677F-1B19-1079-48C0D498AD7D">
+<columnName>TEST_RUNNER_ID</columnName>
+<schema>WTP</schema>
+<tableName>WT_TEST_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="06E82655-F87C-C9C7-64B0-2D58D23E8F80">
+<columnName>START_DTM</columnName>
+<schema>WTP</schema>
+<tableName>WT_TEST_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="8B807635-368C-F677-724E-DA46FF4DC43A">
+<columnName>END_DTM</columnName>
+<schema>WTP</schema>
+<tableName>WT_TEST_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="2388280C-DB94-5809-CC50-3D28CC81ED50">
+<columnName>IS_LAST_RUN</columnName>
+<schema>WTP</schema>
+<tableName>WT_TEST_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="14F097CA-2FC9-72CA-44AB-4C6405899B87">
+<columnName>ERROR_MESSAGE</columnName>
+<schema>WTP</schema>
+<tableName>WT_TEST_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="F7E17E4F-72FB-2237-B81A-454CB77CF9AE">
+<columnName>PROFILER_RUNID</columnName>
+<schema>WTP</schema>
+<tableName>WT_DBOUT_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="FD80BDD1-F571-43E2-E44D-A9FD53AB7594">
+<columnName>TRIGGER_OFFSET</columnName>
+<schema>WTP</schema>
+<tableName>WT_DBOUT_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="FD42894C-C7E7-35DC-77EB-D2DA314771C6">
+<columnName>COVERAGE_PCT</columnName>
+<schema>WTP</schema>
+<tableName>WT_DBOUT_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="EA42B83F-7825-C69A-3199-23F2758A4F1E">
+<columnName>PROFILED_LINES</columnName>
+<schema>WTP</schema>
+<tableName>WT_DBOUT_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="3D3EAABA-89BF-2CDD-A7B8-B6FC127E1130">
+<columnName>EXECUTED_LINES</columnName>
+<schema>WTP</schema>
+<tableName>WT_DBOUT_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="814FF55F-DAEA-A4F8-2C0A-B2A69A2F9E69">
+<columnName>IGNORED_LINES</columnName>
+<schema>WTP</schema>
+<tableName>WT_DBOUT_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="C5DFF22B-A984-C67B-A2F5-456CA679934C">
+<columnName>EXCLUDED_LINES</columnName>
+<schema>WTP</schema>
+<tableName>WT_DBOUT_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="B3EC6BA3-EB9C-0367-8ED8-B6A1C43CF4CB">
+<columnName>NOTEXEC_LINES</columnName>
+<schema>WTP</schema>
+<tableName>WT_DBOUT_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="2650D4C2-6698-9AAC-F4AC-09325BEEA077">
+<columnName>UNKNOWN_LINES</columnName>
+<schema>WTP</schema>
+<tableName>WT_DBOUT_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="2359EF30-7E13-93F6-4E5D-B1C46A5302E4">
+<columnName>EXEC_MIN_USEC</columnName>
+<schema>WTP</schema>
+<tableName>WT_DBOUT_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="7CB8A6EA-5D09-A112-F9CF-BFD197514992">
+<columnName>EXEC_AVG_USEC</columnName>
+<schema>WTP</schema>
+<tableName>WT_DBOUT_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="B3496CED-FABA-40B4-EE1E-34FCF625A1F2">
+<columnName>EXEC_MAX_USEC</columnName>
+<schema>WTP</schema>
+<tableName>WT_DBOUT_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="51162AEE-1419-9012-1569-0840DE11E099">
+<columnName>EXEC_TOT_USEC</columnName>
+<schema>WTP</schema>
+<tableName>WT_DBOUT_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="384B03B3-A3D6-C254-9DED-093296962DE9">
+<columnName>TEST_RUN_ID</columnName>
+<schema>WTP</schema>
+<tableName>WT_DBOUT_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="C724D8CA-D3C9-308A-D252-72F791B31BA2">
+<columnName>OWNER</columnName>
+<schema>WTP</schema>
+<tableName>WT_TEST_RUNNERS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="268475C7-85C7-4338-E1E2-7900C7B649AD">
+<columnName>NAME</columnName>
+<schema>WTP</schema>
+<tableName>WT_DBOUTS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="A52CB371-631A-A573-8123-E2E22ABC048B">
+<columnName>ID</columnName>
+<schema>WTP</schema>
+<tableName>WT_DBOUTS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="DADB3602-7145-455F-C41F-2B725692BE08">
+<columnName>OWNER</columnName>
+<schema>WTP</schema>
+<tableName>WT_DBOUTS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="B15A125A-1EE8-2726-1D35-C6BCDB7FA2C9">
+<columnName>NAME</columnName>
+<schema>WTP</schema>
+<tableName>WT_TEST_RUNNERS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="E6B60496-298B-0491-C501-A8F06CCA3A28">
+<columnName>TYPE</columnName>
+<schema>WTP</schema>
+<tableName>WT_DBOUTS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="57280C0F-45AC-1DA5-2BBA-4B530A5ED75D">
+<columnName>ID</columnName>
+<schema>WTP</schema>
+<tableName>WT_TEST_RUNNERS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="1F7E6D3E-2BF6-839B-0718-64EFF43265D5">
+<columnName>ID</columnName>
+<schema>WTP</schema>
+<tableName>WT_TEST_RUNS</tableName>
+</UsedObject>
+</usedObjects>
+</TableView>

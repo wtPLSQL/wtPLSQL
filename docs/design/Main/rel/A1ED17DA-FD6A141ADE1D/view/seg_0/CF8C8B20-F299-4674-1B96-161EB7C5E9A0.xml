@@ -1,0 +1,410 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableView class="oracle.dbtools.crest.model.design.relational.TableView" directorySegmentName="seg_0" id="CF8C8B20-F299-4674-1B96-161EB7C5E9A0" schemaObject="F3F68D51-50F9-4B34-B38E-4A24C8F25A04" name="WT_TESTCASE_RUNS_VW">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_TESTCASE_RUNS_VW</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Test Run data statistics for each testcase in the execution of a Test Runner.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<userDefined>true</userDefined>
+<userDefinedSQL><![CDATA[CREATE OR REPLACE VIEW WT_TESTCASE_RUNS_VW
+AS 
+select tcr.test_run_id
+      ,tcr.testcase_id
+      ,tc.testcase
+      ,run.test_runner_id
+      ,tr.owner                TEST_RUNNER_OWNER
+      ,tr.name                 TEST_RUNNER_NAME
+      ,run.is_last_run
+      ,run.error_message
+      ,tcr.asrt_yield_pct
+      ,tcr.asrt_cnt
+      ,tcr.asrt_fail
+      ,tcr.asrt_pass
+      ,tcr.asrt_min_msec
+      ,tcr.asrt_avg_msec
+      ,tcr.asrt_max_msec
+      ,tcr.asrt_tot_msec
+ from  wt_testcase_runs  tcr
+       join wt_testcases  tc
+            on  tc.id = tcr.testcase_id
+       join wt_test_runs  run
+            on  run.id = tcr.test_run_id
+       join wt_test_runners  tr
+            on  tr.id = run.test_runner_id]]></userDefinedSQL>
+<parsed>true</parsed>
+<viewElements>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="TEST_RUN_ID" id="B2AB733D-2334-0FFE-A470-B9C226FD032F">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS_VW</sourceObjSchema>
+<sourceObjName>TEST_RUN_ID</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Primary (Surrogate) Key for each Test Run]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>TEST_RUN_ID</alias>
+<dataType>NUMBER (38)</dataType>
+<headerAlias>TEST_RUN_ID</headerAlias>
+<reference>false</reference>
+<referencedColumn>56E444F2-E134-E369-242C-027796EDD9D8</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="TESTCASE_ID" id="276CCBB3-DC7F-11DB-44CD-8C96E5AE91B3">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS_VW</sourceObjSchema>
+<sourceObjName>TESTCASE_ID</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Primary (Surrogate) Key for each Test Case]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>TESTCASE_ID</alias>
+<dataType>NUMBER (38)</dataType>
+<headerAlias>TESTCASE_ID</headerAlias>
+<reference>false</reference>
+<referencedColumn>86C08030-DA4E-772E-88A8-13EB703339AC</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="TESTCASE" id="8A988523-21AB-4EFD-9E02-6E6409022E8D">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS_VW</sourceObjSchema>
+<sourceObjName>TESTCASE</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[The Test Case name]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>TESTCASE</alias>
+<dataType>VARCHAR2 (128 BYTE)</dataType>
+<headerAlias>TESTCASE</headerAlias>
+<reference>false</reference>
+<referencedColumn>4638A115-B74D-2A1B-C113-F8116DF5F2C9</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="TEST_RUNNER_ID" id="2E00A272-AD91-D521-B88F-E2BD7FC8973B">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS_VW</sourceObjSchema>
+<sourceObjName>TEST_RUNNER_ID</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Primary (Surrogate) Key for each Test Runner]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>TEST_RUNNER_ID</alias>
+<dataType>NUMBER (38)</dataType>
+<headerAlias>TEST_RUNNER_ID</headerAlias>
+<reference>false</reference>
+<referencedColumn>7F636DE0-677F-1B19-1079-48C0D498AD7D</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="TEST_RUNNER_OWNER" id="384BB15A-909F-56DE-0A6D-7628C9091BDF">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS_VW</sourceObjSchema>
+<sourceObjName>TEST_RUNNER_OWNER</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Owner of the Test Runner package. Natural Key 1 part 1]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>TEST_RUNNER_OWNER</alias>
+<dataType>VARCHAR2 (1 BYTE)</dataType>
+<headerAlias>TEST_RUNNER_OWNER</headerAlias>
+<reference>false</reference>
+<referencedColumn>2388280C-DB94-5809-CC50-3D28CC81ED50</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="TEST_RUNNER_NAME" id="04911998-6812-F84A-2A2A-E9C448296484">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS_VW</sourceObjSchema>
+<sourceObjName>TEST_RUNNER_NAME</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Name of the Test Runner package. Natural Key 1 part 2]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>TEST_RUNNER_NAME</alias>
+<dataType>VARCHAR2 (4000 BYTE)</dataType>
+<headerAlias>TEST_RUNNER_NAME</headerAlias>
+<reference>false</reference>
+<referencedColumn>14F097CA-2FC9-72CA-44AB-4C6405899B87</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="IS_LAST_RUN" id="C36CF857-C1EF-3756-68A5-48BBF895C603">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS_VW</sourceObjSchema>
+<sourceObjName>IS_LAST_RUN</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Optional Flag "Y" to indicate this is the most recent run for this package owner/name]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>IS_LAST_RUN</alias>
+<dataType>NUMBER (3)</dataType>
+<headerAlias>IS_LAST_RUN</headerAlias>
+<reference>false</reference>
+<referencedColumn>785E9A33-BFB2-9A04-F467-02225F041330</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="ERROR_MESSAGE" id="F73EB0DE-44CC-F330-6AC9-E1CF9A4C8F5E">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS_VW</sourceObjSchema>
+<sourceObjName>ERROR_MESSAGE</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Optional Error messages from this Test Run.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>ERROR_MESSAGE</alias>
+<dataType>NUMBER (7)</dataType>
+<headerAlias>ERROR_MESSAGE</headerAlias>
+<reference>false</reference>
+<referencedColumn>A3E3D619-85BD-3862-2393-A7803E9CAA5E</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="ASRT_YIELD_PCT" id="65C299A5-609E-6F07-E3A0-8EFC8DB1F07A">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS_VW</sourceObjSchema>
+<sourceObjName>ASRT_YIELD_PCT</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Percentage of successful assertions to total assertions.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>ASRT_YIELD_PCT</alias>
+<dataType>NUMBER (7)</dataType>
+<headerAlias>ASRT_YIELD_PCT</headerAlias>
+<reference>false</reference>
+<referencedColumn>09945C69-5818-0DCF-AF02-C460B6C213D4</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="ASRT_CNT" id="7C6B1658-612E-3106-620E-DDD85084F517">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS_VW</sourceObjSchema>
+<sourceObjName>ASRT_CNT</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Total number of assetions for the Test Case.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>ASRT_CNT</alias>
+<dataType>NUMBER (7)</dataType>
+<headerAlias>ASRT_CNT</headerAlias>
+<reference>false</reference>
+<referencedColumn>D9FA8939-98AA-5CFA-BB8D-5DE3E36748D9</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="ASRT_FAIL" id="083DF855-69DC-7124-22DA-414C01FD1355">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS_VW</sourceObjSchema>
+<sourceObjName>ASRT_FAIL</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Number of failed assertions for the Test Case.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>ASRT_FAIL</alias>
+<dataType>NUMBER (10)</dataType>
+<headerAlias>ASRT_FAIL</headerAlias>
+<reference>false</reference>
+<referencedColumn>87CBD83F-AE2D-3B16-6590-4724E552B6A2</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="ASRT_PASS" id="29494BFB-CFB4-C21F-8310-DA9408A2E1F8">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS_VW</sourceObjSchema>
+<sourceObjName>ASRT_PASS</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Number of passed assertions for the Test Case.]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>ASRT_PASS</alias>
+<dataType>NUMBER (10)</dataType>
+<headerAlias>ASRT_PASS</headerAlias>
+<reference>false</reference>
+<referencedColumn>F1931CFF-1796-6D94-C335-2194F623F7D8</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="ASRT_MIN_MSEC" id="B6779170-6341-750F-02E7-9CC4831EB821">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS_VW</sourceObjSchema>
+<sourceObjName>ASRT_MIN_MSEC</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Minimum interval time between assertions in milliseconds for the Test Case]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>ASRT_MIN_MSEC</alias>
+<dataType>NUMBER (10)</dataType>
+<headerAlias>ASRT_MIN_MSEC</headerAlias>
+<reference>false</reference>
+<referencedColumn>4FFF72CB-9634-B8C0-F6A2-4FF0D364EEA0</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="ASRT_AVG_MSEC" id="99726E96-A464-EAB7-BB3C-933819B5BB07">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS_VW</sourceObjSchema>
+<sourceObjName>ASRT_AVG_MSEC</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Average interval time between assertions in milliseconds for the Test Case]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>ASRT_AVG_MSEC</alias>
+<dataType>NUMBER (10)</dataType>
+<headerAlias>ASRT_AVG_MSEC</headerAlias>
+<reference>false</reference>
+<referencedColumn>88F9BA4A-EEE8-FF50-34BD-75C3EE390D17</referencedColumn>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="ASRT_MAX_MSEC" id="8C1A6225-1FCB-4C79-1663-20D4C0D5ABB8">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS_VW</sourceObjSchema>
+<sourceObjName>ASRT_MAX_MSEC</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Maximum interval time between assertions in milliseconds for the Test Case]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>ASRT_MAX_MSEC</alias>
+<dataType>NUMBER (10)</dataType>
+<headerAlias>ASRT_MAX_MSEC</headerAlias>
+<reference>false</reference>
+</viewElement>
+<viewElement class="oracle.dbtools.crest.model.design.relational.ColumnView" name="ASRT_TOT_MSEC" id="8EB6EBDE-FD3B-D43E-E75B-4266999811ED">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WT_TESTCASE_RUNS_VW</sourceObjSchema>
+<sourceObjName>ASRT_TOT_MSEC</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:12 UTC</createdTime>
+<commentInRDBMS><![CDATA[Total (sum) of interval times between assertions in milliseconds for the Test Case]]></commentInRDBMS>
+<ownerDesignName>Main</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<alias>ASRT_TOT_MSEC</alias>
+<dataType>NUMBER (10)</dataType>
+<headerAlias>ASRT_TOT_MSEC</headerAlias>
+<reference>false</reference>
+</viewElement>
+</viewElements>
+<usedObjects>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="5EC59CF5-A3B7-D15B-B334-0DEBC25C7FB1">
+<container>true</container>
+<schema>WTP</schema>
+<tableName>WT_TESTCASE_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="75C40BBC-950A-B117-05CF-FF327E9C0952">
+<container>true</container>
+<schema>WTP</schema>
+<tableName>WT_TESTCASES</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="9636F0E1-B48A-756B-7277-A09DA3C8A191">
+<container>true</container>
+<schema>WTP</schema>
+<tableName>WT_TEST_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="C619958B-4EFE-7A79-1530-39139BD2978B">
+<container>true</container>
+<schema>WTP</schema>
+<tableName>WT_TEST_RUNNERS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="56E444F2-E134-E369-242C-027796EDD9D8">
+<columnName>TEST_RUN_ID</columnName>
+<schema>WTP</schema>
+<tableName>WT_TESTCASE_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="86C08030-DA4E-772E-88A8-13EB703339AC">
+<columnName>TESTCASE_ID</columnName>
+<schema>WTP</schema>
+<tableName>WT_TESTCASE_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="4638A115-B74D-2A1B-C113-F8116DF5F2C9">
+<columnName>TESTCASE</columnName>
+<schema>WTP</schema>
+<tableName>WT_TESTCASES</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="7F636DE0-677F-1B19-1079-48C0D498AD7D">
+<columnName>TEST_RUNNER_ID</columnName>
+<schema>WTP</schema>
+<tableName>WT_TEST_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="2388280C-DB94-5809-CC50-3D28CC81ED50">
+<columnName>IS_LAST_RUN</columnName>
+<schema>WTP</schema>
+<tableName>WT_TEST_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="14F097CA-2FC9-72CA-44AB-4C6405899B87">
+<columnName>ERROR_MESSAGE</columnName>
+<schema>WTP</schema>
+<tableName>WT_TEST_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="785E9A33-BFB2-9A04-F467-02225F041330">
+<columnName>ASRT_YIELD_PCT</columnName>
+<schema>WTP</schema>
+<tableName>WT_TESTCASE_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="A3E3D619-85BD-3862-2393-A7803E9CAA5E">
+<columnName>ASRT_CNT</columnName>
+<schema>WTP</schema>
+<tableName>WT_TESTCASE_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="09945C69-5818-0DCF-AF02-C460B6C213D4">
+<columnName>ASRT_FAIL</columnName>
+<schema>WTP</schema>
+<tableName>WT_TESTCASE_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="D9FA8939-98AA-5CFA-BB8D-5DE3E36748D9">
+<columnName>ASRT_PASS</columnName>
+<schema>WTP</schema>
+<tableName>WT_TESTCASE_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="87CBD83F-AE2D-3B16-6590-4724E552B6A2">
+<columnName>ASRT_MIN_MSEC</columnName>
+<schema>WTP</schema>
+<tableName>WT_TESTCASE_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="F1931CFF-1796-6D94-C335-2194F623F7D8">
+<columnName>ASRT_AVG_MSEC</columnName>
+<schema>WTP</schema>
+<tableName>WT_TESTCASE_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="4FFF72CB-9634-B8C0-F6A2-4FF0D364EEA0">
+<columnName>ASRT_MAX_MSEC</columnName>
+<schema>WTP</schema>
+<tableName>WT_TESTCASE_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="88F9BA4A-EEE8-FF50-34BD-75C3EE390D17">
+<columnName>ASRT_TOT_MSEC</columnName>
+<schema>WTP</schema>
+<tableName>WT_TESTCASE_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="B15A125A-1EE8-2726-1D35-C6BCDB7FA2C9">
+<columnName>NAME</columnName>
+<schema>WTP</schema>
+<tableName>WT_TEST_RUNNERS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="C724D8CA-D3C9-308A-D252-72F791B31BA2">
+<columnName>OWNER</columnName>
+<schema>WTP</schema>
+<tableName>WT_TEST_RUNNERS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="57280C0F-45AC-1DA5-2BBA-4B530A5ED75D">
+<columnName>ID</columnName>
+<schema>WTP</schema>
+<tableName>WT_TEST_RUNNERS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="1F7E6D3E-2BF6-839B-0718-64EFF43265D5">
+<columnName>ID</columnName>
+<schema>WTP</schema>
+<tableName>WT_TEST_RUNS</tableName>
+</UsedObject>
+<UsedObject class="oracle.dbtools.crest.swingui.editor.viewbuilder.SQLNameHelper" id="E08DCCDB-E929-EA3B-2E79-CE450F045637">
+<columnName>ID</columnName>
+<schema>WTP</schema>
+<tableName>WT_TESTCASES</tableName>
+</UsedObject>
+</usedObjects>
+</TableView>

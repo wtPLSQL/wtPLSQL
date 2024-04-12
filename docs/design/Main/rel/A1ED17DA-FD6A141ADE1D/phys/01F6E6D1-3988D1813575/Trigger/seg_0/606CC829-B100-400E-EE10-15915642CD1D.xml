@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TriggerOraclev10g class="oracle.dbtools.crest.model.design.storage.oracle.v10g.TriggerOraclev10g" name="WT_SELF_TEST$TEST" directorySegmentName="seg_0" id="606CC829-B100-400E-EE10-15915642CD1D">
+<sourceConnName>wtp@DEVPDB_localhost</sourceConnName>
+<sourceObjSchema>WTP</sourceObjSchema>
+<sourceObjName>WT_SELF_TEST$TEST</sourceObjName>
+<createdBy>duane</createdBy>
+<createdTime>2024-04-10 19:09:26 UTC</createdTime>
+<ownerDesignName>Main</ownerDesignName>
+<actions>INSERT</actions>
+<body><![CDATA[declare
+   l_junk  number;
+begin
+   l_junk := 1;
+end;
+]]></body>
+<triggerTime>BEFORE</triggerTime>
+<owner>0B8CEE14-5EF4-002A-AC5B-E55C89A47256</owner>
+<table>47D50FCD-FE02-67DD-23DD-EFF91FD5D711</table>
+</TriggerOraclev10g>
