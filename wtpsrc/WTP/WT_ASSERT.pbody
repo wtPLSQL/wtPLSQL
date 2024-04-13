@@ -243,8 +243,8 @@ $THEN
             wt_assert.isnull
                (msg_in        => l_msg
                ,check_this_in => 'Incorrect Exception Thrown: ' ||
-                                 substr(dbms_utility.format_error_stack  ||
-                                        dbms_utility.format_error_backtrace
+                                 substr(dbms_utility.format_error_backtrace ||
+                                        dbms_utility.format_call_stack
                                        ,1,3950)  );
       end;
    end t_process_assertion;
@@ -2431,8 +2431,8 @@ begin
       execute immediate check_call_in;
    exception when OTHERS then
       l_sqlerrm := SQLERRM;
-      l_errstack := substr(dbms_utility.format_error_stack  ||
-                           dbms_utility.format_error_backtrace
+      l_errstack := substr(dbms_utility.format_error_backtrace ||
+                           dbms_utility.format_call_stack
                            ,1,4000);
    end;
    --
@@ -2690,8 +2690,8 @@ begin
    g_rec.raise_exception := raise_exc_in;
    process_assertion;
 exception when others then
-   l_errstack := substr(dbms_utility.format_error_stack ||
-                        dbms_utility.format_error_backtrace,1,2900);
+   l_errstack := substr(dbms_utility.format_error_backtrace ||
+                        dbms_utility.format_call_stack,1,2900);
    g_rec.last_details := 'Exception raised for Query: ' ||
                           substr(check_query_in  ,1,1000) ||
                           CHR(10) || l_errstack;
@@ -2726,8 +2726,8 @@ begin
    g_rec.raise_exception := raise_exc_in;
    process_assertion;
 exception when others then
-   l_errstack := substr(dbms_utility.format_error_stack ||
-                        dbms_utility.format_error_backtrace,1,2900);
+   l_errstack := substr(dbms_utility.format_error_backtrace ||
+                        dbms_utility.format_call_stack,1,2900);
    g_rec.last_details := 'Exception raised for Query: ' ||
                           substr(check_query_in  ,1,1000) ||
                           CHR(10) || l_errstack;
@@ -2764,8 +2764,8 @@ begin
    g_rec.raise_exception := raise_exc_in;
    process_assertion;
 exception when others then
-   l_errstack := substr(dbms_utility.format_error_stack ||
-                        dbms_utility.format_error_backtrace,1,2900);
+   l_errstack := substr(dbms_utility.format_error_backtrace ||
+                        dbms_utility.format_call_stack,1,2900);
    g_rec.last_details := 'Exception raised for Query: ' ||
                           substr(check_query_in  ,1,1000) ||
                           CHR(10) || l_errstack;
@@ -2804,8 +2804,8 @@ begin
    g_rec.raise_exception := raise_exc_in;
    process_assertion;
 exception when others then
-   l_errstack := substr(dbms_utility.format_error_stack ||
-                        dbms_utility.format_error_backtrace,1,2900);
+   l_errstack := substr(dbms_utility.format_error_backtrace ||
+                        dbms_utility.format_call_stack,1,2900);
    g_rec.last_details := 'Exception raised for Query: ' ||
                           substr(check_query_in  ,1,1000) ||
                           CHR(10) || l_errstack;

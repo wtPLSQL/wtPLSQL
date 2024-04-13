@@ -49,6 +49,8 @@ end wt_persist_report;
 
 --  Grants
 
+grant EXECUTE on "WTP"."WT_PERSIST_REPORT" to "PUBLIC";
+
 
 --  Synonyms
 

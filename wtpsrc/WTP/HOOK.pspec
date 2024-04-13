@@ -39,6 +39,8 @@ end hook;
 
 --  Grants
 
+grant EXECUTE on "WTP"."HOOK" to "PUBLIC";
+
 
 --  Synonyms
 

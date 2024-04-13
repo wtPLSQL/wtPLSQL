@@ -72,12 +72,23 @@ Then, run this:
 ```
 begin
    wtplsql.test_run('TEST_DBMS_OUTPUT');
-   wt_persist_report.dbms_out(USER,'TEST_DBMS_OUTPUT',30);
 end;
 /
 ```
 
 And get this:
+
+```
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003, wtpgrb 1.003
+  Start Date/Time: 13-Apr-2024 01:21:28 AM
+  Test Results for WT_DEMO.TEST_DBMS_OUTPUT
+  ------------------------------------------------------------------
+  Minimum Elapsed msec:          0      Total Assertions:          1
+  Average Elapsed msec:          0     Failed Assertions:          0
+  Maximum Elapsed msec:          0       Total Testcases:          1
+  Total Run Time (sec):        0.0      Failed Testcases:          0
+                                          Testcase Yield:        100%
+```
 
 <img src="images/Testing Put Line and Get Line.PNG" alt="Testing Put Line and Get Line Result">
 
@@ -126,22 +137,39 @@ You might get this:
 
 ```
 Test 1
+
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003, wtpgrb 1.003
+  Start Date/Time: 12-Apr-2024 09:49:26 PM
+  Test Results for WT_DEMO.TEST_DBMS_OUTPUT
+  ------------------------------------------------------------------
+  Minimum Elapsed msec:          0      Total Assertions:          0
+  Average Elapsed msec:          0     Failed Assertions:          0
+  Maximum Elapsed msec:          0       Total Testcases:          0
+  Total Run Time (sec):        0.0      Failed Testcases:          0
+                                          Testcase Yield:          0%
+
+  *** Test Runner Error ***
+Hook Error in "execute_test_runner", SEQ 20.
+ORA-06512: at "WT_DEMO.TEST_DBMS_OUTPUT", line 10
+ORA-06512: at "WT_DEMO.TEST_DBMS_OUTPUT", line 18
+ORA-06512: at line 1
+ORA-06512: at "WTP.WT_EXECUTE_TEST_RUNNER", line 11
+ORA-06512: at line 1
+ORA-06512: at "WTP.HOOK", line 41
+----- PL/SQL Call Stack -----
+  object      line  object
+  handle    number  name
+0xa28c8178        43  package body WTP.HOOK.RUN
+0x6f239218       503  package body WTP.WTPLSQL.TEST_RUN
+0x9fa74a88         2  anonymous block
+
+ * NOTE: No Data in Test Results Array "core_data.g_results_nt"
 ```
 
 Your results should include the above results, if DBMS_OUTPUT is enabled.  There may be addition results due to a different wtPSQL configuration.
 
 Notice there was no exception raised.  wtPLSQL captured the exception and logged it.  Also, the value of C_TEST1 shows in the output.  It was left behind in the DBMS_OUTPUT buffer.
 
-Run this:
-
-```
-begin
-   wt_persist_report.dbms_out(USER,'TEST_DBMS_OUTPUT',30);
-end;
-/
-```
-
-And get this:
 
 <img src="images/Leaving Something Behind.PNG" alt="Leaving Something Behind Result">
 
@@ -236,20 +264,33 @@ And get this:
 
 ```
 This should be preserved.
+
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003, wtpgrb 1.003
+  Start Date/Time: 13-Apr-2024 12:49:43 AM
+  Test Results for WT_DEMO.TEST_DBMS_OUTPUT
+  ------------------------------------------------------------------
+  Minimum Elapsed msec:          0      Total Assertions:          0
+  Average Elapsed msec:          0     Failed Assertions:          0
+  Maximum Elapsed msec:          0       Total Testcases:          0
+  Total Run Time (sec):        0.0      Failed Testcases:          0
+                                          Testcase Yield:          0%
+
+  *** Test Runner Error ***
+Hook Error in "execute_test_runner", SEQ 20.
+ORA-06512: at "WT_DEMO.TEST_DBMS_OUTPUT", line 53
+ORA-06512: at line 1
+ORA-06512: at "WTP.WT_EXECUTE_TEST_RUNNER", line 11
+ORA-06512: at line 1
+ORA-06512: at "WTP.HOOK", line 41
+----- PL/SQL Call Stack -----
+  object      line  object
+  handle    number  name
+0xa28c8178        43  package body WTP.HOOK.RUN
+0x6f239218       503  package body WTP.WTPLSQL.TEST_RUN
+0x9fa74a88         2  anonymous block
+
+ * NOTE: No Data in Test Results Array "core_data.g_results_nt"
 ```
-
-Excellent! The original DBMS_OUPUT buffer was preserved and the errant C_TEST1 value was removed.
-
-Run this:
-
-```
-begin
-   wt_persist_report.dbms_out(USER,'TEST_DBMS_OUTPUT',30);
-end;
-/
-```
-
-And get this:
 
 <img src="images/Setup and Teardown.PNG" alt="Setup and Teardown Result">
 

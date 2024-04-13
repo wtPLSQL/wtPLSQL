@@ -92,6 +92,8 @@ end core_data;
 
 --  Grants
 
+grant EXECUTE on "WTP"."CORE_DATA" to "PUBLIC";
+
 
 --  Synonyms
 

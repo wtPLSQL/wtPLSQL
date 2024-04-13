@@ -16,6 +16,8 @@ end table_test_pkg;
 /
 show errors
 
+grant execute on table_test_pkg to wtp;
+
 create or replace package body table_test_pkg
 as
    procedure t_happy_path_1
@@ -41,7 +43,7 @@ as
       wt_assert.raises (
          msg_in          => 'Raise Error',
          check_call_in   => 'insert into table_test_tab (id, name) values (1, ''Test1'')',
-         against_exc_in  => 'ORA-02290: check constraint (WTP_DEMO.TABLE_TEST_TAB_CK1) violated');
+         against_exc_in  => 'ORA-02290: check constraint (WT_DEMO.TABLE_TEST_TAB_CK1) violated');
    end t_sad_path_1;
    procedure wtplsql_run is
    begin
@@ -54,8 +56,15 @@ show errors
 
 set serveroutput on size unlimited format truncated
 
+-- Must be logged in as "WTP"
+update wtp.hooks
+  set  run_string = 'begin wtp.wt_core_report.dbms_out(in_detail_level => 30); end;'
+ where hook_name = 'after_test_run'
+  and  run_string = 'begin wtp.wt_core_report.dbms_out(in_detail_level => 10); end;';
+--
+
 begin
+   wtp.hook.init;
    wtplsql.test_run('TABLE_TEST_PKG');
-   wt_persist_report.dbms_out(USER,'TABLE_TEST_PKG',30);
 end;
 /

@@ -398,10 +398,10 @@ is
 begin
    for buff in (
       select component, version
-       from  wt_version  t1
+       from  wt_versions  t1
        where (component, install_tstmp) in (
               select t2.component, max(t2.install_tstmp)
-               from  wt_version  t2
+               from  wt_versions  t2
                group by t2.component)
         and  action != 'REMOVE'
        order by install_tstmp )

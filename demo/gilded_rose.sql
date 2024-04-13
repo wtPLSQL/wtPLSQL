@@ -1,42 +1,52 @@
 
 --
 -- Here are the requirements for the GildedRose Code Kata:
---   1) All items have a SellIn value which denotes the number of days we have to sell the item
---   2) All items have a Quality value which denotes how valuable the item is
---   3) At the end of each day our system lowers both values for every item
---   4) Once the sell by date has passed, Quality degrades twice as fast
---   5) The Quality of an item is never negative
---   6) “Aged Brie” actually increases in Quality the older it gets
---   7) The Quality of an item is never more than 50
---   8) “Sulfuras”, being a legendary item, never has to be sold or decreases in Quality
---   9) “Backstage passes”, like aged brie, increases in Quality as it’s SellIn value approaches; Quality increases by 2 when there are 10 days or less and by 3 when there are 5 days or less but Quality drops to 0 after the concert
---  10) “Conjured” items degrade in Quality twice as fast as normal items
+--   1) All items have a SellIn value which denotes the number of days we have to sell the item.
+--   2) All items have a Quality value which denotes how valuable the item is.
+--   3) At the end of each day our system lowers both values for every item.
+--   4) Once the sell by date has passed, Quality degrades twice as fast.
+--   5) The Quality of an item is never negative.
+--   6) "Aged Brie" actually increases in Quality the older it gets.
+--   7) The Quality of an item is never more than 50.
+--   8) "Sulfuras", being a legendary item, never has to be sold or decreases in Quality.
+--   9) "Backstage passes", like aged brie, increases in Quality as it's SellIn value approaches.
+--      Quality increases by 2 when there are 10 days or less and by 3 when there are 5 days or less
+--      but Quality drops to 0 after the concert.
+--  10) "Conjured" items degrade in Quality twice as fast as normal items.
 --
 -- There are several kinds of requirements here.
---   -) Everything has/is: 1, 2 (these are attributes)
---   -) Always do, with exceptions: 3, 4, 6, 8, 9, 10 (these are processes)
---   -) Boundary conditions: 5, 7 (these define corner cases)
+--   -) 1 & 2 are Attributes.  Everything has/is
+--   -) 3, 4, 6, 8, 9, & 10 are processes.  Always do, with exceptions.
+--   -) 5 & 7 are corner cases, boundary conditions.
 -- 
 
+create table gilded_roses
+   (name      varchar2(100) constraint gilded_roses_nn1 not null
+   ,sell_in   number(6)     constraint gilded_roses_nn2 not null
+   ,quality   number(6)     constraint gilded_roses_nn3 not null
+   ,reduce    number(3)     constraint gilded_roses_nn4 not null
+   ,reduce10  number(3)
+   ,reduce5   number(3)
+   ,constraint gilded_roses_ck1 check (quality between 0 and 50));
 
--- This is INCOMPLETE
+comment on column gilded_roses.name     is 'Name of Item';
+comment on column gilded_roses.sell_in  is 'Number of Days to Sell';
+comment on column gilded_roses.quality  is 'Value of Quality';
+comment on column gilded_roses.reduce   is 'Quality Reduction Per Day';
+comment on column gilded_roses.reduce10 is 'Quality Reduction Per Day with 10 days or less';
+comment on column gilded_roses.reduce5  is 'Quality Reduction Per Day with 5 days or less';
 
+insert into gilded_roses values ('Aged Brie'     ,  0, 30, -1);
+insert into gilded_roses values ('Sulfuras'      , -1, 30,  0);
+insert into gilded_roses values ('Backstage Pass', 30, 30, -1, -2, -3);
+insert into gilded_roses values ('Conjured'      , 30, 30,  2);
+insert into gilded_roses values ('Normal'        , 30, 30,  1);
 
 create or replace package gilded_rose
    authid definer
 as
 
-   g_name     varchar2(100);
-   g_sell_in  number(6);
-   g_quality  number(6);
-
-   --  Package variables are publicly modifiable in PL/SQL.
-   --procedure initialize
-   --   (in_name            in varchar2
-   --   ,in_quality         in number
-   --   ,in_days_remaining  in number);
-
-   procedure tick;
+   procedure end_of_day;
 
    $IF $$WTPLSQL_ENABLE
    $THEN
@@ -51,83 +61,43 @@ show errors
 create or replace package body gilded_rose
 as
 
---  Package variables are publicly modifiable in PL/SQL.
---procedure initialize
---      (in_name            in varchar2
---      ,in_quality         in number
---      ,in_days_remaining  in number);
 
-procedure tick
+procedure end_of_day
 is
+   TYPE gr_nt_type is table of gilded_roses%ROWTYPE;
+   gr_nt   gr_nt_type;
 begin
-   if    g_name <> 'Aged Brie'
-     and g_name <> 'Backstage passes to a TAFKAL80ETC concert'
-   then
-      if g_quality > 0
+   select * bulk collect into gr_nt
+    from  gilded_roses
+    where sell_in >= 0;
+   for i in 1 .. gr_nt.COUNT
+   loop
+      if    gr_nt(i).reduce5 is not null
+        AND sell_in <= 5
       then
-         if g_name <> 'Sulfuras, Hand of Ragnaros'
-         then
-            g_quality := g_quality - 1;
-         end if;
-      end if;
-   else
-      if (g_quality < 50)
+      elsif    gr_nt(i).reduce5 is not null
+           AND sell_in <= 5
       then
-         g_quality := g_quality + 1;
-         if g_name = 'Backstage passes to a TAFKAL80ETC concert'
-         then
-            if g_sell_in < 11
-            then
-               if g_quality < 50
-               then
-                  g_quality := g_quality + 1;
-               end if;
-            end if;
-            if g_sell_in < 6
-            then
-               if g_quality < 50
-               then
-                  g_quality := g_quality + 1;
-               end if;
-            end if;
-         end if;
-      end if;
-   end if;
-   if g_name <> 'Sulfuras, Hand of Ragnaros'
-      then
-      g_sell_in := g_sell_in - 1;
-   end if;
-   if g_sell_in < 0
-   then
-      if g_name <> 'Aged Brie'
-      then
-         if g_name <> 'Backstage passes to a TAFKAL80ETC concert'
-         then
-            if g_quality > 0
-            then
-               if g_name <> 'Sulfuras, Hand of Ragnaros'
-               then
-                  g_quality := g_quality - 1;
-               end if;
-            end if;
-         else
-            g_quality := g_quality - g_quality;
-         end if;
       else
-         if g_quality < 50
+         gr_nt(i).sell_in := gr_nt(i).sell_in - 1;
+         if gr_nt(i).sell_in < 0
          then
-            g_quality := g_quality + 1;
+            gr_nt(i).quality := 0;
+         else
+            gr_nt(i).quality := gr_nt(i).quality - gr_nt(i).reduce;
          end if;
       end if;
-   end if;
-end tick;
+      if gr_nt(i).quality > 50 then gr_nt(i).quality := 50; end if;
+      if gr_nt(i).quality <  0 then gr_nt(i).quality :=  0; end if;
+   end loop;
+end end_of_day;
 
 $IF $$WTPLSQL_ENABLE
 $THEN
 procedure WTPLSQL_RUN
 is
 begin
-   utassert.g_testcase_name = '
+   utassert.g_testcase_name = '';
 end WTPLSQL_RUN;
 $END
 

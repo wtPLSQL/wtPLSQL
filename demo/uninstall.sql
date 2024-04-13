@@ -2,8 +2,6 @@
 spool uninstall
 set serveroutput on size unlimited format truncated
 
-@../common_setup.sql
-
-drop user &demo_owner. cascade;
+drop user WT_DEMO cascade;
 
 spool off

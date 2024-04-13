@@ -10,68 +10,18 @@ set serveroutput on size unlimited format truncated
 WHENEVER SQLERROR exit SQL.SQLCODE
 
 begin
-   if USER not in ('SYS','SYSTEM')
+   if USER != upper('WT_DEMO')
    then
       raise_application_error (-20000,
-        'Not logged in as SYS or SYSTEM');
-   end if;
-end;
-/
-
-prompt
-prompt Shared Setup Script
-@../common_setup.sql
-
-WHENEVER SQLERROR continue
-
-
-prompt
-prompt Create Demo owner
-
-create user &demo_owner. identified by &demo_owner.
-   default tablespace users
-   quota 1M on users
-   temporary tablespace temp;
-
-grant create session   to &demo_owner.;
-grant create type      to &demo_owner.;
-grant create sequence  to &demo_owner.;
-grant create table     to &demo_owner.;
-grant create trigger   to &demo_owner.;
-grant create view      to &demo_owner.;
-grant create procedure to &demo_owner.;
-
-begin
-   $IF $$WTPLSQL_ENABLE
-   $THEN
-      dbms_output.put_line('WTPLSQL_ENABLE is TRUE');
-   $END
-   dbms_output.put_line('Check WTPLSQL_ENABLE is Done.');
-end;
-/
-
-WHENEVER SQLERROR exit SQL.SQLCODE
-
-
-prompt
-prompt Connect as DEMO_OWNER
-
-connect &demo_owner./&demo_owner.&connect_string.
-set serveroutput on size unlimited format truncated
-
-begin
-   if USER != upper('&demo_owner')
-   then
-      raise_application_error (-20000,
-        'Not logged in as &demo_owner');
+        'Not logged in as WT_DEMO');
    end if;
 end;
 /
 
 WHENEVER SQLERROR continue
 
-set serveroutput on size unlimited format truncated
-
+execute dbms_output.put_line(wtp.core_data.g_run_rec.test_runner_name);
+execute wtp.core_data.g_run_rec.test_runner_name := null;
 select wtplsql.show_version from dual;
 
 begin
@@ -80,7 +30,6 @@ begin
                ,against_this_in => '1');
 end;
 /
-
 
 prompt
 prompt Test Installation

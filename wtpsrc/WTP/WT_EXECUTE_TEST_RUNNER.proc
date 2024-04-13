@@ -10,12 +10,12 @@ set define off
 
   CREATE OR REPLACE EDITIONABLE PROCEDURE "WTP"."WT_EXECUTE_TEST_RUNNER" 
    authid current_user
-   -- AUTHID CURRENT_USER is required for assertions with
-   --   dynamic PL/SQL execution.
+   -- AUTHID CURRENT_USER is required for assertions with dynamic PL/SQL execution.
 is
    sql_txt  varchar2(4000);
 begin
-   sql_txt := 'begin "' || core_data.g_run_rec.test_runner_name  ||
+   sql_txt := 'begin "' || wtp.core_data.g_run_rec.test_runner_owner ||
+                  '"."' || wtp.core_data.g_run_rec.test_runner_name  ||
                    '".' || wtplsql.C_RUNNER_ENTRY_POINT          || '; end;';
    --dbms_output.put_line(sql_txt);
    execute immediate sql_txt;
@@ -28,10 +28,6 @@ grant EXECUTE on "WTP"."WT_EXECUTE_TEST_RUNNER" to "PUBLIC";
 
 
 --  Synonyms
-
---DBMS_METADATA:PUBLIC.WT_EXECUTE_TEST_RUNNER
-
-  CREATE OR REPLACE NONEDITIONABLE PUBLIC SYNONYM "WT_EXECUTE_TEST_RUNNER" FOR "WTP"."WT_EXECUTE_TEST_RUNNER";
 
 
 set define on

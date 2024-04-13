@@ -53,8 +53,8 @@ begin
          l_error_stack := 'Hook Error in "' || in_hook_name ||
                            '", SEQ ' || g_run_aa(in_hook_name)(i).seq ||
                                  '.' || CHR(10) ||
-                           dbms_utility.format_error_stack ||
-                           dbms_utility.format_error_backtrace;
+                           dbms_utility.format_error_backtrace ||
+                           dbms_utility.format_call_stack;
          core_data.run_error(l_error_stack);
       end;
    end loop;

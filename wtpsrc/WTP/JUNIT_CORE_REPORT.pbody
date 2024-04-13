@@ -221,11 +221,11 @@ is
 begin
    delete_hooks;
    insert into hooks (hook_name, seq, run_string)
-      values ('before_test_all', 20, 'begin junit_core_report.before_test_all; end;');
+      values ('before_test_all', 20, 'begin wtp.junit_core_report.before_test_all; end;');
    insert into hooks (hook_name, seq, run_string)
-      values ('after_test_run', 20, 'begin junit_core_report.show_current; end;');
+      values ('after_test_run', 20, 'begin wtp.junit_core_report.show_current; end;');
    insert into hooks (hook_name, seq, run_string)
-      values ('after_test_all', 20, 'begin junit_core_report.after_test_all; end;');
+      values ('after_test_all', 20, 'begin wtp.junit_core_report.after_test_all; end;');
    commit;
    hook.init;
 end insert_hooks;
@@ -235,7 +235,7 @@ end insert_hooks;
 procedure delete_hooks
 is
 begin
-   delete from hooks where run_string like '% junit_core_report.%';
+   delete from hooks where run_string like '%wtp.junit_core_report.%';
    dbms_output.put_line(SQL%ROWCOUNT || ' "junit_core_report" rows deleted from HOOKS table.');
    hook.init;
    commit;

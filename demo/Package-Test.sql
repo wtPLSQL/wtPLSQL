@@ -6,6 +6,8 @@ end test_dbms_output;
 /
 show errors
 
+grant execute on test_dbms_output to wtp;
+
 create or replace package body test_dbms_output
 as
    procedure wtplsql_run
@@ -39,12 +41,12 @@ end test_dbms_output;
 /
 show errors
 
+set serveroutput on size unlimited format truncated
+
 begin
    wtplsql.test_run('TEST_DBMS_OUTPUT');
-   wt_persist_report.dbms_out(USER,'TEST_DBMS_OUTPUT',30);
 end;
 /
-show errors
 
 create or replace package body test_dbms_output
 as
@@ -71,13 +73,6 @@ show errors
 
 begin
    wtplsql.test_run('TEST_DBMS_OUTPUT');
-end;
-/
-show errors
-
-begin
-   wt_persist_report.dbms_out(USER,'TEST_DBMS_OUTPUT',30);
-   end if;
 end;
 /
 show errors
@@ -143,12 +138,6 @@ show errors
 
 begin
    wtplsql.test_run('TEST_DBMS_OUTPUT');
-end;
-/
-show errors
-
-begin
-   wt_persist_report.dbms_out(USER,'TEST_DBMS_OUTPUT',30);
 end;
 /
 show errors

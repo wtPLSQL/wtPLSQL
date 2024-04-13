@@ -98,7 +98,6 @@ set serveroutput on size unlimited format truncated
 
 begin
    wtplsql.test_run('TABLE_TEST_PKG');
-   wt_persist_report.dbms_out(USER,'TABLE_TEST_PKG',30);
 end;
 /
 ```
@@ -106,22 +105,23 @@ end;
 And Get This:
 
 ```
-    wtPLSQL 1.1.0 - Run ID 344: 01-Sep-2018 10:51:48 PM
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003, wtpgrb 1.003
+  Start Date/Time: 13-Apr-2024 01:14:13 AM
+  Test Results for WT_DEMO.TABLE_TEST_PKG
+  ------------------------------------------------------------------
+  Minimum Elapsed msec:          0      Total Assertions:          3
+  Average Elapsed msec:          1     Failed Assertions:          0
+  Maximum Elapsed msec:          2       Total Testcases:          2
+  Total Run Time (sec):        0.0      Failed Testcases:          0
+                                          Testcase Yield:        100%
 
-  Test Results for WTP_DEMO.TABLE_TEST_PKG
-       Total Test Cases:        2       Total Assertions:        3
-  Minimum Interval msec:        0      Failed Assertions:        0
-  Average Interval msec:        5       Error Assertions:        0
-  Maximum Interval msec:       16             Test Yield:   100.00%
-   Total Run Time (sec):      0.0
-
- - WTP_DEMO.TABLE_TEST_PKG Test Result Details (Test Run ID 344)
------------------------------------------------------------
- ---- Test Case: Happy Path 1
- PASS   16ms Successful Insert. RAISES/THROWS - No exception was expected. Exception raised was "". Exception raised by: "insert into table_test_tab (id, name) values (1, 'TEST1')".
- PASS    0ms Confirm l_rec.name. EQ - Expected "TEST1" and got "TEST1"
- ---- Test Case: Sad Path 1
- PASS    0ms Raise Error. RAISES/THROWS - Expected exception "%ORA-02290: check constraint (WTP_DEMO.TABLE_TEST_TAB_CK1) violated%". Actual exception raised was "ORA-02290: check constraint (WTP_DEMO.TABLE_TEST_TAB_CK1) violated". Exception raised by: "insert into table_test_tab (id, name) values (1, 'Test1')".
+  WT_DEMO.TABLE_TEST_PKG Test Runner Details
+  --------------------------------------------------------------
+---***  Happy Path 1  ***-------------------------------------------------------
+ PASS .755ms Successful Insert. RAISES/THROWS - No exception was expected. Exception raised was "". Exception raised by: "insert into table_test_tab (id, name) values (1, 'TEST1')".
+ PASS .184ms Confirm l_rec.name. EQ - Expected "TEST1" and got "TEST1"
+---***  Sad Path 1  ***---------------------------------------------------------
+ PASS 2.27ms Raise Error. RAISES/THROWS - Expected exception "%ORA-02290: check constraint (WT_DEMO.TABLE_TEST_TAB_CK1) violated%". Actual exception raised was "ORA-02290: check constraint (WT_DEMO.TABLE_TEST_TAB_CK1) violated". Exception raised by: "insert into table_test_tab (id, name) values (1, 'Test1')".
 ```
 
 This is report level 30, the most detailed level of reporting.  Starting from the top, we find the test runner executed 1 test case and 2 assertions.  All tests passed for a 100% yield.  There is no code coverage for the constraints.

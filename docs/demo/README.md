@@ -4,7 +4,7 @@
 
 ---
 
-Demonstrations and examples assume successful connection to an [Oracle database](http://www.oracle.com/technetwork/database/database-technologies/express-edition/overview/index.html) with wtPLSQL installed. wtPLSQL Installation instructions are available on the [wtPLSQL Releases page](https://github.com/DDieterich/wtPLSQL/releases).
+Demonstrations and examples assume successful connection to an [Oracle database](https://www.oracle.com/database/technologies/appdev/xe.html) with wtPLSQL installed. wtPLSQL Installation instructions are available on the [wtPLSQL Releases page](https://github.com/wtPLSQL/wtPLSQL/releases).
 
 Demonstrations and examples requires the Persist add-on.  Test results from assertions can be queried from a set of wtPLSQL tables. The examples here will use the default reporting package called WT_PERSIST_REPORT.  This package displays test results using DBMS_OUTPUT.
 
@@ -103,6 +103,8 @@ To save some typing, there is an installer for the demonstrations and examples. 
 To run this installer:
 1. cd to "src/demo"
 1. login as SYS or SYSTEM using SQL*Plus
+1. Run the "install_sys.sql" script
+1. login as WT_DEMO using SQL*Plus
 1. Run the "install.sql" script
 
 To confirm a successful installation, review the newly created "install.LST" log file against the "installO.LST" example log file.

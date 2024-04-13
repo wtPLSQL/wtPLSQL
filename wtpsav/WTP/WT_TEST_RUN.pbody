@@ -381,8 +381,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run delete_runs(' || l_tr_id || ') Exception',
-            check_this_in => dbms_utility.format_error_stack ||
-                             dbms_utility.format_error_backtrace);
+            check_this_in => dbms_utility.format_error_backtrace ||
+                             dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (
@@ -403,8 +403,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run delete_runs(-9995) Exception',
-            check_this_in => dbms_utility.format_error_stack ||
-                             dbms_utility.format_error_backtrace);
+            check_this_in => dbms_utility.format_error_backtrace ||
+                             dbms_utility.format_full_stack      );
       end;
    end t_delete_runs;
 $END  ----------------%WTPLSQL_end_ignore_lines%----------------
@@ -537,8 +537,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Setup WT_TEST_RUNNERS Record for finalize2 Test Exception',
-            check_this_in => dbms_utility.format_error_stack ||
-                             dbms_utility.format_error_backtrace);
+            check_this_in => dbms_utility.format_error_backtrace ||
+                             dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
       begin
@@ -551,8 +551,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Setup WT_TEST_RUNS Record for finalize2 Test Exception',
-            check_this_in => dbms_utility.format_error_stack ||
-                             dbms_utility.format_error_backtrace);
+            check_this_in => dbms_utility.format_error_backtrace ||
+                             dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
       g_test_runs_rec.error_message := 'This is Test Message 1 for Finalization2 Testing';
@@ -564,8 +564,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run finalize2 Exception',
-            check_this_in => dbms_utility.format_error_stack ||
-                             dbms_utility.format_error_backtrace);
+            check_this_in => dbms_utility.format_error_backtrace ||
+                             dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (
@@ -594,8 +594,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Delete WT_TEST_RUNS Record for finalize2 Test Exception',
-            check_this_in => dbms_utility.format_error_stack ||
-                             dbms_utility.format_error_backtrace);
+            check_this_in => dbms_utility.format_error_backtrace ||
+                             dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
       begin
@@ -607,8 +607,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Delete WT_TEST_RUNNERS Record for finalize2 Test Exception',
-            check_this_in => dbms_utility.format_error_stack ||
-                             dbms_utility.format_error_backtrace);
+            check_this_in => dbms_utility.format_error_backtrace ||
+                             dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
       commit;
@@ -729,8 +729,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run set_last_run(' || l_tr_id || ') Exception',
-            check_this_in => dbms_utility.format_error_stack ||
-                             dbms_utility.format_error_backtrace);
+            check_this_in => dbms_utility.format_error_backtrace ||
+                             dbms_utility.format_full_stack      );
       end;
       wt_assert.eqqueryvalue (
          msg_in           => 'Number of Last Run Records',
@@ -747,8 +747,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run set_last_run(' || l_tr_id || ') Exception',
-            check_this_in => dbms_utility.format_error_stack ||
-                             dbms_utility.format_error_backtrace);
+            check_this_in => dbms_utility.format_error_backtrace ||
+                             dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (
@@ -804,8 +804,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run set_last_run(' || l_tr_id || ') Exception',
-            check_this_in => dbms_utility.format_error_stack ||
-                             dbms_utility.format_error_backtrace);
+            check_this_in => dbms_utility.format_error_backtrace ||
+                             dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'SET_LAST_RUN Happy Path 2';
@@ -825,8 +825,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run set_last_run(' || l_tr_id || ') Exception',
-            check_this_in => dbms_utility.format_error_stack ||
-                             dbms_utility.format_error_backtrace);
+            check_this_in => dbms_utility.format_error_backtrace ||
+                             dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (
@@ -844,8 +844,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run set_last_run(NULL) Exception',
-            check_this_in => dbms_utility.format_error_stack ||
-                             dbms_utility.format_error_backtrace);
+            check_this_in => dbms_utility.format_error_backtrace ||
+                             dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
       begin
@@ -856,8 +856,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run set_last_run(-99) Exception',
-            check_this_in => dbms_utility.format_error_stack ||
-                             dbms_utility.format_error_backtrace);
+            check_this_in => dbms_utility.format_error_backtrace ||
+                             dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
    end t_set_last_run;
@@ -922,8 +922,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run delete_run_id(-11) Exception',
-            check_this_in => dbms_utility.format_error_stack ||
-                             dbms_utility.format_error_backtrace);
+            check_this_in => dbms_utility.format_error_backtrace ||
+                             dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (
@@ -946,8 +946,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run delete_run_id(-10) Exception',
-            check_this_in => dbms_utility.format_error_stack ||
-                             dbms_utility.format_error_backtrace);
+            check_this_in => dbms_utility.format_error_backtrace ||
+                             dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (
@@ -970,8 +970,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run delete_run_id(-9) Exception',
-            check_this_in => dbms_utility.format_error_stack ||
-                             dbms_utility.format_error_backtrace);
+            check_this_in => dbms_utility.format_error_backtrace ||
+                             dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (
