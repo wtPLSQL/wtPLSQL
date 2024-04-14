@@ -1245,9 +1245,10 @@ $THEN
                         dbms_utility.format_call_stack      ;
       end;
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull (
+      wt_assert.eq (
          msg_in          => 'insert UNIT 1 into plsql_profiler_units',
-         check_this_in   => l_err_stack);
+         check_this_in   => substr(l_err_stack,1,39),
+         against_this_in => 'ORA-0000: normal, successful completion');
       wt_assert.eqqueryvalue
          (msg_in           => 'Number of UNIT 1 plsql_profiler_units'
          ,check_query_in   => 'select count(*) from plsql_profiler_units' ||
@@ -1295,9 +1296,10 @@ $THEN
       end;
       l_recTEST := g_rec;
       g_rec := l_recSAVE;
-      wt_assert.isnull (
+      wt_assert.eq (
          msg_in          => 'insert_wt_profile SQLERRM',
-         check_this_in   => l_err_stack);
+         check_this_in   => substr(l_err_stack,1,39),
+         against_this_in => 'ORA-0000: normal, successful completion');
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eq (
          msg_in          => 'Check Coverage Percent',
@@ -1791,9 +1793,10 @@ $THEN
       tl_delete_wt_profiles(-1);
       tl_delete_test_runs(-1);
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull (
+      wt_assert.eq (
          msg_in          => 'finalize(-1) SQLERRM',
-         check_this_in   => l_err_stack);
+         check_this_in   => substr(l_err_stack,1,39),
+         against_this_in => 'ORA-0000: normal, successful completion');
       wt_assert.isnull (
          msg_in          => 'l_cdr_recTEST.error_message',
          check_this_in   =>  l_cdr_recTEST.error_message);
@@ -1834,9 +1837,10 @@ $THEN
       tl_delete_wt_profiles(-2);
       tl_delete_test_runs(-2);
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull (
+      wt_assert.eq (
          msg_in          => 'finalize(-2) SQLERRM',
-         check_this_in   => l_err_stack);
+         check_this_in   => substr(l_err_stack,1,39),
+         against_this_in => 'ORA-0000: normal, successful completion');
       wt_assert.isnull (
          msg_in          => 'l_cdr_recTEST.error_message',
          check_this_in   =>  l_cdr_recTEST.error_message);
@@ -1883,9 +1887,10 @@ $THEN
       tl_delete_wt_profiles(-3);
       tl_delete_test_runs(-3);
       --------------------------------------  WTPLSQL Testing --
-      wt_assert.isnull (
+      wt_assert.eq (
          msg_in          => 'finalize(-3) SQLERRM',
-         check_this_in   => l_err_stack);
+         check_this_in   => substr(l_err_stack,1,39),
+         against_this_in => 'ORA-0000: normal, successful completion');
       wt_assert.isnull (
          msg_in          => 'l_cdr_recTEST.error_message',
          check_this_in   =>  l_cdr_recTEST.error_message);
