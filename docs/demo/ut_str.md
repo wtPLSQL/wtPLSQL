@@ -135,9 +135,9 @@ IS
       );
    END;
 
-   --% WTPLSQL SET DBOUT "STR:PACKAGE BODY" %--
    PROCEDURE wtplsql_run IS
    BEGIN
+      wtplsql.g_DBOUT := 'STR:PACKAGE BODY';
       ut_setup;
       ut_betwn;
       ut_teardown;
@@ -152,15 +152,16 @@ Mid-way down the package body is the annotation "WTPLSQL_begin_ignore_lines".  T
 
 ## Check the Results
 
+The Persist add-on must be installed.
+
 Run this:
 
 ```
-set serveroutput on size unlimited format truncated
-
 begin
    wtplsql.test_run('STR');
-   wt_persist_report.dbms_out(in_runner_name  => 'STR'
-                             ,in_detail_level => 30);
+   wtp.wt_persist_report.dbms_out(in_runner_owner => USER
+                                 ,in_runner_name  => 'STR'
+                                 ,in_detail_level => 30);
 end;
 /
 ```
@@ -168,64 +169,69 @@ end;
 And Get This:
 
 ```
-    wtPLSQL 1.1.0 - Run ID 82: 25-Jun-2018 10:08:46 PM
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003, wtpgrb 1.003
+  Test Results for WT_DEMO.STR
+  Run ID 50: 13-Apr-2024 06:52:06 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        0      Total Assertions:        3
+  Average Elapsed msec:        1     Failed Assertions:        0
+  Maximum Elapsed msec:        2       Total Testcases:        1
+  Total Run Time (sec):      0.2      Failed Testcases:        0
+                                        Testcase Yield:      100%
 
-  Test Results for WTP_DEMO.STR
-       Total Test Cases:        0       Total Assertions:        3
-  Minimum Interval msec:        0      Failed Assertions:        0
-  Average Interval msec:       30       Error Assertions:        0
-  Maximum Interval msec:       89             Test Yield:   100.00%
-   Total Run Time (sec):      0.1
+  Code Coverage for PACKAGE BODY WT_DEMO.STR
+  ----------------------------------------------------------------
+          Ignored Lines:       15   Total Profiled Lines:       26
+         Excluded Lines:        2   Total Executed Lines:        4
+  Minimum LineExec usec:        0     Not Executed Lines:        4
+  Average LineExec usec:        1          Unknown Lines:        1
+  Maximum LineExec usec:        5          Code Coverage:     50.0%
+  Trigger Source Offset:        0                                 
 
-  Code Coverage for PACKAGE BODY WTP_DEMO.STR
-          Ignored Lines:       14   Total Profiled Lines:       25
-         Excluded Lines:        1   Total Executed Lines:        4
-  Minimum LineExec usec:        0     Not Executed Lines:        5
-  Average LineExec usec:        0          Unknown Lines:        1
-  Maximum LineExec usec:        5          Code Coverage:    44.40%
-  Trigger Source Offset:        0
+  WT_DEMO.STR Test Result Details
+  Test Run ID: 50
+  --------------------------------------------------------------
+---***  WT_DEMO.STR  ***--------------------------------------------------------
+ PASS 2.18ms Typical Valid Usage. EQ - Expected "is is" and got "is is"
+ PASS .091ms Test Negative Start. EQ - Expected "ing" and got "ing"
+ PASS .044ms Start bigger than end. ISNULL - Expected NULL and got ""
 
- - WTP_DEMO.STR Test Result Details (Test Run ID 82)
------------------------------------------------------------
- PASS   89ms Typical Valid Usage. EQ - Expected "is is" and got "is is"
- PASS    0ms Test Negative Start. EQ - Expected "ing" and got "ing"
- PASS    0ms Start bigger than end. ISNULL - Expected NULL and got ""
-
- - WTP_DEMO.STR PACKAGE BODY Code Coverage Details (Test Run ID 82)
+  WT_DEMO.STR PACKAGE BODY Code Coverage Details
+  Test Run ID: 50
+  ----------------------------------------------------------------
 Source               TotTime MinTime   MaxTime     
   Line Stat Occurs    (usec)  (usec)    (usec) Text
 ------ ---- ------ --------- ------- --------- ------------
-     3 UNKN      0         2       1         1    FUNCTION betwn (
-    10 EXEC      3         1       0         1       l_start   PLS_INTEGER := start_in;
+     3 UNKN      0         1       0         1    FUNCTION betwn (
+    10 EXEC      3         0       0         0       l_start   PLS_INTEGER := start_in;
     12 EXEC      3         1       0         1       IF l_start = 0
     14#NOTX#     0         0       0         0          l_start := 1;
-    17 EXEC      3         7       0         5       RETURN (SUBSTR (
-    25 EXEC      3         1       1         1    END;
+    17 EXEC      3         6       0         5       RETURN (SUBSTR (
+    25 EXEC      3         1       0         0    END;
     27 EXCL      0         0       0         0    FUNCTION betwn2 (
     36#NOTX#     0         0       0         0       IF end_in < 0
     38#NOTX#     0         0       0         0          RETURN betwn (string_in, start_in, end_in);
     40#NOTX#     0         0       0         0          RETURN (SUBSTR (
-    51#NOTX#     0         0       0         0    END;
+    51 EXCL      0         0       0         0    END;
     55 IGNR      0         0       0         0    PROCEDURE ut_setup
     58 IGNR      1         1       1         1       NULL;
     61 IGNR      0         0       0         0    PROCEDURE ut_teardown
     64 IGNR      1         0       0         0       NULL;
     68 IGNR      0         3       3         3    PROCEDURE ut_betwn
-    71 IGNR      1        18      18        18       utassert.eq (
-    76 IGNR      1         1       1         1       utassert.eq (
-    81 IGNR      1         1       1         1       utassert.isnull (
+    71 IGNR      1        23       0        23       utassert.eq (
+    76 IGNR      1         1       0         1       utassert.eq (
+    81 IGNR      1         1       0         1       utassert.isnull (
     85 IGNR      1         0       0         0    END;
-    88 IGNR      0         1       1         1    PROCEDURE wtplsql_run IS
+    87 IGNR      0         1       1         1    PROCEDURE wtplsql_run IS
+    89 IGNR      2        29       1        27       wtplsql.g_DBOUT := 'STR:PACKAGE BODY';
     90 IGNR      1         0       0         0       ut_setup;
     91 IGNR      1         0       0         0       ut_betwn;
-    92 IGNR      1         0       0         0       ut_teardown;
 Source               TotTime MinTime   MaxTime     
   Line Stat Occurs    (usec)  (usec)    (usec) Text
 ------ ---- ------ --------- ------- --------- ------------
-    93 IGNR      1         0       0         0    END wtplsql_run;
+    92 IGNR      1         0       0         0       ut_teardown;
+    93 IGNR      1         1       1         1    END wtplsql_run;
 ```
-
-If the Persist add-on is not installed, the code coverage results will not be displayed.
 
 ---
 [Demos and Examples](README.md)

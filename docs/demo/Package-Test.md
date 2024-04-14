@@ -90,8 +90,6 @@ And get this:
                                           Testcase Yield:        100%
 ```
 
-<img src="images/Testing Put Line and Get Line.PNG" alt="Testing Put Line and Get Line Result">
-
 A successful test.  Notice that the value of the C_TEST1 constant is displayed in the test result details.
 
 ## Catching an Exception
@@ -170,9 +168,6 @@ Your results should include the above results, if DBMS_OUTPUT is enabled.  There
 
 Notice there was no exception raised.  wtPLSQL captured the exception and logged it.  Also, the value of C_TEST1 shows in the output.  It was left behind in the DBMS_OUTPUT buffer.
 
-
-<img src="images/Leaving Something Behind.PNG" alt="Leaving Something Behind Result">
-
 No assertions were run because of the exception.  The exception that was captured appears below the test results summary.
 
 ## Setup and Teardown
@@ -231,8 +226,9 @@ as
       test_put_get_line;
       teardown;
    exception when others then
-      l_error_message := substr(dbms_utility.format_error_stack ||
-                                dbms_utility.format_error_backtrace,1,4000);
+      l_error_message := substr(SQLERRM || CHR(10) ||
+                                dbms_utility.format_error_backtrace ||
+                                dbms_utility.format_call_stack,1,4000);
       teardown;
       raise_application_error(-20000, l_error_message);
    end wtplsql_run;
@@ -291,8 +287,6 @@ ORA-06512: at "WTP.HOOK", line 41
 
  * NOTE: No Data in Test Results Array "core_data.g_results_nt"
 ```
-
-<img src="images/Setup and Teardown.PNG" alt="Setup and Teardown Result">
 
 The exception handler preserved the error stack before calling teardown.  Also, there is an extra "ORA-20000:" at the front of the error stack displayed, but all the error information is preserved.
 

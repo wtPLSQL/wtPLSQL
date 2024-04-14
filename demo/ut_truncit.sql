@@ -76,10 +76,9 @@ IS
          );
    END ut_TRUNCIT;
 
-   --% WTPLSQL SET DBOUT "TRUNCIT:PROCEDURE" %--
-
    PROCEDURE wtplsql_run IS
    BEGIN
+      wtplsql.g_DBOUT := 'TRUNCIT:PROCEDURE';
       ut_setup;
       ut_TRUNCIT;
       ut_teardown;
@@ -91,8 +90,10 @@ show errors
 set serveroutput on size unlimited format truncated
 
 begin
+   wtp.hook.init;
    wtplsql.test_run('UT_TRUNCIT');
-   wt_persist_report.dbms_out(in_runner_name  => 'UT_TRUNCIT'
-                             ,in_detail_level => 30);
+   wtp.wt_persist_report.dbms_out(in_runner_owner => USER
+                                 ,in_runner_name  => 'UT_TRUNCIT'
+                                 ,in_detail_level => 30);
 end;
 /

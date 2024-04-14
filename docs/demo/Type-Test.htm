@@ -56,7 +56,7 @@ end;
 /
 </code></pre>
 <h2 id="create-a-simple-test-runner">Create a Simple Test Runner</h2>
-<p>All test runners are written as a PL/SQL package. A simple package is created first. A DBOUT is also identified.</p>
+<p>All Test Runners are written as a PL/SQL package. A simple package is created first. A DBOUT is also identified.</p>
 <p>Run this:</p>
 <pre><code>create or replace package test_simple_object authid definer
 as
@@ -95,43 +95,50 @@ end test_simple_object;
 </code></pre>
 <h2 id="check-the-results">Check the Results</h2>
 <p>Run this:</p>
-<pre><code>set serveroutput on size unlimited format word_wrapped
+<pre><code>set serveroutput on size unlimited format truncated
 
 begin
    wtplsql.test_run(&#39;TEST_SIMPLE_OBJECT&#39;);
-   wt_text_report.dbms_out(USER,&#39;TEST_SIMPLE_OBJECT&#39;,30);
+   wtp.wt_persist_report.dbms_out(in_runner_owner =&gt; USER
+                                 ,in_runner_name  =&gt; &#39;TEST_SIMPLE_OBJECT&#39;
+                                 ,in_detail_level =&gt; 30);
 end;
 /
 </code></pre>
 <p>And Get This:</p>
-<pre><code>    wtPLSQL 1.1.0 - Run ID 56: 18-Jun-2018 10:04:32 PM
+<pre><code>  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003, wtpgrb 1.003
+  Test Results for WT_DEMO.TEST_SIMPLE_OBJECT
+  Run ID 22: 13-Apr-2024 04:50:11 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        0      Total Assertions:        2
+  Average Elapsed msec:        2     Failed Assertions:        0
+  Maximum Elapsed msec:        3       Total Testcases:        1
+  Total Run Time (sec):      0.2      Failed Testcases:        0
+                                        Testcase Yield:      100%
 
-  Test Results for WTP.TEST_SIMPLE_OBJECT
-       Total Test Cases:        1       Total Assertions:        2
-  Minimum Interval msec:        8      Failed Assertions:        0
-  Average Interval msec:       74       Error Assertions:        0
-  Maximum Interval msec:      139             Test Yield:   100.00%
-   Total Run Time (sec):      0.1
-
-  Code Coverage for TYPE BODY WTP.SIMPLE_TEST_OBJ_TYPE
+  Code Coverage for TYPE BODY WT_DEMO.SIMPLE_TEST_OBJ_TYPE
+  ----------------------------------------------------------------
           Ignored Lines:        0   Total Profiled Lines:       10
          Excluded Lines:        1   Total Executed Lines:        4
   Minimum LineExec usec:        0     Not Executed Lines:        4
   Average LineExec usec:        1          Unknown Lines:        1
-  Maximum LineExec usec:        2          Code Coverage:    50.00%
-  Trigger Source Offset:        0
+  Maximum LineExec usec:        2          Code Coverage:     50.0%
+  Trigger Source Offset:        0                                 
 
- - WTP.TEST_SIMPLE_OBJECT Test Result Details (Test Run ID 56)
------------------------------------------------------------
- ---- Test Case: Constructor Happy Path 1
- PASS  139ms Object MINIMUM_VALUE. ISNULL - Expected NULL and got &quot;&quot;
- PASS    8ms Object OBSERVATIONS. EQ - Expected &quot;0&quot; and got &quot;0&quot;
+  WT_DEMO.TEST_SIMPLE_OBJECT Test Result Details
+  Test Run ID: 22
+  --------------------------------------------------------------
+---***  Constructor Happy Path 1  ***-------------------------------------------
+ PASS 2.83ms Object MINIMUM_VALUE. ISNULL - Expected NULL and got &quot;&quot;
+ PASS .118ms Object OBSERVATIONS. EQ - Expected &quot;0&quot; and got &quot;0&quot;
 
- - WTP.SIMPLE_TEST_OBJ_TYPE TYPE BODY Code Coverage Details (Test Run ID 56)
+  WT_DEMO.SIMPLE_TEST_OBJ_TYPE TYPE BODY Code Coverage Details
+  Test Run ID: 22
+  ----------------------------------------------------------------
 Source               TotTime MinTime   MaxTime     
   Line Stat Occurs    (usec)  (usec)    (usec) Text
 ------ ---- ------ --------- ------- --------- ------------
-     2 UNKN      0         2       2         2     CONSTRUCTOR FUNCTION simple_test_obj_type
+     2 UNKN      0         1       1         1     CONSTRUCTOR FUNCTION simple_test_obj_type
      7 EXEC      1         1       1         1        minimum_value  := null;
      8 EXEC      1         0       0         0        observations   := 0;
      9 EXEC      1         2       2         2        return;
@@ -142,7 +149,8 @@ Source               TotTime MinTime   MaxTime
     19#NOTX#     0         0       0         0        observations := observations + 1;
     20 EXCL      0         0       0         0     end add_observation;
 </code></pre>
-<p>This is report level 30, the most detailed level of reporting. Starting from the top, we find the test runner executed 1 test case, 2 assertions, and no failed assertions, which resulted in 100% yield (all tests passed). The next section shows the type body tested had 10 lines profiled, 4 were executed, and 4 were not executed, which resulted in a code coverage of 50%. Additional testing is required to achieve 100% code coverage. For brevity, this additional testing will not be included.</p>
+<p>If the Persist add-on is not installed, the code coverage results will not be displayed.</p>
+<p>This is report level 30, the most detailed level of reporting. Starting from the top, we find the Test Runner executed 1 test case, 2 assertions, and no failed assertions, which resulted in 100% yield (all tests passed). The next section shows the type body tested had 10 lines profiled, 4 were executed, and 4 were not executed, which resulted in a code coverage of 50%. Additional testing is required to achieve 100% code coverage. For brevity, this additional testing will not be included.</p>
 <h2 id="testing-private-object-methods-and-self-testing">Testing Private Object Methods and Self-Testing</h2>
 <p>An Oracle object type can have private methods. These methods are not available outside the object. They are inherited from a super-type.</p>
 <p><a href="https://stackoverflow.com/questions/1580205/pl-sql-private-object-method">Private Object Methods on StackOverFlow</a></p>

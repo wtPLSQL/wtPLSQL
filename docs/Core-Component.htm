@@ -1,0 +1,77 @@
+<p><a href="README.htm">Website Home Page</a></p>
+<h1 id="wtplsql-core-component">wtPLSQL Core Component</h1>
+<hr />
+<h3 id="overview">Overview</h3>
+<p>The Core component is built to be very small and very fast. It has 5 packages, 3 tables, 1 view, and 1 procedure. During execution of a Test Runner, it stores all assertion results in memory. It can be run without any add-ons. It is the backbone of the wtPLSQL whitebox testing server.</p>
+<h3 id="assertion-storage">Assertion Storage</h3>
+<p>The core component stores all assertion results in the CORE_DATA package. Previous assertion results are erased before the execution of the next Test Runner. The average assertion record is about 256 bytes. 4,000 assertion results will require about a Megabyte of memory. Detailed results from the last assertion are also available as global variables in the CORE_DATA package.</p>
+<h3 id="assertions">Assertions</h3>
+<p>The WT_ASSERT package contains the assertion API. There are 10 basic assertions.</p>
+<ul>
+<li>eq</li>
+<li>isnotnull</li>
+<li>isnull</li>
+<li>raises</li>
+<li>eqqueryvalue</li>
+<li>eqquery</li>
+<li>eqtable</li>
+<li>eqtabcount</li>
+<li>objexists</li>
+<li>objnotexists</li>
+</ul>
+<p>The WT_ASSERT package includes an internal self-test. The following data types are tested in this self-test.</p>
+<ul>
+<li>varchar2</li>
+<li>nvarchar2</li>
+<li>clob</li>
+<li>nclob</li>
+<li>number</li>
+<li>pls_integer</li>
+<li>boolean</li>
+<li>date</li>
+<li>timestamp</li>
+<li>timestamp with local time zone</li>
+<li>timestamp with time zone</li>
+<li>interval day to second</li>
+<li>interval year to month</li>
+<li>xmltype</li>
+<li>long</li>
+<li>raw</li>
+<li>long raw</li>
+<li>blob</li>
+<li>rowid</li>
+</ul>
+<h3 id="assertion-reporting">Assertion Reporting</h3>
+<p>The WT_TEST_REPORT package is provided for reporting assertion results from a Test Runner. The package has several settings to vary the levels of detail. All output goes to DBMS_OUTPUT. See the WT_TEST_REPORT package specification for details.</p>
+<p>Without any add-ons, the Core package automatically writes test results to the DBMS_OUTPUT buffer. This behavior can be changed by modifying the records in the HOOKS table. The Persist add-on removes this behavior during installation.</p>
+<p>Ad-hoc assertions (executed outside a Test Runner) always report results to DBMS_OUTPUT.</p>
+<h3 id="hooks">Hooks</h3>
+<p>The HOOKS table provides a mechanism for add-ons and customization. The table makes various execution points available via unnamed PL/SQL blocks. The following execution points are available in HOOKS.</p>
+<ul>
+<li>Before test_all</li>
+<li>Before test_run</li>
+<li>Execute Test Runner</li>
+<li>After Assertion</li>
+<li>After test_run</li>
+<li>After test_all</li>
+<li>Ad Hoc Report</li>
+</ul>
+<h3 id="important-note">Important Note:</h3>
+<p>No Test Runner will be executed if there is no "execute_test_runner" hook in the HOOKS table.</p>
+<table>
+<thead>
+<tr class="header">
+<th>hook_name</th>
+<th>run_string</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>execute_test_runner</td>
+<td>begin wt_execute_test_runner; end;</td>
+</tr>
+</tbody>
+</table>
+<p>See the README.md file in the src/core directory for installation instructions.</p>
+<hr />
+<p><a href="README.htm">Website Home Page</a></p>

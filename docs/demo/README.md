@@ -130,7 +130,6 @@ File Name     | Description
 DBDocs        | SQL Developer DBDocs Files
 *.md          | Markdown files for "github.io"
 *.htm         | HTML files for local documentation
-images        | Image Files referenced by MD and HTML
 md-to-htm.bat | MS-Dos Batch File to convert MD to HTML
 md-to-htm.lua | Lua script used by Pandoc for MD to HTML
 

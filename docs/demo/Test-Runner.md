@@ -31,6 +31,8 @@ end simple_test_runner;
 
 SIMPLE_TEST_RUNNER is a minimal Test Runner.  It is a package that contains the (public) WTPLSQL_RUN procedure and 1 assertion. It does the same assertion as the ad-hoc assertion in the [Demos and Examples](README.md) page. 
 
+The Persist add-on should be installed.
+
 ## Execute and Display
 
 To execute the Test Runner package, run this:
@@ -38,19 +40,7 @@ To execute the Test Runner package, run this:
 ```
 begin
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
-end;
-/
-```
-
-There may be no test results, depending on how wtPLSQL is configured.
-
-To view the results, run this:
-
-```
-set serveroutput on size unlimited format truncated
-
-begin
-   wt_persist_report.dbms_out(USER,'SIMPLE_TEST_RUNNER');
+   wtp.wt_persist_report.dbms_out(in_runner_name  => 'SIMPLE_TEST_RUNNER');
 end;
 /
 ```
@@ -58,14 +48,15 @@ end;
 And get this:
 
 ```
-    wtPLSQL 1.1.0 - Run ID 12: 15-Jun-2018 01:45:16 PM
-
-  Test Results for WTP_DEMO.SIMPLE_TEST_RUNNER
-       Total Test Cases:        0       Total Assertions:        1
-  Minimum Interval msec:       56      Failed Assertions:        0
-  Average Interval msec:       56       Error Assertions:        0
-  Maximum Interval msec:       56             Test Yield:   100.00%
-   Total Run Time (sec):      0.2
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003, wtpgrb 1.003
+  Test Results for WT_DEMO.SIMPLE_TEST_RUNNER
+  Run ID 39: 13-Apr-2024 06:07:21 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        6      Total Assertions:        1
+  Average Elapsed msec:        6     Failed Assertions:        0
+  Maximum Elapsed msec:        6       Total Testcases:        1
+  Total Run Time (sec):      0.0      Failed Testcases:        0
+                                        Testcase Yield:      100%
 ```
 
 This is the test result summary from the last execution of the SIMPLE_TEST_RUNNER package.  The interval time shown here is the elapsed time from starting the Test Runner package until the first assertion was executed.  The total run time is the elapsed time from start to finish for the Test Runner package.  The report confirms that one assertion was executed for SIMPLE_TEST_RUNNER and it passed.  All tests passed, so the test yield is 100%.
@@ -77,11 +68,10 @@ This example shows all result details for the SIMPLE_TEST_RUNNER only.
 Run this:
 
 ```
-set serveroutput on size unlimited format truncated
-
 begin
-   wt_persist_report.dbms_out(in_runner_name  => 'SIMPLE_TEST_RUNNER'
-                          ,in_detail_level => 30);
+   wtp.wt_persist_report.dbms_out(in_runner_owner => USER
+                                 ,in_runner_name  => 'SIMPLE_TEST_RUNNER'
+                                 ,in_detail_level => 30);
 end;
 /
 ```
@@ -89,23 +79,24 @@ end;
 And get this:
 
 ```
-    wtPLSQL 1.1.0 - Run ID 12: 15-Jun-2018 01:45:16 PM
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003, wtpgrb 1.003
+  Test Results for WT_DEMO.SIMPLE_TEST_RUNNER
+  Run ID 39: 13-Apr-2024 06:07:21 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        6      Total Assertions:        1
+  Average Elapsed msec:        6     Failed Assertions:        0
+  Maximum Elapsed msec:        6       Total Testcases:        1
+  Total Run Time (sec):      0.0      Failed Testcases:        0
+                                        Testcase Yield:      100%
 
-  Test Results for WTP_DEMO.SIMPLE_TEST_RUNNER
-       Total Test Cases:        0       Total Assertions:        1
-  Minimum Interval msec:       56      Failed Assertions:        0
-  Average Interval msec:       56       Error Assertions:        0
-  Maximum Interval msec:       56             Test Yield:   100.00%
-   Total Run Time (sec):      0.2
-
- - WTP_DEMO.SIMPLE_TEST_RUNNER Test Result Details (Test Run ID 12)
------------------------------------------------------------
- PASS   56ms Ad-Hoc Test. EQ - Expected "1" and got "1"
+  WT_DEMO.SIMPLE_TEST_RUNNER Test Result Details
+  Test Run ID: 39
+  --------------------------------------------------------------
+---***  WT_DEMO.SIMPLE_TEST_RUNNER  ***-----------------------------------------
+ PASS 6.17ms Ad-Hoc Test. EQ - Expected "1" and got "1"
 ```
 
 This shows the latest test result summary with test results details.  A detail level of 30 shows summary and detailed test results for a Test Runner package.  In this case, the summary and the detailed results of the EQ assertion are shown.  These detail levels are explained in the [Reference Page](../Reference.md#wt_persist_report-detail-levels).
-
-The detailed results shown are the same as the ad-hoc result, with a "56ms" added.  The 56 in the detailed results shows the elapsed time between assertions, or elapsed time from Test Runner package startup to the first assertion.
 
 ## Test Cases
 
@@ -143,8 +134,9 @@ Run this:
 ```
 begin
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
-   wt_persist_report.dbms_out(in_runner_name  => 'SIMPLE_TEST_RUNNER'
-                          ,in_detail_level => 30);
+   wtp.wt_persist_report.dbms_out(in_runner_owner => USER
+                                 ,in_runner_name  => 'SIMPLE_TEST_RUNNER'
+                                 ,in_detail_level => 30);
 end;
 /
 ```
@@ -152,26 +144,26 @@ end;
 You may get this:
 
 ```
-    wtPLSQL 1.1.0 - Run ID 43: 16-Jun-2018 07:43:50 AM
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003, wtpgrb 1.003
+  Test Results for WT_DEMO.SIMPLE_TEST_RUNNER
+  Run ID 40: 13-Apr-2024 06:13:21 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        0      Total Assertions:        4
+  Average Elapsed msec:        0     Failed Assertions:        1
+  Maximum Elapsed msec:        0       Total Testcases:        2
+  Total Run Time (sec):      0.0      Failed Testcases:        1
+                                        Testcase Yield:       50%
 
-  Test Results for WTP_DEMO.SIMPLE_TEST_RUNNER
-       Total Test Cases:        2       Total Assertions:        4
-  Minimum Interval msec:        0      Failed Assertions:        1
-  Average Interval msec:        0       Error Assertions:        0
-  Maximum Interval msec:        1             Test Yield:    75.00%
-   Total Run Time (sec):      0.0
-
- - WTP_DEMO.SIMPLE_TEST_RUNNER Test Result Details (Test Run ID 43)
------------------------------------------------------------
- ---- Test Case: My Test Case A
- PASS    1ms Ad-Hoc Test1. EQ - Expected "1" and got "1"
- PASS    0ms Ad-Hoc Test2. EQ - Expected "2" and got "2"
- ---- Test Case: My Test Case B
-#FAIL#   0ms Ad-Hoc Test1. EQ - Expected " 4" and got "4"
- PASS    0ms Ad-Hoc Test2. EQ - Expected "5" and got "5"
+  WT_DEMO.SIMPLE_TEST_RUNNER Test Result Details
+  Test Run ID: 40
+  --------------------------------------------------------------
+---***  My Test Case A  ***-----------------------------------------------------
+ PASS  .38ms Ad-Hoc Test1. EQ - Expected "1" and got "1"
+ PASS .116ms Ad-Hoc Test2. EQ - Expected "2" and got "2"
+---***  My Test Case B  ***-----------------------------------------------------
+#FAIL#.048ms Ad-Hoc Test1. EQ - Expected " 4" and got "4"
+ PASS .043ms Ad-Hoc Test2. EQ - Expected "5" and got "5"
 ```
-
-If the Persist add-on is not installed, the code coverage results will not be displayed.
 
 The Test Results summary shows 2 test cases were found.  The Test Results Details show the assertion results grouped by test case.  The details also show a failed assertion.  It also shows "Ad-Hoc Test2" in "My Test Case B" passed because the TO_NUMBER was used to remove the space character from " 5".
 
@@ -184,8 +176,8 @@ Run this:
 ```
 create or replace package body simple_test_runner
 as
-   --% WTPLSQL SET DBOUT "SIMPLE_TEST_RUNNER:PACKAGE BODY" %--
    procedure wtplsql_run is begin
+      wtplsql.g_DBOUT := 'SIMPLE_TEST_RUNNER:PACKAGE BODY';
       wt_assert.eq(msg_in          => 'Ad-Hoc Test'
                   ,check_this_in   =>  1
                   ,against_this_in => '1');
@@ -201,7 +193,8 @@ Run this:
 ```
 begin
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
-   wt_persist_report.dbms_out(USER,'SIMPLE_TEST_RUNNER');
+   wtp.wt_persist_report.dbms_out(in_runner_owner => USER
+                                 ,in_runner_name  => 'SIMPLE_TEST_RUNNER');
 end;
 /
 ```
@@ -209,22 +202,24 @@ end;
 And get this:
 
 ```
-    wtPLSQL 1.1.0 - Run ID 38: 15-Jun-2018 11:03:52 PM
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003, wtpgrb 1.003
+  Test Results for WT_DEMO.SIMPLE_TEST_RUNNER
+  Run ID 42: 13-Apr-2024 06:19:53 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        0      Total Assertions:        1
+  Average Elapsed msec:        0     Failed Assertions:        0
+  Maximum Elapsed msec:        0       Total Testcases:        1
+  Total Run Time (sec):      0.2      Failed Testcases:        0
+                                        Testcase Yield:      100%
 
-  Test Results for WTP_DEMO.SIMPLE_TEST_RUNNER
-       Total Test Cases:        0       Total Assertions:        1
-  Minimum Interval msec:      186      Failed Assertions:        0
-  Average Interval msec:      186       Error Assertions:        0
-  Maximum Interval msec:      186             Test Yield:   100.00%
-   Total Run Time (sec):      0.2
-
-  Code Coverage for PACKAGE BODY WTP_DEMO.SIMPLE_TEST_RUNNER
+  Code Coverage for PACKAGE BODY WT_DEMO.SIMPLE_TEST_RUNNER
+  ----------------------------------------------------------------
           Ignored Lines:        0   Total Profiled Lines:        4
          Excluded Lines:        0   Total Executed Lines:        3
   Minimum LineExec usec:        1     Not Executed Lines:        0
-  Average LineExec usec:        7          Unknown Lines:        1
-  Maximum LineExec usec:       25          Code Coverage:   100.00%
-  Trigger Source Offset:        0
+  Average LineExec usec:        3          Unknown Lines:        1
+  Maximum LineExec usec:        7          Code Coverage:    100.0%
+  Trigger Source Offset:        0                                 
 ```
 
 This shows the latest test result summary and code coverage summary for the SIMPLE_TEST_RUNNER Test Runner.  DBMS_PROFILER found 4 lines of significance in the source code.  3 of those lines were executed.  1 line is unknown or undefined by DBMS_PROFILER.  Unknown lines consume execution time, but were not executed.  
@@ -266,7 +261,9 @@ Run this:
 ```
 begin
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
-   wt_persist_report.dbms_out(USER,'SIMPLE_TEST_RUNNER',30);
+   wtp.wt_persist_report.dbms_out(in_runner_owner => USER
+                                 ,in_runner_name  => 'SIMPLE_TEST_RUNNER'
+                                 ,in_detail_level => 30);
 end;
 /
 ```
@@ -274,50 +271,56 @@ end;
 And get this:
 
 ```
-    wtPLSQL 1.1.0 - Run ID 40: 16-Jun-2018 12:38:49 AM
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003, wtpgrb 1.003
+  Test Results for WT_DEMO.SIMPLE_TEST_RUNNER
+  Run ID 43: 13-Apr-2024 06:21:38 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        0      Total Assertions:        1
+  Average Elapsed msec:        0     Failed Assertions:        0
+  Maximum Elapsed msec:        0       Total Testcases:        1
+  Total Run Time (sec):      0.2      Failed Testcases:        0
+                                        Testcase Yield:      100%
 
-  Test Results for WTP_DEMO.SIMPLE_TEST_RUNNER
-       Total Test Cases:        1       Total Assertions:        1
-  Minimum Interval msec:      111      Failed Assertions:        0
-  Average Interval msec:      111       Error Assertions:        0
-  Maximum Interval msec:      111             Test Yield:   100.00%
-   Total Run Time (sec):      0.1
-
-  Code Coverage for PACKAGE BODY WTP_DEMO.SIMPLE_TEST_RUNNER
-          Ignored Lines:        4   Total Profiled Lines:        8
-         Excluded Lines:        1   Total Executed Lines:        3
+  Code Coverage for PACKAGE BODY WT_DEMO.SIMPLE_TEST_RUNNER
+  ----------------------------------------------------------------
+          Ignored Lines:        5   Total Profiled Lines:        9
+         Excluded Lines:        0   Total Executed Lines:        3
   Minimum LineExec usec:        0     Not Executed Lines:        0
-  Average LineExec usec:        1          Unknown Lines:        0
-  Maximum LineExec usec:        2          Code Coverage:   100.00%
-  Trigger Source Offset:        0
+  Average LineExec usec:        1          Unknown Lines:        1
+  Maximum LineExec usec:        1          Code Coverage:    100.0%
+  Trigger Source Offset:        0                                 
 
- - WTP_DEMO.SIMPLE_TEST_RUNNER Test Result Details (Test Run ID 40)
------------------------------------------------------------
- ---- Test Case: My Test Case
- PASS  111ms Ad-Hoc Test. EQ - Expected "5" and got "5"
+  WT_DEMO.SIMPLE_TEST_RUNNER Test Result Details
+  Test Run ID: 43
+  --------------------------------------------------------------
+---***  My Test Case  ***-------------------------------------------------------
+ PASS .436ms Ad-Hoc Test. EQ - Expected "5" and got "5"
 
- - WTP_DEMO.SIMPLE_TEST_RUNNER PACKAGE BODY Code Coverage Details (Test Run ID 40)
+  WT_DEMO.SIMPLE_TEST_RUNNER PACKAGE BODY Code Coverage Details
+  Test Run ID: 43
+  ----------------------------------------------------------------
 Source               TotTime MinTime   MaxTime     
   Line Stat Occurs    (usec)  (usec)    (usec) Text
 ------ ---- ------ --------- ------- --------- ------------
-     4 EXCL      0         0       0         0    function add2 (in_val1 number, in_val2 number) return number is
-     7 EXEC      1         2       2         2       l_result := in_val1 + in_val2;
-     8 EXEC      1         0       0         0       return l_result;
-     9 EXEC      1         1       1         1    end add2;
-    10 IGNR      0         2       2         2    procedure wtplsql_run is begin --%WTPLSQL_begin_ignore_lines%--
-    11 IGNR      2        30       1        29       wt_assert.g_testcase := 'My Test Case';
-    12 IGNR      1        11      11        11       wt_assert.eq(msg_in          => 'Ad-Hoc Test'
-    15 IGNR      1         0       0         0    end wtplsql_run;    --%WTPLSQL_end_ignore_lines%--
+     3 UNKN      0         1       1         1    function add2 (in_val1 number, in_val2 number) return number is
+     6 EXEC      1         1       1         1       l_result := in_val1 + in_val2;
+     7 EXEC      1         0       0         0       return l_result;
+     8 EXEC      1         1       1         1    end add2;
+     9 IGNR      0         1       1         1    procedure wtplsql_run is begin --%WTPLSQL_begin_ignore_lines%--
+    10 IGNR      2        27       0        26       wtplsql.g_DBOUT := 'SIMPLE_TEST_RUNNER:PACKAGE BODY';
+    11 IGNR      2        15       0        14       wt_assert.g_testcase := 'My Test Case';
+    12 IGNR      1         8       0         8       wt_assert.eq(msg_in          => 'Ad-Hoc Test'
+    15 IGNR      1         1       1         1    end wtplsql_run;    --%WTPLSQL_end_ignore_lines%--
 ```
 
 This is a very large report from the WT_PERSIST_REPORT package.  The detail level of 30 displays the full detail of the Test Runner execution with code coverage.
 
 Close to the middle of the output, is the "Code Coverage Details" title for the final section.  This section contains results from DBMS_PROFILER.  Each line of source code is matched with that output.  Some interesting points.
 
-* Line 4, is excluded by wtPLSQL because it is not executable
-* Lines 7, 8, and 9 were executed, according to DBMS_OUTPUT.
-* Lines 10, 11, 12, and 15 were ignored as per the annotation.
-* Several other lines are not included because DBMS_OUPUT did not collect any data on them.
+* Line 3, is excluded by wtPLSQL because it is not executable
+* Lines 6, 7, and 8 were executed, according to DBMS_PROFILER.
+* Lines 9, 10, 11, 12, and 15 were ignored as per the annotation.
+* Several other lines are not included because DBMS_PROFILER did not collect any data on them.
 
 ---
 [Demos and Examples](README.md)

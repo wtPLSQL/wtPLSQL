@@ -98,6 +98,8 @@ It is not necessary to keep the ut_setup and ut_teardown procedures.  These were
 
 ## Check the Results
 
+The Persist add-on must be installed.
+
 Run this:
 
 ```
@@ -105,8 +107,9 @@ set serveroutput on size unlimited format truncated
 
 begin
    wtplsql.test_run('UT_CALC_SECS_BETWEEN');
-   wt_persist_report.dbms_out(in_runner_name  => 'UT_CALC_SECS_BETWEEN'
-                             ,in_detail_level => 30);
+   wtp.wt_persist_report.dbms_out(in_runner_owner => USER
+                                 ,in_runner_name  => 'UT_CALC_SECS_BETWEEN'
+                                 ,in_detail_level => 30);
 end;
 /
 ```
@@ -114,29 +117,42 @@ end;
 And Get This:
 
 ```
-  Code Coverage for PROCEDURE WTP_DEMO.CALC_SECS_BETWEEN
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003, wtpgrb 1.003
+  Test Results for WT_DEMO.UT_CALC_SECS_BETWEEN
+  Run ID 48: 13-Apr-2024 06:44:27 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        0      Total Assertions:        2
+  Average Elapsed msec:        1     Failed Assertions:        0
+  Maximum Elapsed msec:        0       Total Testcases:        1
+  Total Run Time (sec):      0.2      Failed Testcases:        0
+                                        Testcase Yield:      100%
+
+  Code Coverage for PROCEDURE WT_DEMO.CALC_SECS_BETWEEN
+  ----------------------------------------------------------------
           Ignored Lines:        0   Total Profiled Lines:        3
          Excluded Lines:        0   Total Executed Lines:        2
-  Minimum LineExec usec:        1     Not Executed Lines:        0
+  Minimum LineExec usec:        0     Not Executed Lines:        0
   Average LineExec usec:        2          Unknown Lines:        1
-  Maximum LineExec usec:        8          Code Coverage:   100.00%
-  Trigger Source Offset:        0
+  Maximum LineExec usec:        6          Code Coverage:    100.0%
+  Trigger Source Offset:        0                                 
 
- - WTP_DEMO.UT_CALC_SECS_BETWEEN Test Result Details (Test Run ID 80)
------------------------------------------------------------
- PASS  103ms Same dates. EQ - Expected "0" and got "0"
- PASS    0ms Exactly one day. EQ - Expected "86400" and got "86400"
+  WT_DEMO.UT_CALC_SECS_BETWEEN Test Result Details
+  Test Run ID: 48
+  --------------------------------------------------------------
+---***  WT_DEMO.UT_CALC_SECS_BETWEEN  ***---------------------------------------
+ PASS .499ms Same dates. EQ - Expected "0" and got "0"
+ PASS .095ms Exactly one day. EQ - Expected "86400" and got "86400"
 
- - WTP_DEMO.CALC_SECS_BETWEEN PROCEDURE Code Coverage Details (Test Run ID 80)
+  WT_DEMO.CALC_SECS_BETWEEN PROCEDURE Code Coverage Details
+  Test Run ID: 48
+  ----------------------------------------------------------------
 Source               TotTime MinTime   MaxTime     
   Line Stat Occurs    (usec)  (usec)    (usec) Text
 ------ ---- ------ --------- ------- --------- ------------
-     1 UNKN      0         2       0         2 PROCEDURE calc_secs_between (
-    10 EXEC      2         9       1         8    secs := (date2 - date1) * 24 * 60 * 60;
-    11 EXEC      2         1       1         1 END;
+     1 UNKN      0         1       0         1 PROCEDURE calc_secs_between (
+    10 EXEC      2         8       1         6    secs := (date2 - date1) * 24 * 60 * 60;
+    11 EXEC      2         0       0         0 END;
 ```
-
-If the Persist add-on is not installed, the code coverage results will not be displayed.
 
 ---
 [Demos and Examples](README.md)

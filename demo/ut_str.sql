@@ -114,9 +114,9 @@ IS
       );
    END;
 
-   --% WTPLSQL SET DBOUT "STR:PACKAGE BODY" %--
    PROCEDURE wtplsql_run IS
    BEGIN
+      wtplsql.g_DBOUT := 'STR:PACKAGE BODY';
       ut_setup;
       ut_betwn;
       ut_teardown;
@@ -129,8 +129,10 @@ show errors
 set serveroutput on size unlimited format truncated
 
 begin
+   wtp.hook.init;
    wtplsql.test_run('STR');
-   wt_persist_report.dbms_out(in_runner_name  => 'STR'
-                             ,in_detail_level => 30);
+   wtp.wt_persist_report.dbms_out(in_runner_owner => USER
+                                 ,in_runner_name  => 'STR'
+                                 ,in_detail_level => 30);
 end;
 /

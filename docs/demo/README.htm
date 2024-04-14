@@ -1,9 +1,9 @@
 <p><a href="../README.htm">Website Home Page</a></p>
 <h1 id="demonstrations-and-examples">Demonstrations and Examples</h1>
 <hr />
-<p>Demonstrations and examples assume successful connection to an <a href="http://www.oracle.com/technetwork/database/database-technologies/express-edition/overview/index.html">Oracle database</a> with wtPLSQL installed. wtPLSQL Installation instructions are available on the <a href="https://github.com/DDieterich/wtPLSQL/releases">wtPLSQL Releases page</a>.</p>
-<p>Test results from assertions can be queried from a set of wtPLSQL tables. The examples here will use the default reporting package called WT_TEXT_REPORT. This package displays test results using DBMS_OUTPUT.</p>
-<h2 id="the-basics">The Basics</h2>
+<p>Demonstrations and examples assume successful connection to an <a href="https://www.oracle.com/database/technologies/appdev/xe.html">Oracle database</a> with wtPLSQL installed. wtPLSQL Installation instructions are available on the <a href="https://github.com/wtPLSQL/wtPLSQL/releases">wtPLSQL Releases page</a>.</p>
+<p>Demonstrations and examples requires the Persist add-on. Test results from assertions can be queried from a set of wtPLSQL tables. The examples here will use the default reporting package called WT_PERSIST_REPORT. This package displays test results using DBMS_OUTPUT.</p>
+<h2 id="user-setup">User Setup</h2>
 <p>A login, or database session, is required to interact with the Oracle database. The SQL below will create a user that can run these examples. If you already have a database login, this is not necessary.</p>
 <pre><code>create user wtp_demo identified by wtp_demo
    default tablespace users
@@ -18,19 +18,16 @@ grant create trigger   to wtp_demo;
 grant create view      to wtp_demo;
 grant create procedure to wtp_demo;
 </code></pre>
-<p>The simplest check for a wtPLSQL installation is to select the &quot;version from dual&quot;.</p>
+<h2 id="confirm-the-installation">Confirm the Installation</h2>
+<p>The simplest check for a wtPLSQL installation is to select the "version from dual". If wtPSQL is installed, it will show which add-ons have been installed if any.</p>
 <p>Run this:</p>
 <pre><code>select wtplsql.show_version from dual;
 </code></pre>
-<p>And get this:</p>
-<pre><code>SHOW_VERSION
------------------------------------------------------------
-1.1.0
-</code></pre>
-<p>This shows the wtPLSQL version as 1.1.0.</p>
-<p>Another simple test is an ad-hoc assertion. This test requires DBMS_OUTPUT. The results of this test are not recorded.</p>
+<p>If the result is something like "Core 1.2, Persist 1.2", wtPSQL is installed with the Persist add-on. If the result is "Core 1.2", the Persist add-on has not been installed. For simplicity, the adjustments required to make the demonstrations and exercises work without the Persist add-on are not included.</p>
+<h3 id="another-simple-test">Another simple test</h3>
+<p>Another simple test is an ad-hoc assertion. The ad-hoc assertion requires DBMS_OUTPUT. The results of the ad-hoc assertions are not recorded by wtPLSQL.</p>
 <p>Run this:</p>
-<pre><code>set serveroutput on size unlimited format word_wrapped
+<pre><code>set serveroutput on size unlimited format truncated
 
 begin
    wt_assert.eq(msg_in          =&gt; &#39;Ad-Hoc Test&#39;
@@ -45,13 +42,15 @@ end;
 <p>This indicates:</p>
 <ul>
 <li>the assertion passed</li>
-<li>the assertion had the message &quot;Ad-Hoc Test&quot;</li>
-<li>the assertion name is &quot;EQ&quot;</li>
+<li>the assertion had the message "Ad-Hoc Test"</li>
+<li>the assertion name is "EQ"</li>
 <li>the assertion details which may include the values tested</li>
 </ul>
 <p>Note: This ad-hoc test also demonstrates implicit data type conversion.</p>
 <h2 id="create-a-test-runner-package">Create a Test Runner Package</h2>
-<p>A test runner package is central to running tests in wtPLSQL. The <a href="Test-Runner.htm">Test Runner</a> page covers all the basics of creating a test runner package.</p>
+<p>Creating a Test Runner package is central to using the wtPLSQL server. The Test Runner package contains all the assertion API calls used for testing. The package can also changes wtPSQL settings, like the name of the Database Object Under Test (DBOUT).</p>
+<p>The web page link below includes an exercise that shows how create a Test Runner package. The web page covers all the basics of creating a Test Runner package.</p>
+<p><a href="Test-Runner.htm">Create Test Runner Package</a></p>
 <h2 id="database-object-tests">Database Object Tests</h2>
 <p>More interesting examples actually test database objects. Here are some examples.</p>
 <ul>
@@ -61,7 +60,7 @@ end;
 <li><a href="Type-Test.htm">Type Test</a></li>
 </ul>
 <h2 id="utplsql-23-examples">utPLSQL 2.3 Examples</h2>
-<p>wtPLSQL was built with the utPLSQL &quot;ut_assert&quot; API. These examples were created from the original utPLSQL 2.3 examples without modifying the &quot;ut_assert&quot; calls</p>
+<p>wtPLSQL was built with the utPLSQL "ut_assert" API. These examples were created from the original utPLSQL 2.3 examples without modifying the "ut_assert" calls</p>
 <ul>
 <li><a href="ut_betwnstr.htm">ut_betwnstr</a> - Choose a program to test</li>
 <li><a href="ut_calc_secs_between.htm">ut_calc_secs_between</a> - Test a Simple Procedure</li>
@@ -78,19 +77,55 @@ end;
 </ul>
 <p>To run this installer:</p>
 <ol>
-<li>cd to &quot;src/demo&quot;</li>
+<li>cd to "src/demo"</li>
 <li>login as SYS or SYSTEM using SQL*Plus</li>
-<li>Run the &quot;install.sql&quot; script</li>
+<li>Run the "install_sys.sql" script</li>
+<li>login as WT_DEMO using SQL*Plus</li>
+<li>Run the "install.sql" script</li>
 </ol>
-<p>To confirm a successful installation, review the newly created &quot;install.LST&quot; log file against the &quot;installO.LST&quot; example log file.</p>
+<p>To confirm a successful installation, review the newly created "install.LST" log file against the "installO.LST" example log file.</p>
 <h2 id="demo-un-install">Demo Un-Install</h2>
-<p>The &quot;uninstall.sql&quot; script provided in the &quot;src/demo&quot; directory drops the demo schema from the database, with cascade.</p>
+<p>The "uninstall.sql" script provided in the "src/demo" directory drops the demo schema from the database, with cascade.</p>
 <p>To un-install:</p>
 <ol>
-<li>cd to &quot;src/demo&quot;</li>
+<li>cd to "src/demo"</li>
 <li>login as SYS or SYSTEM using SQL*Plus</li>
-<li>Run the &quot;uninstall.sql&quot; script</li>
+<li>Run the "uninstall.sql" script</li>
 </ol>
-<p>To confirm a successful un-install, review the &quot;uninstall.LST&quot; log file against the &quot;uninstallO.LST&quot; example log file.</p>
+<p>To confirm a successful un-install, review the "uninstall.LST" log file against the "uninstallO.LST" example log file.</p>
+<hr />
+<p><em>The following applies to files and directories at this location in the documentation repository.</em></p>
+<table>
+<thead>
+<tr class="header">
+<th>File Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>DBDocs</td>
+<td>SQL Developer DBDocs Files</td>
+</tr>
+<tr class="even">
+<td>*.md</td>
+<td>Markdown files for "github.io"</td>
+</tr>
+<tr class="odd">
+<td>*.htm</td>
+<td>HTML files for local documentation</td>
+</tr>
+<tr class="even">
+<td>md-to-htm.bat</td>
+<td>MS-Dos Batch File to convert MD to HTML</td>
+</tr>
+<tr class="odd">
+<td>md-to-htm.lua</td>
+<td>Lua script used by Pandoc for MD to HTML</td>
+</tr>
+</tbody>
+</table>
+<p>To view documentation use the URL "file://README.htm" or Double-click on the README.htm file.</p>
+<p>NOTE: All HTML files are sourced from Markdown files. Modify the Markdown files, then build HTML from the Markdown files using "md-to-htm.bat".</p>
 <hr />
 <p><a href="../README.htm">Website Home Page</a></p>

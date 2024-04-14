@@ -55,20 +55,31 @@ as
          check_this_in   => l_rec.created_dtm);
       rollback;
    end t_happy_path_1;
-   --% WTPLSQL SET DBOUT "TRIGGER_TEST_BIR:TRIGGER" %--
    procedure wtplsql_run
    is
    begin
+      wtplsql.g_DBOUT := 'TRIGGER_TEST_BIR:TRIGGER';
       t_happy_path_1;
    end wtplsql_run;
 end trigger_test_pkg;
 /
 show errors
 
+-- Run was WTP User to activate Persist add-on
+--begin
+--   wt_test_run.delete_hooks;
+--   junit_core_report.delete_hooks;
+--   wt_core_report.insert_hooks;
+--end;
+--/
+
 set serveroutput on size unlimited format truncated
 
 begin
+   wtp.hook.init;
    wtplsql.test_run('TRIGGER_TEST_PKG');
-   wt_persist_report.dbms_out(USER,'TRIGGER_TEST_PKG',30);
+   wtp.wt_persist_report.dbms_out(in_runner_owner => USER
+                                 ,in_runner_name  => 'TRIGGER_TEST_PKG'
+                                 ,in_detail_level => 30);
 end;
 /

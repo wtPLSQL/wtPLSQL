@@ -88,8 +88,9 @@ begin
         where test_run_id = buff.id;
        insert into wt_test_run_stats values test_run_stats_rec;
     exception when others then
-       dbms_output.put_line(dbms_utility.format_error_stack  ||
-                            dbms_utility.format_error_backtrace);
+       dbms_output.put_line(SQLERRM || CHR(10) ||
+                            dbms_utility.format_error_backtrace ||
+                            dbms_utility.format_call_stack);
        rollback;
     end;
     --
@@ -147,8 +148,9 @@ begin
          and  testcase    = buff.testcase;
        insert into wt_testcase_stats values testcase_stats_rec;
     exception when others then
-       dbms_output.put_line(dbms_utility.format_error_stack  ||
-                            dbms_utility.format_error_backtrace);
+       dbms_output.put_line(SQLERRM || CHR(10) ||
+                            dbms_utility.format_error_backtrace ||
+                            dbms_utility.format_call_stack);
        rollback;
     end;
     --

@@ -46,7 +46,6 @@ show errors
 
 create or replace package body test_simple_object
 as
-   --% WTPLSQL SET DBOUT "SIMPLE_TEST_OBJ_TYPE:TYPE BODY" %--
    procedure t_constructor
    is
       simple_test_obj  simple_test_obj_type;
@@ -62,16 +61,33 @@ as
    procedure wtplsql_run
    as
    begin
+      wtplsql.g_DBOUT := 'SIMPLE_TEST_OBJ_TYPE:TYPE BODY';
       t_constructor;
    end wtplsql_run;
 end test_simple_object;
 /
 show errors
 
+-- Run was WTP User to activate Persist add-on
+--begin
+--   wt_test_run.delete_hooks;
+--   junit_core_report.delete_hooks;
+--   wt_core_report.insert_hooks;
+--   update wtp.hooks
+--     set  run_string = 'begin wtp.wt_core_report.dbms_out(in_detail_level => 30); end;'
+--    where hook_name  = 'after_test_run'
+--     and  run_string = 'begin wtp.wt_core_report.dbms_out(in_detail_level => 10); end;';
+--   wtp.hook.init;
+--end;
+--/
+
 set serveroutput on size unlimited format truncated
 
 begin
+   wtp.hook.init;
    wtplsql.test_run('TEST_SIMPLE_OBJECT');
-   wt_persist_report.dbms_out(USER,'TEST_SIMPLE_OBJECT',30);
+   wtp.wt_persist_report.dbms_out(in_runner_owner => USER
+                                 ,in_runner_name  => 'TEST_SIMPLE_OBJECT'
+                                 ,in_detail_level => 30);
 end;
 /

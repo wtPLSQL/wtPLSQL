@@ -64,7 +64,7 @@ The "Database PL/SQL Language Reference" (11.2) [groups triggers](https://docs.o
  .                       | .                       | DB Role Change          
 
 For brevity, an example is provided for only one of these triggers.
-Db Role Change          
+DB Role Change          
 ## Table with Insert Trigger
 
 Before a trigger an be created, a table must be created.  The table will have a surrogate key, a natural key, and audit data.
@@ -166,7 +166,9 @@ set serveroutput on size unlimited format truncated
 
 begin
    wtplsql.test_run('TRIGGER_TEST_PKG');
-   wt_persist_report.dbms_out(USER,'TRIGGER_TEST_PKG',30);
+   wtp.wt_persist_report.dbms_out(in_runner_owner => 'WT_DEMO'
+                                 ,in_runner_name  => 'TRIGGER_TEST_PKG'
+                                 ,in_detail_level => 30);
 end;
 /
 ```
@@ -174,37 +176,42 @@ end;
 And Get This:
 
 ```
-    wtPLSQL 1.1.0 - Run ID 58: 23-Jun-2018 12:04:20 PM
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003, wtpgrb 1.003
+  Test Results for WT_DEMO.TRIGGER_TEST_PKG
+  Run ID 20: 13-Apr-2024 04:35:58 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        0      Total Assertions:        3
+  Average Elapsed msec:        1     Failed Assertions:        0
+  Maximum Elapsed msec:        2       Total Testcases:        1
+  Total Run Time (sec):      0.3      Failed Testcases:        0
+                                        Testcase Yield:      100%
 
-  Test Results for WTP_DEMO.TRIGGER_TEST_PKG
-       Total Test Cases:        1       Total Assertions:        3
-  Minimum Interval msec:        0      Failed Assertions:        0
-  Average Interval msec:       76       Error Assertions:        0
-  Maximum Interval msec:      228             Test Yield:   100.00%
-   Total Run Time (sec):      0.2
-
-  Code Coverage for TRIGGER WTP_DEMO.TRIGGER_TEST_BIR
+  Code Coverage for TRIGGER WT_DEMO.TRIGGER_TEST_BIR
+  ----------------------------------------------------------------
           Ignored Lines:        0   Total Profiled Lines:        5
          Excluded Lines:        0   Total Executed Lines:        4
   Minimum LineExec usec:        1     Not Executed Lines:        0
-  Average LineExec usec:      137          Unknown Lines:        1
-  Maximum LineExec usec:      326          Code Coverage:   100.00%
-  Trigger Source Offset:        3
+  Average LineExec usec:       52          Unknown Lines:        1
+  Maximum LineExec usec:      197          Code Coverage:    100.0%
+  Trigger Source Offset:        3                                 
 
- - WTP_DEMO.TRIGGER_TEST_PKG Test Result Details (Test Run ID 58)
------------------------------------------------------------
- ---- Test Case: Constructor Happy Path 1
- PASS  228ms l_rec.id. ISNOTNULL - Expected NOT NULL and got "15"
- PASS    0ms l_rec.name. EQ - Expected "Test1" and got "Test1"
- PASS    0ms l_rec.created_dtm. ISNOTNULL - Expected NOT NULL and got "23-JUN-2018 12:04:20"
+  WT_DEMO.TRIGGER_TEST_PKG Test Result Details
+  Test Run ID: 20
+  --------------------------------------------------------------
+---***  Constructor Happy Path 1  ***-------------------------------------------
+ PASS 2.20ms l_rec.id. ISNOTNULL - Expected NOT NULL and got "14"
+ PASS .318ms l_rec.name. EQ - Expected "Test1" and got "Test1"
+ PASS .083ms l_rec.created_dtm. ISNOTNULL - Expected NOT NULL and got "13-APR-2024 21:35:58"
 
- - WTP_DEMO.TRIGGER_TEST_BIR TRIGGER Code Coverage Details (Test Run ID 58)
+  WT_DEMO.TRIGGER_TEST_BIR TRIGGER Code Coverage Details
+  Test Run ID: 20
+  ----------------------------------------------------------------
 Source               TotTime MinTime   MaxTime     
   Line Stat Occurs    (usec)  (usec)    (usec) Text
 ------ ---- ------ --------- ------- --------- ------------
-     4 UNKN      0        11      11        11 begin
-     5 EXEC      1       216     216       216   if :new.id is null
-     7 EXEC      1       326     326       326      :new.id := trigger_test_seq.nextval;
+     4 UNKN      0         1       1         1 begin
+     5 EXEC      1         3       3         3   if :new.id is null
+     7 EXEC      1       197     197       197      :new.id := trigger_test_seq.nextval;
      9 EXEC      1         4       1         3   :new.created_dtm := sysdate;
     10 EXEC      1         2       2         2 end;
 ```

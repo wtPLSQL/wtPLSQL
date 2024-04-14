@@ -16,8 +16,6 @@ end table_test_pkg;
 /
 show errors
 
-grant execute on table_test_pkg to wtp;
-
 create or replace package body table_test_pkg
 as
    procedure t_happy_path_1
@@ -54,14 +52,20 @@ end table_test_pkg;
 /
 show errors
 
-set serveroutput on size unlimited format truncated
+-- Run was WTP User to activate Core Report add-on
+--begin
+--   wt_test_run.delete_hooks;
+--   junit_core_report.delete_hooks;
+--   wt_core_report.insert_hooks;
+--   update wtp.hooks
+--     set  run_string = 'begin wtp.wt_core_report.dbms_out(in_detail_level => 30); end;'
+--    where hook_name  = 'after_test_run'
+--     and  run_string = 'begin wtp.wt_core_report.dbms_out(in_detail_level => 10); end;';
+--   wtp.hook.init;
+--end;
+--/
 
--- Must be logged in as "WTP"
-update wtp.hooks
-  set  run_string = 'begin wtp.wt_core_report.dbms_out(in_detail_level => 30); end;'
- where hook_name = 'after_test_run'
-  and  run_string = 'begin wtp.wt_core_report.dbms_out(in_detail_level => 10); end;';
---
+set serveroutput on size unlimited format truncated
 
 begin
    wtp.hook.init;

@@ -381,7 +381,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run delete_runs(' || l_tr_id || ') Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -403,7 +404,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run delete_runs(-9995) Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_full_stack      );
       end;
    end t_delete_runs;
@@ -537,7 +539,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Setup WT_TEST_RUNNERS Record for finalize2 Test Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -551,7 +554,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Setup WT_TEST_RUNS Record for finalize2 Test Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -564,7 +568,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run finalize2 Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -594,7 +599,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Delete WT_TEST_RUNS Record for finalize2 Test Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -607,7 +613,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Delete WT_TEST_RUNNERS Record for finalize2 Test Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -729,7 +736,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run set_last_run(' || l_tr_id || ') Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_full_stack      );
       end;
       wt_assert.eqqueryvalue (
@@ -747,7 +755,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run set_last_run(' || l_tr_id || ') Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -804,7 +813,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run set_last_run(' || l_tr_id || ') Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -825,7 +835,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run set_last_run(' || l_tr_id || ') Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -844,7 +855,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run set_last_run(NULL) Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -856,7 +868,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run set_last_run(-99) Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -922,7 +935,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run delete_run_id(-11) Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -946,7 +960,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run delete_run_id(-10) Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -970,7 +985,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run delete_run_id(-9) Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -998,11 +1014,11 @@ is
 begin  ------%WTPLSQL_begin_ignore_lines%------
    delete_hooks;
    insert into hooks (hook_name, seq, run_string)
-      values ('before_test_run', 30, 'begin wt_test_run.initialize; end;');
+      values ('before_test_run', 30, 'begin wtp.wt_test_run.initialize; end;');
    insert into hooks (hook_name, seq, run_string)
-      values ('after_test_run', 30, 'begin wt_test_run.finalize1; end;');
+      values ('after_test_run', 30, 'begin wtp.wt_test_run.finalize1; end;');
    insert into hooks (hook_name, seq, run_string)
-      values ('after_test_run', 70, 'begin wt_test_run.finalize2; end;');
+      values ('after_test_run', 70, 'begin wtp.wt_test_run.finalize2; end;');
    commit;
    hook.init;
 end insert_hooks;  ----------------%WTPLSQL_end_ignore_lines%----------------
@@ -1014,7 +1030,7 @@ end insert_hooks;  ----------------%WTPLSQL_end_ignore_lines%----------------
 procedure delete_hooks
 is
 begin  ------%WTPLSQL_begin_ignore_lines%------
-   delete from hooks where run_string like '% wt_test_run.%';
+   delete from hooks where run_string like '% wtp.wt_test_run.%';
    dbms_output.put_line(SQL%ROWCOUNT || ' "wt_test_run" rows deleted from HOOKS table.');
    hook.init;
    commit;

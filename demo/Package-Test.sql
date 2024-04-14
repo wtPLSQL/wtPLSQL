@@ -6,8 +6,6 @@ end test_dbms_output;
 /
 show errors
 
-grant execute on test_dbms_output to wtp;
-
 create or replace package body test_dbms_output
 as
    procedure wtplsql_run
@@ -43,7 +41,21 @@ show errors
 
 set serveroutput on size unlimited format truncated
 
+-- Run was WTP User to setup Core Report add-on
+--begin
+--   junit_core_report.delete_hooks;
+--   wt_test_run.delete_hooks;
+--   wt_core_report.insert_hooks;
+--   update wtp.hooks
+--     set  run_string = 'begin wtp.wt_core_report.dbms_out(in_detail_level => 30); end;'
+--    where hook_name  = 'after_test_run'
+--     and  run_string = 'begin wtp.wt_core_report.dbms_out(in_detail_level => 10); end;';
+--   wtp.hook.init;
+--end;
+--/
+
 begin
+   wtp.hook.init;
    wtplsql.test_run('TEST_DBMS_OUTPUT');
 end;
 /
@@ -72,6 +84,7 @@ end test_dbms_output;
 show errors
 
 begin
+   wtp.hook.init;
    wtplsql.test_run('TEST_DBMS_OUTPUT');
 end;
 /
@@ -126,8 +139,9 @@ as
       test_put_get_line;
       teardown;
    exception when others then
-      l_error_message := substr(dbms_utility.format_error_stack ||
-                                dbms_utility.format_error_backtrace,1,4000);
+      l_error_message := substr(SQLERRM || CHR(10) ||
+                                dbms_utility.format_error_backtrace ||
+                                dbms_utility.format_call_stack,1,4000);
       teardown;
       raise_application_error(-20000, l_error_message);
    end wtplsql_run;
@@ -137,6 +151,7 @@ end test_dbms_output;
 show errors
 
 begin
+   wtp.hook.init;
    wtplsql.test_run('TEST_DBMS_OUTPUT');
 end;
 /

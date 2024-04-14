@@ -448,7 +448,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run clear_plsql_profiler_recs Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_call_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -466,7 +467,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run clear_plsql_profiler_recs(' || c_test_run_id || ') Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_call_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -488,7 +490,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run clear_plsql_profiler_recs Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_call_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -1233,10 +1236,12 @@ $THEN
       begin
          insert into plsql_profiler_units values units_rec;
          commit;
-         l_err_stack := dbms_utility.format_error_backtrace ||
+         l_err_stack := SQLERRM || CHR(10) ||
+                        dbms_utility.format_error_backtrace ||
                         dbms_utility.format_call_stack      ;
       exception when others then
-         l_err_stack := dbms_utility.format_error_backtrace ||
+         l_err_stack := SQLERRM || CHR(10) ||
+                        dbms_utility.format_error_backtrace ||
                         dbms_utility.format_call_stack      ;
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -1280,10 +1285,12 @@ $THEN
          insert_wt_profile(g_current_user
                           ,l_pname
                           ,'PACKAGE BODY');
-         l_err_stack := dbms_utility.format_error_backtrace ||
+         l_err_stack := SQLERRM || CHR(10) ||
+                        dbms_utility.format_error_backtrace ||
                         dbms_utility.format_call_stack      ;
       exception when others then
-         l_err_stack := dbms_utility.format_error_backtrace ||
+         l_err_stack := SQLERRM || CHR(10) ||
+                        dbms_utility.format_error_backtrace ||
                         dbms_utility.format_call_stack      ;
       end;
       l_recTEST := g_rec;
@@ -1766,10 +1773,12 @@ $THEN
       wtplsql_skip_test := TRUE;
       begin
          finalize(-1);
-         l_err_stack := dbms_utility.format_error_backtrace ||
+         l_err_stack := SQLERRM || CHR(10) ||
+                        dbms_utility.format_error_backtrace ||
                         dbms_utility.format_call_stack      ;
       exception when others then
-         l_err_stack := dbms_utility.format_error_backtrace ||
+         l_err_stack := SQLERRM || CHR(10) ||
+                        dbms_utility.format_error_backtrace ||
                         dbms_utility.format_call_stack      ;
       end;
       wtplsql_skip_test := FALSE;
@@ -1807,10 +1816,12 @@ $THEN
       wtplsql_skip_test := TRUE;
       begin
          finalize(-2);
-         l_err_stack := dbms_utility.format_error_backtrace ||
+         l_err_stack := SQLERRM || CHR(10) ||
+                        dbms_utility.format_error_backtrace ||
                         dbms_utility.format_call_stack      ;
       exception when others then
-         l_err_stack := dbms_utility.format_error_backtrace ||
+         l_err_stack := SQLERRM || CHR(10) ||
+                        dbms_utility.format_error_backtrace ||
                         dbms_utility.format_call_stack      ;
       end;
       wtplsql_skip_test := FALSE;
@@ -1854,10 +1865,12 @@ $THEN
       wtplsql_skip_test := TRUE;
       begin
          finalize(-3);
-         l_err_stack := dbms_utility.format_error_backtrace ||
+         l_err_stack := SQLERRM || CHR(10) ||
+                        dbms_utility.format_error_backtrace ||
                         dbms_utility.format_call_stack      ;
       exception when others then
-         l_err_stack := dbms_utility.format_error_backtrace ||
+         l_err_stack := SQLERRM || CHR(10) ||
+                        dbms_utility.format_error_backtrace ||
                         dbms_utility.format_call_stack      ;
       end;
       wtplsql_skip_test := FALSE;
@@ -1970,7 +1983,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run delete_run_id(' || c_test_run_id || ') Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_call_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -1990,7 +2004,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run delete_run_id(-9876) Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_call_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -2009,7 +2024,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run delete_run_id(NULL) Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_call_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --

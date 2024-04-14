@@ -1,0 +1,75 @@
+<h1 id="the-leap-day-theme">The Leap day theme</h1>
+<p><a href="https://github.com/pages-themes/leap-day/actions/workflows/ci.yaml"><img src="https://github.com/pages-themes/leap-day/actions/workflows/ci.yaml/badge.svg" alt=".github/workflows/ci.yaml" /></a> <a href="https://badge.fury.io/rb/jekyll-theme-leap-day"><img src="https://badge.fury.io/rb/jekyll-theme-leap-day.svg" alt="Gem Version" /></a></p>
+<p><em>Leap day is a Jekyll theme for GitHub Pages. You can <a href="http://pages-themes.github.io/leap-day">preview the theme to see what it looks like</a>, or even <a href="#usage">use it today</a>.</em></p>
+<p><img src="thumbnail.png" alt="Thumbnail of Leap day" /></p>
+<h2 id="usage">Usage</h2>
+<p>To use the Leap day theme:</p>
+<ol>
+<li><p>Add the following to your site's <code>_config.yml</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yml"><code class="sourceCode yaml"><a class="sourceLine" id="cb1-1" title="1"><span class="fu">remote_theme:</span><span class="at"> pages-themes/leap-day@v0.2.0</span></a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="fu">plugins:</span></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="kw">-</span> jekyll-remote-theme <span class="co"># add this line to the plugins list if you already have one</span></a></code></pre></div></li>
+<li><p>Optionally, if you'd like to preview your site on your computer, add the following to your site's <code>Gemfile</code>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode ruby"><code class="sourceCode ruby"><a class="sourceLine" id="cb2-1" title="1">gem <span class="st">&quot;github-pages&quot;</span>, <span class="st">group: :jekyll_plugins</span></a></code></pre></div></li>
+</ol>
+<h2 id="customizing">Customizing</h2>
+<h3 id="configuration-variables">Configuration variables</h3>
+<p>Leap day will respect the following variables, if set in your site's <code>_config.yml</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode yml"><code class="sourceCode yaml"><a class="sourceLine" id="cb3-1" title="1"><span class="fu">title:</span><span class="at"> </span><span class="kw">[</span>The title of your site<span class="kw">]</span></a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="fu">description:</span><span class="at"> </span><span class="kw">[</span>A short description of your site<span class="st">&#39;s purpose]</span></a></code></pre></div>
+<p>Additionally, you may choose to set the following optional variables:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode yml"><code class="sourceCode yaml"><a class="sourceLine" id="cb4-1" title="1"><span class="fu">show_downloads:</span><span class="at"> </span><span class="kw">[</span><span class="st">&quot;true&quot;</span> or <span class="st">&quot;false&quot;</span> (unquoted) to indicate whether to provide a download URL<span class="kw">]</span></a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="fu">google_analytics:</span><span class="at"> </span><span class="kw">[</span>Your Google Analytics tracking ID<span class="kw">]</span></a></code></pre></div>
+<h3 id="stylesheet">Stylesheet</h3>
+<p>If you'd like to add your own custom styles:</p>
+<ol>
+<li>Create a file called <code>/assets/css/style.scss</code> in your site</li>
+<li>Add the following content to the top of the file, exactly as shown:
+<pre class="scss"><code>---
+---
+
+@import &quot;{{ site.theme }}&quot;;
+</code></pre></li>
+<li>Add any custom CSS (or Sass, including imports) you'd like immediately after the <code>@import</code> line</li>
+</ol>
+<p><em>Note: If you'd like to change the theme's Sass variables, you must set new values before the <code>@import</code> line in your stylesheet.</em></p>
+<h3 id="layouts">Layouts</h3>
+<p>If you'd like to change the theme's HTML layout:</p>
+<ol>
+<li>For some changes such as a custom <code>favicon</code>, you can add custom files in your local <code>_includes</code> folder. The files <a href="https://github.com/pages-themes/leap-day/tree/master/_includes">provided with the theme</a> provide a starting point and are included by the <a href="https://github.com/pages-themes/leap-day/blob/master/_layouts/default.html">original layout template</a>.</li>
+<li>For more extensive changes, <a href="https://github.com/pages-themes/leap-day/blob/master/_layouts/default.html">copy the original template</a> from the theme's repository<br />(<em>Pro-tip: click "raw" to make copying easier</em>)</li>
+<li>Create a file called <code>/_layouts/default.html</code> in your site</li>
+<li>Paste the default layout content copied in the first step</li>
+<li>Customize the layout as you'd like</li>
+</ol>
+<h3 id="customizing-google-analytics-code">Customizing Google Analytics code</h3>
+<p>Google has released several iterations to their Google Analytics code over the years since this theme was first created. If you would like to take advantage of the latest code, paste it into <code>_includes/head-custom-google-analytics.html</code> in your Jekyll site.</p>
+<h3 id="overriding-github-generated-urls">Overriding GitHub-generated URLs</h3>
+<p>Templates often rely on URLs supplied by GitHub such as links to your repository or links to download your project. If you'd like to override one or more default URLs:</p>
+<ol>
+<li>Look at <a href="https://github.com/pages-themes/leap-day/blob/master/_layouts/default.html">the template source</a> to determine the name of the variable. It will be in the form of <code>{{ site.github.zip_url }}</code>.</li>
+<li>Specify the URL that you'd like the template to use in your site's <code>_config.yml</code>. For example, if the variable was <code>site.github.url</code>, you'd add the following:
+<div class="sourceCode" id="cb6"><pre class="sourceCode yml"><code class="sourceCode yaml"><a class="sourceLine" id="cb6-1" title="1"><span class="fu">github:</span></a>
+<a class="sourceLine" id="cb6-2" title="2">  <span class="fu">zip_url:</span><span class="at"> http://example.com/download.zip</span></a>
+<a class="sourceLine" id="cb6-3" title="3">  <span class="fu">another_url:</span><span class="at"> another value</span></a></code></pre></div></li>
+<li>When your site is built, Jekyll will use the URL you specified, rather than the default one provided by GitHub.</li>
+</ol>
+<p><em>Note: You must remove the <code>site.</code> prefix, and each variable name (after the <code>github.</code>) should be indent with two space below <code>github:</code>.</em></p>
+<p>For more information, see <a href="https://jekyllrb.com/docs/variables/">the Jekyll variables documentation</a>.</p>
+<h2 id="roadmap">Roadmap</h2>
+<p>See the <a href="https://github.com/pages-themes/leap-day/issues">open issues</a> for a list of proposed features (and known issues).</p>
+<h2 id="project-philosophy">Project philosophy</h2>
+<p>The Leap day theme is intended to make it quick and easy for GitHub Pages users to create their first (or 100th) website. The theme should meet the vast majority of users' needs out of the box, erring on the side of simplicity rather than flexibility, and provide users the opportunity to opt-in to additional complexity if they have specific needs or wish to further customize their experience (such as adding custom CSS or modifying the default layout). It should also look great, but that goes without saying.</p>
+<h2 id="contributing">Contributing</h2>
+<p>Interested in contributing to Leap day? We'd love your help. Leap day is an open source project, built one contribution at a time by users like you. See <a href="docs/CONTRIBUTING.htm">the CONTRIBUTING file</a> for instructions on how to contribute.</p>
+<h3 id="previewing-the-theme-locally">Previewing the theme locally</h3>
+<p>If you'd like to preview the theme locally (for example, in the process of proposing a change):</p>
+<ol>
+<li>Clone down the theme's repository (<code>git clone https://github.com/pages-themes/leap-day</code>)</li>
+<li><code>cd</code> into the theme's directory</li>
+<li>Run <code>script/bootstrap</code> to install the necessary dependencies</li>
+<li>Run <code>bundle exec jekyll serve</code> to start the preview server</li>
+<li>Visit <a href="http://localhost:4000"><code>localhost:4000</code></a> in your browser to preview the theme</li>
+</ol>
+<h3 id="running-tests">Running tests</h3>
+<p>The theme contains a minimal test suite, to ensure a site with the theme would build successfully. To run the tests, simply run <code>script/cibuild</code>. You'll need to run <code>script/bootstrap</code> once before the test script will work.</p>

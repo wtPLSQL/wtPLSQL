@@ -17,23 +17,27 @@ end simple_test_runner;
 /
 show errors
 
+-- Run was WTP User to activate Core Report add-on
+--begin
+--   junit_core_report.delete_hooks;
+--   wt_core_report.delete_hooks;
+--   wt_test_run.insert_hooks;
+--end;
+--/
+
+set serveroutput on size unlimited format truncated
+
 begin
+   wtp.hook.init;
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
+   wtp.wt_persist_report.dbms_out(in_runner_name  => 'SIMPLE_TEST_RUNNER');
 end;
 /
 
-set serveroutput on size unlimited format truncated
-
 begin
-   wt_persist_report.dbms_out(USER,'SIMPLE_TEST_RUNNER');
-end;
-/
-
-set serveroutput on size unlimited format truncated
-
-begin
-   wt_persist_report.dbms_out(in_runner_name  => 'SIMPLE_TEST_RUNNER'
-                          ,in_detail_level => 30);
+   wtp.wt_persist_report.dbms_out(in_runner_owner => USER
+                                 ,in_runner_name  => 'SIMPLE_TEST_RUNNER'
+                                 ,in_detail_level => 30);
 end;
 /
 
@@ -60,16 +64,18 @@ end simple_test_runner;
 show errors
 
 begin
+   wtp.hook.init;
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
-   wt_persist_report.dbms_out(in_runner_name  => 'SIMPLE_TEST_RUNNER'
-                          ,in_detail_level => 30);
+   wtp.wt_persist_report.dbms_out(in_runner_owner => USER
+                                 ,in_runner_name  => 'SIMPLE_TEST_RUNNER'
+                                 ,in_detail_level => 30);
 end;
 /
 
 create or replace package body simple_test_runner
 as
-   --% WTPLSQL SET DBOUT "SIMPLE_TEST_RUNNER:PACKAGE BODY" %--
    procedure wtplsql_run is begin
+      wtplsql.g_DBOUT := 'SIMPLE_TEST_RUNNER:PACKAGE BODY';
       wt_assert.eq(msg_in          => 'Ad-Hoc Test'
                   ,check_this_in   =>  1
                   ,against_this_in => '1');
@@ -79,14 +85,15 @@ end simple_test_runner;
 show errors
 
 begin
+   wtp.hook.init;
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
-   wt_persist_report.dbms_out(USER,'SIMPLE_TEST_RUNNER');
+   wtp.wt_persist_report.dbms_out(in_runner_owner => USER
+                                 ,in_runner_name  => 'SIMPLE_TEST_RUNNER');
 end;
 /
 
 create or replace package body simple_test_runner
 as
-   --% WTPLSQL SET DBOUT "SIMPLE_TEST_RUNNER:PACKAGE BODY" %--
    function add2 (in_val1 number, in_val2 number) return number is
       l_result  number;
    begin
@@ -94,6 +101,7 @@ as
       return l_result;
    end add2;
    procedure wtplsql_run is begin --%WTPLSQL_begin_ignore_lines%--
+      wtplsql.g_DBOUT := 'SIMPLE_TEST_RUNNER:PACKAGE BODY';
       wt_assert.g_testcase := 'My Test Case';
       wt_assert.eq(msg_in          => 'Ad-Hoc Test'
                   ,check_this_in   => add2(2, 3)
@@ -104,7 +112,10 @@ end simple_test_runner;
 show errors
 
 begin
+   wtp.hook.init;
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
-   wt_persist_report.dbms_out(USER,'SIMPLE_TEST_RUNNER',30);
+   wtp.wt_persist_report.dbms_out(in_runner_owner => USER
+                                 ,in_runner_name  => 'SIMPLE_TEST_RUNNER'
+                                 ,in_detail_level => 30);
 end;
 /

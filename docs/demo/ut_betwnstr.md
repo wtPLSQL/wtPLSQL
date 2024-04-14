@@ -112,6 +112,8 @@ It is not necessary to keep the ut_setup and ut_teardown procedures.  These were
 
 ## Check the Results
 
+The Persist add-on must be installed.
+
 Run this:
 
 ```
@@ -119,7 +121,9 @@ set serveroutput on size unlimited format truncated
 
 begin
    wtplsql.test_run('UT_BETWNSTR');
-   wt_persist_report.dbms_out(USER,'UT_BETWNSTR',30);
+   wtp.wt_persist_report.dbms_out(in_runner_owner => USER
+                                 ,in_runner_name  => 'UT_BETWNSTR'
+                                 ,in_detail_level => 30);
 end;
 /
 ```
@@ -127,32 +131,45 @@ end;
 And Get This:
 
 ```
-  Code Coverage for FUNCTION WTP_DEMO.BETWNSTR
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003, wtpgrb 1.003
+  Test Results for WT_DEMO.UT_BETWNSTR
+  Run ID 45: 13-Apr-2024 06:39:29 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        0      Total Assertions:        5
+  Average Elapsed msec:        0     Failed Assertions:        0
+  Maximum Elapsed msec:        1       Total Testcases:        1
+  Total Run Time (sec):      0.2      Failed Testcases:        0
+                                        Testcase Yield:      100%
+
+  Code Coverage for FUNCTION WT_DEMO.BETWNSTR
+  ----------------------------------------------------------------
           Ignored Lines:        0   Total Profiled Lines:        3
          Excluded Lines:        0   Total Executed Lines:        2
   Minimum LineExec usec:        0     Not Executed Lines:        0
   Average LineExec usec:        2          Unknown Lines:        1
-  Maximum LineExec usec:       12          Code Coverage:   100.00%
-  Trigger Source Offset:        0
+  Maximum LineExec usec:       12          Code Coverage:    100.0%
+  Trigger Source Offset:        0                                 
 
- - WTP_DEMO.UT_BETWNSTR Test Result Details (Test Run ID 78)
------------------------------------------------------------
- PASS  155ms Typical valid usage. EQ - Expected "cde" and got "cde"
- PASS    0ms NULL start. ISNULL - Expected NULL and got ""
- PASS    0ms NULL end. ISNULL - Expected NULL and got ""
- PASS    0ms End smaller than start. ISNULL - Expected NULL and got ""
- PASS    0ms End larger than string length. EQ - Expected "cdefg" and got "cdefg"
+  WT_DEMO.UT_BETWNSTR Test Result Details
+  Test Run ID: 45
+  --------------------------------------------------------------
+---***  WT_DEMO.UT_BETWNSTR  ***------------------------------------------------
+ PASS .749ms Typical valid usage. EQ - Expected "cde" and got "cde"
+ PASS  .19ms NULL start. ISNULL - Expected NULL and got ""
+ PASS .061ms NULL end. ISNULL - Expected NULL and got ""
+ PASS .049ms End smaller than start. ISNULL - Expected NULL and got ""
+ PASS .045ms End larger than string length. EQ - Expected "cdefg" and got "cdefg"
 
- - WTP_DEMO.BETWNSTR FUNCTION Code Coverage Details (Test Run ID 78)
+  WT_DEMO.BETWNSTR FUNCTION Code Coverage Details
+  Test Run ID: 45
+  ----------------------------------------------------------------
 Source               TotTime MinTime   MaxTime     
   Line Stat Occurs    (usec)  (usec)    (usec) Text
 ------ ---- ------ --------- ------- --------- ------------
-     1 UNKN      0         5       1         2 function betwnstr
-     8 EXEC      5        19       1        12    return (
-    15 EXEC      5         1       0         1 end;
+     1 UNKN      0         3       0         1 FUNCTION betwnStr (
+     9 EXEC      5        19       1        12    RETURN (
+    16 EXEC      5         1       0         0 END;
 ```
-
-If the Persist add-on is not installed, the code coverage results will not be displayed.
 
 ---
 [Demos and Examples](README.md)

@@ -93,9 +93,9 @@ IS
 
    END ut_BETWNSTR;
 
-   --% WTPLSQL SET DBOUT "BETWNSTR:FUNCTION" %--
    PROCEDURE wtPLSQL_run IS
    BEGIN
+      wtplsql.g_DBOUT := 'BETWNSTR:FUNCTION';
       ut_setup;
       ut_betwnstr;
       ut_teardown;
@@ -108,7 +108,10 @@ show errors
 set serveroutput on size unlimited format truncated
 
 begin
+   wtp.hook.init;
    wtplsql.test_run('UT_BETWNSTR');
-   wt_persist_report.dbms_out(USER,'UT_BETWNSTR',30);
+   wtp.wt_persist_report.dbms_out(in_runner_owner => USER
+                                 ,in_runner_name  => 'UT_BETWNSTR'
+                                 ,in_detail_level => 30);
 end;
 /

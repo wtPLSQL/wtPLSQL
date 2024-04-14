@@ -307,7 +307,7 @@ exception when others then
                 sf_aa(   file.inst_type   )(   file.inst_ord   )(   file.file_id   ).buffer_aa(   file.num_lines   ).len || LF ||
              '  sf_aa('||file.inst_type||')('||file.inst_ord||')('||file.file_id||').max_linesize = ' ||
                 sf_aa(   file.inst_type   )(   file.inst_ord   )(   file.file_id   ).max_linesize || LF ||
-              dbms_utility.format_error_backtrace || dbms_utility.format_call_stack ||
+              SQLERRM || LF || dbms_utility.format_error_backtrace || dbms_utility.format_call_stack ||
              '|' || ascii_buffer || '|'
              ,1,2000));
 end script_put;

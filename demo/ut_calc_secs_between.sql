@@ -75,9 +75,9 @@ IS
          
    END ut_CALC_SECS_BETWEEN;
 
-   --% WTPLSQL SET DBOUT "CALC_SECS_BETWEEN:PROCEDURE" %--
    PROCEDURE wtPLSQL_run IS
    BEGIN
+      wtplsql.g_DBOUT := 'CALC_SECS_BETWEEN:PROCEDURE';
       ut_setup;
       ut_CALC_SECS_BETWEEN;
       ut_teardown;
@@ -90,8 +90,10 @@ show errors
 set serveroutput on size unlimited format truncated
 
 begin
+   wtp.hook.init;
    wtplsql.test_run('UT_CALC_SECS_BETWEEN');
-   wt_persist_report.dbms_out(in_runner_name  => 'UT_CALC_SECS_BETWEEN'
-                             ,in_detail_level => 30);
+   wtp.wt_persist_report.dbms_out(in_runner_owner => USER
+                                 ,in_runner_name  => 'UT_CALC_SECS_BETWEEN'
+                                 ,in_detail_level => 30);
 end;
 /

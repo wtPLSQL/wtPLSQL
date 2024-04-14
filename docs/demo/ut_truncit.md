@@ -65,10 +65,9 @@ IS
          );
    END ut_TRUNCIT;
 
-   --% WTPLSQL SET DBOUT "TRUNCIT:PROCEDURE" %--
-
    PROCEDURE wtplsql_run IS
    BEGIN
+      wtplsql.g_DBOUT := 'TRUNCIT:PROCEDURE';
       ut_setup;
       ut_TRUNCIT;
       ut_teardown;
@@ -82,6 +81,8 @@ The SET DBOUT annotation was also added to gather code coverage data.
 
 ## Check the Results
 
+The Persist add-on must be installed.
+
 Run this:
 
 ```
@@ -89,8 +90,9 @@ set serveroutput on size unlimited format truncated
 
 begin
    wtplsql.test_run('UT_TRUNCIT');
-   wt_persist_report.dbms_out(in_runner_name  => 'UT_TRUNCIT'
-                             ,in_detail_level => 30);
+   wtp.wt_persist_report.dbms_out(in_runner_owner => USER
+                                 ,in_runner_name  => 'UT_TRUNCIT'
+                                 ,in_detail_level => 30);
 end;
 /
 ```
@@ -98,38 +100,41 @@ end;
 And Get This:
 
 ```
-    wtPLSQL 1.1.0 - Run ID 81: 25-Jun-2018 09:48:39 PM
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003, wtpgrb 1.003
+  Test Results for WT_DEMO.UT_TRUNCIT
+  Run ID 49: 13-Apr-2024 06:48:15 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:      559      Total Assertions:        1
+  Average Elapsed msec:      559     Failed Assertions:        0
+  Maximum Elapsed msec:      559       Total Testcases:        1
+  Total Run Time (sec):      1.0      Failed Testcases:        0
+                                        Testcase Yield:      100%
 
-  Test Results for WTP_DEMO.UT_TRUNCIT
-       Total Test Cases:        0       Total Assertions:        1
-  Minimum Interval msec:      331      Failed Assertions:        0
-  Average Interval msec:      331       Error Assertions:        0
-  Maximum Interval msec:      331             Test Yield:   100.00%
-   Total Run Time (sec):      0.4
-
-  Code Coverage for PROCEDURE WTP_DEMO.TRUNCIT
+  Code Coverage for PROCEDURE WT_DEMO.TRUNCIT
+  ----------------------------------------------------------------
           Ignored Lines:        0   Total Profiled Lines:        3
          Excluded Lines:        0   Total Executed Lines:        2
   Minimum LineExec usec:        2     Not Executed Lines:        0
-  Average LineExec usec:    15714          Unknown Lines:        1
-  Maximum LineExec usec:    31423          Code Coverage:   100.00%
-  Trigger Source Offset:        0
+  Average LineExec usec:    16393          Unknown Lines:        1
+  Maximum LineExec usec:    32778          Code Coverage:    100.0%
+  Trigger Source Offset:        0                                 
 
- - WTP_DEMO.UT_TRUNCIT Test Result Details (Test Run ID 81)
------------------------------------------------------------
- PASS  331ms Test of TRUNCIT. EQ - Expected "0" and got "0"
+  WT_DEMO.UT_TRUNCIT Test Result Details
+  Test Run ID: 49
+  --------------------------------------------------------------
+---***  WT_DEMO.UT_TRUNCIT  ***-------------------------------------------------
+ PASS 559.ms Test of TRUNCIT. EQ - Expected "0" and got "0"
 
- - WTP_DEMO.TRUNCIT PROCEDURE Code Coverage Details (Test Run ID 81)
+  WT_DEMO.TRUNCIT PROCEDURE Code Coverage Details
+  Test Run ID: 49
+  ----------------------------------------------------------------
 Source               TotTime MinTime   MaxTime     
   Line Stat Occurs    (usec)  (usec)    (usec) Text
 ------ ---- ------ --------- ------- --------- ------------
-     1 UNKN      0         3       3         3 PROCEDURE truncit (
-     7 EXEC      1     31426       3     31423    EXECUTE IMMEDIATE 'truncate table ' || NVL (sch, USER) || '.' || tab;
+     1 UNKN      0         1       1         1 PROCEDURE truncit (
+     7 EXEC      1     32784       6     32778    EXECUTE IMMEDIATE 'truncate table ' || NVL (sch, USER) || '.' || tab;
      8 EXEC      1         2       2         2 END;
 ```
-
-If the Persist add-on is not installed, the code coverage results will not be displayed.
-
 
 ---
 [Demos and Examples](README.md)

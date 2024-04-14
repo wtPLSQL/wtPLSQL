@@ -119,7 +119,9 @@ set serveroutput on size unlimited format truncated
 
 begin
    wtplsql.test_run('TEST_SIMPLE_OBJECT');
-   wt_persist_report.dbms_out(USER,'TEST_SIMPLE_OBJECT',30);
+   wtp.wt_persist_report.dbms_out(in_runner_owner => USER
+                                 ,in_runner_name  => 'TEST_SIMPLE_OBJECT'
+                                 ,in_detail_level => 30);
 end;
 /
 ```
@@ -127,34 +129,39 @@ end;
 And Get This:
 
 ```
-    wtPLSQL 1.1.0 - Run ID 56: 18-Jun-2018 10:04:32 PM
+  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003, wtpgrb 1.003
+  Test Results for WT_DEMO.TEST_SIMPLE_OBJECT
+  Run ID 22: 13-Apr-2024 04:50:11 PM
+  --------------------------------------------------------------
+  Minimum Elapsed msec:        0      Total Assertions:        2
+  Average Elapsed msec:        2     Failed Assertions:        0
+  Maximum Elapsed msec:        3       Total Testcases:        1
+  Total Run Time (sec):      0.2      Failed Testcases:        0
+                                        Testcase Yield:      100%
 
-  Test Results for WTP.TEST_SIMPLE_OBJECT
-       Total Test Cases:        1       Total Assertions:        2
-  Minimum Interval msec:        8      Failed Assertions:        0
-  Average Interval msec:       74       Error Assertions:        0
-  Maximum Interval msec:      139             Test Yield:   100.00%
-   Total Run Time (sec):      0.1
-
-  Code Coverage for TYPE BODY WTP.SIMPLE_TEST_OBJ_TYPE
+  Code Coverage for TYPE BODY WT_DEMO.SIMPLE_TEST_OBJ_TYPE
+  ----------------------------------------------------------------
           Ignored Lines:        0   Total Profiled Lines:       10
          Excluded Lines:        1   Total Executed Lines:        4
   Minimum LineExec usec:        0     Not Executed Lines:        4
   Average LineExec usec:        1          Unknown Lines:        1
-  Maximum LineExec usec:        2          Code Coverage:    50.00%
-  Trigger Source Offset:        0
+  Maximum LineExec usec:        2          Code Coverage:     50.0%
+  Trigger Source Offset:        0                                 
 
- - WTP.TEST_SIMPLE_OBJECT Test Result Details (Test Run ID 56)
------------------------------------------------------------
- ---- Test Case: Constructor Happy Path 1
- PASS  139ms Object MINIMUM_VALUE. ISNULL - Expected NULL and got ""
- PASS    8ms Object OBSERVATIONS. EQ - Expected "0" and got "0"
+  WT_DEMO.TEST_SIMPLE_OBJECT Test Result Details
+  Test Run ID: 22
+  --------------------------------------------------------------
+---***  Constructor Happy Path 1  ***-------------------------------------------
+ PASS 2.83ms Object MINIMUM_VALUE. ISNULL - Expected NULL and got ""
+ PASS .118ms Object OBSERVATIONS. EQ - Expected "0" and got "0"
 
- - WTP.SIMPLE_TEST_OBJ_TYPE TYPE BODY Code Coverage Details (Test Run ID 56)
+  WT_DEMO.SIMPLE_TEST_OBJ_TYPE TYPE BODY Code Coverage Details
+  Test Run ID: 22
+  ----------------------------------------------------------------
 Source               TotTime MinTime   MaxTime     
   Line Stat Occurs    (usec)  (usec)    (usec) Text
 ------ ---- ------ --------- ------- --------- ------------
-     2 UNKN      0         2       2         2     CONSTRUCTOR FUNCTION simple_test_obj_type
+     2 UNKN      0         1       1         1     CONSTRUCTOR FUNCTION simple_test_obj_type
      7 EXEC      1         1       1         1        minimum_value  := null;
      8 EXEC      1         0       0         0        observations   := 0;
      9 EXEC      1         2       2         2        return;

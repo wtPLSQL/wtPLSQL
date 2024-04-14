@@ -1,7 +1,7 @@
 <p><a href="README.htm">Demos and Examples</a></p>
 <h1 id="test-table-constraints">Test Table Constraints</h1>
 <hr />
-<p>The syntax diagram in Oracle's &quot;Database SQL Language Reference&quot; (11.2) gives the list of <a href="https://docs.oracle.com/cd/E11882_01/server.112/e41084/clauses002.htm#CJAEDFIB">constraints</a> this way:</p>
+<p>The syntax diagram in Oracle's "Database SQL Language Reference" (11.2) gives the list of <a href="https://docs.oracle.com/cd/E11882_01/server.112/e41084/clauses002.htm#CJAEDFIB">constraints</a> this way:</p>
 <ul>
 <li>Not Null</li>
 <li>Unique (Key)</li>
@@ -9,7 +9,7 @@
 <li>References (Foreign Key)</li>
 <li>Check</li>
 </ul>
-<p>Typical unit testing (or white box testing) does not include the testing of constraints. In large part, these constraints are assumed to work without testing. Confirmation of continued function of these constraints is a reason to test them.</p>
+<p>Typical, these constraints are assumed to work without testing. Here we create a Test Runner to test the constraints on a table.</p>
 <h2 id="table-with-constraints">Table with Constraints</h2>
 <p>A table with constraints is needed for testing. This table has several constraints</p>
 <p>Run this:</p>
@@ -71,33 +71,33 @@ end table_test_pkg;
 </code></pre>
 <h2 id="check-the-results">Check the results</h2>
 <p>Run this:</p>
-<pre><code>set serveroutput on size unlimited format word_wrapped
+<pre><code>set serveroutput on size unlimited format truncated
 
 begin
    wtplsql.test_run(&#39;TABLE_TEST_PKG&#39;);
-   wt_text_report.dbms_out(USER,&#39;TABLE_TEST_PKG&#39;,30);
 end;
 /
 </code></pre>
 <p>And Get This:</p>
-<pre><code>    wtPLSQL 1.1.0 - Run ID 344: 01-Sep-2018 10:51:48 PM
+<pre><code>  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003, wtpgrb 1.003
+  Start Date/Time: 13-Apr-2024 01:14:13 AM
+  Test Results for WT_DEMO.TABLE_TEST_PKG
+  ------------------------------------------------------------------
+  Minimum Elapsed msec:          0      Total Assertions:          3
+  Average Elapsed msec:          1     Failed Assertions:          0
+  Maximum Elapsed msec:          2       Total Testcases:          2
+  Total Run Time (sec):        0.0      Failed Testcases:          0
+                                          Testcase Yield:        100%
 
-  Test Results for WTP_DEMO.TABLE_TEST_PKG
-       Total Test Cases:        2       Total Assertions:        3
-  Minimum Interval msec:        0      Failed Assertions:        0
-  Average Interval msec:        5       Error Assertions:        0
-  Maximum Interval msec:       16             Test Yield:   100.00%
-   Total Run Time (sec):      0.0
-
- - WTP_DEMO.TABLE_TEST_PKG Test Result Details (Test Run ID 344)
------------------------------------------------------------
- ---- Test Case: Happy Path 1
- PASS   16ms Successful Insert. RAISES/THROWS - No exception was expected. Exception raised was &quot;&quot;. Exception raised by: &quot;insert into table_test_tab (id, name) values (1, &#39;TEST1&#39;)&quot;.
- PASS    0ms Confirm l_rec.name. EQ - Expected &quot;TEST1&quot; and got &quot;TEST1&quot;
- ---- Test Case: Sad Path 1
- PASS    0ms Raise Error. RAISES/THROWS - Expected exception &quot;%ORA-02290: check constraint (WTP_DEMO.TABLE_TEST_TAB_CK1) violated%&quot;. Actual exception raised was &quot;ORA-02290: check constraint (WTP_DEMO.TABLE_TEST_TAB_CK1) violated&quot;. Exception raised by: &quot;insert into table_test_tab (id, name) values (1, &#39;Test1&#39;)&quot;.
+  WT_DEMO.TABLE_TEST_PKG Test Runner Details
+  --------------------------------------------------------------
+---***  Happy Path 1  ***-------------------------------------------------------
+ PASS .755ms Successful Insert. RAISES/THROWS - No exception was expected. Exception raised was &quot;&quot;. Exception raised by: &quot;insert into table_test_tab (id, name) values (1, &#39;TEST1&#39;)&quot;.
+ PASS .184ms Confirm l_rec.name. EQ - Expected &quot;TEST1&quot; and got &quot;TEST1&quot;
+---***  Sad Path 1  ***---------------------------------------------------------
+ PASS 2.27ms Raise Error. RAISES/THROWS - Expected exception &quot;%ORA-02290: check constraint (WT_DEMO.TABLE_TEST_TAB_CK1) violated%&quot;. Actual exception raised was &quot;ORA-02290: check constraint (WT_DEMO.TABLE_TEST_TAB_CK1) violated&quot;. Exception raised by: &quot;insert into table_test_tab (id, name) values (1, &#39;Test1&#39;)&quot;.
 </code></pre>
 <p>This is report level 30, the most detailed level of reporting. Starting from the top, we find the test runner executed 1 test case and 2 assertions. All tests passed for a 100% yield. There is no code coverage for the constraints.</p>
-<p>This is not a complete test. More test cases are needed to confirm other constraints and sad path .</p>
+<p>This is not a complete test. More test cases are needed to confirm other constraints and sad path testing.</p>
 <hr />
 <p><a href="README.htm">Demos and Examples</a></p>

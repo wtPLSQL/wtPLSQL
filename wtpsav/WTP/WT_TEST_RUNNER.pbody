@@ -238,7 +238,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run delete_records(' || l_runner_id || ') Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -258,7 +259,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run delete_records(NULL) Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -278,7 +280,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run delete_records(-9999) Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -337,7 +340,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run cleanup_records 1 Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
@@ -357,7 +361,8 @@ $THEN
       exception when others then
          wt_assert.isnull(
             msg_in        => 'Run cleanup_records 2 Exception',
-            check_this_in => dbms_utility.format_error_backtrace ||
+            check_this_in => SQLERRM || CHR(10) ||
+                             dbms_utility.format_error_backtrace ||
                              dbms_utility.format_full_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
