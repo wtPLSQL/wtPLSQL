@@ -429,7 +429,7 @@ $THEN
          check_this_in => existing_version);
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Show Version Happy Path 1';
-      insert into wt_version (component, version, action)
+      insert into wt_versions (component, version, action)
          values ('TESTING', 1.01, 'INSTALL');
       wt_assert.isnotnull (
          msg_in          => 'Show New Version',
@@ -439,7 +439,7 @@ $THEN
          check_this_in   => regexp_like(show_version, 'TESTING 1[.]010'));
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Show Version Happy Path 2';
-      insert into wt_version (component, version, action)
+      insert into wt_versions (component, version, action)
          values ('TESTING', 1.02, 'UPDATE');
       wt_assert.isnotnull (
          msg_in          => 'Show New Version',
@@ -449,7 +449,7 @@ $THEN
          check_this_in   => regexp_like(show_version, 'TESTING 1[.]020'));
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Show Version Happy Path 3';
-      insert into wt_version (component, version, action)
+      insert into wt_versions (component, version, action)
          values ('TESTING', 1.02, 'REMOVE');
       wt_assert.isnotnull (
          msg_in          => 'Show New Version',
@@ -460,7 +460,7 @@ $THEN
       --------------------------------------  WTPLSQL Testing --
       wt_assert.g_testcase := 'Show Version Teardown';
       rollback;
-      delete from wt_version where component = 'TESTING';
+      delete from wt_versions where component = 'TESTING';
       wt_assert.eq (
          msg_in          => 'Records Deleted',
          check_this_in   => SQL%ROWCOUNT,

@@ -307,7 +307,7 @@ $THEN
             msg_in        => 'Run delete_run_id(-99) Exception',
             check_this_in => SQLERRM || CHR(10) ||
                              dbms_utility.format_error_backtrace ||
-                             dbms_utility.format_full_stack      );
+                             dbms_utility.format_call_stack      );
       end;
       --------------------------------------  WTPLSQL Testing --
       wt_assert.eqqueryvalue (
