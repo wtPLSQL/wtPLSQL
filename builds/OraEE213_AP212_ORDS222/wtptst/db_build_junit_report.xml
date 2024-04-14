@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="WTP_schema_build" tests="38" failures="0" time="0" timestamp="2024-04-10T02:38:31">
+  <testsuite name="WTP_schema_build" tests="34" failures="0" time="0" timestamp="2024-04-14T15:48:50">
     <testcase name="INDEX:db_object_status" classname="WTP.HOOKS_PK" time="0"/>
-    <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075776C00002$$" time="0"/>
-    <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075776C00003$$" time="0"/>
-    <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075776C00005$$" time="0"/>
-    <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075776C00006$$" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075780C00002$$" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075780C00003$$" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075780C00005$$" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075780C00006$$" time="0"/>
     <testcase name="INDEX:db_object_status" classname="WTP.WT_SELF_TEST_PK" time="0"/>
     <testcase name="INDEX:db_object_status" classname="WTP.WT_VERSIONS_PK" time="0"/>
-    <testcase name="LOB:db_object_status" classname="WTP.SYS_LOB0000075776C00002$$" time="0"/>
-    <testcase name="LOB:db_object_status" classname="WTP.SYS_LOB0000075776C00003$$" time="0"/>
-    <testcase name="LOB:db_object_status" classname="WTP.SYS_LOB0000075776C00005$$" time="0"/>
-    <testcase name="LOB:db_object_status" classname="WTP.SYS_LOB0000075776C00006$$" time="0"/>
+    <testcase name="LOB:db_object_status" classname="WTP.SYS_LOB0000075780C00002$$" time="0"/>
+    <testcase name="LOB:db_object_status" classname="WTP.SYS_LOB0000075780C00003$$" time="0"/>
+    <testcase name="LOB:db_object_status" classname="WTP.SYS_LOB0000075780C00005$$" time="0"/>
+    <testcase name="LOB:db_object_status" classname="WTP.SYS_LOB0000075780C00006$$" time="0"/>
     <testcase name="PACKAGE:db_object_status" classname="WTP.CORE_DATA" time="0"/>
     <testcase name="PACKAGE:db_object_status" classname="WTP.HOOK" time="0"/>
     <testcase name="PACKAGE:db_object_status" classname="WTP.JUNIT_CORE_REPORT" time="0"/>
@@ -28,11 +28,7 @@
     <testcase name="PROCEDURE:db_object_status" classname="WTP.WT_EXECUTE_TEST_RUNNER" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.UTASSERT" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WTPLSQL" time="0"/>
-    <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_AD_HOC_REPORT" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_ASSERT" time="0"/>
-    <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_CORE_REPORT" time="0"/>
-    <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_EXECUTE_TEST_RUNNER" time="0"/>
-    <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_VERSION" time="0"/>
     <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_WTPLSQL" time="0"/>
     <testcase name="TABLE:db_object_status" classname="WTP.HOOKS" time="0"/>
     <testcase name="TABLE:db_object_status" classname="WTP.WT_SELF_TEST" time="0"/>

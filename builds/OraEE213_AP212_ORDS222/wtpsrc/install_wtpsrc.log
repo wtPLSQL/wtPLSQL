@@ -7,7 +7,7 @@ Table created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-10T02:38:30 for a duration of .16 seconds (started at 2024-04-10T02:38:30)
+=== DBI Completed at 2024-04-14T15:48:49 for a duration of .16 seconds (started at 2024-04-14T15:48:49)
 === DBI Started: WTP/WT_AD_HOC_REPORT.proc
 
 Warning: Procedure created with compilation errors.
@@ -15,10 +15,7 @@ Warning: Procedure created with compilation errors.
 
 Grant succeeded.
 
-
-Synonym created.
-
-=== DBI Completed at 2024-04-10T02:38:30 for a duration of .28 seconds (started at 2024-04-10T02:38:30)
+=== DBI Completed at 2024-04-14T15:48:49 for a duration of .16 seconds (started at 2024-04-14T15:48:49)
 === DBI Started: WTP/WT_EXECUTE_TEST_RUNNER.proc
 
 Warning: Procedure created with compilation errors.
@@ -26,25 +23,28 @@ Warning: Procedure created with compilation errors.
 
 Grant succeeded.
 
-
-Synonym created.
-
-=== DBI Completed at 2024-04-10T02:38:30 for a duration of .15 seconds (started at 2024-04-10T02:38:30)
+=== DBI Completed at 2024-04-14T15:48:49 for a duration of .11 seconds (started at 2024-04-14T15:48:49)
 === DBI Started: WTP/CORE_DATA.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-10T02:38:31 for a duration of .15 seconds (started at 2024-04-10T02:38:30)
+
+Grant succeeded.
+
+=== DBI Completed at 2024-04-14T15:48:50 for a duration of .2 seconds (started at 2024-04-14T15:48:49)
 === DBI Started: WTP/HOOK.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-10T02:38:31 for a duration of .06 seconds (started at 2024-04-10T02:38:31)
+
+Grant succeeded.
+
+=== DBI Completed at 2024-04-14T15:48:50 for a duration of .1 seconds (started at 2024-04-14T15:48:50)
 === DBI Started: WTP/JUNIT_CORE_REPORT.pspec
 
 Package created.
 
-=== DBI Completed at 2024-04-10T02:38:31 for a duration of .07 seconds (started at 2024-04-10T02:38:31)
+=== DBI Completed at 2024-04-14T15:48:50 for a duration of .06 seconds (started at 2024-04-14T15:48:50)
 === DBI Started: WTP/WTPLSQL.pspec
 
 Package created.
@@ -58,7 +58,7 @@ Synonym created.
 
 Synonym created.
 
-=== DBI Completed at 2024-04-10T02:38:31 for a duration of .15 seconds (started at 2024-04-10T02:38:31)
+=== DBI Completed at 2024-04-14T15:48:50 for a duration of .16 seconds (started at 2024-04-14T15:48:50)
 === DBI Started: WTP/WT_ASSERT.pspec
 
 Package created.
@@ -72,7 +72,7 @@ Synonym created.
 
 Synonym created.
 
-=== DBI Completed at 2024-04-10T02:38:31 for a duration of .23 seconds (started at 2024-04-10T02:38:31)
+=== DBI Completed at 2024-04-14T15:48:50 for a duration of .19 seconds (started at 2024-04-14T15:48:50)
 === DBI Started: WTP/WT_CORE_REPORT.pspec
 
 Package created.
@@ -80,10 +80,7 @@ Package created.
 
 Grant succeeded.
 
-
-Synonym created.
-
-=== DBI Completed at 2024-04-10T02:38:31 for a duration of .12 seconds (started at 2024-04-10T02:38:31)
+=== DBI Completed at 2024-04-14T15:48:50 for a duration of .1 seconds (started at 2024-04-14T15:48:50)
 === DBI Started: WTP/HOOKS.tab
 
 Table created.
@@ -112,7 +109,7 @@ Comment created.
 
 Comment created.
 
-=== DBI Completed at 2024-04-10T02:38:49 for a duration of 18.08 seconds (started at 2024-04-10T02:38:31)
+=== DBI Completed at 2024-04-14T15:49:06 for a duration of 15.5 seconds (started at 2024-04-14T15:48:50)
 === DBI Started: WTP/WT_VERSIONS.tab
 
 Table created.
@@ -144,10 +141,7 @@ Comment created.
 
 Grant succeeded.
 
-
-Synonym created.
-
-=== DBI Completed at 2024-04-10T02:38:50 for a duration of .36 seconds (started at 2024-04-10T02:38:49)
+=== DBI Completed at 2024-04-14T15:49:06 for a duration of .31 seconds (started at 2024-04-14T15:49:06)
 === DBI Started: WTP/HOOKS.cdl
 
 Disable Triggers and Foreign Keys
@@ -160,7 +154,7 @@ sqlldr_control=WTP/HOOKS.ctl
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-10T02:38:56 for a duration of 5.73 seconds (started at 2024-04-10T02:38:50)
+=== DBI Completed at 2024-04-14T15:49:10 for a duration of 3.89 seconds (started at 2024-04-14T15:49:06)
 === DBI Started: WTP/WT_QUAL_TEST_RUNNERS_VW.vw
 
 View created.
@@ -183,37 +177,37 @@ Comment created.
 
 Grant succeeded.
 
-=== DBI Completed at 2024-04-10T02:38:56 for a duration of .47 seconds (started at 2024-04-10T02:38:56)
+=== DBI Completed at 2024-04-14T15:49:10 for a duration of .33 seconds (started at 2024-04-14T15:49:10)
 === DBI Started: WTP/CORE_DATA.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-10T02:38:56 for a duration of .12 seconds (started at 2024-04-10T02:38:56)
+=== DBI Completed at 2024-04-14T15:49:10 for a duration of .08 seconds (started at 2024-04-14T15:49:10)
 === DBI Started: WTP/HOOK.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-10T02:38:56 for a duration of .09 seconds (started at 2024-04-10T02:38:56)
+=== DBI Completed at 2024-04-14T15:49:10 for a duration of .08 seconds (started at 2024-04-14T15:49:10)
 === DBI Started: WTP/JUNIT_CORE_REPORT.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-10T02:38:56 for a duration of .1 seconds (started at 2024-04-10T02:38:56)
+=== DBI Completed at 2024-04-14T15:49:11 for a duration of .09 seconds (started at 2024-04-14T15:49:10)
 === DBI Started: WTP/WTPLSQL.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-10T02:38:56 for a duration of .12 seconds (started at 2024-04-10T02:38:56)
+=== DBI Completed at 2024-04-14T15:49:11 for a duration of .14 seconds (started at 2024-04-14T15:49:11)
 === DBI Started: WTP/WT_ASSERT.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-10T02:38:57 for a duration of .26 seconds (started at 2024-04-10T02:38:56)
+=== DBI Completed at 2024-04-14T15:49:11 for a duration of .23 seconds (started at 2024-04-14T15:49:11)
 === DBI Started: WTP/WT_CORE_REPORT.pbody
 
 Package body created.
 
-=== DBI Completed at 2024-04-10T02:38:57 for a duration of .12 seconds (started at 2024-04-10T02:38:57)
+=== DBI Completed at 2024-04-14T15:49:11 for a duration of .09 seconds (started at 2024-04-14T15:49:11)
 === DBI Started: ./installation_finalize.sql
 
 Drop_Temp_Publicly_Updateable_Table_SQL
@@ -224,8 +218,6 @@ Table dropped.
 fix_invalid_public_synonyms
 
 Re-create Invalid Public Synonyms
-CREATE OR REPLACE NONEDITIONABLE PUBLIC SYNONYM "WT_AD_HOC_REPORT" for "WTP"."WT_AD_HOC_REPORT"
-CREATE OR REPLACE NONEDITIONABLE PUBLIC SYNONYM "WT_EXECUTE_TEST_RUNNER" for "WTP"."WT_EXECUTE_TEST_RUNNER"
 
 PL/SQL procedure successfully completed.
 
@@ -282,4 +274,4 @@ sqlldr_control=./odbcapture_installation_logs.ctl
 
 PL/SQL procedure successfully completed.
 
-=== DBI Completed at 2024-04-10T02:39:05 for a duration of 8.42 seconds (started at 2024-04-10T02:38:57)
+=== DBI Completed at 2024-04-14T15:49:19 for a duration of 7.47 seconds (started at 2024-04-14T15:49:11)
