@@ -63,7 +63,5 @@ grant EXECUTE on "WTP"."WT_CORE_REPORT" to "PUBLIC";
 
 --  Synonyms
 
---DBMS_METADATA:PUBLIC.WT_CORE_REPORT
-
 
 set define on

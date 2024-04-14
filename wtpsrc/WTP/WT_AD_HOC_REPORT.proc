@@ -35,7 +35,5 @@ grant EXECUTE on "WTP"."WT_AD_HOC_REPORT" to "PUBLIC";
 
 --  Synonyms
 
---DBMS_METADATA:PUBLIC.WT_AD_HOC_REPORT
-
 
 set define on

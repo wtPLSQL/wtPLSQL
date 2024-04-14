@@ -41,7 +41,5 @@ grant SELECT on "WTP"."WT_VERSIONS" to "PUBLIC";
 
 --  Synonyms
 
---DBMS_METADATA:PUBLIC.WT_VERSION
-
 
 set define on

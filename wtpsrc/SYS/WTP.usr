@@ -23,6 +23,4 @@ grant SELECT on "SYS"."DBMS_ALERT_INFO" to "WTP" with grant option;
 grant EXECUTE on "SYS"."DBMS_LOCK" to "WTP";
 grant SELECT on "SYS"."GV_$PARAMETER" to "WTP" with grant option;
 
-grant execute any procedure to wtp;
-
 set define on
