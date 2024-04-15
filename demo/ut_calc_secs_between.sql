@@ -89,8 +89,15 @@ show errors
 
 set serveroutput on size unlimited format truncated
 
+-- Run was WTP User to activate Persist add-on
 begin
-   wtp.hook.init;
+   wtp.junit_core_report.delete_hooks;
+   wtp.wt_core_report.delete_hooks;
+   wtp.wt_test_run.insert_hooks;
+end;
+/
+
+begin
    wtplsql.test_run('UT_CALC_SECS_BETWEEN');
    wtp.wt_persist_report.dbms_out(in_runner_owner => USER
                                  ,in_runner_name  => 'UT_CALC_SECS_BETWEEN'

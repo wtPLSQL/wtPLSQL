@@ -23,18 +23,18 @@ WHENEVER SQLERROR continue
 prompt
 prompt Create Demo owner
 
-create user WT_DEMO identified by WT_DEMO
+create user WTP_DEMO identified by WTP_DEMO
    default tablespace users
    quota 1M on users
    temporary tablespace temp;
 
-grant create session   to WT_DEMO;
-grant create type      to WT_DEMO;
-grant create sequence  to WT_DEMO;
-grant create table     to WT_DEMO;
-grant create trigger   to WT_DEMO;
-grant create view      to WT_DEMO;
-grant create procedure to WT_DEMO;
+grant create session   to WTP_DEMO;
+grant create type      to WTP_DEMO;
+grant create sequence  to WTP_DEMO;
+grant create table     to WTP_DEMO;
+grant create trigger   to WTP_DEMO;
+grant create view      to WTP_DEMO;
+grant create procedure to WTP_DEMO;
 
 begin
    $IF $$WTPLSQL_ENABLE

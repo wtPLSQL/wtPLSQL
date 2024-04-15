@@ -94,6 +94,7 @@ end test_simple_object;
 /
 </code></pre>
 <h2 id="check-the-results">Check the Results</h2>
+<p>The Persist add-on must be installed.</p>
 <p>Run this:</p>
 <pre><code>set serveroutput on size unlimited format truncated
 
@@ -149,7 +150,6 @@ Source               TotTime MinTime   MaxTime
     19#NOTX#     0         0       0         0        observations := observations + 1;
     20 EXCL      0         0       0         0     end add_observation;
 </code></pre>
-<p>If the Persist add-on is not installed, the code coverage results will not be displayed.</p>
 <p>This is report level 30, the most detailed level of reporting. Starting from the top, we find the Test Runner executed 1 test case, 2 assertions, and no failed assertions, which resulted in 100% yield (all tests passed). The next section shows the type body tested had 10 lines profiled, 4 were executed, and 4 were not executed, which resulted in a code coverage of 50%. Additional testing is required to achieve 100% code coverage. For brevity, this additional testing will not be included.</p>
 <h2 id="testing-private-object-methods-and-self-testing">Testing Private Object Methods and Self-Testing</h2>
 <p>An Oracle object type can have private methods. These methods are not available outside the object. They are inherited from a super-type.</p>

@@ -43,7 +43,7 @@ as
 
    --   WtPLSQL Self Test Procedures
    --
-   -- alter system set PLSQL_CCFLAGS = 
+   -- alter system set PLSQL_CCFLAGS =
    --    'WTPLSQL_SELFTEST:TRUE'
    --    scope=BOTH;
    --
@@ -57,6 +57,7 @@ end wt_test_run;
 
 
 --  Grants
+grant EXECUTE on "WTP"."WT_TEST_RUN" to "PUBLIC";
 
 
 --  Synonyms

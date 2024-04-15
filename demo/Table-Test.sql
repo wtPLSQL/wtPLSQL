@@ -41,7 +41,7 @@ as
       wt_assert.raises (
          msg_in          => 'Raise Error',
          check_call_in   => 'insert into table_test_tab (id, name) values (1, ''Test1'')',
-         against_exc_in  => 'ORA-02290: check constraint (WT_DEMO.TABLE_TEST_TAB_CK1) violated');
+         against_exc_in  => 'ORA-02290: check constraint (WTP_DEMO.TABLE_TEST_TAB_CK1) violated');
    end t_sad_path_1;
    procedure wtplsql_run is
    begin
@@ -52,23 +52,22 @@ end table_test_pkg;
 /
 show errors
 
--- Run was WTP User to activate Core Report add-on
---begin
---   wt_test_run.delete_hooks;
---   junit_core_report.delete_hooks;
---   wt_core_report.insert_hooks;
---   update wtp.hooks
---     set  run_string = 'begin wtp.wt_core_report.dbms_out(in_detail_level => 30); end;'
---    where hook_name  = 'after_test_run'
---     and  run_string = 'begin wtp.wt_core_report.dbms_out(in_detail_level => 10); end;';
---   wtp.hook.init;
---end;
---/
-
 set serveroutput on size unlimited format truncated
 
+-- Run was WTP User to activate Core Report add-on
 begin
+   wtp.wt_test_run.delete_hooks;
+   wtp.junit_core_report.delete_hooks;
+   wtp.wt_core_report.insert_hooks;
+   update wtp.hooks
+     set  run_string = 'begin wtp.wt_core_report.dbms_out(in_detail_level => 30); end;'
+    where hook_name  = 'after_test_run'
+     and  run_string = 'begin wtp.wt_core_report.dbms_out(in_detail_level => 10); end;';
    wtp.hook.init;
+end;
+/
+
+begin
    wtplsql.test_run('TABLE_TEST_PKG');
 end;
 /

@@ -112,6 +112,8 @@ end test_simple_object;
 
 ## Check the Results
 
+The Persist add-on must be installed.
+
 Run this:
 
 ```
@@ -172,8 +174,6 @@ Source               TotTime MinTime   MaxTime
     19#NOTX#     0         0       0         0        observations := observations + 1;
     20 EXCL      0         0       0         0     end add_observation;
 ```
-
-If the Persist add-on is not installed, the code coverage results will not be displayed.
 
 This is report level 30, the most detailed level of reporting.  Starting from the top, we find the Test Runner executed 1 test case, 2 assertions, and no failed assertions, which resulted in 100% yield (all tests passed).  The next section shows the type body tested had 10 lines profiled, 4 were executed, and 4 were not executed, which resulted in a code coverage of 50%.  Additional testing is required to achieve 100% code coverage.  For brevity, this additional testing will not be included.
 

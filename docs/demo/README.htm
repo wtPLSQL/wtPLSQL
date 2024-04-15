@@ -5,19 +5,13 @@
 <p>Demonstrations and examples requires the Persist add-on. Test results from assertions can be queried from a set of wtPLSQL tables. The examples here will use the default reporting package called WT_PERSIST_REPORT. This package displays test results using DBMS_OUTPUT.</p>
 <h2 id="user-setup">User Setup</h2>
 <p>A login, or database session, is required to interact with the Oracle database. The SQL below will create a user that can run these examples. If you already have a database login, this is not necessary.</p>
-<pre><code>create user wtp_demo identified by wtp_demo
-   default tablespace users
-   quota unlimited on users
-   temporary tablespace temp;
-
-grant create session   to wtp_demo;
-grant create type      to wtp_demo;
-grant create sequence  to wtp_demo;
-grant create table     to wtp_demo;
-grant create trigger   to wtp_demo;
-grant create view      to wtp_demo;
-grant create procedure to wtp_demo;
-</code></pre>
+<p>To create a database login, run this installer:</p>
+<ol>
+<li>cd to "src/demo"</li>
+<li>login as SYS or SYSTEM using SQL*Plus</li>
+<li>Run the "install_sys.sql" script</li>
+</ol>
+<p>To confirm a successful install, review the "install_sys.LST" log file.</p>
 <h2 id="confirm-the-installation">Confirm the Installation</h2>
 <p>The simplest check for a wtPLSQL installation is to select the "version from dual". If wtPSQL is installed, it will show which add-ons have been installed if any.</p>
 <p>Run this:</p>
@@ -68,22 +62,17 @@ end;
 <li><a href="ut_str.htm">ut_str</a> - Test a Simple Function</li>
 </ul>
 <h2 id="demo-installer">Demo Installer</h2>
-<p>To save some typing, there is an installer for the demonstrations and examples. This installer will:</p>
+<p>To save some typing, there are scripts in the "src/demo" folder for the demonstrations and examples:</p>
 <ul>
-<li>Prompt for a schema name (WT_DEMO is the default).</li>
-<li>Confirm the database user is SYS or SYSTEM.</li>
-<li>Create the schema.</li>
-<li>Load database objects in the schema.</li>
+<li>Package-Test.sql</li>
+<li>Table-Test.sql</li>
+<li>Trigger-Test.sql</li>
+<li>Type-Test.sql</li>
+<li>ut_betwnstr.sql</li>
+<li>ut_calc_secs_between.sql</li>
+<li>ut_truncit.sql</li>
+<li>ut_str.sql</li>
 </ul>
-<p>To run this installer:</p>
-<ol>
-<li>cd to "src/demo"</li>
-<li>login as SYS or SYSTEM using SQL*Plus</li>
-<li>Run the "install_sys.sql" script</li>
-<li>login as WT_DEMO using SQL*Plus</li>
-<li>Run the "install.sql" script</li>
-</ol>
-<p>To confirm a successful installation, review the newly created "install.LST" log file against the "installO.LST" example log file.</p>
 <h2 id="demo-un-install">Demo Un-Install</h2>
 <p>The "uninstall.sql" script provided in the "src/demo" directory drops the demo schema from the database, with cascade.</p>
 <p>To un-install:</p>
@@ -92,7 +81,7 @@ end;
 <li>login as SYS or SYSTEM using SQL*Plus</li>
 <li>Run the "uninstall.sql" script</li>
 </ol>
-<p>To confirm a successful un-install, review the "uninstall.LST" log file against the "uninstallO.LST" example log file.</p>
+<p>To confirm a successful un-install, review the "uninstall.LST" log file.</p>
 <hr />
 <p><em>The following applies to files and directories at this location in the documentation repository.</em></p>
 <table>

@@ -65,7 +65,7 @@ end;
   Total Run Time (sec):        0.0      Failed Testcases:          0
                                           Testcase Yield:        100%
 </code></pre>
-<p>A successful test. Notice that the value of the C_TEST1 constant is displayed in the test result details.</p>
+<p>A successful test.</p>
 <h2 id="catching-an-exception">Catching an Exception</h2>
 <p>In the previous example, everything worked correctly. Here is an example of GET_LINE not working. For testing purposes, an exception will be thrown between the PUT_LINE and GET_LINE call.</p>
 <p>Run this:</p>
@@ -91,7 +91,7 @@ as
 end test_dbms_output;
 /
 </code></pre>
-<p>Then, run this:</p>
+<p>And get this:</p>
 <pre><code>begin
    wtplsql.test_run(&#39;TEST_DBMS_OUTPUT&#39;);
 end;
@@ -223,7 +223,10 @@ end;
 
   *** Test Runner Error ***
 Hook Error in &quot;execute_test_runner&quot;, SEQ 20.
-ORA-06512: at &quot;WT_DEMO.TEST_DBMS_OUTPUT&quot;, line 53
+ORA-20000: ORA-20000: Fault insertion exception
+ORA-06512: at &quot;WTP_DEMO.TEST_DBMS_OUTPUT&quot;, line 21
+ORA-06512: at &quot;WTP_DEMO.TEST_DBMS_OUTPUT&quot;, line 47
+ORA-06512: at &quot;WTP_DEMO.TEST_DBMS_OUTPUT&quot;, line 54
 ORA-06512: at line 1
 ORA-06512: at &quot;WTP.WT_EXECUTE_TEST_RUNNER&quot;, line 11
 ORA-06512: at line 1
@@ -231,11 +234,12 @@ ORA-06512: at &quot;WTP.HOOK&quot;, line 41
 ----- PL/SQL Call Stack -----
   object      line  object
   handle    number  name
-0xa28c8178        43  package body WTP.HOOK.RUN
-0x6f239218       503  package body WTP.WTPLSQL.TEST_RUN
-0x9fa74a88         2  anonymous block
+0x9deb4af8        43  package body WTP.HOOK.RUN
+0x99b16938       503  package body WTP.WTPLSQL.TEST_RUN
+0x7d7d6190         2  anonymous block
 
  * NOTE: No Data in Test Results Array &quot;core_data.g_results_nt&quot;
+
 </code></pre>
 <p>The exception handler preserved the error stack before calling teardown. Also, there is an extra "ORA-20000:" at the front of the error stack displayed, but all the error information is preserved.</p>
 <p>These are all the basic tools needed to successfully create and run Test Runner packages in wtPLSQL.</p>

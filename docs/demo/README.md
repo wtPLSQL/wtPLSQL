@@ -12,20 +12,13 @@ Demonstrations and examples requires the Persist add-on.  Test results from asse
 
 A login, or database session, is required to interact with the Oracle database.  The SQL below will create a user that can run these examples.  If you already have a database login, this is not necessary.
 
-```
-create user wtp_demo identified by wtp_demo
-   default tablespace users
-   quota unlimited on users
-   temporary tablespace temp;
+To create a database login, run this installer:
+1. cd to "src/demo"
+1. login as SYS or SYSTEM using SQL*Plus
+1. Run the "install_sys.sql" script
 
-grant create session   to wtp_demo;
-grant create type      to wtp_demo;
-grant create sequence  to wtp_demo;
-grant create table     to wtp_demo;
-grant create trigger   to wtp_demo;
-grant create view      to wtp_demo;
-grant create procedure to wtp_demo;
-```
+To confirm a successful install, review the "install_sys.LST" log file.
+
 
 ## Confirm the Installation
 
@@ -94,20 +87,15 @@ wtPLSQL was built with the utPLSQL "ut_assert" API.  These examples were created
 * [ut_str](ut_str.md) - Test a Simple Function
 
 ## Demo Installer
-To save some typing, there is an installer for the demonstrations and examples.  This installer will:
-* Prompt for a schema name (WT_DEMO is the default).
-* Confirm the database user is SYS or SYSTEM.
-* Create the schema.
-* Load database objects in the schema.
-
-To run this installer:
-1. cd to "src/demo"
-1. login as SYS or SYSTEM using SQL*Plus
-1. Run the "install_sys.sql" script
-1. login as WT_DEMO using SQL*Plus
-1. Run the "install.sql" script
-
-To confirm a successful installation, review the newly created "install.LST" log file against the "installO.LST" example log file.
+To save some typing, there are scripts in the "src/demo" folder for the demonstrations and examples:
+* Package-Test.sql
+* Table-Test.sql
+* Trigger-Test.sql
+* Type-Test.sql
+* ut_betwnstr.sql
+* ut_calc_secs_between.sql
+* ut_truncit.sql
+* ut_str.sql
 
 ## Demo Un-Install
 
@@ -119,7 +107,7 @@ To un-install:
 1. Run the "uninstall.sql" script
 
 
-To confirm a successful un-install, review the "uninstall.LST" log file against the "uninstallO.LST" example log file.
+To confirm a successful un-install, review the "uninstall.LST" log file.
 
 ---
 

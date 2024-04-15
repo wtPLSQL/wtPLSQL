@@ -38,6 +38,7 @@ end junit_core_report;
 
 
 --  Grants
+grant EXECUTE on "WTP"."JUNIT_CORE_REPORT" to "PUBLIC";
 
 
 --  Synonyms

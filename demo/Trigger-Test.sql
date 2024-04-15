@@ -65,18 +65,17 @@ end trigger_test_pkg;
 /
 show errors
 
--- Run was WTP User to activate Persist add-on
---begin
---   wt_test_run.delete_hooks;
---   junit_core_report.delete_hooks;
---   wt_core_report.insert_hooks;
---end;
---/
-
 set serveroutput on size unlimited format truncated
 
+-- Run was WTP User to activate Persist add-on
 begin
-   wtp.hook.init;
+   wtp.junit_core_report.delete_hooks;
+   wtp.wt_core_report.delete_hooks;
+   wtp.wt_test_run.insert_hooks;
+end;
+/
+
+begin
    wtplsql.test_run('TRIGGER_TEST_PKG');
    wtp.wt_persist_report.dbms_out(in_runner_owner => USER
                                  ,in_runner_name  => 'TRIGGER_TEST_PKG'

@@ -159,6 +159,8 @@ end trigger_test_pkg;
 
 ## Check the results
 
+The Persist add-on must be installed.
+
 Run this:
 
 ```
@@ -215,8 +217,6 @@ Source               TotTime MinTime   MaxTime
      9 EXEC      1         4       1         3   :new.created_dtm := sysdate;
     10 EXEC      1         2       2         2 end;
 ```
-
-If the Persist add-on is not installed, the code coverage results will not be displayed.
 
 This is report level 30, the most detailed level of reporting.  Starting from the top, we find the Test Runner executed 1 test case and 3 assertions.  All tests passed for a 100% yield.  The code coverage for the trigger shows 5 profiles, 4 executed, and a code coverage of 100%.  Notice the trigger offset of 3 which aligns the source code with the profiled lines.
 

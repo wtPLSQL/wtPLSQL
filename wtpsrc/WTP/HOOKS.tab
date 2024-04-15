@@ -42,6 +42,10 @@ ALTER TABLE "WTP"."HOOKS" ADD CONSTRAINT "HOOKS_PK" PRIMARY KEY ("HOOK_NAME", "S
 
 
 --  Grants
+grant DELETE on "WTP"."HOOKS" to "PUBLIC";
+grant INSERT on "WTP"."HOOKS" to "PUBLIC";
+grant SELECT on "WTP"."HOOKS" to "PUBLIC";
+grant UPDATE on "WTP"."HOOKS" to "PUBLIC";
 
 
 --  Synonyms

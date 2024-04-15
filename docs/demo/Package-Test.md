@@ -90,7 +90,7 @@ And get this:
                                           Testcase Yield:        100%
 ```
 
-A successful test.  Notice that the value of the C_TEST1 constant is displayed in the test result details.
+A successful test.
 
 ## Catching an Exception
 
@@ -131,7 +131,7 @@ end;
 /
 ```
 
-You might get this:
+And get this:
 
 ```
 Test 1
@@ -273,7 +273,10 @@ This should be preserved.
 
   *** Test Runner Error ***
 Hook Error in "execute_test_runner", SEQ 20.
-ORA-06512: at "WT_DEMO.TEST_DBMS_OUTPUT", line 53
+ORA-20000: ORA-20000: Fault insertion exception
+ORA-06512: at "WTP_DEMO.TEST_DBMS_OUTPUT", line 21
+ORA-06512: at "WTP_DEMO.TEST_DBMS_OUTPUT", line 47
+ORA-06512: at "WTP_DEMO.TEST_DBMS_OUTPUT", line 54
 ORA-06512: at line 1
 ORA-06512: at "WTP.WT_EXECUTE_TEST_RUNNER", line 11
 ORA-06512: at line 1
@@ -281,11 +284,12 @@ ORA-06512: at "WTP.HOOK", line 41
 ----- PL/SQL Call Stack -----
   object      line  object
   handle    number  name
-0xa28c8178        43  package body WTP.HOOK.RUN
-0x6f239218       503  package body WTP.WTPLSQL.TEST_RUN
-0x9fa74a88         2  anonymous block
+0x9deb4af8        43  package body WTP.HOOK.RUN
+0x99b16938       503  package body WTP.WTPLSQL.TEST_RUN
+0x7d7d6190         2  anonymous block
 
  * NOTE: No Data in Test Results Array "core_data.g_results_nt"
+
 ```
 
 The exception handler preserved the error stack before calling teardown.  Also, there is an extra "ORA-20000:" at the front of the error stack displayed, but all the error information is preserved.

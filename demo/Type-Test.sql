@@ -68,23 +68,17 @@ end test_simple_object;
 /
 show errors
 
--- Run was WTP User to activate Persist add-on
---begin
---   wt_test_run.delete_hooks;
---   junit_core_report.delete_hooks;
---   wt_core_report.insert_hooks;
---   update wtp.hooks
---     set  run_string = 'begin wtp.wt_core_report.dbms_out(in_detail_level => 30); end;'
---    where hook_name  = 'after_test_run'
---     and  run_string = 'begin wtp.wt_core_report.dbms_out(in_detail_level => 10); end;';
---   wtp.hook.init;
---end;
---/
-
 set serveroutput on size unlimited format truncated
 
+-- Run was WTP User to activate Persist add-on
 begin
-   wtp.hook.init;
+   wtp.junit_core_report.delete_hooks;
+   wtp.wt_core_report.delete_hooks;
+   wtp.wt_test_run.insert_hooks;
+end;
+/
+
+begin
    wtplsql.test_run('TEST_SIMPLE_OBJECT');
    wtp.wt_persist_report.dbms_out(in_runner_owner => USER
                                  ,in_runner_name  => 'TEST_SIMPLE_OBJECT'
