@@ -1,7 +1,7 @@
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.CORE_DATA
-  Run ID 3: 14-Apr-2024 03:50:31 PM
+  Run ID 3: 15-Apr-2024 01:44:04 AM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:       64
   Average Elapsed msec:        0     Failed Assertions:        0
@@ -14,19 +14,19 @@
           Ignored Lines:      184   Total Profiled Lines:      263
          Excluded Lines:        1   Total Executed Lines:       73
   Minimum LineExec usec:        0     Not Executed Lines:        0
-  Average LineExec usec:        1          Unknown Lines:        5
-  Maximum LineExec usec:       25          Code Coverage:    100.0%
+  Average LineExec usec:        2          Unknown Lines:        5
+  Maximum LineExec usec:      164          Code Coverage:    100.0%
   Trigger Source Offset:        0
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.HOOK
-  Run ID 4: 14-Apr-2024 03:50:33 PM
+  Run ID 4: 15-Apr-2024 01:44:05 AM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:       23
   Average Elapsed msec:        0     Failed Assertions:        0
-  Maximum Elapsed msec:        3       Total Testcases:        5
-  Total Run Time (sec):      0.2      Failed Testcases:        0
+  Maximum Elapsed msec:        2       Total Testcases:        5
+  Total Run Time (sec):      0.1      Failed Testcases:        0
                                         Testcase Yield:      100%
 
   Code Coverage for PACKAGE BODY WTP.HOOK
@@ -34,30 +34,30 @@
           Ignored Lines:       68   Total Profiled Lines:       86
          Excluded Lines:        1   Total Executed Lines:       14
   Minimum LineExec usec:        0     Not Executed Lines:        0
-  Average LineExec usec:       35          Unknown Lines:        3
-  Maximum LineExec usec:      177          Code Coverage:    100.0%
+  Average LineExec usec:       23          Unknown Lines:        3
+  Maximum LineExec usec:      120          Code Coverage:    100.0%
   Trigger Source Offset:        0
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.WTPLSQL
-  Run ID 5: 14-Apr-2024 03:50:33 PM
+  Run ID 5: 15-Apr-2024 01:44:06 AM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:       33
-  Average Elapsed msec:       19     Failed Assertions:        0
-  Maximum Elapsed msec:      194       Total Testcases:       16
+  Average Elapsed msec:       16     Failed Assertions:        0
+  Maximum Elapsed msec:      149       Total Testcases:       16
   Total Run Time (sec):      0.6      Failed Testcases:        0
                                         Testcase Yield:      100%
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.WT_ASSERT
-  Run ID 6: 14-Apr-2024 03:50:34 PM
+  Run ID 6: 15-Apr-2024 01:44:06 AM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:      414
-  Average Elapsed msec:       13     Failed Assertions:        0
-  Maximum Elapsed msec:     2310       Total Testcases:      152
-  Total Run Time (sec):      5.3      Failed Testcases:        0
+  Average Elapsed msec:       12     Failed Assertions:        0
+  Maximum Elapsed msec:     2446       Total Testcases:      152
+  Total Run Time (sec):      4.9      Failed Testcases:        0
                                         Testcase Yield:      100%
 
   Code Coverage for PACKAGE BODY WTP.WT_ASSERT
@@ -65,19 +65,19 @@
           Ignored Lines:     1150   Total Profiled Lines:     1520
          Excluded Lines:        2   Total Executed Lines:      314
   Minimum LineExec usec:        0     Not Executed Lines:        0
-  Average LineExec usec:      236          Unknown Lines:       54
-  Maximum LineExec usec:   238353          Code Coverage:    100.0%
+  Average LineExec usec:      156          Unknown Lines:       54
+  Maximum LineExec usec:    34014          Code Coverage:    100.0%
   Trigger Source Offset:        0
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.WT_DBOUT
-  Run ID 7: 14-Apr-2024 03:50:42 PM
+  Run ID 7: 15-Apr-2024 01:44:14 AM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:       15
   Average Elapsed msec:        0     Failed Assertions:        0
-  Maximum Elapsed msec:        2       Total Testcases:       12
-  Total Run Time (sec):      0.2      Failed Testcases:        0
+  Maximum Elapsed msec:        1       Total Testcases:       12
+  Total Run Time (sec):      0.1      Failed Testcases:        0
                                         Testcase Yield:      100%
 
   Code Coverage for PACKAGE BODY WTP.WT_DBOUT
@@ -85,19 +85,19 @@
           Ignored Lines:       55   Total Profiled Lines:       82
          Excluded Lines:        2   Total Executed Lines:       22
   Minimum LineExec usec:        0     Not Executed Lines:        0
-  Average LineExec usec:       36          Unknown Lines:        3
-  Maximum LineExec usec:      425          Code Coverage:    100.0%
+  Average LineExec usec:       29          Unknown Lines:        3
+  Maximum LineExec usec:      494          Code Coverage:    100.0%
   Trigger Source Offset:        0
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.WT_JOB
-  Run ID 8: 14-Apr-2024 03:50:42 PM
+  Run ID 8: 15-Apr-2024 01:44:14 AM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:       31
-  Average Elapsed msec:      193     Failed Assertions:        0
-  Maximum Elapsed msec:     1083       Total Testcases:        8
-  Total Run Time (sec):      6.1      Failed Testcases:        0
+  Average Elapsed msec:      190     Failed Assertions:        0
+  Maximum Elapsed msec:     1066       Total Testcases:        8
+  Total Run Time (sec):      6.0      Failed Testcases:        0
                                         Testcase Yield:      100%
 
   Code Coverage for PACKAGE BODY WTP.WT_JOB
@@ -105,19 +105,19 @@
           Ignored Lines:      118   Total Profiled Lines:      143
          Excluded Lines:        0   Total Executed Lines:       20
   Minimum LineExec usec:        0     Not Executed Lines:        0
-  Average LineExec usec:      271          Unknown Lines:        5
-  Maximum LineExec usec:     3886          Code Coverage:    100.0%
+  Average LineExec usec:      297          Unknown Lines:        5
+  Maximum LineExec usec:     3728          Code Coverage:    100.0%
   Trigger Source Offset:        0
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.WT_PROFILE
-  Run ID 9: 14-Apr-2024 03:50:49 PM
+  Run ID 9: 15-Apr-2024 01:44:21 AM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:      302
-  Average Elapsed msec:        4     Failed Assertions:        0
-  Maximum Elapsed msec:      538       Total Testcases:       39
-  Total Run Time (sec):      1.4      Failed Testcases:        0
+  Average Elapsed msec:        5     Failed Assertions:        0
+  Maximum Elapsed msec:      514       Total Testcases:       39
+  Total Run Time (sec):      1.5      Failed Testcases:        0
                                         Testcase Yield:      100%
 
   Code Coverage for PACKAGE BODY WTP.WT_PROFILE
@@ -125,18 +125,18 @@
           Ignored Lines:      639   Total Profiled Lines:      792
          Excluded Lines:        3   Total Executed Lines:      131
   Minimum LineExec usec:        0     Not Executed Lines:        0
-  Average LineExec usec:      532          Unknown Lines:       19
-  Maximum LineExec usec:    21146          Code Coverage:    100.0%
+  Average LineExec usec:      626          Unknown Lines:       19
+  Maximum LineExec usec:    26887          Code Coverage:    100.0%
   Trigger Source Offset:        0
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.WT_RESULT
-  Run ID 10: 14-Apr-2024 03:50:52 PM
+  Run ID 10: 15-Apr-2024 01:44:24 AM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:       21
   Average Elapsed msec:        0     Failed Assertions:        0
-  Maximum Elapsed msec:        5       Total Testcases:        3
+  Maximum Elapsed msec:        4       Total Testcases:        3
   Total Run Time (sec):      0.1      Failed Testcases:        0
                                         Testcase Yield:      100%
 
@@ -145,19 +145,19 @@
           Ignored Lines:       93   Total Profiled Lines:      140
          Excluded Lines:        0   Total Executed Lines:       45
   Minimum LineExec usec:        0     Not Executed Lines:        0
-  Average LineExec usec:       16          Unknown Lines:        2
-  Maximum LineExec usec:     1653          Code Coverage:    100.0%
+  Average LineExec usec:       12          Unknown Lines:        2
+  Maximum LineExec usec:     1124          Code Coverage:    100.0%
   Trigger Source Offset:        0
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.WT_TESTCASE
-  Run ID 11: 14-Apr-2024 03:50:53 PM
+  Run ID 11: 15-Apr-2024 01:44:25 AM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:       15
   Average Elapsed msec:        0     Failed Assertions:        0
   Maximum Elapsed msec:        2       Total Testcases:       12
-  Total Run Time (sec):      0.1      Failed Testcases:        0
+  Total Run Time (sec):      0.2      Failed Testcases:        0
                                         Testcase Yield:      100%
 
   Code Coverage for PACKAGE BODY WTP.WT_TESTCASE
@@ -165,18 +165,18 @@
           Ignored Lines:       53   Total Profiled Lines:       76
          Excluded Lines:        2   Total Executed Lines:       20
   Minimum LineExec usec:        0     Not Executed Lines:        0
-  Average LineExec usec:       35          Unknown Lines:        1
-  Maximum LineExec usec:      714          Code Coverage:    100.0%
+  Average LineExec usec:       43          Unknown Lines:        1
+  Maximum LineExec usec:      861          Code Coverage:    100.0%
   Trigger Source Offset:        0
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.WT_TEST_RUN
-  Run ID 13: 14-Apr-2024 03:50:53 PM
+  Run ID 13: 15-Apr-2024 01:44:25 AM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:       75
   Average Elapsed msec:        0     Failed Assertions:        0
-  Maximum Elapsed msec:        4       Total Testcases:       18
+  Maximum Elapsed msec:        6       Total Testcases:       18
   Total Run Time (sec):      0.2      Failed Testcases:        0
                                         Testcase Yield:      100%
 
@@ -185,14 +185,14 @@
           Ignored Lines:      278   Total Profiled Lines:      365
          Excluded Lines:        5   Total Executed Lines:       73
   Minimum LineExec usec:        0     Not Executed Lines:        0
-  Average LineExec usec:       16          Unknown Lines:        9
-  Maximum LineExec usec:      233          Code Coverage:    100.0%
+  Average LineExec usec:       15          Unknown Lines:        9
+  Maximum LineExec usec:      347          Code Coverage:    100.0%
   Trigger Source Offset:        0
 
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003
   Test Results for WTP.WT_TEST_RUNNER
-  Run ID 14: 14-Apr-2024 03:50:54 PM
+  Run ID 14: 15-Apr-2024 01:44:26 AM
   --------------------------------------------------------------
   Minimum Elapsed msec:        0      Total Assertions:       27
   Average Elapsed msec:        0     Failed Assertions:        0
@@ -205,7 +205,7 @@
           Ignored Lines:       92   Total Profiled Lines:      130
          Excluded Lines:        2   Total Executed Lines:       32
   Minimum LineExec usec:        0     Not Executed Lines:        0
-  Average LineExec usec:       19          Unknown Lines:        4
-  Maximum LineExec usec:      300          Code Coverage:    100.0%
+  Average LineExec usec:       27          Unknown Lines:        4
+  Maximum LineExec usec:      566          Code Coverage:    100.0%
   Trigger Source Offset:        0
 

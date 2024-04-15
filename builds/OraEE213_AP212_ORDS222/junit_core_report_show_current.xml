@@ -3,94 +3,94 @@
 <!-- http://nelsonwells.net/2012/09/how-jenkins-ci-parses-and-displays-junit-output -->
 <!-- Jenkins identifies the failed tests as {package}.{class}.{testcase}. -->
 <testsuites>
-  <testsuite name="WTP.CORE_DATA" classname="WTP.CORE_DATA:PACKAGE_BODY" tests="9" failures="0" time=".3" timestamp="2024-04-14T15:50:16">
-    <testcase name="Add Procedure Happy Path 1" classname="WTP.CORE_DATA:PACKAGE_BODY" time=".439">
+  <testsuite name="WTP.CORE_DATA" classname="WTP.CORE_DATA:PACKAGE_BODY" tests="9" failures="0" time=".2" timestamp="2024-04-15T01:43:49">
+    <testcase name="Add Procedure Happy Path 1" classname="WTP.CORE_DATA:PACKAGE_BODY" time=".694">
     </testcase>
-    <testcase name="Add Procedure Happy Path 2" classname="WTP.CORE_DATA:PACKAGE_BODY" time=".154">
+    <testcase name="Add Procedure Happy Path 2" classname="WTP.CORE_DATA:PACKAGE_BODY" time=".25">
     </testcase>
-    <testcase name="FINAL &quot;One&quot; Happy Path" classname="WTP.CORE_DATA:PACKAGE_BODY" time=".241">
+    <testcase name="FINAL &quot;One&quot; Happy Path" classname="WTP.CORE_DATA:PACKAGE_BODY" time=".48">
     </testcase>
-    <testcase name="INIT &quot;One&quot; Happy Path 1" classname="WTP.CORE_DATA:PACKAGE_BODY" time="4.968">
+    <testcase name="INIT &quot;One&quot; Happy Path 1" classname="WTP.CORE_DATA:PACKAGE_BODY" time="2.078">
     </testcase>
-    <testcase name="INIT &quot;Two&quot; Happy Path 1" classname="WTP.CORE_DATA:PACKAGE_BODY" time=".083">
+    <testcase name="INIT &quot;Two&quot; Happy Path 1" classname="WTP.CORE_DATA:PACKAGE_BODY" time=".158">
     </testcase>
-    <testcase name="RUN_ERROR Happy Path 1" classname="WTP.CORE_DATA:PACKAGE_BODY" time=".022">
+    <testcase name="RUN_ERROR Happy Path 1" classname="WTP.CORE_DATA:PACKAGE_BODY" time=".074">
     </testcase>
-    <testcase name="RUN_ERROR Happy Path 2" classname="WTP.CORE_DATA:PACKAGE_BODY" time=".019">
+    <testcase name="RUN_ERROR Happy Path 2" classname="WTP.CORE_DATA:PACKAGE_BODY" time=".03">
     </testcase>
-    <testcase name="RUN_ERROR Happy Path 3" classname="WTP.CORE_DATA:PACKAGE_BODY" time=".087">
+    <testcase name="RUN_ERROR Happy Path 3" classname="WTP.CORE_DATA:PACKAGE_BODY" time=".117">
     </testcase>
-    <testcase name="RUN_ERROR Happy Path 4" classname="WTP.CORE_DATA:PACKAGE_BODY" time=".016">
-    </testcase>
-  </testsuite>
-  <testsuite name="WTP.HOOK" classname="WTP.HOOK:PACKAGE_BODY" tests="5" failures="0" time=".1" timestamp="2024-04-14T15:50:16">
-    <testcase name="All Hooks Off" classname="WTP.HOOK:PACKAGE_BODY" time=".943">
-    </testcase>
-    <testcase name="All Hooks On" classname="WTP.HOOK:PACKAGE_BODY" time="8.779">
-    </testcase>
-    <testcase name="Hooks Sad Path 1" classname="WTP.HOOK:PACKAGE_BODY" time="5.505">
-    </testcase>
-    <testcase name="Setup" classname="WTP.HOOK:PACKAGE_BODY" time="9.925">
-    </testcase>
-    <testcase name="Teardown" classname="WTP.HOOK:PACKAGE_BODY" time="2.213">
+    <testcase name="RUN_ERROR Happy Path 4" classname="WTP.CORE_DATA:PACKAGE_BODY" time=".039">
     </testcase>
   </testsuite>
-  <testsuite name="WTP.WTPLSQL" classname="" tests="16" failures="0" time=".6" timestamp="2024-04-14T15:50:16">
-    <testcase name="CHECK_RUNNER Happy Path 1" classname="" time="2.127">
+  <testsuite name="WTP.HOOK" classname="WTP.HOOK:PACKAGE_BODY" tests="5" failures="0" time=".1" timestamp="2024-04-15T01:43:50">
+    <testcase name="All Hooks Off" classname="WTP.HOOK:PACKAGE_BODY" time=".761">
     </testcase>
-    <testcase name="CHECK_RUNNER Sad Path 1" classname="" time=".203">
+    <testcase name="All Hooks On" classname="WTP.HOOK:PACKAGE_BODY" time="1.078">
     </testcase>
-    <testcase name="CHECK_RUNNER Sad Path 2" classname="" time=".896">
+    <testcase name="Hooks Sad Path 1" classname="WTP.HOOK:PACKAGE_BODY" time="1.445">
     </testcase>
-    <testcase name="Find DBOUT Happy Path 1" classname="" time=".086">
+    <testcase name="Setup" classname="WTP.HOOK:PACKAGE_BODY" time="2.148">
     </testcase>
-    <testcase name="Find DBOUT Happy Path 2" classname="" time="122.171">
-    </testcase>
-    <testcase name="Find DBOUT Happy Path 3" classname="" time="158.23">
-    </testcase>
-    <testcase name="Find DBOUT Happy Path 4" classname="" time="138.191">
-    </testcase>
-    <testcase name="Find DBOUT Sad Path 1" classname="" time="126.081">
-    </testcase>
-    <testcase name="Find DBOUT Sad Path 2" classname="" time="13.275">
-    </testcase>
-    <testcase name="Show Version Happy Path 1" classname="" time="3.835">
-    </testcase>
-    <testcase name="Show Version Happy Path 2" classname="" time="1.753">
-    </testcase>
-    <testcase name="Show Version Happy Path 3" classname="" time="1.783">
-    </testcase>
-    <testcase name="Show Version Setup" classname="" time=".56">
-    </testcase>
-    <testcase name="Show Version Teardown" classname="" time="5.549">
-    </testcase>
-    <testcase name="TEST_ALL Happy Path" classname="" time="18.826">
-    </testcase>
-    <testcase name="Test Run Testing" classname="" time=".039">
+    <testcase name="Teardown" classname="WTP.HOOK:PACKAGE_BODY" time=".797">
     </testcase>
   </testsuite>
-  <testsuite name="WTP.WT_ASSERT" classname="WTP.WT_ASSERT:PACKAGE_BODY" tests="152" failures="0" time="5.7" timestamp="2024-04-14T15:50:17">
-    <testcase name="Ad Hoc Report Happy Path" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="3.575">
+  <testsuite name="WTP.WTPLSQL" classname="" tests="16" failures="0" time=".6" timestamp="2024-04-15T01:43:50">
+    <testcase name="CHECK_RUNNER Happy Path 1" classname="" time="1.031">
     </testcase>
-    <testcase name="BOOLEAN_TO_STATUS" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="13.253">
+    <testcase name="CHECK_RUNNER Sad Path 1" classname="" time=".202">
     </testcase>
-    <testcase name="COMPARE_QUERIES Bad Query Test 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="2.05">
+    <testcase name="CHECK_RUNNER Sad Path 2" classname="" time=".723">
     </testcase>
-    <testcase name="COMPARE_QUERIES Bad Query Test 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="192.61">
+    <testcase name="Find DBOUT Happy Path 1" classname="" time=".084">
     </testcase>
-    <testcase name="EQ BLOB Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="3.737">
+    <testcase name="Find DBOUT Happy Path 2" classname="" time="158.064">
     </testcase>
-    <testcase name="EQ BLOB Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".018">
+    <testcase name="Find DBOUT Happy Path 3" classname="" time="153.761">
     </testcase>
-    <testcase name="EQ BLOB Happy Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".015">
+    <testcase name="Find DBOUT Happy Path 4" classname="" time="150.102">
     </testcase>
-    <testcase name="EQ BLOB Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".268">
+    <testcase name="Find DBOUT Sad Path 1" classname="" time="120.542">
     </testcase>
-    <testcase name="EQ BLOB Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".298">
+    <testcase name="Find DBOUT Sad Path 2" classname="" time="11.975">
     </testcase>
-    <testcase name="EQ BLOB Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".044">
+    <testcase name="Show Version Happy Path 1" classname="" time=".66">
     </testcase>
-    <testcase name="EQ BLOB Sad Path 4" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".042">
+    <testcase name="Show Version Happy Path 2" classname="" time=".531">
+    </testcase>
+    <testcase name="Show Version Happy Path 3" classname="" time=".572">
+    </testcase>
+    <testcase name="Show Version Setup" classname="" time=".404">
+    </testcase>
+    <testcase name="Show Version Teardown" classname="" time=".921">
+    </testcase>
+    <testcase name="TEST_ALL Happy Path" classname="" time="19.205">
+    </testcase>
+    <testcase name="Test Run Testing" classname="" time=".031">
+    </testcase>
+  </testsuite>
+  <testsuite name="WTP.WT_ASSERT" classname="WTP.WT_ASSERT:PACKAGE_BODY" tests="152" failures="0" time="5.3" timestamp="2024-04-15T01:43:50">
+    <testcase name="Ad Hoc Report Happy Path" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".465">
+    </testcase>
+    <testcase name="BOOLEAN_TO_STATUS" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".724">
+    </testcase>
+    <testcase name="COMPARE_QUERIES Bad Query Test 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="2.037">
+    </testcase>
+    <testcase name="COMPARE_QUERIES Bad Query Test 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="178.33">
+    </testcase>
+    <testcase name="EQ BLOB Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".332">
+    </testcase>
+    <testcase name="EQ BLOB Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".036">
+    </testcase>
+    <testcase name="EQ BLOB Happy Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".018">
+    </testcase>
+    <testcase name="EQ BLOB Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".317">
+    </testcase>
+    <testcase name="EQ BLOB Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".29">
+    </testcase>
+    <testcase name="EQ BLOB Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".046">
+    </testcase>
+    <testcase name="EQ BLOB Sad Path 4" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".041">
     </testcase>
     <testcase name="EQ BOOLEAN Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".014">
     </testcase>
@@ -98,7 +98,7 @@
     </testcase>
     <testcase name="EQ BOOLEAN Happy Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".014">
     </testcase>
-    <testcase name="EQ BOOLEAN Happy Sad 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".044">
+    <testcase name="EQ BOOLEAN Happy Sad 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".043">
     </testcase>
     <testcase name="EQ BOOLEAN Happy Sad 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".042">
     </testcase>
@@ -106,521 +106,521 @@
     </testcase>
     <testcase name="EQ BOOLEAN Happy Sad 4" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".042">
     </testcase>
-    <testcase name="EQ CLOB Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="2.094">
+    <testcase name="EQ CLOB Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="1.643">
     </testcase>
-    <testcase name="EQ CLOB Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".307">
+    <testcase name="EQ CLOB Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".213">
     </testcase>
-    <testcase name="EQ CLOB Happy Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".082">
+    <testcase name="EQ CLOB Happy Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".042">
     </testcase>
-    <testcase name="EQ CLOB Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".809">
+    <testcase name="EQ CLOB Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".435">
     </testcase>
-    <testcase name="EQ CLOB Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".524">
+    <testcase name="EQ CLOB Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".457">
     </testcase>
-    <testcase name="EQ CLOB Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".284">
+    <testcase name="EQ CLOB Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".243">
     </testcase>
-    <testcase name="EQ CLOB Sad Path 4" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".249">
+    <testcase name="EQ CLOB Sad Path 4" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".348">
     </testcase>
-    <testcase name="EQ DATE Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".017">
+    <testcase name="EQ DATE Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".018">
     </testcase>
     <testcase name="EQ DATE Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".048">
     </testcase>
-    <testcase name="EQ INTERVAL DAY TO SECOND Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".07">
+    <testcase name="EQ INTERVAL DAY TO SECOND Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".019">
     </testcase>
-    <testcase name="EQ INTERVAL DAY TO SECOND Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".053">
+    <testcase name="EQ INTERVAL DAY TO SECOND Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".041">
     </testcase>
     <testcase name="EQ INTERVAL YEAR TO MONTH Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".014">
     </testcase>
-    <testcase name="EQ INTERVAL YEAR TO MONTH Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".046">
+    <testcase name="EQ INTERVAL YEAR TO MONTH Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".041">
     </testcase>
-    <testcase name="EQ LONG Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".012">
+    <testcase name="EQ LONG Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".013">
     </testcase>
     <testcase name="EQ LONG RAW Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".013">
     </testcase>
     <testcase name="EQ LONG RAW Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".042">
     </testcase>
-    <testcase name="EQ LONG Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".041">
+    <testcase name="EQ LONG Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".04">
     </testcase>
-    <testcase name="EQ NCLOB Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="4.252">
+    <testcase name="EQ NCLOB Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="3.989">
     </testcase>
-    <testcase name="EQ NCLOB Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="3.957">
+    <testcase name="EQ NCLOB Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="3.263">
     </testcase>
-    <testcase name="EQ NCLOB Happy Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".084">
+    <testcase name="EQ NCLOB Happy Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".068">
     </testcase>
-    <testcase name="EQ NCLOB Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="3.235">
+    <testcase name="EQ NCLOB Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="4.437">
     </testcase>
-    <testcase name="EQ NCLOB Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="2.027">
+    <testcase name="EQ NCLOB Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="2.928">
     </testcase>
-    <testcase name="EQ NCLOB Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="3.573">
+    <testcase name="EQ NCLOB Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="3.203">
     </testcase>
-    <testcase name="EQ NCLOB Sad Path 4" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="2.429">
+    <testcase name="EQ NCLOB Sad Path 4" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="2.455">
     </testcase>
-    <testcase name="EQ NUMBER Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".056">
+    <testcase name="EQ NUMBER Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".062">
     </testcase>
-    <testcase name="EQ NUMBER Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".014">
+    <testcase name="EQ NUMBER Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".038">
     </testcase>
     <testcase name="EQ NVARCHAR2 Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".015">
     </testcase>
     <testcase name="EQ NVARCHAR2 Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".043">
     </testcase>
-    <testcase name="EQ PLS_INTEGER Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".012">
+    <testcase name="EQ PLS_INTEGER Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".013">
     </testcase>
-    <testcase name="EQ PLS_INTEGER Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".042">
+    <testcase name="EQ PLS_INTEGER Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".041">
     </testcase>
     <testcase name="EQ RAW Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".013">
     </testcase>
     <testcase name="EQ RAW Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".041">
     </testcase>
-    <testcase name="EQ ROWID Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".013">
+    <testcase name="EQ ROWID Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".012">
     </testcase>
     <testcase name="EQ ROWID Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".041">
     </testcase>
-    <testcase name="EQ TIMSETAMP Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".016">
+    <testcase name="EQ TIMSETAMP Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".015">
     </testcase>
     <testcase name="EQ TIMSETAMP Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".047">
     </testcase>
     <testcase name="EQ TIMSETAMP WITH LOCAL TIME ZONE Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".015">
     </testcase>
-    <testcase name="EQ TIMSETAMP WITH LOCAL TIME ZONE Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".048">
+    <testcase name="EQ TIMSETAMP WITH LOCAL TIME ZONE Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".047">
     </testcase>
     <testcase name="EQ TIMSETAMP WITH TIME ZONE Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".014">
     </testcase>
     <testcase name="EQ TIMSETAMP WITH TIME ZONE Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".047">
     </testcase>
-    <testcase name="EQ VARCHAR2 Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".154">
+    <testcase name="EQ VARCHAR2 Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".269">
     </testcase>
     <testcase name="EQ VARCHAR2 Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".013">
     </testcase>
-    <testcase name="EQ VARCHAR2 Happy Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".013">
+    <testcase name="EQ VARCHAR2 Happy Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".014">
     </testcase>
-    <testcase name="EQ VARCHAR2 Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".041">
+    <testcase name="EQ VARCHAR2 Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".05">
     </testcase>
-    <testcase name="EQ VARCHAR2 Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".135">
+    <testcase name="EQ VARCHAR2 Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".194">
     </testcase>
-    <testcase name="EQ VARCHAR2 Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".041">
+    <testcase name="EQ VARCHAR2 Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".042">
     </testcase>
     <testcase name="EQ VARCHAR2 Sad Path 4" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".043">
     </testcase>
-    <testcase name="EQ VARCHAR2 Sad Path 5" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".089">
+    <testcase name="EQ VARCHAR2 Sad Path 5" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".039">
     </testcase>
-    <testcase name="EQ VARCHAR2 Sad Path 6" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".04">
+    <testcase name="EQ VARCHAR2 Sad Path 6" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".041">
     </testcase>
-    <testcase name="EQ XMLTYPE Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="49.687">
+    <testcase name="EQ XMLTYPE Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="28.319">
     </testcase>
-    <testcase name="EQ XMLTYPE Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="15.72">
+    <testcase name="EQ XMLTYPE Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="16.229">
     </testcase>
-    <testcase name="EQ XMLTYPE Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="9.367">
+    <testcase name="EQ XMLTYPE Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="9.464">
     </testcase>
-    <testcase name="EQQUERY Tests Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="350.499">
+    <testcase name="EQQUERY Tests Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="39.585">
     </testcase>
-    <testcase name="EQQUERY Tests Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="328.773">
+    <testcase name="EQQUERY Tests Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="252.196">
     </testcase>
-    <testcase name="EQQUERY Tests Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="25.468">
+    <testcase name="EQQUERY Tests Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="20.161">
     </testcase>
-    <testcase name="EQQUERY Tests Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="5.499">
+    <testcase name="EQQUERY Tests Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="2.462">
     </testcase>
-    <testcase name="EQQUERYVALUE BLOB Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="3.015">
+    <testcase name="EQQUERYVALUE BLOB Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".832">
     </testcase>
-    <testcase name="EQQUERYVALUE BLOB Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="2.064">
+    <testcase name="EQQUERYVALUE BLOB Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".204">
     </testcase>
-    <testcase name="EQQUERYVALUE BLOB Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".543">
+    <testcase name="EQQUERYVALUE BLOB Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".256">
     </testcase>
-    <testcase name="EQQUERYVALUE BLOB Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".778">
+    <testcase name="EQQUERYVALUE BLOB Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".493">
     </testcase>
-    <testcase name="EQQUERYVALUE BLOB Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".491">
+    <testcase name="EQQUERYVALUE BLOB Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".393">
     </testcase>
-    <testcase name="EQQUERYVALUE CLOB Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="5.58">
+    <testcase name="EQQUERYVALUE CLOB Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="1.671">
     </testcase>
-    <testcase name="EQQUERYVALUE CLOB Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="4.047">
+    <testcase name="EQQUERYVALUE CLOB Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".293">
     </testcase>
-    <testcase name="EQQUERYVALUE CLOB Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".834">
+    <testcase name="EQQUERYVALUE CLOB Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".419">
     </testcase>
-    <testcase name="EQQUERYVALUE CLOB Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="1.001">
+    <testcase name="EQQUERYVALUE CLOB Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".714">
     </testcase>
-    <testcase name="EQQUERYVALUE CLOB Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".534">
+    <testcase name="EQQUERYVALUE CLOB Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".444">
     </testcase>
-    <testcase name="EQQUERYVALUE VARCHAR2 Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="1.406">
+    <testcase name="EQQUERYVALUE VARCHAR2 Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".305">
     </testcase>
-    <testcase name="EQQUERYVALUE VARCHAR2 Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="1.32">
+    <testcase name="EQQUERYVALUE VARCHAR2 Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".137">
     </testcase>
-    <testcase name="EQQUERYVALUE VARCHAR2 Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".239">
+    <testcase name="EQQUERYVALUE VARCHAR2 Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".091">
     </testcase>
-    <testcase name="EQQUERYVALUE VARCHAR2 Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".484">
+    <testcase name="EQQUERYVALUE VARCHAR2 Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".384">
     </testcase>
-    <testcase name="EQQUERYVALUE VARCHAR2 Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".512">
+    <testcase name="EQQUERYVALUE VARCHAR2 Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".471">
     </testcase>
-    <testcase name="EQQUERYVALUE XMLTYPE Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="26.492">
+    <testcase name="EQQUERYVALUE XMLTYPE Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="26.385">
     </testcase>
-    <testcase name="EQQUERYVALUE XMLTYPE Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="12.111">
+    <testcase name="EQQUERYVALUE XMLTYPE Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="9.989">
     </testcase>
-    <testcase name="EQQUERYVALUE XMLTYPE Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="12.22">
+    <testcase name="EQQUERYVALUE XMLTYPE Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="10.043">
     </testcase>
-    <testcase name="EQQUERYVALUE XMLTYPE Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".644">
+    <testcase name="EQQUERYVALUE XMLTYPE Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".585">
     </testcase>
-    <testcase name="EQTABCOUNT Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="15.042">
+    <testcase name="EQTABCOUNT Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="12.846">
     </testcase>
-    <testcase name="EQTABCOUNT Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="14.765">
+    <testcase name="EQTABCOUNT Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="12.69">
     </testcase>
-    <testcase name="EQTABCOUNT Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="402.615">
+    <testcase name="EQTABCOUNT Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="251.108">
     </testcase>
-    <testcase name="EQTABCOUNT Sad Path 4" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="1.266">
+    <testcase name="EQTABCOUNT Sad Path 4" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".486">
     </testcase>
-    <testcase name="EQTABCOUNT Tests Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="33.564">
+    <testcase name="EQTABCOUNT Tests Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="28.68">
     </testcase>
-    <testcase name="EQTABCOUNT Tests Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="127.892">
+    <testcase name="EQTABCOUNT Tests Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="31.323">
     </testcase>
-    <testcase name="EQTABLE Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="1828.261">
+    <testcase name="EQTABLE Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="2290.52">
     </testcase>
-    <testcase name="EQTABLE Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="276.835">
+    <testcase name="EQTABLE Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="210.349">
     </testcase>
-    <testcase name="EQTABLE Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="2.18">
+    <testcase name="EQTABLE Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="2.413">
     </testcase>
-    <testcase name="EQTABLE Tests Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="231.01">
+    <testcase name="EQTABLE Tests Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="40.804">
     </testcase>
-    <testcase name="EQTABLE Tests Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="1499.983">
+    <testcase name="EQTABLE Tests Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="1617.769">
     </testcase>
     <testcase name="ISNOTNULL BLOB Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".065">
     </testcase>
     <testcase name="ISNOTNULL BLOB Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".016">
     </testcase>
-    <testcase name="ISNOTNULL BLOB Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".132">
+    <testcase name="ISNOTNULL BLOB Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".193">
     </testcase>
     <testcase name="ISNOTNULL BOOLEAN Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".014">
     </testcase>
     <testcase name="ISNOTNULL BOOLEAN Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".017">
     </testcase>
-    <testcase name="ISNOTNULL BOOLEAN Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".174">
+    <testcase name="ISNOTNULL BOOLEAN Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".176">
     </testcase>
-    <testcase name="ISNOTNULL CLOB Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".339">
+    <testcase name="ISNOTNULL CLOB Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".265">
     </testcase>
-    <testcase name="ISNOTNULL CLOB Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".032">
+    <testcase name="ISNOTNULL CLOB Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".028">
     </testcase>
-    <testcase name="ISNOTNULL CLOB Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".158">
+    <testcase name="ISNOTNULL CLOB Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".16">
     </testcase>
-    <testcase name="ISNOTNULL VARCHAR2 Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="1.468">
+    <testcase name="ISNOTNULL VARCHAR2 Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="1.375">
     </testcase>
-    <testcase name="ISNOTNULL VARCHAR2 Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".071">
+    <testcase name="ISNOTNULL VARCHAR2 Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".016">
     </testcase>
-    <testcase name="ISNOTNULL VARCHAR2 Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".179">
+    <testcase name="ISNOTNULL VARCHAR2 Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".219">
     </testcase>
-    <testcase name="ISNULL BLOB Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".066">
+    <testcase name="ISNULL BLOB Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".084">
     </testcase>
     <testcase name="ISNULL BLOB Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".015">
     </testcase>
-    <testcase name="ISNULL BLOB Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".132">
+    <testcase name="ISNULL BLOB Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".137">
     </testcase>
-    <testcase name="ISNULL BOOLEAN Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".015">
+    <testcase name="ISNULL BOOLEAN Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".013">
     </testcase>
-    <testcase name="ISNULL BOOLEAN Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".018">
+    <testcase name="ISNULL BOOLEAN Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".017">
     </testcase>
-    <testcase name="ISNULL BOOLEAN Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".195">
+    <testcase name="ISNULL BOOLEAN Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".176">
     </testcase>
-    <testcase name="ISNULL CLOB Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".14">
+    <testcase name="ISNULL CLOB Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".082">
     </testcase>
-    <testcase name="ISNULL CLOB Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".161">
+    <testcase name="ISNULL CLOB Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".144">
     </testcase>
-    <testcase name="ISNULL CLOB Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".305">
+    <testcase name="ISNULL CLOB Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".37">
     </testcase>
     <testcase name="ISNULL VARCHAR2 Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".074">
     </testcase>
     <testcase name="ISNULL VARCHAR2 Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".015">
     </testcase>
-    <testcase name="ISNULL VARCHAR2 Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".149">
+    <testcase name="ISNULL VARCHAR2 Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".136">
     </testcase>
-    <testcase name="Last Values Tests" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".176">
+    <testcase name="Last Values Tests" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".066">
     </testcase>
-    <testcase name="NLS Settings" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="40.045">
+    <testcase name="NLS Settings" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="1.643">
     </testcase>
-    <testcase name="OBJEXISTS Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="1.675">
+    <testcase name="OBJEXISTS Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".739">
     </testcase>
-    <testcase name="OBJEXISTS Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".816">
+    <testcase name="OBJEXISTS Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".23">
     </testcase>
-    <testcase name="OBJEXISTS Happy Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".806">
+    <testcase name="OBJEXISTS Happy Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".2">
     </testcase>
-    <testcase name="OBJEXISTS Happy Path 4" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="1.419">
+    <testcase name="OBJEXISTS Happy Path 4" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".57">
     </testcase>
-    <testcase name="OBJEXISTS Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".675">
+    <testcase name="OBJEXISTS Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".177">
     </testcase>
-    <testcase name="OBJEXISTS Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".75">
+    <testcase name="OBJEXISTS Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".283">
     </testcase>
-    <testcase name="OBJNOTEXISTS Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".742">
+    <testcase name="OBJNOTEXISTS Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".22">
     </testcase>
-    <testcase name="OBJNOTEXISTS Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".531">
+    <testcase name="OBJNOTEXISTS Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".119">
     </testcase>
-    <testcase name="OBJNOTEXISTS Happy Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".437">
+    <testcase name="OBJNOTEXISTS Happy Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".174">
     </testcase>
-    <testcase name="OBJNOTEXISTS Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".912">
+    <testcase name="OBJNOTEXISTS Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".245">
     </testcase>
-    <testcase name="OBJNOTEXISTS Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".668">
+    <testcase name="OBJNOTEXISTS Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".336">
     </testcase>
     <testcase name="RESET_GLOBALS" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".081">
     </testcase>
-    <testcase name="Raises Tests Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="1.204">
+    <testcase name="Raises Tests Happy Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="1.244">
     </testcase>
-    <testcase name="Raises Tests Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="3.675">
+    <testcase name="Raises Tests Happy Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="4.737">
     </testcase>
-    <testcase name="Raises Tests Happy Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="4.212">
+    <testcase name="Raises Tests Happy Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="1.016">
     </testcase>
-    <testcase name="Raises Tests Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="1.003">
+    <testcase name="Raises Tests Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="1.168">
     </testcase>
-    <testcase name="Raises Tests Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time="1.245">
+    <testcase name="Raises Tests Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".273">
     </testcase>
-    <testcase name="Test Process Assertion" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".14">
+    <testcase name="Test Process Assertion" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".137">
     </testcase>
     <testcase name="This Happy Path" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".065">
     </testcase>
     <testcase name="This Sad Path 1" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".017">
     </testcase>
-    <testcase name="This Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".171">
+    <testcase name="This Sad Path 2" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".27">
     </testcase>
-    <testcase name="This Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".016">
-    </testcase>
-  </testsuite>
-  <testsuite name="WTP.WT_DBOUT" classname="WTP.WT_DBOUT:PACKAGE_BODY" tests="12" failures="0" time=".1" timestamp="2024-04-14T15:50:23">
-    <testcase name="t_delete_records Happy Path 1" classname="WTP.WT_DBOUT:PACKAGE_BODY" time="7.392">
-    </testcase>
-    <testcase name="t_delete_records Happy Path 2" classname="WTP.WT_DBOUT:PACKAGE_BODY" time=".179">
-    </testcase>
-    <testcase name="t_delete_records Setup" classname="WTP.WT_DBOUT:PACKAGE_BODY" time="1.591">
-    </testcase>
-    <testcase name="t_dim_id Happy Path 1" classname="WTP.WT_DBOUT:PACKAGE_BODY" time=".532">
-    </testcase>
-    <testcase name="t_dim_id Happy Path 2" classname="WTP.WT_DBOUT:PACKAGE_BODY" time=".086">
-    </testcase>
-    <testcase name="t_dim_id Sad Path 1" classname="WTP.WT_DBOUT:PACKAGE_BODY" time=".026">
-    </testcase>
-    <testcase name="t_dim_id Setup" classname="WTP.WT_DBOUT:PACKAGE_BODY" time=".371">
-    </testcase>
-    <testcase name="t_dim_id Teardown" classname="WTP.WT_DBOUT:PACKAGE_BODY" time=".161">
-    </testcase>
-    <testcase name="t_get_id Happy Path 1" classname="WTP.WT_DBOUT:PACKAGE_BODY" time="3.011">
-    </testcase>
-    <testcase name="t_get_id Happy Path 2" classname="WTP.WT_DBOUT:PACKAGE_BODY" time="1.739">
-    </testcase>
-    <testcase name="t_get_id Setup" classname="WTP.WT_DBOUT:PACKAGE_BODY" time="6.583">
-    </testcase>
-    <testcase name="t_get_id Teardown" classname="WTP.WT_DBOUT:PACKAGE_BODY" time=".184">
+    <testcase name="This Sad Path 3" classname="WTP.WT_ASSERT:PACKAGE_BODY" time=".021">
     </testcase>
   </testsuite>
-  <testsuite name="WTP.WT_JOB" classname="WTP.WT_JOB:PACKAGE_BODY" tests="8" failures="0" time="6.1" timestamp="2024-04-14T15:50:23">
-    <testcase name="Create and Drop DB Link" classname="WTP.WT_JOB:PACKAGE_BODY" time="187.011">
+  <testsuite name="WTP.WT_DBOUT" classname="WTP.WT_DBOUT:PACKAGE_BODY" tests="12" failures="0" time=".2" timestamp="2024-04-15T01:43:56">
+    <testcase name="t_delete_records Happy Path 1" classname="WTP.WT_DBOUT:PACKAGE_BODY" time=".733">
     </testcase>
-    <testcase name="Drop Nonexistent DB Link" classname="WTP.WT_JOB:PACKAGE_BODY" time="2.061">
+    <testcase name="t_delete_records Happy Path 2" classname="WTP.WT_DBOUT:PACKAGE_BODY" time=".204">
     </testcase>
-    <testcase name="Run and Wait for Job" classname="WTP.WT_JOB:PACKAGE_BODY" time="158.726">
+    <testcase name="t_delete_records Setup" classname="WTP.WT_DBOUT:PACKAGE_BODY" time=".888">
     </testcase>
-    <testcase name="Test All Parallel Testing" classname="WTP.WT_JOB:PACKAGE_BODY" time=".018">
+    <testcase name="t_dim_id Happy Path 1" classname="WTP.WT_DBOUT:PACKAGE_BODY" time="1.197">
     </testcase>
-    <testcase name="Test All Sequential Testing" classname="WTP.WT_JOB:PACKAGE_BODY" time=".024">
+    <testcase name="t_dim_id Happy Path 2" classname="WTP.WT_DBOUT:PACKAGE_BODY" time=".307">
     </testcase>
-    <testcase name="Test All Testing" classname="WTP.WT_JOB:PACKAGE_BODY" time=".043">
+    <testcase name="t_dim_id Sad Path 1" classname="WTP.WT_DBOUT:PACKAGE_BODY" time=".044">
     </testcase>
-    <testcase name="Wait for All Tests Happy Path" classname="WTP.WT_JOB:PACKAGE_BODY" time="2465.717">
+    <testcase name="t_dim_id Setup" classname="WTP.WT_DBOUT:PACKAGE_BODY" time=".698">
     </testcase>
-    <testcase name="Wait for All Tests Timeout" classname="WTP.WT_JOB:PACKAGE_BODY" time="3154.528">
+    <testcase name="t_dim_id Teardown" classname="WTP.WT_DBOUT:PACKAGE_BODY" time=".336">
+    </testcase>
+    <testcase name="t_get_id Happy Path 1" classname="WTP.WT_DBOUT:PACKAGE_BODY" time=".255">
+    </testcase>
+    <testcase name="t_get_id Happy Path 2" classname="WTP.WT_DBOUT:PACKAGE_BODY" time=".676">
+    </testcase>
+    <testcase name="t_get_id Setup" classname="WTP.WT_DBOUT:PACKAGE_BODY" time="1.23">
+    </testcase>
+    <testcase name="t_get_id Teardown" classname="WTP.WT_DBOUT:PACKAGE_BODY" time=".263">
     </testcase>
   </testsuite>
-  <testsuite name="WTP.WT_PROFILE" classname="WTP.WT_PROFILE:PACKAGE_BODY" tests="39" failures="1" time="1.7" timestamp="2024-04-14T15:50:29">
-    <testcase name="Add Profile Testing" classname="WTP.WT_PROFILE:PACKAGE_BODY" time=".373">
+  <testsuite name="WTP.WT_JOB" classname="WTP.WT_JOB:PACKAGE_BODY" tests="8" failures="0" time="6" timestamp="2024-04-15T01:43:56">
+    <testcase name="Create and Drop DB Link" classname="WTP.WT_JOB:PACKAGE_BODY" time="117.194">
     </testcase>
-    <testcase name="Calculate Percent Coverage Happy Path 1" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="4.108">
+    <testcase name="Drop Nonexistent DB Link" classname="WTP.WT_JOB:PACKAGE_BODY" time="1.383">
     </testcase>
-    <testcase name="Calculate Percent Coverage Happy Path 2" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="1.012">
+    <testcase name="Run and Wait for Job" classname="WTP.WT_JOB:PACKAGE_BODY" time="51.607">
     </testcase>
-    <testcase name="Calculate Percent Coverage Sad Path" classname="WTP.WT_PROFILE:PACKAGE_BODY" time=".136">
+    <testcase name="Test All Parallel Testing" classname="WTP.WT_JOB:PACKAGE_BODY" time=".016">
     </testcase>
-    <testcase name="Calculate Percent Coverage Setup" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="2.505">
+    <testcase name="Test All Sequential Testing" classname="WTP.WT_JOB:PACKAGE_BODY" time=".018">
     </testcase>
-    <testcase name="Calculate Percent Coverage Teardown" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="2.108">
+    <testcase name="Test All Testing" classname="WTP.WT_JOB:PACKAGE_BODY" time=".037">
     </testcase>
-    <testcase name="Delete PL/SQL Profiler Records Happy Path 1" classname="WTP.WT_PROFILE:PACKAGE_BODY" time=".168">
+    <testcase name="Wait for All Tests Happy Path" classname="WTP.WT_JOB:PACKAGE_BODY" time="2561.624">
     </testcase>
-    <testcase name="Delete PL/SQL Profiler Records Happy Path 2" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="24.599">
+    <testcase name="Wait for All Tests Timeout" classname="WTP.WT_JOB:PACKAGE_BODY" time="3132.74">
     </testcase>
-    <testcase name="Delete PL/SQL Profiler Records Happy Path 3" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="7.197">
+  </testsuite>
+  <testsuite name="WTP.WT_PROFILE" classname="WTP.WT_PROFILE:PACKAGE_BODY" tests="39" failures="1" time="1.4" timestamp="2024-04-15T01:44:02">
+    <testcase name="Add Profile Testing" classname="WTP.WT_PROFILE:PACKAGE_BODY" time=".775">
     </testcase>
-    <testcase name="Delete Records Happy Path 1" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="3.004">
+    <testcase name="Calculate Percent Coverage Happy Path 1" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="2.173">
     </testcase>
-    <testcase name="Delete Records Sad Path 1" classname="WTP.WT_PROFILE:PACKAGE_BODY" time=".341">
+    <testcase name="Calculate Percent Coverage Happy Path 2" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="1.136">
     </testcase>
-    <testcase name="Delete Records Sad Path 2" classname="WTP.WT_PROFILE:PACKAGE_BODY" time=".201">
+    <testcase name="Calculate Percent Coverage Sad Path" classname="WTP.WT_PROFILE:PACKAGE_BODY" time=".204">
     </testcase>
-    <testcase name="Delete Records Setup" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="5.308">
+    <testcase name="Calculate Percent Coverage Setup" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="2.939">
     </testcase>
-    <testcase name="Finalize Happy Path 1" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="7.337">
+    <testcase name="Calculate Percent Coverage Teardown" classname="WTP.WT_PROFILE:PACKAGE_BODY" time=".348">
     </testcase>
-    <testcase name="Finalize Happy Path 2" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="9.454">
+    <testcase name="Delete PL/SQL Profiler Records Happy Path 1" classname="WTP.WT_PROFILE:PACKAGE_BODY" time=".213">
+    </testcase>
+    <testcase name="Delete PL/SQL Profiler Records Happy Path 2" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="6.972">
+    </testcase>
+    <testcase name="Delete PL/SQL Profiler Records Happy Path 3" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="5.333">
+    </testcase>
+    <testcase name="Delete Records Happy Path 1" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="3.663">
+    </testcase>
+    <testcase name="Delete Records Sad Path 1" classname="WTP.WT_PROFILE:PACKAGE_BODY" time=".416">
+    </testcase>
+    <testcase name="Delete Records Sad Path 2" classname="WTP.WT_PROFILE:PACKAGE_BODY" time=".26">
+    </testcase>
+    <testcase name="Delete Records Setup" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="6.867">
+    </testcase>
+    <testcase name="Finalize Happy Path 1" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="1.082">
+    </testcase>
+    <testcase name="Finalize Happy Path 2" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="1.003">
       <error message="1 assertion failures.">
          <![CDATA[
- PASS 1.76ms Delete wt_dbout_runs (-2). RAISES/THROWS - No exception was expected. Exception raised was "". Exception raised by: "delete from wt_dbout_runs where test_run_id = -2".
- PASS .053ms wt_dbout_runs rows deleted. ISNOTNULL - Expected NOT NULL and got "0"
- PASS 1.42ms wt_dbout_runs (-2) Count. EQQUERYVALUE - Expected "0" and got "0" for Query: select count(*) from wt_dbout_runs where test_run_id = -2
- PASS 2.06ms Delete wt_profiles (-2). RAISES/THROWS - No exception was expected. Exception raised was "". Exception raised by: "delete from wt_profiles where test_run_id = -2".
- PASS .104ms wt_profiles rows deleted. ISNOTNULL - Expected NOT NULL and got "0"
- PASS 3.07ms wt_profiles (-2) Count. EQQUERYVALUE - Expected "0" and got "0" for Query: select count(*) from wt_profiles where test_run_id = -2
- PASS  .52ms Delete wt_test_runs (-2). RAISES/THROWS - No exception was expected. Exception raised was "". Exception raised by: "delete from wt_test_runs where id = -2".
- PASS .052ms wt_test_runs rows deleted. ISNOTNULL - Expected NOT NULL and got "0"
- PASS  .21ms wt_test_runs (-2) Count. EQQUERYVALUE - Expected "0" and got "0" for Query: select count(*) from wt_test_runs where id = -2
- PASS .085ms finalize(-2) SQLERRM. EQ - Expected "ORA-0000: normal, successful completion" and got "ORA-0000: normal, successful completion"
- PASS .041ms l_cdr_recTEST.error_message. ISNULL - Expected NULL and got ""
-#FAIL# .02ms l_recTEST.profiler_runid. ISNOTNULL - Expected NOT NULL and got ""
- PASS .017ms l_recTEST.test_run_id. ISNULL - Expected NULL and got ""
- PASS .016ms l_recTEST.trigger_offset. ISNULL - Expected NULL and got ""
+ PASS .155ms Delete wt_dbout_runs (-2). RAISES/THROWS - No exception was expected. Exception raised was "". Exception raised by: "delete from wt_dbout_runs where test_run_id = -2".
+ PASS .033ms wt_dbout_runs rows deleted. ISNOTNULL - Expected NOT NULL and got "0"
+ PASS .157ms wt_dbout_runs (-2) Count. EQQUERYVALUE - Expected "0" and got "0" for Query: select count(*) from wt_dbout_runs where test_run_id = -2
+ PASS .146ms Delete wt_profiles (-2). RAISES/THROWS - No exception was expected. Exception raised was "". Exception raised by: "delete from wt_profiles where test_run_id = -2".
+ PASS .021ms wt_profiles rows deleted. ISNOTNULL - Expected NOT NULL and got "0"
+ PASS .111ms wt_profiles (-2) Count. EQQUERYVALUE - Expected "0" and got "0" for Query: select count(*) from wt_profiles where test_run_id = -2
+ PASS .146ms Delete wt_test_runs (-2). RAISES/THROWS - No exception was expected. Exception raised was "". Exception raised by: "delete from wt_test_runs where id = -2".
+ PASS  .02ms wt_test_runs rows deleted. ISNOTNULL - Expected NOT NULL and got "0"
+ PASS .108ms wt_test_runs (-2) Count. EQQUERYVALUE - Expected "0" and got "0" for Query: select count(*) from wt_test_runs where id = -2
+ PASS  .05ms finalize(-2) SQLERRM. EQ - Expected "ORA-0000: normal, successful completion" and got "ORA-0000: normal, successful completion"
+ PASS .017ms l_cdr_recTEST.error_message. ISNULL - Expected NULL and got ""
+#FAIL#.014ms l_recTEST.profiler_runid. ISNOTNULL - Expected NOT NULL and got ""
+ PASS .012ms l_recTEST.test_run_id. ISNULL - Expected NULL and got ""
+ PASS .013ms l_recTEST.trigger_offset. ISNULL - Expected NULL and got ""
          ]]>
       </error>
     </testcase>
-    <testcase name="Finalize Happy Path 3" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="689.609">
+    <testcase name="Finalize Happy Path 3" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="471.55">
     </testcase>
-    <testcase name="Finalize Sad Path 1" classname="WTP.WT_PROFILE:PACKAGE_BODY" time=".225">
+    <testcase name="Finalize Sad Path 1" classname="WTP.WT_PROFILE:PACKAGE_BODY" time=".17">
     </testcase>
-    <testcase name="Get Error Messages" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="3.451">
+    <testcase name="Get Error Messages" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="1.021">
     </testcase>
-    <testcase name="Initialize Happy Path 1" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="2.97">
+    <testcase name="Initialize Happy Path 1" classname="WTP.WT_PROFILE:PACKAGE_BODY" time=".295">
     </testcase>
-    <testcase name="Insert DBOUT Profile Happy Path" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="91.403">
+    <testcase name="Insert DBOUT Profile Happy Path" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="59.478">
     </testcase>
-    <testcase name="Insert DBOUT Profile Setup" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="34.391">
+    <testcase name="Insert DBOUT Profile Setup" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="29.72">
     </testcase>
-    <testcase name="Insert DBOUT Profile Teardown" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="27.333">
+    <testcase name="Insert DBOUT Profile Teardown" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="19.351">
     </testcase>
-    <testcase name="Load Ignr Happy Path 1" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="35.593">
+    <testcase name="Load Ignr Happy Path 1" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="27.154">
     </testcase>
-    <testcase name="Load Ignr Happy Path 2" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="78.283">
+    <testcase name="Load Ignr Happy Path 2" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="65.872">
     </testcase>
-    <testcase name="Load Ignr Happy Path 3" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="57.8">
+    <testcase name="Load Ignr Happy Path 3" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="49.405">
     </testcase>
-    <testcase name="Load Ignr Happy Path 4" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="97.16">
+    <testcase name="Load Ignr Happy Path 4" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="82.25">
     </testcase>
-    <testcase name="Load Ignr Sad Path 1" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="31.394">
+    <testcase name="Load Ignr Sad Path 1" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="34.772">
     </testcase>
-    <testcase name="Load Ignr Sad Path 2" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="52.696">
+    <testcase name="Load Ignr Sad Path 2" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="55.026">
     </testcase>
-    <testcase name="Load Ignr Sad Path 3" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="76.73">
+    <testcase name="Load Ignr Sad Path 3" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="74.233">
     </testcase>
-    <testcase name="Load Ignr Setup" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="8.967">
+    <testcase name="Load Ignr Setup" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="8.914">
     </testcase>
-    <testcase name="Load Ignr Teardown" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="12.66">
+    <testcase name="Load Ignr Teardown" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="27.109">
     </testcase>
-    <testcase name="Set Prof Status Happy Path" classname="WTP.WT_PROFILE:PACKAGE_BODY" time=".297">
+    <testcase name="Set Prof Status Happy Path" classname="WTP.WT_PROFILE:PACKAGE_BODY" time=".295">
     </testcase>
-    <testcase name="Set Prof Status Sad Path" classname="WTP.WT_PROFILE:PACKAGE_BODY" time=".045">
+    <testcase name="Set Prof Status Sad Path" classname="WTP.WT_PROFILE:PACKAGE_BODY" time=".047">
     </testcase>
-    <testcase name="Trigger Offset Happy Path" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="26.192">
+    <testcase name="Trigger Offset Happy Path" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="22.406">
     </testcase>
-    <testcase name="Trigger Offset Sad Path" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="19.843">
+    <testcase name="Trigger Offset Sad Path" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="18.823">
     </testcase>
-    <testcase name="t_is_profilable Happy Path 1" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="60.579">
+    <testcase name="t_is_profilable Happy Path 1" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="60.118">
     </testcase>
-    <testcase name="t_is_profilable Happy Path 2" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="25.555">
+    <testcase name="t_is_profilable Happy Path 2" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="35.954">
     </testcase>
-    <testcase name="t_is_profilable Happy Path 3" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="61.696">
+    <testcase name="t_is_profilable Happy Path 3" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="70.721">
     </testcase>
-    <testcase name="t_is_profilable Happy Path 4" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="37.586">
-    </testcase>
-  </testsuite>
-  <testsuite name="WTP.WT_RESULT" classname="WTP.WT_RESULT:PACKAGE_BODY" tests="3" failures="0" time=".1" timestamp="2024-04-14T15:50:31">
-    <testcase name="Delete Records Happy Path" classname="WTP.WT_RESULT:PACKAGE_BODY" time="1.212">
-    </testcase>
-    <testcase name="Finalize Happy Path" classname="WTP.WT_RESULT:PACKAGE_BODY" time="15.422">
-    </testcase>
-    <testcase name="Initialize Happy Path" classname="WTP.WT_RESULT:PACKAGE_BODY" time="1.428">
+    <testcase name="t_is_profilable Happy Path 4" classname="WTP.WT_PROFILE:PACKAGE_BODY" time="20.928">
     </testcase>
   </testsuite>
-  <testsuite name="WTP.WT_TESTCASE" classname="WTP.WT_TESTCASE:PACKAGE_BODY" tests="12" failures="0" time=".1" timestamp="2024-04-14T15:50:31">
-    <testcase name="t_delete_records Happy Path 1" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".427">
+  <testsuite name="WTP.WT_RESULT" classname="WTP.WT_RESULT:PACKAGE_BODY" tests="3" failures="0" time=".2" timestamp="2024-04-15T01:44:03">
+    <testcase name="Delete Records Happy Path" classname="WTP.WT_RESULT:PACKAGE_BODY" time="1.519">
     </testcase>
-    <testcase name="t_delete_records Happy Path 2" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".104">
+    <testcase name="Finalize Happy Path" classname="WTP.WT_RESULT:PACKAGE_BODY" time="7.193">
     </testcase>
-    <testcase name="t_delete_records Setup" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".472">
-    </testcase>
-    <testcase name="t_dim_id Happy Path 1" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".374">
-    </testcase>
-    <testcase name="t_dim_id Happy Path 2" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".078">
-    </testcase>
-    <testcase name="t_dim_id Sad Path 1" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".023">
-    </testcase>
-    <testcase name="t_dim_id Setup" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".468">
-    </testcase>
-    <testcase name="t_dim_id Teardown" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".142">
-    </testcase>
-    <testcase name="t_get_id Happy Path 1" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".088">
-    </testcase>
-    <testcase name="t_get_id Happy Path 2" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".255">
-    </testcase>
-    <testcase name="t_get_id Setup" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".508">
-    </testcase>
-    <testcase name="t_get_id Teardown" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".095">
+    <testcase name="Initialize Happy Path" classname="WTP.WT_RESULT:PACKAGE_BODY" time=".49">
     </testcase>
   </testsuite>
-  <testsuite name="WTP.WT_TEST_RUN" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" tests="18" failures="0" time=".2" timestamp="2024-04-14T15:50:31">
-    <testcase name="Clear Last Run Happy Path 1" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time="4.301">
+  <testsuite name="WTP.WT_TESTCASE" classname="WTP.WT_TESTCASE:PACKAGE_BODY" tests="12" failures="0" time=".1" timestamp="2024-04-15T01:44:03">
+    <testcase name="t_delete_records Happy Path 1" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".689">
     </testcase>
-    <testcase name="DELETE_RUNS Happy Path 1" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time="6.056">
+    <testcase name="t_delete_records Happy Path 2" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".163">
     </testcase>
-    <testcase name="DELETE_RUNS Sad Path 1" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time="1.22">
+    <testcase name="t_delete_records Setup" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".821">
     </testcase>
-    <testcase name="DELETE_RUNS Setup" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time=".247">
+    <testcase name="t_dim_id Happy Path 1" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".428">
     </testcase>
-    <testcase name="DELETE_RUN_ID Happy Path 1" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time="2.467">
+    <testcase name="t_dim_id Happy Path 2" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".132">
     </testcase>
-    <testcase name="DELETE_RUN_ID Sad Path 1" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time=".279">
+    <testcase name="t_dim_id Sad Path 1" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".026">
     </testcase>
-    <testcase name="DELETE_RUN_ID Setup" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time=".169">
+    <testcase name="t_dim_id Setup" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".487">
     </testcase>
-    <testcase name="Finalization1 Testing" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time=".022">
+    <testcase name="t_dim_id Teardown" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".158">
     </testcase>
-    <testcase name="Finalization2 Testing" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time="1.989">
+    <testcase name="t_get_id Happy Path 1" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".1">
     </testcase>
-    <testcase name="Get Last Run Flag Testing" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time=".102">
+    <testcase name="t_get_id Happy Path 2" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".284">
     </testcase>
-    <testcase name="INSERT_TEST_RUN Happy Path 1" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time="1.998">
+    <testcase name="t_get_id Setup" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".577">
     </testcase>
-    <testcase name="INSERT_TEST_RUN Happy Path 2" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time=".327">
-    </testcase>
-    <testcase name="Initialization Testing" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time=".038">
-    </testcase>
-    <testcase name="SET_LAST_RUN Happy Path 1" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time="2.995">
-    </testcase>
-    <testcase name="SET_LAST_RUN Happy Path 2" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time=".814">
-    </testcase>
-    <testcase name="SET_LAST_RUN Setup" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time="4.165">
-    </testcase>
-    <testcase name="Sad Path: Too Many C_LAST_RUN_FLAG Set" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time="3.41">
-    </testcase>
-    <testcase name="Set g_test_run_rec Happy Path 1" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time="1.98">
+    <testcase name="t_get_id Teardown" classname="WTP.WT_TESTCASE:PACKAGE_BODY" time=".106">
     </testcase>
   </testsuite>
-  <testsuite name="WTP.WT_TEST_RUNNER" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" tests="16" failures="0" time=".2" timestamp="2024-04-14T15:50:31">
-    <testcase name="t_cleanup_records Happy Path 1" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".733">
+  <testsuite name="WTP.WT_TEST_RUN" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" tests="18" failures="0" time=".2" timestamp="2024-04-15T01:44:03">
+    <testcase name="Clear Last Run Happy Path 1" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time="5.276">
     </testcase>
-    <testcase name="t_cleanup_records Happy Path 2" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".198">
+    <testcase name="DELETE_RUNS Happy Path 1" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time="6.5">
     </testcase>
-    <testcase name="t_cleanup_records Setup" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".6">
+    <testcase name="DELETE_RUNS Sad Path 1" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time=".997">
     </testcase>
-    <testcase name="t_delete_records Happy Path 1" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time="1.135">
+    <testcase name="DELETE_RUNS Setup" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time=".284">
     </testcase>
-    <testcase name="t_delete_records Happy Path 2" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".2">
+    <testcase name="DELETE_RUN_ID Happy Path 1" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time="2.042">
     </testcase>
-    <testcase name="t_delete_records Happy Path 3" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".199">
+    <testcase name="DELETE_RUN_ID Sad Path 1" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time=".326">
     </testcase>
-    <testcase name="t_delete_records Setup" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time="2.028">
+    <testcase name="DELETE_RUN_ID Setup" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time=".156">
     </testcase>
-    <testcase name="t_dim_id Happy Path 1" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time="1.01">
+    <testcase name="Finalization1 Testing" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time=".02">
     </testcase>
-    <testcase name="t_dim_id Happy Path 2" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".127">
+    <testcase name="Finalization2 Testing" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time="1.704">
     </testcase>
-    <testcase name="t_dim_id Sad Path 1" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".028">
+    <testcase name="Get Last Run Flag Testing" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time=".086">
     </testcase>
-    <testcase name="t_dim_id Setup" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".432">
+    <testcase name="INSERT_TEST_RUN Happy Path 1" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time="1.438">
     </testcase>
-    <testcase name="t_dim_id Teardown" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".127">
+    <testcase name="INSERT_TEST_RUN Happy Path 2" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time=".35">
     </testcase>
-    <testcase name="t_get_id Happy Path 1" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".16">
+    <testcase name="Initialization Testing" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time=".037">
     </testcase>
-    <testcase name="t_get_id Happy Path 2" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".443">
+    <testcase name="SET_LAST_RUN Happy Path 1" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time="3.005">
     </testcase>
-    <testcase name="t_get_id Setup" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time="1.018">
+    <testcase name="SET_LAST_RUN Happy Path 2" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time=".873">
     </testcase>
-    <testcase name="t_get_id Teardown" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".146">
+    <testcase name="SET_LAST_RUN Setup" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time="6.003">
+    </testcase>
+    <testcase name="Sad Path: Too Many C_LAST_RUN_FLAG Set" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time="5.831">
+    </testcase>
+    <testcase name="Set g_test_run_rec Happy Path 1" classname="WTP.WT_TEST_RUN:PACKAGE_BODY" time="1.935">
+    </testcase>
+  </testsuite>
+  <testsuite name="WTP.WT_TEST_RUNNER" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" tests="16" failures="0" time=".1" timestamp="2024-04-15T01:44:04">
+    <testcase name="t_cleanup_records Happy Path 1" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".641">
+    </testcase>
+    <testcase name="t_cleanup_records Happy Path 2" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".18">
+    </testcase>
+    <testcase name="t_cleanup_records Setup" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".524">
+    </testcase>
+    <testcase name="t_delete_records Happy Path 1" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time="1.12">
+    </testcase>
+    <testcase name="t_delete_records Happy Path 2" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".141">
+    </testcase>
+    <testcase name="t_delete_records Happy Path 3" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".135">
+    </testcase>
+    <testcase name="t_delete_records Setup" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time="1.293">
+    </testcase>
+    <testcase name="t_dim_id Happy Path 1" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".964">
+    </testcase>
+    <testcase name="t_dim_id Happy Path 2" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".115">
+    </testcase>
+    <testcase name="t_dim_id Sad Path 1" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".026">
+    </testcase>
+    <testcase name="t_dim_id Setup" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".409">
+    </testcase>
+    <testcase name="t_dim_id Teardown" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".18">
+    </testcase>
+    <testcase name="t_get_id Happy Path 1" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".146">
+    </testcase>
+    <testcase name="t_get_id Happy Path 2" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".256">
+    </testcase>
+    <testcase name="t_get_id Setup" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".621">
+    </testcase>
+    <testcase name="t_get_id Teardown" classname="WTP.WT_TEST_RUNNER:PACKAGE_BODY" time=".103">
     </testcase>
   </testsuite>
 </testsuites>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="ODBCAPTURE_schema_build" tests="82" failures="0" time="0" timestamp="2024-04-14T15:51:01">
+  <testsuite name="ODBCAPTURE_schema_build" tests="82" failures="0" time="0" timestamp="2024-04-15T01:44:33">
     <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.DBA_DEPENDENCIES_TAB_IDX2" time="0"/>
     <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.DBA_DEPENDENCIES_TAB_IX1" time="0"/>
     <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.DBA_OBJECTS_TAB_IX1" time="0"/>
