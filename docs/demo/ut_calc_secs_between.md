@@ -100,11 +100,20 @@ It is not necessary to keep the ut_setup and ut_teardown procedures.  These were
 
 The Persist add-on must be installed.
 
+Run this to setup HOOKS:
+
+```
+begin
+   wtp.junit_core_report.delete_hooks;
+   wtp.wt_core_report.delete_hooks;
+   wtp.wt_test_run.insert_hooks;
+end;
+/
+```
+
 Run this:
 
 ```
-set serveroutput on size unlimited format truncated
-
 begin
    wtplsql.test_run('UT_CALC_SECS_BETWEEN');
    wtp.wt_persist_report.dbms_out(in_runner_owner => USER

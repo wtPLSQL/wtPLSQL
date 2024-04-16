@@ -35,6 +35,17 @@ The Persist add-on should be installed.
 
 ## Execute and Display
 
+Run this to setup HOOKS:
+
+```
+begin
+   wtp.junit_core_report.delete_hooks;
+   wtp.wt_core_report.delete_hooks;
+   wtp.wt_test_run.insert_hooks;
+end;
+/
+```
+
 To execute the Test Runner package, run this:
 
 ```
@@ -59,7 +70,7 @@ And get this:
                                         Testcase Yield:      100%
 ```
 
-This is the test result summary from the last execution of the SIMPLE_TEST_RUNNER package.  The interval time shown here is the elapsed time from starting the Test Runner package until the first assertion was executed.  The total run time is the elapsed time from start to finish for the Test Runner package.  The report confirms that one assertion was executed for SIMPLE_TEST_RUNNER and it passed.  All tests passed, so the test yield is 100%.
+This is the test result summary from the last execution of the SIMPLE_TEST_RUNNER package.  The Total Run Time is the elapsed time from start to finish for the Test Runner package.  The report confirms that one assertion was executed for SIMPLE_TEST_RUNNER and it passed.  All tests passed, so the test yield is 100%.
 
 ## WT_PERSIST_REPORT Display Levels
 
@@ -141,7 +152,7 @@ end;
 /
 ```
 
-You may get this:
+And get this:
 
 ```
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003, wtpgrb 1.003
@@ -317,7 +328,7 @@ This is a very large report from the WT_PERSIST_REPORT package.  The detail leve
 
 Close to the middle of the output, is the "Code Coverage Details" title for the final section.  This section contains results from DBMS_PROFILER.  Each line of source code is matched with that output.  Some interesting points.
 
-* Line 3, is excluded by wtPLSQL because it is not executable
+* Line 3, is excluded by wtPLSQL because it is not executable (Unknown)
 * Lines 6, 7, and 8 were executed, according to DBMS_PROFILER.
 * Lines 9, 10, 11, 12, and 15 were ignored as per the annotation.
 * Several other lines are not included because DBMS_PROFILER did not collect any data on them.

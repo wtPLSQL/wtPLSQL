@@ -41,7 +41,6 @@ show errors
 
 set serveroutput on size unlimited format truncated
 
--- Run was WTP User to setup Core Report add-on
 begin
    wtp.junit_core_report.delete_hooks;
    wtp.wt_test_run.delete_hooks;

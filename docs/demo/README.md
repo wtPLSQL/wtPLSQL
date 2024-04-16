@@ -30,7 +30,7 @@ Run this:
 select wtplsql.show_version from dual;
 ```
 
-If the result is something like "Core 1.2, Persist 1.2", wtPSQL is installed with the Persist add-on. If the result is "Core 1.2", the Persist add-on has not been installed. For simplicity, the adjustments required to make the demonstrations and exercises work without the Persist add-on are not included.
+If the result is something like "wtpsrc 1.003, wtpsav 1.003", wtPSQL is installed with the Persist (wtpsav) add-on. If the result is ,missing "wtpsav", the Persist add-on has not been installed. For simplicity, the adjustments required to make the demonstrations and exercises work without the Persist add-on are not included.
 
 ### Another simple test
 
@@ -52,20 +52,22 @@ end;
 And get this:
 
 ```
-PASS Ad-Hoc Test. EQ - Expected "1" and got "1"
+Ad-Hoc Test
+ Assertion EQ PASSED.
+ Expected "1" and got "1"
 ```
 
 This indicates:
- * the assertion passed
  * the assertion had the message "Ad-Hoc Test"
  * the assertion name is "EQ"
+ * the assertion passed
  * the assertion details which may include the values tested
 
-Note: This ad-hoc test also demonstrates implicit data type conversion.
+Note: This ad-hoc test also demonstrates implicit data type conversion between number and varchar2.
 
 ## Create a Test Runner Package
 
-Creating a Test Runner package is central to using the wtPLSQL server. The Test Runner package contains all the assertion API calls used for testing. The package can also changes wtPSQL settings, like the name of the Database Object Under Test (DBOUT).
+Creating a Test Runner package is central to using the wtPLSQL server. The Test Runner package contains all the assertion API calls used for testing. The package can also update/change wtPSQL settings, like the name of the Database Object Under Test (DBOUT).
 
 The web page link below includes an exercise that shows how create a Test Runner package. The web page covers all the basics of creating a Test Runner package.
 

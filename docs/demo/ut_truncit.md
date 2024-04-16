@@ -83,11 +83,20 @@ The SET DBOUT annotation was also added to gather code coverage data.
 
 The Persist add-on must be installed.
 
+Run this to setup HOOKS:
+
+```
+begin
+   wtp.junit_core_report.delete_hooks;
+   wtp.wt_core_report.delete_hooks;
+   wtp.wt_test_run.insert_hooks;
+end;
+/
+```
+
 Run this:
 
 ```
-set serveroutput on size unlimited format truncated
-
 begin
    wtplsql.test_run('UT_TRUNCIT');
    wtp.wt_persist_report.dbms_out(in_runner_owner => USER

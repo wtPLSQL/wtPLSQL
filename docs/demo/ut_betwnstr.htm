@@ -96,10 +96,16 @@ END ut_betwnstr;
 <p>It is not necessary to keep the ut_setup and ut_teardown procedures. These were kept to indicate how to incorporate those procedures into a Test Runner package. The SET DBOUT annotation was also added to gather code coverage data.</p>
 <h2 id="check-the-results">Check the Results</h2>
 <p>The Persist add-on must be installed.</p>
+<p>Run this to setup HOOKS:</p>
+<pre><code>begin
+   wtp.junit_core_report.delete_hooks;
+   wtp.wt_core_report.delete_hooks;
+   wtp.wt_test_run.insert_hooks;
+end;
+/
+</code></pre>
 <p>Run this:</p>
-<pre><code>set serveroutput on size unlimited format truncated
-
-begin
+<pre><code>begin
    wtplsql.test_run(&#39;UT_BETWNSTR&#39;);
    wtp.wt_persist_report.dbms_out(in_runner_owner =&gt; USER
                                  ,in_runner_name  =&gt; &#39;UT_BETWNSTR&#39;

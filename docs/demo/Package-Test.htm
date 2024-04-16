@@ -48,6 +48,14 @@ as
 end test_dbms_output;
 /
 </code></pre>
+<p>Run this to setup HOOKS:</p>
+<pre><code>begin
+   wtp.junit_core_report.delete_hooks;
+   wtp.wt_test_run.delete_hooks;
+   wtp.wt_core_report.insert_hooks;
+end;
+/
+</code></pre>
 <p>Then, run this:</p>
 <pre><code>begin
    wtplsql.test_run(&#39;TEST_DBMS_OUTPUT&#39;);
@@ -91,13 +99,13 @@ as
 end test_dbms_output;
 /
 </code></pre>
-<p>And get this:</p>
+<p>Then, run this:</p>
 <pre><code>begin
    wtplsql.test_run(&#39;TEST_DBMS_OUTPUT&#39;);
 end;
 /
 </code></pre>
-<p>You might get this:</p>
+<p>And get this:</p>
 <pre><code>Test 1
 
   wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003, wtpgrb 1.003

@@ -154,6 +154,17 @@ Mid-way down the package body is the annotation "WTPLSQL_begin_ignore_lines".  T
 
 The Persist add-on must be installed.
 
+Run this to setup HOOKS:
+
+```
+begin
+   wtp.junit_core_report.delete_hooks;
+   wtp.wt_core_report.delete_hooks;
+   wtp.wt_test_run.insert_hooks;
+end;
+/
+```
+
 Run this:
 
 ```

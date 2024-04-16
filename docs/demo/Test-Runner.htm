@@ -23,6 +23,14 @@ end simple_test_runner;
 <p>SIMPLE_TEST_RUNNER is a minimal Test Runner. It is a package that contains the (public) WTPLSQL_RUN procedure and 1 assertion. It does the same assertion as the ad-hoc assertion in the <a href="README.htm">Demos and Examples</a> page.</p>
 <p>The Persist add-on should be installed.</p>
 <h2 id="execute-and-display">Execute and Display</h2>
+<p>Run this to setup HOOKS:</p>
+<pre><code>begin
+   wtp.junit_core_report.delete_hooks;
+   wtp.wt_core_report.delete_hooks;
+   wtp.wt_test_run.insert_hooks;
+end;
+/
+</code></pre>
 <p>To execute the Test Runner package, run this:</p>
 <pre><code>begin
    wtplsql.test_run(&#39;SIMPLE_TEST_RUNNER&#39;);
@@ -41,7 +49,7 @@ end;
   Total Run Time (sec):      0.0      Failed Testcases:        0
                                         Testcase Yield:      100%
 </code></pre>
-<p>This is the test result summary from the last execution of the SIMPLE_TEST_RUNNER package. The interval time shown here is the elapsed time from starting the Test Runner package until the first assertion was executed. The total run time is the elapsed time from start to finish for the Test Runner package. The report confirms that one assertion was executed for SIMPLE_TEST_RUNNER and it passed. All tests passed, so the test yield is 100%.</p>
+<p>This is the test result summary from the last execution of the SIMPLE_TEST_RUNNER package. The Total Run Time is the elapsed time from start to finish for the Test Runner package. The report confirms that one assertion was executed for SIMPLE_TEST_RUNNER and it passed. All tests passed, so the test yield is 100%.</p>
 <h2 id="wt_persist_report-display-levels">WT_PERSIST_REPORT Display Levels</h2>
 <p>This example shows all result details for the SIMPLE_TEST_RUNNER only.</p>
 <p>Run this:</p>
@@ -104,7 +112,7 @@ end simple_test_runner;
 end;
 /
 </code></pre>
-<p>You may get this:</p>
+<p>And get this:</p>
 <pre><code>  wtPLSQL wtpsrc 1.003, wtptst 1.003, wtpsav 1.003, wtpgrb 1.003
   Test Results for WT_DEMO.SIMPLE_TEST_RUNNER
   Run ID 40: 13-Apr-2024 06:13:21 PM
@@ -248,7 +256,7 @@ Source               TotTime MinTime   MaxTime
 <p>This is a very large report from the WT_PERSIST_REPORT package. The detail level of 30 displays the full detail of the Test Runner execution with code coverage.</p>
 <p>Close to the middle of the output, is the "Code Coverage Details" title for the final section. This section contains results from DBMS_PROFILER. Each line of source code is matched with that output. Some interesting points.</p>
 <ul>
-<li>Line 3, is excluded by wtPLSQL because it is not executable</li>
+<li>Line 3, is excluded by wtPLSQL because it is not executable (Unknown)</li>
 <li>Lines 6, 7, and 8 were executed, according to DBMS_PROFILER.</li>
 <li>Lines 9, 10, 11, 12, and 15 were ignored as per the annotation.</li>
 <li>Several other lines are not included because DBMS_PROFILER did not collect any data on them.</li>

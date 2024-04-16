@@ -136,6 +136,14 @@ END str;
 <p>Mid-way down the package body is the annotation "WTPLSQL_begin_ignore_lines". This annotation defines the source lines that will not be included in the code coverage metrics. The SET DBOUT annotation was also added to gather code coverage data.</p>
 <h2 id="check-the-results">Check the Results</h2>
 <p>The Persist add-on must be installed.</p>
+<p>Run this to setup HOOKS:</p>
+<pre><code>begin
+   wtp.junit_core_report.delete_hooks;
+   wtp.wt_core_report.delete_hooks;
+   wtp.wt_test_run.insert_hooks;
+end;
+/
+</code></pre>
 <p>Run this:</p>
 <pre><code>begin
    wtplsql.test_run(&#39;STR&#39;);

@@ -91,11 +91,25 @@ end table_test_pkg;
 
 ## Check the results
 
+Run this to setup HOOKS:
+
+```
+begin
+   wtp.wt_test_run.delete_hooks;
+   wtp.junit_core_report.delete_hooks;
+   wtp.wt_core_report.insert_hooks;
+   update wtp.hooks
+     set  run_string = 'begin wtp.wt_core_report.dbms_out(in_detail_level => 30); end;'
+    where hook_name  = 'after_test_run'
+     and  run_string = 'begin wtp.wt_core_report.dbms_out(in_detail_level => 10); end;';
+   wtp.hook.init;
+end;
+/
+```
+
 Run this:
 
 ```
-set serveroutput on size unlimited format truncated
-
 begin
    wtplsql.test_run('TABLE_TEST_PKG');
 end;

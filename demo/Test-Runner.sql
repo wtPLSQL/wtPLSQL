@@ -17,18 +17,16 @@ end simple_test_runner;
 /
 show errors
 
--- Run was WTP User to activate Core Report add-on
---begin
---   junit_core_report.delete_hooks;
---   wt_core_report.delete_hooks;
---   wt_test_run.insert_hooks;
---end;
---/
-
 set serveroutput on size unlimited format truncated
 
 begin
-   wtp.hook.init;
+   wtp.junit_core_report.delete_hooks;
+   wtp.wt_core_report.delete_hooks;
+   wtp.wt_test_run.insert_hooks;
+end;
+/
+
+begin
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
    wtp.wt_persist_report.dbms_out(in_runner_name  => 'SIMPLE_TEST_RUNNER');
 end;
@@ -64,7 +62,6 @@ end simple_test_runner;
 show errors
 
 begin
-   wtp.hook.init;
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
    wtp.wt_persist_report.dbms_out(in_runner_owner => USER
                                  ,in_runner_name  => 'SIMPLE_TEST_RUNNER'
@@ -85,7 +82,6 @@ end simple_test_runner;
 show errors
 
 begin
-   wtp.hook.init;
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
    wtp.wt_persist_report.dbms_out(in_runner_owner => USER
                                  ,in_runner_name  => 'SIMPLE_TEST_RUNNER');
@@ -112,7 +108,6 @@ end simple_test_runner;
 show errors
 
 begin
-   wtp.hook.init;
    wtplsql.test_run('SIMPLE_TEST_RUNNER');
    wtp.wt_persist_report.dbms_out(in_runner_owner => USER
                                  ,in_runner_name  => 'SIMPLE_TEST_RUNNER'

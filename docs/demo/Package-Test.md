@@ -67,6 +67,17 @@ end test_dbms_output;
 /
 ```
 
+Run this to setup HOOKS:
+
+```
+begin
+   wtp.junit_core_report.delete_hooks;
+   wtp.wt_test_run.delete_hooks;
+   wtp.wt_core_report.insert_hooks;
+end;
+/
+```
+
 Then, run this:
 
 ```
