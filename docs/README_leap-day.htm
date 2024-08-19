@@ -6,20 +6,20 @@
 <p>To use the Leap day theme:</p>
 <ol>
 <li><p>Add the following to your site's <code>_config.yml</code>:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode yml"><code class="sourceCode yaml"><a class="sourceLine" id="cb1-1" title="1"><span class="fu">remote_theme:</span><span class="at"> pages-themes/leap-day@v0.2.0</span></a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="fu">plugins:</span></a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="kw">-</span> jekyll-remote-theme <span class="co"># add this line to the plugins list if you already have one</span></a></code></pre></div></li>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="fu">remote_theme</span><span class="kw">:</span><span class="at"> pages-themes/leap-day@v0.2.0</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="fu">plugins</span><span class="kw">:</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="kw">-</span><span class="at"> jekyll-remote-theme</span><span class="co"> # add this line to the plugins list if you already have one</span></span></code></pre></div></li>
 <li><p>Optionally, if you'd like to preview your site on your computer, add the following to your site's <code>Gemfile</code>:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode ruby"><code class="sourceCode ruby"><a class="sourceLine" id="cb2-1" title="1">gem <span class="st">&quot;github-pages&quot;</span>, <span class="st">group: :jekyll_plugins</span></a></code></pre></div></li>
+<div class="sourceCode" id="cb2"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>gem <span class="st">&quot;github-pages&quot;</span>, <span class="st">group: :jekyll_plugins</span></span></code></pre></div></li>
 </ol>
 <h2 id="customizing">Customizing</h2>
 <h3 id="configuration-variables">Configuration variables</h3>
 <p>Leap day will respect the following variables, if set in your site's <code>_config.yml</code>:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode yml"><code class="sourceCode yaml"><a class="sourceLine" id="cb3-1" title="1"><span class="fu">title:</span><span class="at"> </span><span class="kw">[</span>The title of your site<span class="kw">]</span></a>
-<a class="sourceLine" id="cb3-2" title="2"><span class="fu">description:</span><span class="at"> </span><span class="kw">[</span>A short description of your site<span class="st">&#39;s purpose]</span></a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">The title of your site</span><span class="kw">]</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="fu">description</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">A short description of your site</span><span class="st">&#39;s purpose]</span></span></code></pre></div>
 <p>Additionally, you may choose to set the following optional variables:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode yml"><code class="sourceCode yaml"><a class="sourceLine" id="cb4-1" title="1"><span class="fu">show_downloads:</span><span class="at"> </span><span class="kw">[</span><span class="st">&quot;true&quot;</span> or <span class="st">&quot;false&quot;</span> (unquoted) to indicate whether to provide a download URL<span class="kw">]</span></a>
-<a class="sourceLine" id="cb4-2" title="2"><span class="fu">google_analytics:</span><span class="at"> </span><span class="kw">[</span>Your Google Analytics tracking ID<span class="kw">]</span></a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="fu">show_downloads</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="st">&quot;true&quot;</span><span class="at"> or </span><span class="st">&quot;false&quot;</span><span class="at"> (unquoted) to indicate whether to provide a download URL</span><span class="kw">]</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="fu">google_analytics</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">Your Google Analytics tracking ID</span><span class="kw">]</span></span></code></pre></div>
 <h3 id="stylesheet">Stylesheet</h3>
 <p>If you'd like to add your own custom styles:</p>
 <ol>
@@ -49,9 +49,9 @@
 <ol>
 <li>Look at <a href="https://github.com/pages-themes/leap-day/blob/master/_layouts/default.html">the template source</a> to determine the name of the variable. It will be in the form of <code>{{ site.github.zip_url }}</code>.</li>
 <li>Specify the URL that you'd like the template to use in your site's <code>_config.yml</code>. For example, if the variable was <code>site.github.url</code>, you'd add the following:
-<div class="sourceCode" id="cb6"><pre class="sourceCode yml"><code class="sourceCode yaml"><a class="sourceLine" id="cb6-1" title="1"><span class="fu">github:</span></a>
-<a class="sourceLine" id="cb6-2" title="2">  <span class="fu">zip_url:</span><span class="at"> http://example.com/download.zip</span></a>
-<a class="sourceLine" id="cb6-3" title="3">  <span class="fu">another_url:</span><span class="at"> another value</span></a></code></pre></div></li>
+<div class="sourceCode" id="cb6"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="fu">github</span><span class="kw">:</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a><span class="at">  </span><span class="fu">zip_url</span><span class="kw">:</span><span class="at"> http://example.com/download.zip</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a><span class="at">  </span><span class="fu">another_url</span><span class="kw">:</span><span class="at"> another value</span></span></code></pre></div></li>
 <li>When your site is built, Jekyll will use the URL you specified, rather than the default one provided by GitHub.</li>
 </ol>
 <p><em>Note: You must remove the <code>site.</code> prefix, and each variable name (after the <code>github.</code>) should be indent with two space below <code>github:</code>.</em></p>
