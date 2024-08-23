@@ -88,7 +88,6 @@ The web pages in this website contain information about the wtPLSQL software. Do
 
 For project information, see the [wtPLSQL wiki](https://github.com/DDieterich/wtPLSQL/wiki).  Documentation on procedures and compatibility are included in the wiki.  The wiki includes information for all releases of wtPLSQL. Any updates are immediately displayed.
 
-.
 
 ---
 
