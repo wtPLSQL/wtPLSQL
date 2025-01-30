@@ -1,0 +1,108 @@
+
+--
+--  Create ODBCAPTURE.GRAB_SCRIPTS Package
+--
+
+set define off
+
+
+--DBMS_METADATA:ODBCAPTURE.GRAB_SCRIPTS
+
+  CREATE OR REPLACE EDITIONABLE PACKAGE "ODBCAPTURE"."GRAB_SCRIPTS" 
+   authid current_user
+as
+
+   --
+   -- DBA OBJECT TYPES
+   --   (https://renenyffenegger.ch/notes/development/databases/Oracle/installed/data-dictionary/objects/index)
+   --
+   -- CHAIN
+   -- CLUSTER
+   -- CONSUMER GROUP
+   -- CONTEXT
+   -- DATABASE LINK
+   -- DESTINATION
+   -- DIRECTORY
+   -- EDITION
+   -- EVALUATION CONTEXT
+   -- FUNCTION
+   -- INDEX
+   -- INDEX PARTITION
+   -- INDEX SUBPARTITION
+   -- INDEXTYPE
+   -- JOB
+   -- JOB CLASS
+   -- LIBRARY
+   -- LOB
+   -- LOB PARTITION
+   -- MATERIALIZED VIEW
+   -- OPERATOR
+   -- PACKAGE
+   -- PACKAGE BODY
+   -- PROCEDURE
+   -- PROGRAM
+   -- QUEUE
+   -- RESOURCE PLAN
+   -- RULE
+   -- RULE SET
+   -- SCHEDULE
+   -- SCHEDULER GROUP
+   -- SEQUENCE
+   -- SYNONYM
+   -- TABLE
+   -- TABLE PARTITION
+   -- TABLE SUBPARTITION
+   -- TRIGGER
+   -- TYPE
+   -- TYPE BODY
+   -- UNDEFINED
+   -- VIEW
+   -- WINDOW
+   -- XML SCHEMA
+
+   LF    constant varchar2(1) := CHR(10);
+   CRTN  constant varchar2(1) := CHR(13);
+
+   -- Installed Types
+   TYPE installed_types_aa_type is table of varchar2(1)
+      index by build_conf.build_type%TYPE;
+   installed_types_aa   installed_types_aa_type;
+
+   -- INTERNALs Made Public for Modularization
+
+   TYPE grb_cldr_delim_nt_type is table of varchar2(1);
+   grb_cldr_delim_nt   grb_cldr_delim_nt_type :=
+                       grb_cldr_delim_nt_type (CHR(11), CHR(12), CHR(28),
+                                               CHR(29), CHR(30), CHR(31));
+
+   g_build_type      varchar2(10);
+   g_schema_name     varchar2(128);
+
+   procedure grb_object_grants
+      (in_fh           in out NOCOPY fh2.sf_ptr_type
+      ,in_object_name  in            varchar2
+      ,in_object_type  in            varchar2);
+   procedure grb_object_synonyms
+      (in_fh             in out NOCOPY fh2.sf_ptr_type
+      ,in_object_name    in            varchar2
+      ,in_object_type    in            varchar2
+      ,in_max_len        in            number);
+
+   ----------------------------------------------------
+
+   procedure set_installed_types;
+
+   procedure all_scripts
+      (in_build_type   in varchar2);
+
+end grab_scripts;
+/
+
+
+--  Grants
+
+
+--  Synonyms
+
+
+set define on

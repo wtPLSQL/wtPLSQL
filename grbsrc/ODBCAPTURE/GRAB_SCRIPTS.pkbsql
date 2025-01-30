@@ -1,0 +1,3399 @@
+
+--
+--  Create ODBCAPTURE.GRAB_SCRIPTS Package Body
+--
+
+set define off
+
+
+--DBMS_METADATA:ODBCAPTURE.GRAB_SCRIPTS
+
+  CREATE OR REPLACE EDITIONABLE PACKAGE BODY "ODBCAPTURE"."GRAB_SCRIPTS" 
+as
+
+--
+-- Table of Functions/Procedures
+--
+-- Script Generating Procedures
+--  -) procedure grb_object_grants       - Create Object Based Grant
+--  -) procedure grb_future_sys_grants   - Create "Delayed" 'SYS' Object Grants
+--  -) procedure grb_future_grants       - Create Future Grants
+--  -) procedure grb_object_synonyms     - Create Object Based Synonym
+--  -) procedure grb_future_synonyms     - Create Future Synonym
+--  -) procedure grb_advanced_queues     - Create Advanced Queue
+--  -) procedure grb_aq_tables           - Create Advanced Queue Table
+--  -) procedure grb_application_context - Create Context
+--  -) procedure grb_ras_acls            - Create Real Application Security ACLs
+--  -) procedure grb_host_acls           - Create Host ACLs
+--  -) procedure grb_wallet_acls         - Create Wallet ACLs
+--  -) procedure grb_common
+--     -) Create FUNCTION
+--     -) Create PACKAGE_BODY
+--     -) Create PACKAGE_SPEC
+--     -) Create PROCEDURE
+--     -) Create SCHEDULER_JOB
+--     -) Create SCHEDULER_PROGRAM
+--     -) Create SCHEDULER_SCHEDULE
+--     -) Create SEQUENCE
+--     -) Create TYPE_BODY
+--     -) Create TYPE_SPEC
+--  -) GRAB_DATA.grb_comp_data_loader    - Create Comprehensive Data Loader
+--  -) procedure grb_database_links      - Create Database Link
+--  -) procedure grb_database_triggers   - Create Database Trigger
+--  -) procedure grb_directories         - Create Directory
+--  -) procedure grb_foreign_keys        - Create Foreign Key
+--  -) procedure grb_indexes             - Create Index
+--  -) procedure grb_install_master      - Create Master Call Script
+--  -) procedure grb_install_schemas     - Create Schema/Owner Call Script
+--  -) procedure grb_install_sys         - Create SYS Call Script
+--  -) procedure grb_install_system      - Create SYSTEM Call Script
+--  -) procedure grb_materialized_views  - Create Materialized View
+--  -) procedure grb_plsql_java          - Create PL/SQL Java Source
+--  -) procedure grb_roles               - Create Role and 'SYS' Object Grants
+--  -) procedure grb_tables              - Create Table
+--  -) procedure grb_triggers            - Create Table/View Trigger
+--  -) procedure grb_users               - Create User and 'SYS' Object Grants
+--  -) procedure grb_user_triggers       - Create Schema Trigger
+--  -) procedure grb_views               - Create View
+--  -) procedure grb_xmlschema           - Create XML Schema Scripts
+-- Setup and Main Control
+--  -) procedure initialize
+--  -) procedure set_schema_name
+--  -) procedure gen_installs
+--  -) procedure gen_schemas
+-- PUBLIC API
+--  -) procedure all_scripts
+--
+
+
+------------------------------------------------------------
+---   Script Generating Procedures  ---
+------------------------------------------------------------
+
+
+------------------------------------------------------------
+-- Get Object Grants for CURRENT, FUTURE is handled in grb_grnt
+procedure grb_object_grants
+      (in_fh           in out NOCOPY fh2.sf_ptr_type
+      ,in_object_name  in            varchar2
+      ,in_object_type  in            varchar2)
+is
+   --
+   -- Oracle Database 12c Release 1 Database SQL Language Reference
+   -- "on_object_clause"
+   -- Users, directory schema objects, editions, data mining models, Java
+   --   source and resource schema objects, and SQL translation profiles
+   --   are identified separately because they reside in separate namespaces.
+   --
+   --  See Also: http://docs.oracle.com/database/121/SQLRF/sql_elements008.htm#SQLRF51129
+   --
+   --  "USER" Object Type not yet implemented.
+   --
+   sql_txt   varchar2(32767);
+begin
+   fh2.script_put_line(in_fh, '');
+   fh2.script_put_line(in_fh, '--  Grants');
+--   DBMS_METADATA.get_dependent_dll('OBJECT_GRANT') is VERY SLOW
+--   fh2.script_put_line(in_fh, '--DBMS_METADATA:' || g_schema_name ||
+--                                             '.' || in_object_name );
+--   fh2.put_big_line(in_fh, dbms_metadata.get_dependent_ddl(object_type        => 'OBJECT_GRANT'
+--                                                          ,base_object_name   => in_object_name
+--                                                          ,base_object_schema => g_schema_name)  );
+--   Note: EXECPTION BLOCK BELOW
+   for buff in (select grantee
+                      ,privilege
+                      ,object_type
+                      ,max(grantable)               GRANTABLE
+                 from  priv_obj_install_vw   -- Includes PUBLIC Grantee, Does not Include SYS Owned Objects
+                 where build_type   = g_build_type
+                  and  build_timing = 'CURRENT'     -- Grantee installed before this Object
+                  and  object_owner = g_schema_name
+                  and  object_name  = in_object_name
+                  and  object_type  = in_object_type
+                 group by grantee
+                      ,privilege
+                      ,object_type
+                 order by grantee
+                      ,privilege
+                      ,object_type)
+   loop
+      -- Directories are handled by "grb_directories"
+      --when 'DIRECTORY'               then 'DIRECTORY '
+      -- Grants are not implemented in ELEMENT_CONF
+      -- https://docs.oracle.com/database/121/SQLRF/statements_9014.htm#SQLRF01603
+      --when '(Data Mining) MODEL'     then 'MINING MODEL '
+      --when 'SQL TRANSLATION PROFILE' then 'SQL TRANSLATION PROFILE '
+      sql_txt := 'grant ' || buff.privilege ||     -- Taken from DBA_TAB_PRIVS SQL definition
+                   ' on ' || case buff.object_type when 'JAVA CLASS'    then 'JAVA SOURCE "'   || g_schema_name  || '"."'
+                                                   when 'JAVA SOURCE'   then 'JAVA SOURCE "'   || g_schema_name  || '"."'
+                                                   when 'JAVA RESOURCE' then 'JAVA RESOURCE "' || g_schema_name  || '"."'
+                                                   when 'EDITION'       then 'EDITION "'
+                                                   when 'USER'          then 'USER "'
+                                                                        else '"'               || g_schema_name  || '"."'
+                             end                                                               || in_object_name ||
+                 '" to "' || buff.grantee   || '"';
+      -- Missing "with hierarchy option"...
+      if buff.grantable = 'YES'
+      then
+         sql_txt := sql_txt || ' with grant option';
+      end if;
+     fh2.script_put_line(in_fh, sql_txt || ';');
+   end loop;
+   fh2.script_put_line(in_fh, '');
+--exception
+--   when DBMS_METADATA.object_not_found2
+--   then
+--      fh2.script_put_line(in_fh, '');
+end grb_object_grants;
+
+------------------------------------------------------------
+-- Create Future SYS Grants
+procedure grb_future_sys_grants
+is
+   ELMNT            CONSTANT varchar2(100) := 'SYS_GRANT';
+   fh               fh2.sf_ptr_type;           -- object script file handle
+   header_printed   boolean;
+   sql_txt          varchar2(32767);
+begin
+   for buf1 in (with q1 as (
+                select username                        GRANTEE
+                      ,'_usr.'                         FILE_SUFFIX
+                 from  schema_conf
+                 where oracle_provided = 'N'
+                UNION ALL
+                select rolename                        GRANTEE
+                      ,'_rol.'                         FILE_SUFFIX
+                 from  role_conf
+                       join element_conf  ec
+                            on  ec.element_name = ELMNT
+                 where oracle_provided = 'N'
+                )
+                select q1.grantee
+                      ,COMMON_UTIL.fix_filename(q1.grantee) ||
+                       q1.file_suffix || ec.file_ext1  FILE_NAME
+                 from  q1
+                       join element_conf  ec
+                            on  ec.element_name = ELMNT
+                 order by q1.grantee)
+   loop
+      header_printed := FALSE;
+      for buf2 in (select p1.object_owner
+                         ,p1.object_name
+                         ,p1.object_type
+                         ,p1.privilege
+                         ,max(p1.grantable)              GRANTABLE
+                    from  priv_sysobj_privileges_view  p1
+                    where p1.build_type   = g_build_type
+                     and  p1.grantee      = buf1.grantee
+                     and  p1.build_timing = 'FUTURE'
+                     and  p1.object_type != 'DIRECTORY' -- All directories are owned by SYS
+                          -- Keep LCR$ Logical Change Record
+                          -- Keep AQ$ Queue Tables and Views
+                          -- Object View OID Types are recreated automatically
+                     and  p1.object_name  not like common_util.SYS_OVIEW_OID_PATTERN escape '\'
+                          -- SYS_PLSQL Pipelined Type Objects are recreated automatically
+                     and  p1.object_name  not like common_util.SYS_PIPELINE_PATTERN   escape '\'
+                          -- Skip QT*_BUFFER Queue Views here. Grant Views with Advanced Queue
+                          --   https://blogs.oracle.com/db/entry/oracle_support_master_note_for_troubleshooting_advanced_queuing_and_oracle_streams_propagation_issue
+                          --   "Note that when queue table is created, a view called QT<nnn>_BUFFER is created in the SYS schema, and the queue table owner is given
+                          --    SELECT privileges on it. The <nnn> corresponds to the object_id of the associated queue table"
+                     and  p1.object_name  not like common_util.ADV_QUEUE_VIEW_PATTERN escape '\'
+                    group by p1.object_owner
+                         ,p1.object_name
+                         ,p1.object_type
+                         ,p1.privilege
+                    order by p1.object_owner
+                         ,p1.object_name
+                         ,p1.object_type
+                         ,p1.privilege)
+      loop
+         if NOT fh2.script_is_open(fh)
+         then
+            fh := fh2.script_open(in_filename     => buf1.file_name
+                                 ,in_elmnt        => ELMNT
+                                 ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+            common_util.add_sysgrants_file_header(fh);
+         end if;
+         if NOT header_printed
+         then
+            header_printed := TRUE;
+            fh2.script_put_line(fh, '');
+            fh2.script_put_line(fh, '');
+            fh2.script_put_line(fh, '--  "SYS" Object Grants');
+            fh2.script_put_line(fh, '');
+         end if;
+         -- No appropriate DBMS_METADATA. Manually create the SQL.
+         --
+         --  These "types" don't require a grant quailifier:
+         --    -) FUNCTION
+         --    -) INDEXTYPE
+         --    -) LIBRARY
+         --    -) MATERIALIZED VIEW
+         --    -) OPERATOR
+         --    -) PACKAGE
+         --    -) PROCEDURE
+         --    -) SEQUENCE
+         --    -) TABLE
+         --    -) TYPE
+         --    -) VIEW
+         --
+         --  Other forms (and "types") include:
+         --    -) ON DIRECTORY (DIRECTORY)         - Handled in "grb_directories"
+         --    -) ON USER (USER)                   - Handled HERE and in "grb_object_grants"
+         --    -) ON EDITION (EDITION)             - Handled HERE and in "grb_object_grants"
+         --    -) ON JAVA SOURCE (JAVA CLASS)      - Handled HERE and in "grb_object_grants" and "grb_plsql_java"
+         --    -) ON JAVA RESOURCE (JAVA RESOURCE) - Handled HERE and in "grb_object_grants"
+         --    -) ON MINING MODEL (MLE LANGUAGE?)  - Not Handled
+         --    -) ON SQL TRANSLATION PROFILE (???) - Not Handled
+         --
+         sql_txt := 'grant ' || buf2.privilege ||
+                      ' on ' || case buf2.object_type when 'JAVA CLASS'    then 'JAVA SOURCE "'   || buf2.object_owner || '"."'
+                                                      when 'JAVA SOURCE'   then 'JAVA SOURCE "'   || buf2.object_owner || '"."'
+                                                      when 'JAVA RESOURCE' then 'JAVA RESOURCE "' || buf2.object_owner || '"."'
+                                                      when 'EDITION'       then 'EDITION "'
+                                                      when 'USER'          then 'USER "'
+                                                                           else '"'               || buf2.object_owner || '"."'
+                                end                                                               || buf2.object_name  ||
+                    '" to "' || buf1.grantee || '"';
+         -- Missing "with hierarchy option" ...
+         if buf2.grantable = 'YES'
+         then
+            sql_txt := sql_txt || ' with grant option';
+         end if;
+         fh2.put_big_line(fh, buf2.object_owner || '"."' || buf2.object_name ||
+                         ' Grant', sql_txt || ';'
+                         ,common_util.MAXIMUM_SQL_LENGTH);
+      end loop;
+      --
+      if installed_types_aa.EXISTS('grbjava')
+      then
+         sql_txt := 'begin GRAB_JAVA.GRB_SYSGRNT(:1, ''' || buf1.grantee   ||
+                                               ''', ''' || buf1.file_name ||
+                                               ''', ''' || ELMNT          ||
+                                               ''', ''FUTURE''); end;';
+         begin
+            execute immediate sql_txt using in out fh;
+         exception when others then
+            if NOT regexp_like (SQLERRM, 'PLS-00201: identifier ''GRAB_JAVA.GRB_SYSGRNT'' must be declared')
+            then
+               raise_application_error(-20000, 'Execute Immediate ERROR for ' || buf1.grantee || CHR(10) ||
+                                                SQL_TXT || CHR(10) ||
+                                                SQLERRM || CHR(10) ||
+                                                dbms_utility.format_error_backtrace );
+            end if;
+         end;
+      end if;
+      --
+      if fh2.script_is_open(fh)
+      then
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, 'set define on');
+         fh2.script_put_line(fh, '');
+         fh2.script_close(fh);
+      end if;
+   end loop;
+end grb_future_sys_grants;
+
+------------------------------------------------------------
+-- Create FUTURE Grants
+procedure grb_future_grants
+is
+   ELMNT                  CONSTANT varchar2(100) := 'GRANT';
+   fh                     fh2.sf_ptr_type;  -- object script file handle
+   sql_txt                varchar2(32767);
+   default_build_type   build_conf.build_type%TYPE;
+   header_printed   boolean;
+begin
+   for gtee in (with q1 as (
+                select username                        GRANTEE
+                      ,'_usr.'                         FILE_SUFFIX
+                 from  schema_conf
+                 where oracle_provided = 'N'
+                UNION ALL
+                select rolename                        GRANTEE
+                      ,'_rol.'                         FILE_SUFFIX
+                 from  role_conf
+                       join element_conf  ec
+                            on  ec.element_name = ELMNT
+                 where oracle_provided = 'N'
+                )
+                select q1.grantee
+                      ,COMMON_UTIL.fix_filename(q1.grantee) ||
+                       q1.file_suffix || ec.file_ext1  FILE_NAME
+                 from  q1
+                       join element_conf  ec
+                            on  ec.element_name = ELMNT
+                 order by q1.grantee)
+   loop
+      header_printed := FALSE;
+      -- Cant use DBMS_METADATA because some Privileges may be delayed
+      --script_put_line(fh, '--DBMS_METADATA:' || gtee.grantee);
+      --BEGIN
+      --   fh2.put_big_line(fh, ELMNT || ' ' || gtee.grantee || ' FUTURE Grants'
+      --                   ,dbms_metadata.get_granted_ddl(object_type => 'SYSTEM_GRANT'
+      --                                                 ,grantee     => gtee.grantee)
+      --                   ,common_util.MAXIMUM_SQL_LENGTH);
+      --EXCEPTION
+      --   WHEN DBMS_METADATA.object_not_found2
+      --   THEN
+      --      null;
+      --END;
+      for syspriv in (select system_privilege_name
+                       from  priv_system_privileges_view
+                       where build_type = g_build_type
+                     -- Either CURRENT or FUTURE is OK for non-object privileges
+                     -- and  build_timing in ('CURRENT','FUTURE')
+                        and  grantee    = gtee.grantee
+                       order by system_privilege_name)
+      loop
+         if NOT fh2.script_is_open(fh)
+         then
+            fh := fh2.script_open(in_filename     => gtee.file_name
+                                 ,in_elmnt        => ELMNT
+                                 ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+            common_util.add_grants_file_header(fh         => fh
+                                              ,in_grantee => gtee.grantee);
+         end if;
+         if NOT header_printed
+         then
+            header_printed := TRUE;
+            fh2.script_put_line(fh, '');
+            fh2.script_put_line(fh, '');
+            fh2.script_put_line(fh, '--  Database System Privileges');
+            fh2.script_put_line(fh, '');
+         end if;
+         fh2.script_put_line(fh, 'grant ' || syspriv.system_privilege_name || ' to "' || gtee.grantee || '";');
+      end loop;
+      header_printed := FALSE;
+      --  DBMS_METADATA grants all roles.
+      --script_put_line(fh, '--DBMS_METADATA:' || gtee.grantee);
+      --fh2.put_big_line(fh, ELMNT || ' ' || gtee.grantee || ' FUTURE Grants'
+      --                ,dbms_metadata.get_granted_ddl(object_type => 'ROLE_GRANT'
+      --                                              ,grantee     => gtee.grantee));
+      for rol in (select rolename
+                        ,delegate_option
+                        ,admin_option
+                   from  priv_role_privileges_view
+                   where build_type = g_build_type
+                 -- Either CURRENT or FUTURE is OK for non-object privileges
+                 -- and  build_timing in ('CURRENT','FUTURE')
+                    and  grantee    = gtee.grantee
+                   order by rolename)
+      loop
+         if NOT fh2.script_is_open(fh)
+         then
+            fh := fh2.script_open(in_filename     => gtee.file_name
+                                 ,in_elmnt        => ELMNT
+                                 ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+            common_util.add_grants_file_header(fh         => fh
+                                              ,in_grantee => gtee.grantee);
+         end if;
+         if NOT header_printed
+         then
+            header_printed := TRUE;
+            fh2.script_put_line(fh, '');
+            fh2.script_put_line(fh, '');
+            fh2.script_put_line(fh, '--  "sys" BUILD_TYPE Role Grants');
+            fh2.script_put_line(fh, '--  "GRANTEE" (delayed) Role Grants');
+            fh2.script_put_line(fh, '--  Note: "OBJECT" Schema Object Grants are given during Role creation');
+            fh2.script_put_line(fh, '');
+         end if;
+         -- Missing "with hierarchy option" ...
+         case
+            when rol.admin_option = 'YES'
+            then
+               fh2.script_put_line(fh, 'grant "' || rol.rolename || '" to "' || gtee.grantee || '" with admin option;');
+            when rol.delegate_option = 'YES'
+            then
+               fh2.script_put_line(fh, 'grant "' || rol.rolename || '" to "' || gtee.grantee || '" with delegate option;');
+            else
+               fh2.script_put_line(fh, 'grant "' || rol.rolename || '" to "' || gtee.grantee || '";');
+         end case;
+      end loop;
+      header_printed := FALSE;
+      for sobj in (select object_owner                TABLE_OWNER
+                         ,object_name                 TABLE_NAME
+                         ,privilege
+                         ,max(grantable)              GRANTABLE
+                    from  priv_obj_install_vw   -- Includes PUBLIC Grantee, Does not Include SYS Owned Objects
+                    where object_build_type = g_build_type
+                     and  build_timing      = 'FUTURE'  -- Grant delayed for this Grantee
+                     and  grantee           = gtee.grantee
+                     and  privilege    not in ('ENQUEUE','DEQUEUE')
+                    group by object_owner
+                         ,object_name
+                         ,privilege
+                    order by object_owner
+                         ,object_name
+                         ,privilege)
+      loop
+         if NOT fh2.script_is_open(fh)
+         then
+            fh := fh2.script_open(in_filename     => gtee.file_name
+                                 ,in_elmnt        => ELMNT
+                                 ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+            common_util.add_grants_file_header(fh         => fh
+                                              ,in_grantee => gtee.grantee);
+         end if;
+         if NOT header_printed
+         then
+            header_printed := TRUE;
+            fh2.script_put_line(fh, '');
+            fh2.script_put_line(fh, '');
+            fh2.script_put_line(fh, '--  "sys" BUILD_TYPE Schema Object Grants, excluding SYS objects');
+            fh2.script_put_line(fh, '--  "GRANTEE" (delayed) Schema Object Grants');
+            fh2.script_put_line(fh, '--  Note: "OBJECT" Schema Object Grants are given during object creation');
+            fh2.script_put_line(fh, '');
+         end if;
+         -- No appropriate DBMS_METADATA.  Manually create the SQL.
+         sql_txt := 'grant ' || sobj.privilege   ||
+                     ' on "' || sobj.table_owner || '"."' || sobj.table_name || '"' ||
+                     ' to "' || gtee.grantee     || '"';
+         -- Missing "with hierarchy option" ...
+         if sobj.grantable = 'YES'
+         then
+            sql_txt := sql_txt || ' with grant option';
+         end if;
+         fh2.script_put_line(fh, sql_txt || ';');
+      end loop;
+      header_printed := FALSE;
+      for qspv in (select grant_name                  DBMS_AQ_PRIV
+                    from  priv_queue_sysprivs_view
+                    where build_type = g_build_type
+                  -- Either CURRENT or FUTURE is OK for non-object privileges
+                  -- and  build_timing in ('CURRENT','FUTURE')
+                     and  grantee    = gtee.grantee
+                    order by dbms_aq_priv)
+      loop
+         if NOT fh2.script_is_open(fh)
+         then
+            fh := fh2.script_open(in_filename     => gtee.file_name
+                                 ,in_elmnt        => ELMNT
+                                 ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+            common_util.add_grants_file_header(fh         => fh
+                                              ,in_grantee => gtee.grantee);
+         end if;
+         if NOT header_printed
+         then
+            header_printed := TRUE;
+            fh2.script_put_line(fh, '');
+            fh2.script_put_line(fh, '');
+            fh2.script_put_line(fh, '--  Advanced Queue System Privileges');
+            fh2.script_put_line(fh, '');
+         end if;
+         fh2.script_put_line(fh, 'begin');
+         fh2.script_put_line(fh, '   dbms_aqadm.grant_system_privilege(');
+         fh2.script_put_line(fh, '      privilege    => ''' || qspv.DBMS_AQ_PRIV || ''', ');
+         fh2.script_put_line(fh, '      grantee      => ''' || gtee.grantee      || ''', ');
+         fh2.script_put_line(fh, '      admin_option =>  FALSE);');
+         fh2.script_put_line(fh, 'end;');
+         fh2.script_put_line(fh, '/');
+      end loop;
+      header_printed := FALSE;
+      for cque in (select queue_owner
+                         ,queue_name
+                         ,privilege
+                         ,max(grantable)              GRANTABLE
+                    from  priv_obj_queue_view
+                    where build_type   = g_build_type
+                     and  build_timing = 'FUTURE'   -- Grant delayed for this Grantee
+                     and  grantee      = gtee.grantee
+                    group by queue_owner
+                         ,queue_name
+                         ,privilege)
+      loop
+         if NOT fh2.script_is_open(fh)
+         then
+            fh := fh2.script_open(in_filename     => gtee.file_name
+                                 ,in_elmnt        => ELMNT
+                                 ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+            common_util.add_grants_file_header(fh         => fh
+                                              ,in_grantee => gtee.grantee);
+         end if;
+         if NOT header_printed
+         then
+            header_printed := TRUE;
+            fh2.script_put_line(fh, '');
+            fh2.script_put_line(fh, '');
+            fh2.script_put_line(fh, '--  Advanced Queue Grants');
+            fh2.script_put_line(fh, '--  "GRANTEE" (Delayed) Advanced Queue Grants');
+            fh2.script_put_line(fh, '--  Note: "QUEUE" Advanced Queue Grants are given during object creation');
+            fh2.script_put_line(fh, '');
+         end if;
+         fh2.script_put_line(fh, 'begin');
+         fh2.script_put_line(fh, '   dbms_aqadm.grant_queue_privilege');
+         fh2.script_put_line(fh, '      (privilege    => '''  || cque.privilege    || ''''  );
+         fh2.script_put_line(fh, '      ,queue_name   => ''"' || cque.queue_owner || '"."' ||
+                                                                 cque.queue_name  || '"''' );
+         fh2.script_put_line(fh, '      ,grantee      => '''  || gtee.grantee      || ''''  );
+         if cque.grantable = 'YES'
+         then
+            fh2.script_put_line(fh, '      ,grant_option => TRUE);');
+         else
+            fh2.script_put_line(fh, '      ,grant_option => FALSE);');
+         end if;
+         fh2.script_put_line(fh, 'end;');
+         fh2.script_put_line(fh, '/');
+      end loop;
+      header_printed := FALSE;
+      for pqsv in (
+         select queue_owner     -- Owner of the queue
+               ,queue_name      -- Name of the queue
+               ,consumer_name   -- Name of the subscriber
+               ,address         -- Address of the subscriber
+               ,protocol        -- Protocol of the subscriber
+               ,rule            -- Rule condition for the subscriber
+               ,transformation  -- Transformation for the subscriber
+               ,queue_to_queue  -- Is subscriber is a queue-to-queue subscriber?
+               ,delivery_mode   -- Message delivery mode: PERSISTENT, BUFFERED, or PERSISTENT_OR_BUFFERED
+          from  priv_queue_subscribe_view
+          where build_type          = g_build_type
+           and  build_type_selector = 'GRANTEE'
+           and  consumer_name       = gtee.grantee
+          order by queue_owner
+               ,queue_name
+               ,consumer_name)
+      loop
+         if NOT fh2.script_is_open(fh)
+         then
+            fh := fh2.script_open(in_filename     => gtee.file_name
+                                 ,in_elmnt        => ELMNT
+                                 ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+            common_util.add_grants_file_header(fh         => fh
+                                              ,in_grantee => gtee.grantee);
+         end if;
+         if NOT header_printed
+         then
+            header_printed := TRUE;
+            fh2.script_put_line(fh, '');
+            fh2.script_put_line(fh, '');
+            fh2.script_put_line(fh, '--  Advanced Queue Subscriptions');
+            fh2.script_put_line(fh, '--  "GRANTEE" (Delayed) Advanced Queue Subscription');
+            fh2.script_put_line(fh, '--  Note: "QUEUE" Advanced Queue Subscriptions are given during object creation');
+            fh2.script_put_line(fh, '');
+         end if;
+         fh2.script_put_line(fh, 'begin');
+         fh2.script_put_line(fh, '   dbms_aqadm.add_subscriber');
+         fh2.script_put_line(fh, '      (queue_name     => ''' || pqsv.queue_owner ||
+                                                           '.' || pqsv.queue_name  || '''');
+         fh2.script_put_line(fh, '      ,subscriber     => sys.aq$_agent');
+         fh2.script_put_line(fh, '                            (name     => ''' || pqsv.consumer_name || '''');
+         fh2.script_put_line(fh, '                            ,address  => ''' || pqsv.address       || '''');
+         fh2.script_put_line(fh, '                            ,protocol => '   || pqsv.protocol      || ')');
+         fh2.script_put_line(fh, '      ,rule           => ''' || pqsv.rule           || '''');
+         fh2.script_put_line(fh, '      ,transformation => ''' || pqsv.transformation || '''');
+         fh2.script_put_line(fh, '      ,queue_to_queue => '   || pqsv.queue_to_queue );
+         fh2.script_put_line(fh, '      ,delivery_mode  => DBMS_AQADM.' || pqsv.delivery_mode || ');');
+         fh2.script_put_line(fh, 'end;');
+         fh2.script_put_line(fh, '/');
+         fh2.script_put_line(fh, '');
+      end loop;
+      if installed_types_aa.EXISTS('grbjava')
+      then
+         sql_txt := 'begin GRAB_JAVA.GRB_GRNT(:1, ''' || gtee.grantee   ||
+                                            ''', ''' || gtee.file_name ||
+                                            ''', ''' || ELMNT          ||
+                                            '''); end;';
+         begin
+            execute immediate sql_txt using in out fh;
+         exception when others then
+            if NOT regexp_like (SQLERRM, 'PLS-00201: identifier ''GRAB_JAVA.GRB_GRNT'' must be declared')
+            then
+               raise_application_error(-20000, 'Execute Immediate ERROR for ' || gtee.grantee || CHR(10) ||
+                                                SQL_TXT || CHR(10) ||
+                                                SQLERRM || CHR(10) ||
+                                                dbms_utility.format_error_backtrace );
+            end if;
+         end;
+      end if;
+      if fh2.script_is_open(fh)
+      then
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, 'set define on');
+         fh2.script_put_line(fh, '');
+         fh2.script_close(fh);
+      end if;
+   END LOOP;
+end grb_future_grants;
+
+------------------------------------------------------------
+-- Get CURRENT synonyms. FUTURE synonyms are handled in grb_future_synonyms
+procedure grb_object_synonyms
+      (in_fh             in out NOCOPY fh2.sf_ptr_type
+      ,in_object_name    in            varchar2
+      ,in_object_type    in            varchar2
+      ,in_max_len        in            number)
+is
+begin
+   fh2.script_put_line(in_fh, '');
+   fh2.script_put_line(in_fh, '--  Synonyms');
+   for buff in (select synonym_owner, synonym_name
+                 from  obj_install_synonym_tab
+                 where build_type          = g_build_type
+                  and  build_type_selector = 'SYNONYM'       -- Target installed before this Synonym
+                  and  target_owner        = g_schema_name
+                  and  target_name         = in_object_name
+                  and  target_type         = in_object_type
+                 order by synonym_owner, synonym_name)
+   loop
+      fh2.script_put_line(in_fh, '');
+      fh2.script_put_line(in_fh, '--DBMS_METADATA:' || buff.synonym_owner ||
+                                                '.' || buff.synonym_name );
+      -- Includes DB_LINK in Synonym
+      fh2.put_big_line(in_fh, buff.synonym_owner || '.' || buff.synonym_name || ' Synonym'
+                      ,dbms_metadata.get_ddl(object_type => 'SYNONYM'
+                                            ,name        => buff.synonym_name
+                                            ,schema      => buff.synonym_owner)
+                      ,in_max_len);
+   end loop;
+   fh2.script_put_line(in_fh, '');
+end grb_object_synonyms;
+
+------------------------------------------------------------
+-- Create Synonym
+procedure grb_future_synonyms
+is
+   ELMNT    CONSTANT varchar2(100) := 'SYNONYM';
+   fh       fh2.sf_ptr_type;  -- object script file handle
+begin
+   for buf1 in
+      (select synonym_name
+             ,file_ext1
+        from  obj_install_synonym_tab
+        where build_type          = g_build_type
+         and  build_type_selector = 'TARGET'      -- Synonym install delayed for this Target
+         and  synonym_owner       = g_schema_name
+        group by synonym_name, file_ext1
+        order by synonym_name )
+   loop
+      if NOT fh2.script_is_open(fh)
+      then
+         fh := fh2.script_open(in_filename     => COMMON_UTIL.fix_filename(g_schema_name) || '.' || buf1.file_ext1
+                              ,in_elmnt        => ELMNT
+                              ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '--  Create ' || g_schema_name || ' Synonyms');
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '--  Synonyms from objects owned by "sys" Build Type Schema');
+         fh2.script_put_line(fh, '--  Also, synonyms delayed waiting for target installation.');
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, 'set define off');
+         fh2.script_put_line(fh, '');
+      end if;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--DBMS_METADATA:' || g_schema_name ||
+                                             '.' || buf1.synonym_name);
+      -- Includes DB_LINK in Synonym
+      fh2.put_big_line(fh, g_schema_name || '.' || buf1.synonym_name || ' Synonym'
+                      ,dbms_metadata.get_ddl(object_type => 'SYNONYM'
+                                            ,name        => buf1.synonym_name
+                                            ,schema      => g_schema_name)
+                      ,common_util.MAXIMUM_SQL_LENGTH);
+   end loop;
+   if fh2.script_is_open(fh)
+   then
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define on');
+      fh2.script_close(fh);
+   end if;
+end grb_future_synonyms;
+
+------------------------------------------------------------
+-- Create Advanced Queues
+procedure grb_advanced_queues
+is
+   --
+   --  AQ Notifications (Subscribers)
+   --
+   --TYPE aq$_agent AS OBJECT
+   --( name          varchar2(30),    -- M_IDEN, name of a message producer or consumer
+   --  address       varchar2(1024),  -- address where message must be sent
+   --  protocol      number)          -- protocol for communication, must be 0
+   --
+   --TYPE aq$_reg_info AS OBJECT (
+   --        name                  VARCHAR2(128),  -- name of the subscription
+   --        namespace             NUMBER,         -- namespace of the subscription
+   --        callback              VARCHAR2(4000), -- callback function
+   --        context               RAW(2000),      -- context for the callback func.
+   --   ***  anyctx  ***           SYS.ANYDATA,    -- anydata ctx for callback func
+   --        ctxtype               NUMBER,         -- raw/anydata context
+   --        qosflags              NUMBER,         -- QOS flags
+   --        payloadcbk            VARCHAR2(4000), -- payload callback
+   --        timeout               NUMBER,         -- registration expiration
+   --        ntfn_grouping_class        NUMBER,    -- ntfn grouping class
+   --        ntfn_grouping_value        NUMBER,    -- ntfn grouping value
+   --        ntfn_grouping_type         NUMBER,    -- ntfn grouping type
+   --        ntfn_grouping_start_time   TIMESTAMP WITH TIME ZONE, -- grp start time
+   --        ntfn_grouping_repeat_count NUMBER)    -- ntfn grp repeat count
+   --
+   --Not Implementing "anyctx", "anyctx" is for Streams Only:
+   --https://docs.oracle.com/database/121/REFRN/GUID-0976B325-BCA0-4205-9E3A-0E9D88BA1FDD.htm#REFRN23657
+   --  Streams is Deprecated:
+   --https://docs.oracle.com/database/121/UPGRD/deprecated.htm#UPGRD60159
+   -- ' ,anyctx => ''' || case sys.ANYDATA.gettypename(any_context)
+   --                     when  null
+   --                     then 'NULL'
+   --                     when 'NUMBER'
+   --                     then 'ConvertNumber(num => to_number(''' ||
+   --                           to_char(sys.ANYDATA.AccessNumber(any_context)) || '''))'
+   --                     when 'DATE'
+   --                     then 'ConvertDate(dat => to_date('''    ||
+   --                           to_char(sys.ANYDATA.AccessDate(any_context)
+   --                                  ,'DD-MON-YYYY HH24:MI:SS') ||
+   --                              ''',''DD-MON-YYYY HH24:MI:SS''))'
+   --                     when 'CHAR'
+   --                     then 'ConvertChar(c => CAST(''' ||
+   --                           sys.ANYDATA.AccessChar(any_context) || ''' as CHAR))'
+   --                     when 'VARCHAR'
+   --                     then 'ConvertVarchar(c => CAST(''' ||
+   --                           sys.ANYDATA.AccessVarchar(any_context) || ''' as VARCHAR))'
+   --                     when 'VARCHAR2'
+   --                     then 'ConvertVarchar2(c => CAST(''' ||
+   --                           sys.ANYDATA.AccessVarchar2(any_context) || ''' as VARCHAR2))'
+   --                     when 'RAW'
+   --                     then 'ConvertRaw(r => hextoraw(''' ||
+   --                           rawtohex(sys.ANYDATA.AccessRaw(any_context)) || '''))'
+   --                     when 'BLOB'
+   --                     then 'ConvertBlob(b => to_blob(hextoraw(''' ||
+   --                           dbms_lob.substr(sys.ANYDATA.AccessBlob(any_context)
+   --                                          ,32767,1) || ''')))'
+   --                     when 'CLOB'
+   --                     then 'ConvertClob(c => to_clob(''' ||
+   --                           dbms_lob.substr(sys.ANYDATA.AccessClob(any_context)
+   --                                          ,32767,1) || '''))'
+   --                     when 'TIMESTAMP'
+   --                     then 'ConvertTimestamp(ts => to_timestamp(''' ||
+   --                           to_char(sys.ANYDATA.AccessTimestamp(any_context)
+   --                                  ,'DD-MON-YYYY HH24:MI:SS.FF9')   ||
+   --                              ''',''DD-MON-YYYY HH24:MI:SS.FF9''))'
+   --                     when 'TIMESTAMP WITH TIME ZONE'
+   --                     then 'ConvertTimestampTZ(ts => to_timestamp_tz(''' ||
+   --                           to_char(sys.ANYDATA.AccessTimestampTZ(any_context)
+   --                                  ,'DD-MON-YYYY HH24:MI:SS.FF9 TH:TM')  ||
+   --                              ''',''DD-MON-YYYY HH24:MI:SS.FF9 TH:TM''))'
+   --                     when 'TIMESTAMP WITH LOCAL TIME ZONE'
+   --                     then 'ConvertTimestampLTZ(ts => CAST(to_timestamp_tz(''' ||
+   --                           to_timestamp_tz(sys.ANYDATA.AccessTimestampLTZ(any_context)
+   --                                  ,'DD-MON-YYYY HH24:MI:SS.FF9 TH:TM')   ||
+   --                              ''',''DD-MON-YYYY HH24:MI:SS.FF9 TH:TM'')' ||
+   --                                                    ' as timestamp with local time zone))'
+   --                     when 'INTERVAL YEAR TO MONTH'
+   --                     then 'ConvertIntervalYM(inv => INTERVAL ''' ||
+   --                           to_char(sys.ANYDATA.AccessIntervalYM(any_context)) ||
+   --                                  ' YEAR TO MONTH)'
+   --                     when 'INTERVAL DAY TO SECOND'
+   --                     then 'ConvertIntervalDS(inv => INTERVAL ''' ||
+   --                           to_char(sys.ANYDATA.AccessIntervalDS(any_context)
+   --                                  ,'DD HH24:MI:SS.FF') ||
+   --                                  ' DAY TO SECOND)'
+   --                     when 'BINARY_FLOAT'
+   --                     then 'ConvertBFloat(fl => CAST(to_number(''' ||
+   --                           sys.ANYDATA.AccessBFloat(any_context) || ''') as BINARY_FLOAT))'
+   --                     when 'BINARY_DOUBLE'
+   --                     then 'ConvertBFloat(dbl => CAST(to_number(''' ||
+   --                          sys.ANYDATA.AccessBDouble(any_context) || ''') as BINARY_DOUBLE))'
+   --                     when 'ROWID'
+   --                     then 'ConvertURowid(rid => CHARTOROWID(''' ||
+   --                           ROWIDTOCHAR(sys.ANYDATA.AccessURowid(any_context)) || '''))'
+   --                     --  BFILE Conversion not Implemented
+   --                     --when 'BFILE'
+   --                     --then 'ConvertBfile(b => BFILENAME ''' ||
+   --                     --      sys.ANYDATA.AccessBfile(any_context) || ''')'
+   --                     --  Not Implemented
+   --                     --when 'NCHAR'
+   --                     --then 'ConvertNchar(nc => to_nchar(''' ||
+   --                     --      sys.ANYDATA.AccessNchar(any_context) || '''))'
+   --                     --  Not Implemented
+   --                     --when 'NVARCHAR2'
+   --                     --then 'ConvertNVarchar2(nc => to_nchar(''' ||
+   --                     --      sys.ANYDATA.AccessNVarchar2(any_context) || '''))'
+   --                     --  Not Implemented
+   --                     --when 'NCLOB'
+   --                     --then 'ConvertNClob(nc => to_nclob(''' ||
+   --                     --      sys.ANYDATA.AccessNClob(any_context) || '''))'
+   --                     --  Also Not Implemented:
+   --                     --ConvertObject(obj => "<ADT_1>")
+   --                     --ConvertObject(obj => "<OPAQUE_1>")
+   --                     --ConvertRef(rf => REF "<ADT_1>")
+   --                     --ConvertCollection(col => "<COLLECTION_1>")
+   --                     else 'ERROR: Unknown Datatype "' || context_type || '"'
+   --                     end                                              || LF ||
+   --
+   ELMNT      CONSTANT varchar2(100) := 'QUEUE';
+   fh         fh2.sf_ptr_type;  -- object script file handle
+begin
+   for buf1 in (select obj.object_name                          QUEUE_NAME
+                      ,COMMON_UTIL.fix_filename(obj.object_name) || '.' || obj.file_ext1
+                                                                FILE_NAME
+                      ,obj.build_timing
+                 from  obj_install_object_tab  obj
+                       join dba_queues  aq
+                            on  aq.owner = obj.object_owner
+                            and aq.name  = obj.object_name
+                            and (   aq.queue_type is null
+                                 or aq.queue_type != 'EXCEPTION_QUEUE')
+                 where obj.build_type   = g_build_type
+                  and  obj.object_owner = g_schema_name
+                  and  obj.object_type  = ELMNT
+                 order by obj.object_name
+                      ,obj.file_ext1
+                      ,obj.build_timing)
+   loop
+      fh := fh2.script_open(in_filename     => buf1.file_name
+                           ,in_elmnt        => ELMNT
+                           ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '--  Create ' || g_schema_name || '.' || buf1.queue_name || ' Queue');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define off');
+      fh2.script_put_line(fh, '');
+      if buf1.build_timing != 'CURRENT'
+      then
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '--  NOTE: This is a "' || buf1.build_timing || '" Queue');
+      end if;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--DBMS_METADATA:' || g_schema_name   ||
+                                             '.' || buf1.queue_name );
+      fh2.put_big_line(fh, g_schema_name || '.' || buf1.queue_name || ' Queue'
+                      ,dbms_metadata.get_ddl(object_type => 'AQ_QUEUE'
+                                            ,name        => buf1.queue_name
+                                            ,schema      => g_schema_name)
+                      ,common_util.MAXIMUM_SQL_LENGTH);
+      fh2.script_put_line(fh, '/');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--  Grants');
+      -- Grant syntax does not support Advanced Queues
+      --grb_object_grants(fh, buf1.queue_name, 'QUEUE');
+      fh2.script_put_line(fh, '');
+      for buf2 in (select grantee                 GRANTEE
+                         ,privilege
+                         ,max(grantable)          GRANTABLE
+                    from  priv_obj_queue_view
+                    where build_type   = g_build_type
+                     and  build_timing = 'CURRENT'     -- Grantee is installed before Queue
+                     and  queue_owner  = g_schema_name
+                     and  queue_name   = buf1.queue_name
+                    group by grantee
+                         ,privilege
+                    order by grantee
+                         ,privilege)
+      loop
+         fh2.script_put_line(fh, 'begin');
+         fh2.script_put_line(fh, '   dbms_aqadm.grant_queue_privilege');
+         fh2.script_put_line(fh, '      (privilege    => '''  || buf2.privilege  || ''''  );
+         fh2.script_put_line(fh, '      ,queue_name   => ''"' || g_schema_name   || '"."' ||
+                                                                 buf1.queue_name || '"''' );
+         fh2.script_put_line(fh, '      ,grantee      => '''  || buf2.grantee    || ''''  );
+         if buf2.grantable = 'YES'
+         then
+            fh2.script_put_line(fh, '      ,grant_option => TRUE);');
+         else
+            fh2.script_put_line(fh, '      ,grant_option => FALSE);');
+         end if;
+         fh2.script_put_line(fh, 'end;');
+         fh2.script_put_line(fh, '/');
+      end loop;
+      grb_object_synonyms(fh, buf1.queue_name, 'QUEUE', common_util.MAXIMUM_SQL_LENGTH);
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--  Subscribe');
+      fh2.script_put_line(fh, '');
+      for buf3 in (
+         select queue_owner     -- Owner of the queue
+               ,queue_name      -- Name of the queue
+               ,consumer_name   -- Name of the subscriber
+               ,address         -- Address of the subscriber
+               ,protocol        -- Protocol of the subscriber
+               ,rule            -- Rule condition for the subscriber
+               ,transformation  -- Transformation for the subscriber
+               ,queue_to_queue  -- Is subscriber is a queue-to-queue subscriber?
+               ,delivery_mode   -- Message delivery mode: PERSISTENT, BUFFERED, or PERSISTENT_OR_BUFFERED
+               ,build_type_selector
+          from  priv_queue_subscribe_view
+          where build_type          = g_build_type
+           and  build_type_selector = 'QUEUE'
+           and  queue_owner         = g_schema_name
+           and  queue_name          = buf1.queue_name
+          order by queue_owner
+               ,queue_name
+               ,consumer_name)
+      loop
+         fh2.script_put_line(fh, '-- This is a "' || buf3.build_type_selector || '" Queue Subscription');
+         fh2.script_put_line(fh, 'begin');
+         fh2.script_put_line(fh, '   dbms_aqadm.add_subscriber');
+         fh2.script_put_line(fh, '      (queue_name     => ''' || buf3.queue_owner ||
+                                                           '.' || buf3.queue_name  || '''');
+         fh2.script_put_line(fh, '      ,subscriber     => sys.aq$_agent');
+         fh2.script_put_line(fh, '                            (name     => ''' || buf3.consumer_name || '''');
+         fh2.script_put_line(fh, '                            ,address  => ''' || buf3.address       || '''');
+         fh2.script_put_line(fh, '                            ,protocol => '   || buf3.protocol      || ')');
+         fh2.script_put_line(fh, '      ,rule           => ''' || buf3.rule           || '''');
+         fh2.script_put_line(fh, '      ,transformation => ''' || buf3.transformation || '''');
+         fh2.script_put_line(fh, '      ,queue_to_queue => '   || buf3.queue_to_queue );
+         fh2.script_put_line(fh, '      ,delivery_mode  => DBMS_AQADM.' || buf3.delivery_mode || ');');
+         fh2.script_put_line(fh, 'end;');
+         fh2.script_put_line(fh, '/');
+         fh2.script_put_line(fh, '');
+      end loop;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--  Register');
+      fh2.script_put_line(fh, '');
+      -- https://docs.oracle.com/database/121/REFRN/GUID-0976B325-BCA0-4205-9E3A-0E9D88BA1FDD.htm#REFRN23657
+      for buf4 in (
+         select subscription_name          -- Name of the subscription registration of the form schema.queue:consumer_name
+               ,namespace                  -- Namespace of the subscription registration: ANONYMOUS, AQ, or DBCHANGE
+               ,location_name              -- Location endpoint of the registration
+               ,user_context               -- Context the user provided during registration of PL/SQL registrations
+               ,qosflags                   -- Quality of service of the registration: RELIABLE, PAYLOAD, or PURGE_ON_NTFN
+               ,timeout                    -- Registration timeout
+               ,ntfn_grouping_class        -- Notification grouping class
+               ,ntfn_grouping_value        -- Notification grouping value
+               ,ntfn_grouping_type         -- Notification grouping type: SUMMARY or LAST
+               ,ntfn_grouping_start_time   -- Notification grouping start time
+               ,ntfn_grouping_repeat_count -- Notification grouping repeat count, or FOREVER
+               ,context_size               -- Size of the context
+          from  priv_queue_register_view    -- grant SELECT on "SYS"."DBA_SUBSCR_REGISTRATIONS" to "ODBCAPTURE";
+          where queue_build_type = g_build_type
+           and  regexp_like (subscription_name, '^["]{0,1}'           ||   -- Zero or One Double Quotes at the begining
+                                                g_schema_name         ||
+                                                '["]{0,1}[.]["]{0,1}' ||   -- Zero or One Double Quotes, a Period, and Zero or One Double Quotes
+                                                buf1.queue_name        )
+          order by subscription_name
+               ,namespace)
+      loop
+         -- Advanced Queue Registrations are "QUEUE" only.
+         fh2.script_put_line(fh, 'begin');
+         fh2.script_put_line(fh, '   dbms_aq.register');
+         fh2.script_put_line(fh, '      (reg_list => sys.aq$_reg_info_list');
+         fh2.script_put_line(fh, '                      (sys.aq$_reg_info');
+         fh2.script_put_line(fh, '                         (name                       => ''' || buf4.subscription_name                    || '''');
+         fh2.script_put_line(fh, '                         ,namespace                  => DBMS_AQ.NAMESPACE_' || to_char(buf4.namespace));
+         fh2.script_put_line(fh, '                         ,callback                   => ''' || buf4.location_name                     || '''');
+         fh2.script_put_line(fh, '                         ,context                    => hextoraw(''' || rawtohex(buf4.user_context)      || ''')');
+         if    buf4.qosflags is not null
+           AND buf4.timeout  is not null
+         then
+            fh2.script_put_line(fh, '                         ,qosflags                   => ' || to_char(buf4.qosflags));
+            fh2.script_put_line(fh, '                         ,timeout                    => ' || to_char(buf4.timeout));
+            if     buf4.ntfn_grouping_class        is not null
+               AND buf4.ntfn_grouping_value        is not null
+               AND buf4.ntfn_grouping_type         is not null
+               AND buf4.ntfn_grouping_start_time   is not null
+               AND buf4.ntfn_grouping_repeat_count is not null
+            then
+               fh2.script_put_line(fh, '                         ,ntfn_grouping_class        => ' || to_char(buf4.ntfn_grouping_class));
+               fh2.script_put_line(fh, '                         ,ntfn_grouping_value        => ' || to_char(buf4.ntfn_grouping_value));
+               fh2.script_put_line(fh, '                         ,ntfn_grouping_type         => ' || to_char(buf4.ntfn_grouping_type));
+               fh2.script_put_line(fh, '                         ,ntfn_grouping_start_time   => ' || 'to_timstamp_tz(' ||
+                                                                                                      to_char(buf4.ntfn_grouping_start_time
+                                                                                                             ,'DD-MON-YYYY HH24:MI:SS.FF9 TH:TM') ||
+                                                                                                           ',''DD-MON-YYYY HH24:MI:SS.FF9 TH:TM'')' || ' )');
+               fh2.script_put_line(fh, '                         ,ntfn_grouping_repeat_count => ' || to_char(buf4.ntfn_grouping_repeat_count));
+            end if;
+         end if;
+         fh2.script_put_line(fh, '                      )  )');
+         fh2.script_put_line(fh, '      ,reg_count => ' || nvl(to_char(buf4.context_size),'NULL') || ' );');
+         fh2.script_put_line(fh, 'end;');
+         fh2.script_put_line(fh, '/');
+         fh2.script_put_line(fh, '');
+      end loop;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--  Schedule');
+      fh2.script_put_line(fh, '');
+      -- https://docs.oracle.com/database/121/REFRN/GUID-65C3B9EB-BFD5-4BAB-A810-D0B705E92DCA.htm
+      for buf5 in (
+         select schema              -- Source queue owner
+               ,qname               -- Source queue name
+               ,destination         -- Destination name, currently limited to be a DBLINK name
+               ,start_date          -- Date at which to start propagation
+               ,propagation_window  -- Duration for the propagation window (in seconds)
+               ,next_time           -- Function to compute the start of the next propagation window
+               ,latency             -- Maximum wait time to propagate a message during the propagation window
+          from  dba_queue_schedules
+          where schema = g_schema_name
+           and  qname  = buf1.queue_name
+          order by schema
+               ,qname)
+      loop
+         fh2.script_put_line(fh, 'begin');
+         fh2.script_put_line(fh, '   dbms_aqadm.schedule_propagation');
+         fh2.script_put_line(fh, '      (queue_name         => ''"' || buf5.schema      || '"."' ||
+                                                                       buf5.qname       || '"''' );
+         fh2.script_put_line(fh, '      ,destination        => '''  || buf5.destination || ''''  );
+         fh2.script_put_line(fh, '      ,start_time         => to_date(''' || to_char(buf5.start_date
+                                                                                     ,'DD-MON-YYYY HH24:MI:SS')  ||
+                                                                                ''', ''DD-MON-YYYY HH24:MI:SS'')');
+         fh2.script_put_line(fh, '      ,duration           =>   '  || buf5.propagation_window   );
+         fh2.script_put_line(fh, '      ,next_time          => '''  || buf5.next_time   || ''''  );
+         fh2.script_put_line(fh, '      ,latency            =>   '  || buf5.latency);
+         fh2.script_put_line(fh, '      ,destination_queue  => NULL);');
+         fh2.script_put_line(fh, 'end;');
+         fh2.script_put_line(fh, '/');
+         fh2.script_put_line(fh, '');
+      end loop;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define on');
+      fh2.script_close(fh);
+   end loop;
+end grb_advanced_queues;
+
+------------------------------------------------------------
+-- Create Advanced Queue Tables
+procedure grb_aq_tables
+is
+   ELMNT      CONSTANT varchar2(100) := 'QUEUE_TABLE';
+   fh         fh2.sf_ptr_type;  -- object script file handle
+   gsm_save   varchar2(128);
+begin
+   for buff in (select aqt.queue_table
+                      ,COMMON_UTIL.fix_filename(aqt.queue_table) || '.' || elem.file_ext1
+                                                           FILE_NAME
+                      ,obj.object_name
+                      ,obj.object_type
+                      ,obj.build_timing
+                 from  dba_queue_tables  aqt
+                       join element_conf  elem
+                            on  elem.element_name = ELMNT
+                       join obj_install_object_tab  obj
+                            on  obj.build_type = g_build_type
+                            and obj.object_owner = aqt.owner
+                            and obj.object_name  = aqt.queue_table
+                            and obj.object_type  in ('TABLE','VIEW')
+                 where aqt.owner = g_schema_name
+                 order by aqt.queue_table)
+   loop
+      fh := fh2.script_open(in_filename     => buff.file_name
+                           ,in_elmnt        => ELMNT
+                           ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '--  Create ' || g_schema_name || '.' || buff.queue_table ||' Queue Table');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define off');
+      fh2.script_put_line(fh, '');
+      if buff.build_timing != 'CURRENT'
+      then
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '-- NOTE: This is a "' || buff.build_timing || '" Queue Table');
+      end if;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--DBMS_METADATA:' || g_schema_name ||
+                                             '.' || buff.queue_table);
+      -- DBMS_METADATA throws an error when LOB_STORAGE is set to DEFAULT or BASICFILE for AQ_QUEUE_TABLE
+      fh2.remove_storage_clause(fh, g_schema_name || '.' || buff.queue_table || ' Table'
+                               ,dbms_metadata.get_ddl(object_type => 'AQ_QUEUE_TABLE'
+                                                     ,name        => buff.queue_table
+                                                     ,schema      => g_schema_name)
+                               ,common_util.MAXIMUM_SQL_LENGTH);
+      fh2.script_put_line(fh, '/');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '-- https://docs.oracle.com/en/database/oracle/oracle-database/23/adque/managing-aq.html');
+      fh2.script_put_line(fh, '-- The queue table owner must be granted EXECUTE privileges on the');
+      fh2.script_put_line(fh, '--  DBMS_AQADM package. Otherwise, the Oracle Database snapshot');
+      fh2.script_put_line(fh, '--  processes do not propagate, but generates trace files with the');
+      fh2.script_put_line(fh, '--  error identifier SYS.DBMS_AQADM not defined');
+      fh2.script_put_line(fh, '--');
+      grb_object_grants(fh, buff.queue_table, buff.object_type);
+      grb_object_synonyms(fh, buff.queue_table, buff.object_type, common_util.MAXIMUM_SQL_LENGTH);
+      for buf2 in (
+          select obj.object_name,
+                 obj.object_type
+           from  dba_objects_tab  obj
+           where obj.object_owner = g_schema_name
+            and  obj.object_type in ('TABLE','VIEW')
+            and  regexp_like(obj.object_name, common_util.ADV_QUEUE_PREFIX_REGEXP || buff.queue_table || common_util.ADV_QUEUE_SUFFIX_REGEXP)
+           order by obj.object_name,
+                 obj.object_type)
+      loop
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, ' -- ' || buf2.object_name || ' ' || buf2.object_type);
+         fh2.script_put_line(fh, '');
+         grb_object_grants(fh, buf2.object_name, buf2.object_type);
+         grb_object_synonyms(fh, buf2.object_name, buf2.object_type, common_util.MAXIMUM_SQL_LENGTH);
+      end loop;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define on');
+      fh2.script_close(fh);
+   end loop;
+end grb_aq_tables;
+
+------------------------------------------------------------
+-- Create Application Context object script
+PROCEDURE grb_application_context
+IS
+   ELMNT      CONSTANT varchar2(100) := 'CONTEXT';
+   fh         fh2.sf_ptr_type;  -- object script file handle
+   sql_txt    varchar2(32767);
+begin
+   for buf1 in (select obj.context_owner
+                      ,obj.context_name
+                      ,obj.context_type
+                      ,COMMON_UTIL.fix_filename(obj.context_name) || '.' || obj.file_ext1
+                                                             FILE_NAME
+                      ,obj.package_owner
+                      ,obj.package_name
+                      ,obj.build_timing
+                 from  obj_install_context_tab  obj
+                 where obj.build_type    = g_build_type
+                  and  obj.context_owner = g_schema_name
+                  and  obj.element_name = ELMNT
+                 order by obj.context_name
+                      ,obj.context_owner
+                      ,obj.package_name)
+   loop
+      fh := fh2.script_open(in_filename     => buf1.file_name
+                           ,in_elmnt        => ELMNT
+                           ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '--  Create '  || buf1.context_name ||' Context');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define off');
+      fh2.script_put_line(fh, '');
+      if buf1.build_timing != 'CURRENT'
+      then
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '-- Note: This is a "' || buf1.build_timing || '" Context');
+      end if;
+      fh2.script_put_line(fh, '');
+      sql_txt := 'create or replace context "' || buf1.context_name  ||
+                                         '"."' || buf1.context_name  ||
+                                   '" using "' || buf1.package_owner ||
+                                         '"."' || buf1.package_name  ||
+                                         '"  ' || buf1.context_type  ;
+      fh2.put_big_line(fh, buf1.package_owner || '.' || buf1.context_name || ' Context'
+                      ,sql_txt || ';'
+                      ,common_util.MAXIMUM_SQL_LENGTH);
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define on');
+      fh2.script_close(fh);
+   END LOOP;
+end grb_application_context;
+
+------------------------------------------------------------
+-- Create Real Application Security
+procedure grb_ras_acls
+is
+   SQL_TXT   constant varchar2(1000) := 'begin GRAB_RAS.GRB_RACL; end;';
+begin
+   if NOT installed_types_aa.EXISTS('grbras') then return; end if;
+   execute immediate SQL_TXT;
+exception when others then
+   if NOT regexp_like (SQLERRM, 'PLS-00201: identifier ''GRAB_RAS.GRB_RACL'' must be declared')
+   then
+      raise_application_error(-20000, 'Execute Immediate ERROR' || CHR(10) ||
+                                       SQL_TXT                  || CHR(10) ||
+                                       SQLERRM                  || CHR(10) ||
+                                       dbms_utility.format_error_backtrace );
+   end if;
+end grb_ras_acls;
+
+------------------------------------------------------------
+-- Create Host Access Control Lists
+procedure grb_host_acls
+is
+   --
+   -- Oracle Database Security Guide Release 21
+   -- F31285-17, April 2024
+   -- Chapter 8 Managing Fine-Grained Access in PL/SQL Packages and Types
+   -- 8.5 Configuring Access Control for External Network Services
+   -- https://docs.oracle.com/en/database/oracle/oracle-database/21/dbseg/managing-fine-grained-access-in-pl-sql-packages-and-types.html#GUID-9C14581A-163F-48ED-98CC-790E6B8D20D6
+   --
+   -- privilege_list: Enter one or more of the following privileges, which
+   --   are case insensitive. Enclose each privilege with single quotation
+   --   marks and separate each with a comma (for example, 'http', 'http_proxy').
+   -- For tighter access control, grant only the http, http_proxy, or smtp
+   --   privilege instead of the connect privilege if the user uses the
+   --   UTL_HTTP, HttpUriType, UTL_SMTP, or UTL_MAIL only.
+   --   -) http: Makes an HTTP request to a host through the UTL_HTTP package and the HttpUriType type
+   --   -) http_proxy: Makes an HTTP request through a proxy through the UTL_HTTP package and the HttpUriType type. You must include http_proxy in conjunction to the http privilege if the user makes the HTTP request through a proxy.
+   --   -) smtp: Sends SMTP to a host through the UTL_SMTP and UTL_MAIL packages
+   --   -) resolve: Resolves a network host name or IP address through the UTL_INADDR package
+   --   -) connect: Grants the user permission to connect to a network service at a host through the UTL_TCP, UTL_SMTP, UTL_MAIL, UTL_HTTP, and DBMS_LDAP packages, or the HttpUriType type
+   --   -) jdwp: Used for Java Debug Wire Protocol debugging operations for Java or PL/SQL stored procedures.
+   --
+   --  This was implemented in Real Application Security:
+   --DECLARE
+   -- ace_list      XS$ACE_LIST;
+   --BEGIN
+   -- ace_list := XS$ACE_LIST(
+   --   XS$ACE_TYPE(
+   --     privilege_list => XS$NAME_LIST('"CONNECT"'),
+   --     principal_name=>'"APP_OWNER"',
+   --     principal_type=>XS_ACL.PTYPE_DB,
+   --     start_date => to_timestamp_tz('16-SEP-16 09.42.47.423377 PM',
+   --          'DD-MON-YY HH.MI.SS.FF PM TZH:TZM')),
+   --   XS$ACE_TYPE(
+   --     privilege_list => XS$NAME_LIST('"CONNECT"'),
+   --     principal_name=>'"APP_OWNER"',
+   --     principal_type=>XS_ACL.PTYPE_DB));
+   --
+   -- xs_acl.create_acl(
+   --     name=>'"SYS"."NETWORK_ACL_3CA7D022F7DCA526E054A0369FA25254"',
+   --     ace_list=>ace_list,
+   --     sec_class=>'"SYS"."NETWORK_SC"',
+   --     description=>'ACL for Application');
+   --END;
+   --/
+   --
+   ELMNT        CONSTANT varchar2(100) := 'HOST_ACL';
+   fh           fh2.sf_ptr_type;  -- object script file handle
+   old_file     varchar2(1000) := 'This is not a real file name !@#$%^';
+   ----------------------------------------
+begin
+   --dbms_output.put_line('ELMNT: ' || ELMNT || ', g_build_type: ' || g_build_type ||
+   --                     ', g_schema_name: ' || g_schema_name || ', ' || ELMNT);
+   for buff in (select COMMON_UTIL.fix_filename(replace(host,'*','_')) || '.' || file_ext1
+                                                              FILE_NAME
+                      ,host
+                      ,object_name_regexp
+                      ,lower_port
+                      ,upper_port
+                      ,host || ' from port ' || lower_port || ' to ' || upper_port
+                                                              HOST_PORT_RANGE
+                      ,grantee                                PRINCIPAL
+                      ,privilege
+                      ,build_type_selector
+                 from  priv_obj_hacl_view
+                 where build_type         = g_build_type
+                  and  principal_type     = 'DATABASE'       -- xs_acl.ptype_db
+                  and  grant_type         = 'GRANT'
+                  and  inverted_principal = 'NO'
+                  and  privilege         is not null
+                 group by COMMON_UTIL.fix_filename(replace(host,'*','_')) || '.' || file_ext1
+                      ,host
+                      ,object_name_regexp
+                      ,lower_port
+                      ,upper_port
+                      ,grantee
+                      ,privilege
+                      ,build_type_selector
+                 order by COMMON_UTIL.fix_filename(replace(host,'*','_')) || '.' || file_ext1
+                      ,host
+                      ,object_name_regexp
+                      ,lower_port
+                      ,upper_port
+                      ,grantee
+                      ,privilege
+                      ,build_type_selector)
+   loop
+      if old_file != buff.file_name
+      then
+         old_file := buff.file_name;
+         if fh2.script_is_open(fh)
+         then
+            fh2.script_put_line(fh, 'set define on');
+            fh2.script_close(fh);
+         end if;
+         fh := fh2.script_open(in_filename     => buff.file_name
+                              ,in_elmnt        => ELMNT
+                              ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '--  Create Host ACL/ACE');
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '-- Host ACLs with the following:');
+         fh2.script_put_line(fh, '--    PRINCIPAL_TYPE      = ''DATABASE'' (xs_acl.ptype_db)');
+         fh2.script_put_line(fh, '--    GRANT_TYPE          = ''GRANT''');
+         fh2.script_put_line(fh, '--    INVERTED_PRINICIPAL = ''NO''');
+         fh2.script_put_line(fh, '--    PRIVILEGE          is not null');
+         fh2.script_put_line(fh, '-- Start Dates and End Dates are ignored (set to NULL).');
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, 'set define off');
+         fh2.script_put_line(fh, '');
+      end if;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '--  Create Host ACL/ACE for ' || buff.host_port_range || ' ');
+      fh2.script_put_line(fh, '--  NOTE: This is a "' || buff.build_type_selector || '" Host ACL');
+      if buff.object_name_regexp is not null
+      then
+         fh2.script_put_line(fh, '--   (OBJECT_NAME_REGEXP: ' || buff.object_name_regexp || ')');
+      end if;
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'begin');
+      fh2.script_put_line(fh, '   DBMS_NETWORK_ACL_ADMIN.APPEND_HOST_ACE');
+      fh2.script_put_line(fh, '      (host        => ''' || buff.host || '''');
+      if upper(buff.privilege) != 'RESOLVE'
+      then
+         -- Oracle 12c Release 1 Database PL/SQL Packages and Types Reference
+         -- 101 DBMS_NETWORK_ACL_ADMIN
+         -- An ACE with a "resolve" privilege can be appended only to a host''s ACL without a port range.
+         fh2.script_put_line(fh, '      ,lower_port  => ' || nvl(to_char(buff.lower_port),'NULL'));
+         fh2.script_put_line(fh, '      ,upper_port  => ' || nvl(to_char(buff.upper_port),'NULL'));
+      end if;
+      fh2.script_put_line(fh, '      ,ace         => xs$ace_type');
+      fh2.script_put_line(fh, '                         (privilege_list   => xs$name_list(''' || buff.privilege || ''')');
+      fh2.script_put_line(fh, '                         ,granted          => TRUE');
+      fh2.script_put_line(fh, '                         ,inverted         => FALSE');
+      fh2.script_put_line(fh, '                         ,principal_name   => ''' || buff.principal || '''');
+      fh2.script_put_line(fh, '                         ,principal_type   => xs_acl.ptype_db');
+      fh2.script_put_line(fh, '                         ,start_date       => NULL');
+      fh2.script_put_line(fh, '                         ,end_date         => NULL));');
+      fh2.script_put_line(fh, 'end;');
+      fh2.script_put_line(fh, '/');
+      fh2.script_put_line(fh, '');
+   end loop;
+   if fh2.script_is_open(fh)
+   then
+      fh2.script_put_line(fh, 'set define on');
+      fh2.script_close(fh);
+   end if;
+end grb_host_acls;
+
+------------------------------------------------------------
+-- Create Wallet Access Control Lists
+procedure grb_wallet_acls
+is
+   --
+   -- Oracle Database Security Guide Release 21
+   -- F31285-17, April 2024
+   -- Chapter 8 Managing Fine-Grained Access in PL/SQL Packages and Types
+   -- 8.5 Configuring Access Control for External Network Services
+   -- https://docs.oracle.com/en/database/oracle/oracle-database/21/dbseg/managing-fine-grained-access-in-pl-sql-packages-and-types.html#GUID-561E9D60-1414-4066-8214-8BBB6091956B
+   --
+   -- In this specification, **PRIVILEGE** must be one of the following when you
+   --   enter wallet privileges using xs$ace_type (note the use of underscores
+   --   in these privilege names):
+   --   -) use_client_certificates
+   --   -) use_passwords
+   -- Be aware that for wallets, you must specify either the
+   --   use_client_certificates or use_passwords privileges.
+   --
+   ELMNT        CONSTANT varchar2(100) := 'WALLET_ACL';
+   fh           fh2.sf_ptr_type;  -- object script file handle
+   old_file     varchar2(1000) := 'This is not a real file name !@#$%^';
+   ----------------------------------------
+begin
+   --dbms_output.put_line('ELMNT: ' || ELMNT || ', g_build_type: ' || g_build_type ||
+   --                     ', g_schema_name: ' || g_schema_name || ', ' || ELMNT);
+   for buff in (select COMMON_UTIL.fix_filename(wacl_name) || '.' || file_ext1
+                                                                    FILE_NAME
+                      ,wallet_path
+                      ,object_name_regexp
+                      ,grantee                                      PRINCIPAL
+                      ,privilege
+                      ,build_type_selector
+                 from  priv_obj_wacl_view
+                 where build_type         = g_build_type
+                  and  principal_type     = 'DATABASE'       -- xs_acl.ptype_db
+                  and  grant_type         = 'GRANT'
+                  and  inverted_principal = 'NO'
+                  and  privilege         is not null
+                 group by COMMON_UTIL.fix_filename(wacl_name) || '.' || file_ext1
+                      ,wallet_path
+                      ,object_name_regexp
+                      ,grantee
+                      ,privilege
+                      ,build_type_selector
+                 order by COMMON_UTIL.fix_filename(wacl_name) || '.' || file_ext1
+                      ,wallet_path
+                      ,object_name_regexp
+                      ,grantee
+                      ,privilege
+                      ,build_type_selector)
+   loop
+      if old_file != buff.file_name
+      then
+         old_file := buff.file_name;
+         if fh2.script_is_open(fh)
+         then
+            fh2.script_put_line(fh, 'set define on');
+            fh2.script_close(fh);
+         end if;
+         fh := fh2.script_open(in_filename     => replace(replace(buff.file_name,'/','_'),'\','_')
+                              ,in_elmnt        => ELMNT
+                              ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '--  Create Wallet ACL/ACE');
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '-- Wallet ACLs with the following:');
+         fh2.script_put_line(fh, '--    PRINCIPAL_TYPE      = ''DATABASE'' (xs_acl.ptype_db)');
+         fh2.script_put_line(fh, '--    GRANT_TYPE          = ''GRANT''');
+         fh2.script_put_line(fh, '--    INVERTED_PRINICIPAL = ''NO''');
+         fh2.script_put_line(fh, '--    PRIVILEGE          is not null');
+         fh2.script_put_line(fh, '-- Start Dates and End Dates are ignored (set to NULL).');
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, 'set define off');
+         fh2.script_put_line(fh, '');
+      end if;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '--  NOTE: This is a "' || buff.build_type_selector || '" Wallet ACL');
+      if buff.object_name_regexp is not null
+      then
+         fh2.script_put_line(fh, '--   (OBJECT_NAME_REGEXP: ' || buff.object_name_regexp || ')');
+      end if;
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'begin');
+      fh2.script_put_line(fh, '   DBMS_NETWORK_ACL_ADMIN.APPEND_WALLET_ACE');
+      fh2.script_put_line(fh, '      (wallet_path => ''' || buff.wallet_path || '''');
+      fh2.script_put_line(fh, '      ,ace         => xs$ace_type');
+      fh2.script_put_line(fh, '                         (privilege_list   => xs$name_list(''' || buff.privilege || ''')');
+      fh2.script_put_line(fh, '                         ,granted          => TRUE');
+      fh2.script_put_line(fh, '                         ,inverted         => FALSE');
+      fh2.script_put_line(fh, '                         ,principal_name   => ''' || buff.principal || '''');
+      fh2.script_put_line(fh, '                         ,principal_type   => xs_acl.ptype_db');
+      fh2.script_put_line(fh, '                         ,start_date       => NULL');
+      fh2.script_put_line(fh, '                         ,end_date         => NULL));');
+      fh2.script_put_line(fh, 'end;');
+      fh2.script_put_line(fh, '/');
+      fh2.script_put_line(fh, '');
+   end loop;
+   if fh2.script_is_open(fh)
+   then
+      fh2.script_put_line(fh, 'set define on');
+      fh2.script_close(fh);
+   end if;
+end grb_wallet_acls;
+
+------------------------------------------------------------
+-- Common Create Procedure.  Only used for:
+--   -) FUNCTION
+--   -) PACKAGE_BODY
+--   -) PACKAGE_SPEC
+--   -) PROCEDURE
+--   -) SCHEDULER_JOB
+--   -) SCHEDULER_PROGRAM
+--   -) SCHEDULER_SCHEDULE
+--   -) SEQUENCE
+--   -) TYPE_BODY
+--   -) TYPE_SPEC
+procedure grb_common
+      (in_ELMNT      in varchar2
+      ,in_type_name  in varchar2)
+is
+   fh         fh2.sf_ptr_type;  -- object script file handle
+begin
+   for buff in (select obj.object_name                      OBJECT_NAME
+                      ,COMMON_UTIL.fix_filename(obj.object_name) || '.' || obj.file_ext1
+                                                            FILE_NAME
+                      ,obj.build_timing
+                      ,obj.object_type
+                 from  obj_install_object_tab  obj
+                 where obj.build_type   = g_build_type
+                  and  obj.object_owner = g_schema_name
+                  and  obj.element_name = in_ELMNT
+                  and  (   obj.element_name != 'SCHEDULER_JOB'
+                           -- Skip MV Scheduler Jobs, create with Materialized Views
+                        or (    obj.object_name not like   'MV\_RF$J\_%' escape '\'
+                            AND obj.object_name not like 'DBMS\_JOB$\_%' escape '\'
+                       )   )
+                  and  (   obj.element_name != 'SEQUENCE'
+                        or (    -- Skip Queue Sequences, create with Advanced Queues
+                                not exists (select 'x' from dba_queue_tables qt
+                                             where qt.owner = g_schema_name
+                                              and  regexp_like(obj.object_name,common_util.ADV_QUEUE_PREFIX_REGEXP ||
+                                                                               qt.queue_table                       ||
+                                                                               common_util.ADV_QUEUE_SUFFIX_REGEXP
+                                           )                  )
+                                -- Identity Sequences: Auto-created with Tables
+                            and obj.object_name not in (select dti.sequence_name from dba_tab_identity_cols dti
+                                                         where dti.owner = obj.object_owner
+                                                       )
+                                -- Ignore Spatial Data Object Supplemental Sequences
+                            and not regexp_like(obj.object_name, common_util.SDO_TABLE_REGEXP)
+                       )   )
+                  and  (   obj.element_name not in ('TYPE_BODY', 'TYPE_SPEC')
+                        or (    -- Object View OID Types are recreated automatically
+                                obj.object_name not like common_util.SYS_OVIEW_OID_PATTERN escape '\'
+                                -- Skip Pipelined Type Objects, create with pipelined package/function
+                            and obj.object_name not like common_util.SYS_PIPELINE_PATTERN escape '\'
+                                -- Unknown type specifications, table of numbers, no dependencies
+                            and obj.object_name not like common_util.SYS_TYPE_REGEXP escape '\'
+                       )   )
+                 order by object_name)
+   loop
+      fh := fh2.script_open(in_filename     => buff.file_name
+                           ,in_elmnt        => in_ELMNT
+                           ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '--  Create ' || g_schema_name || '.' || buff.OBJECT_NAME ||' ' || in_type_name);
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define off');
+      fh2.script_put_line(fh, '');
+      if buff.build_timing != 'CURRENT'
+      then
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '-- Note: This is a "' || buff.build_timing || '" ' || buff.object_type);
+      end if;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--DBMS_METADATA:' || g_schema_name ||
+                                             '.' || buff.OBJECT_NAME);
+      fh2.put_big_line(fh, g_schema_name || '.' || buff.OBJECT_NAME || ' ' || in_type_name
+                      ,COMMON_UTIL.escape_at_sign
+                         (dbms_metadata.get_ddl
+                            (object_type => case in_ELMNT
+                                               -- https://logbuffer.wordpress.com/2014/03/13/oracle-getting-the-ddl-for-scheduler-jobs
+                                               when 'SCHEDULER_JOB'      then 'PROCOBJ'
+                                               when 'SCHEDULER_PROGRAM'  then 'PROCOBJ'
+                                               when 'SCHEDULER_SCHEDULE' then 'PROCOBJ'
+                                                                         else in_ELMNT
+                                            end
+                            ,name        => buff.OBJECT_NAME
+                            ,schema      => g_schema_name) )
+                      ,common_util.MAXIMUM_SQL_LENGTH);
+      if buff.object_type not in ('PACKAGE BODY', 'TYPE BODY')
+      then
+         fh2.script_put_line(fh, '');
+         grb_object_grants(fh, buff.OBJECT_NAME, buff.object_type);
+         grb_object_synonyms(fh, buff.OBJECT_NAME, buff.object_type, common_util.MAXIMUM_SQL_LENGTH);
+      end if;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define on');
+      fh2.script_close(fh);
+   end loop;
+end grb_common;
+
+------------------------------------------------------------
+-- Create Database Link
+procedure grb_database_links
+is
+   ELMNT      CONSTANT varchar2(100) := 'DB_LINK';
+   fh         fh2.sf_ptr_type;  -- object script file handle
+begin
+   for buf1 in (select obj.object_name                      DB_LINK_NAME
+                      ,COMMON_UTIL.fix_filename(obj.object_name) || '.' || obj.file_ext1
+                                                            FILE_NAME
+                      ,obj.object_owner                     USERNAME
+                      ,lnk.host
+                      ,obj.build_timing
+                 from  obj_install_object_tab  obj
+                       join dba_db_links  lnk
+                            on  lnk.owner   = obj.object_owner
+                            and lnk.db_link = obj.object_name
+                 where obj.build_type    = g_build_type
+                  and  obj.object_owner  = g_schema_name
+                  and  obj.element_name   = ELMNT
+                 order by obj.object_name)
+   loop
+      fh := fh2.script_open(in_filename     => buf1.file_name
+                           ,in_elmnt        => ELMNT
+                           ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '--  Create ' || g_schema_name || '.' || buf1.db_link_name ||' Database Link');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '-- Public Database Links can be captured in OBJECT_CONF');
+      fh2.script_put_line(fh, '--   -) USERNAME:     PUBLIC');
+      fh2.script_put_line(fh, '--   -) ELEMENT_NAME: DB_LINK');
+      fh2.script_put_line(fh, '--   Sripts will be created in SYSTEM folder.');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define off');
+      fh2.script_put_line(fh, '');
+      if buf1.build_timing != 'CURRENT'
+      then
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '-- Note: This is a "' || buf1.build_timing || '" Database Link');
+      end if;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'begin');
+      fh2.script_put_line(fh, '  for buff in (select db_link from dba_db_links');
+      fh2.script_put_line(fh, '                where owner   = ''' || g_schema_name || '''');
+      fh2.script_put_line(fh, '                 and  db_link like ''' || buf1.db_link_name || '%'')');
+      fh2.script_put_line(fh, '  loop');
+      fh2.script_put_line(fh, '     execute immediate ''drop database link '' || buff.db_link;');
+      fh2.script_put_line(fh, '  end loop;');
+      fh2.script_put_line(fh, 'end;');
+      fh2.script_put_line(fh, '/');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '-- DBMS_METADATA will not create clear text passwords');
+      fh2.script_put_line(fh, '--DBMS_METADATA:' || g_schema_name || '.' || buf1.db_link_name);
+      fh2.put_big_line(fh, g_schema_name || '.' || buf1.db_link_name || ' DB Link'
+                      ,dbms_metadata.get_ddl(object_type => 'DB_LINK'
+                                            ,name        => buf1.db_link_name
+                                            ,schema      => g_schema_name)
+                      ,common_util.MAXIMUM_SQL_LENGTH);
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '-- No grants on Database Links');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--  Synonyms - Non-unique Database Link name causes problems');
+      fh2.script_put_line(fh, '--  because DBA_SYNONYMS does not display database link owner.');
+      for buf2 in (select target_owner                 OWNER
+                         ,synonym_name
+                         ,build_type_selector
+                    from  obj_install_synonym_tab
+                    where build_type    = g_build_type
+                     and  synonym_owner = g_schema_name
+                     and  db_link       = buf1.db_link_name
+                     and  element_name   = 'SYNONYM'
+                    order by target_owner
+                         ,synonym_name)
+      loop
+         fh2.script_put_line(fh, '');
+         dbms_output.put_line('-- ' || buf2.build_type_selector || ' found.' || LF ||
+                              '--   buf1.FILE_NAME = '    || buf1.file_name    || LF ||
+                              '--   buf1.DB_LINK_NAME = ' || buf1.db_link_name || LF ||
+                              '--   buf2.SYNONYM_NAME = ' || buf2.synonym_name || LF ||
+                              '--   g_schema_name = '     || g_schema_name     || LF ||
+                              '--   g_build_type = '    || g_build_type    );
+         fh2.script_put_line(fh, '--DBMS_METADATA:' || buf2.owner ||
+                                                '.' || buf2.synonym_name);
+         fh2.put_big_line(fh, buf2.owner || '.' || buf2.synonym_name || ' Synonym'
+                         ,dbms_metadata.get_ddl(object_type => 'SYNONYM'
+                                               ,name        => buf2.synonym_name
+                                               ,schema      => buf2.owner)
+                         ,common_util.MAXIMUM_SQL_LENGTH);
+      end loop;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define on');
+      fh2.script_close(fh);
+   end loop;
+end grb_database_links;
+
+------------------------------------------------------------
+-- Create Database Trigger
+--   There are no PUBLIC Database Triggers
+--   https://docs.oracle.com/en/database/oracle/oracle-database/21/lnpls/CREATE-TRIGGER-statement.html
+procedure grb_database_triggers
+is
+   ELMNT      CONSTANT varchar2(100) := 'DATABASE_TRIGGER';
+   fh         fh2.sf_ptr_type;  -- object script file handle
+begin
+   for buff in (select object_name              TRIGGER_NAME
+                      ,file_ext1
+                      ,build_timing
+                 from  obj_install_object_tab
+                 where build_type    = g_build_type
+                  and  object_owner  = g_schema_name
+                  and  element_name   = ELMNT
+                 order by trigger_name
+                      ,file_ext1
+                      ,build_timing)
+   loop
+      if NOT fh2.script_is_open(fh)
+      then
+         fh := fh2.script_open(in_filename     => COMMON_UTIL.fix_filename(g_schema_name) || '.' || buff.file_ext1
+                              ,in_elmnt        => ELMNT
+                              ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '--  Create Database Triggers for ' || g_build_type);
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, 'set define off');
+         fh2.script_put_line(fh, '');
+      end if;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--  NOTE: This is a "' || buff.build_timing || '" Trigger');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--DBMS_METADATA:' || g_schema_name      ||
+                                             '.' || buff.trigger_name  );
+      fh2.put_big_line(fh, g_schema_name || '.' || buff.trigger_name || ' Trigger'
+                      ,COMMON_UTIL.escape_at_sign
+                         (dbms_metadata.get_ddl
+                            (object_type => 'TRIGGER'
+                            ,name        => buff.trigger_name
+                            ,schema      => g_schema_name) )
+                      ,common_util.MAXIMUM_SQL_LENGTH);
+   end loop;
+   if fh2.script_is_open(fh)
+   then
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define on');
+      fh2.script_close(fh);
+   end if;
+end grb_database_triggers;
+
+------------------------------------------------------------
+-- Create Database Directory
+procedure grb_directories
+is
+   TYPE dir_aa_type is table of varchar2(1)
+        index by dba_directories.directory_path%TYPE;
+   dir_aa     dir_aa_type;
+   dbuff      dba_directories.directory_path%TYPE;
+   --  "create directory" should only be run by SYSTEM
+   ELMNT      CONSTANT varchar2(100) := 'DIRECTORY';
+   fh         fh2.sf_ptr_type;  -- object script file handle
+   old_dir    dba_directories.directory_name%TYPE;
+   sql_txt    varchar2(32767);
+begin
+   for buf1 in(select directory_name
+                     ,grantee                   GRANTEE
+                     ,privilege
+                     ,max(grantable)            GRANTABLE
+                     ,directory_path
+                     ,COMMON_UTIL.fix_filename(directory_name) || '.' || file_ext1
+                                                FILE_NAME
+                     --,COMMON_UTIL.fix_filename(directory_name) || '.' || file_ext2
+                     --                           BASH_NAME
+                     --,COMMON_UTIL.fix_filename(directory_name) || '.' || file_ext3
+                     --                           BATCH_NAME
+                     ,build_timing
+                from  priv_obj_dir_view
+                where build_type       = g_build_type
+                 and  directory_owner  = 'SYS'
+                 and  element_name      = ELMNT
+                group by directory_name
+                     ,grantee
+                     ,privilege
+                     ,directory_path
+                     ,COMMON_UTIL.fix_filename(directory_name) || '.' || file_ext1
+                     --,COMMON_UTIL.fix_filename(directory_name) || '.' || file_ext2
+                     --,COMMON_UTIL.fix_filename(directory_name) || '.' || file_ext3
+                     ,build_timing
+                order by directory_name
+                     ,grantee
+                     ,privilege)
+   loop
+      if buf1.directory_name != nvl(old_dir,'###BOGUS###')
+      then
+         if old_dir is not null
+         then
+            fh2.script_put_line(fh, 'set define on');
+            fh2.script_close(fh);
+         end if;
+         old_dir := buf1.directory_name;
+         fh := fh2.script_open(in_filename     => buf1.file_name
+                              ,in_elmnt        => ELMNT
+                              ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '--  Create ' || buf1.directory_name ||' Database Directory');
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '--   Duplicate CREATE DIRECTORY scripts will be created');
+         fh2.script_put_line(fh, '--      in different build types because directories are');
+         fh2.script_put_line(fh, '--      created based on permissions, not owners.');
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, 'set define off');
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '');
+         -- If this is run by a DBA other than SYS, DBMS_METADATA
+         --    will only return directories granted with GRANT option
+         sql_txt := 'create or replace directory "' || buf1.directory_name || '"' || LF ||
+                                         '   as ''' || buf1.directory_path || '''';
+         fh2.put_big_line(fh, buf1.directory_name || ' Directory', sql_txt || ';', common_util.MAXIMUM_SQL_LENGTH);
+         dir_aa(buf1.directory_path) := 'X';
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '--  Grants');
+         fh2.script_put_line(fh, '');
+         for buf2 in (select directory_name
+                            ,grantee                  GRANTEE
+                            ,privilege
+                       from  priv_obj_dir_view
+                       where build_type      = 'pub'
+                        --and  build_timing  = 'CURRENT'  All Public Directories are CURRENT
+                        and  directory_owner = 'SYS'
+                        and  element_name     = ELMNT
+                       group by directory_name
+                            ,grantee
+                            ,privilege
+                       order by directory_name
+                            ,grantee
+                            ,privilege)
+         loop
+            if buf2.directory_name = buf1.directory_name
+            then
+               fh2.script_put_line(fh, 'grant ' || buf2.privilege ||
+                                       ' on directory "'  || buf1.directory_name ||
+                                       '" to "' || buf2.grantee || '";');
+            end if;
+         end loop;
+      end if;
+      if buf1.build_timing != 'CURRENT'
+      then
+         fh2.script_put_line(fh, '-- Note: This is a "' || buf1.build_timing || '" Directory Grant');
+      end if;
+      -- Oracle Database 12c Release 1 Database SQL Language Reference
+      -- "on_object_clause"
+      -- Users, directory schema objects, editions, data mining models, Java
+      --   source and resource schema objects, and SQL translation profiles
+      --   are identified separately because they reside in separate namespaces.
+      -- If this is run by a DBA other than SYS, DBMS_METADATA
+      --    will only return directories granted with GRANT option
+      sql_txt := 'grant ' || buf1.privilege ||
+                  ' on directory "'  || buf1.directory_name ||
+                  '" to "' || buf1.grantee || '"';
+      -- Missing "with hierarchy option" ...
+      if buf1.grantable = 'YES'
+      then
+         sql_txt := sql_txt || ' with grant option';
+      end if;
+      fh2.script_put_line(fh, sql_txt || ';');
+      fh2.script_put_line(fh, '');
+   end loop;
+   if old_dir is not null
+   then
+      fh2.script_put_line(fh, 'set define on');
+      fh2.script_close(fh);
+      --dbms_output.put_line('buf1.bash_name = ' || buf1.bash_name);
+      fh := fh2.script_open(in_filename     =>  'create_directories.sh'
+                           ,in_elmnt        => ELMNT
+                           ,in_max_linesize => common_util.MAXIMUM_BASH_LENGTH);
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '#');
+      fh2.script_put_line(fh, '#  Create Directories for Linux');
+      fh2.script_put_line(fh, '#');
+      fh2.script_put_line(fh, '');
+      dbuff := dir_aa.FIRST;
+      loop
+         fh2.script_put_line(fh, 'mkdir -p '  || replace(dbuff,'\','/'));
+         exit when dbuff = dir_aa.LAST;
+         dbuff := dir_aa.NEXT(dbuff);
+      end loop;
+      fh2.script_put_line(fh, '');
+      dbuff := dir_aa.FIRST;
+      loop
+         fh2.script_put_line(fh, 'chmod 777 ' || replace(dbuff,'\','/'));
+         exit when dbuff = dir_aa.LAST;
+         dbuff := dir_aa.NEXT(dbuff);
+      end loop;
+      fh2.script_put_line(fh, '');
+      fh2.script_close(fh);
+      --dbms_output.put_line('buf1.bash_name = ' || buf1.batch_name);
+      fh := fh2.script_open(in_filename     => 'create_directories.bat'
+                           ,in_elmnt        => ELMNT
+                           ,in_max_linesize => common_util.MAXIMUM_CMD_LENGTH);
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'REM');
+      fh2.script_put_line(fh, 'REM  Create Directories for Windows');
+      fh2.script_put_line(fh, 'REM');
+      fh2.script_put_line(fh, '');
+      dbuff := dir_aa.FIRST;
+      loop
+         fh2.script_put_line(fh, 'md '  || replace(dbuff,'/','\'));
+         exit when dbuff = dir_aa.LAST;
+         dbuff := dir_aa.NEXT(dbuff);
+      end loop;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'REM set db_owner=oracle');
+      fh2.script_put_line(fh, '');
+      dbuff := dir_aa.FIRST;
+      loop
+         fh2.script_put_line(fh, 'REM icacls '|| replace(dbuff,'/','\') || ' /grant %db_owner%:F /T');
+         exit when dbuff = dir_aa.LAST;
+         dbuff := dir_aa.NEXT(dbuff);
+      end loop;
+      fh2.script_put_line(fh, '');
+      fh2.script_close(fh);
+   end if;
+end grb_directories;
+
+------------------------------------------------------------
+-- Create Foreign Keys
+procedure grb_foreign_keys
+      (in_elmnt  in varchar2)
+is
+   fh         fh2.sf_ptr_type;  -- object script file handle
+   old_tab    varchar2(1000);
+   fname      varchar2(1000);
+begin
+   old_tab := 'This is not a Table Name.';
+   for buff in (select fk.base_table_name                   TABLE_NAME
+                      ,COMMON_UTIL.fix_filename(fk.base_table_name) || '.' || fk.file_ext1
+                                                            FILE_NAME
+                      ,fk.base_table_type
+                      ,fk.foreign_key_name
+                      ,fk.build_type_selector
+                 from  obj_install_fkey_tab  fk
+                 where fk.base_table_owner = g_schema_name  --Doesn't work with Views
+                  and  fk.element_name      = in_elmnt
+                  and  fk.build_type       = g_build_type
+                 order by fk.base_table_name
+                      ,fk.foreign_key_name  )
+   loop
+      if buff.table_name != old_tab
+      then
+         if fh2.script_is_open(fh)
+         then
+            fh2.script_put_line(fh, '');
+            fh2.script_put_line(fh, 'set define on');
+            fh2.script_close(fh);
+         end if;
+         old_tab := buff.table_name;
+         fh := fh2.script_open(in_filename     => buff.file_name
+                              ,in_elmnt        => in_elmnt
+                              ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '--  Create Foreign Keys for ' || g_schema_name   ||
+                                                            '.' || buff.table_name ||
+                                                            ' ' || buff.base_table_type);
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, 'set define off');
+         fh2.script_put_line(fh, '');
+      end if;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--  NOTE: This is a "' || buff.build_type_selector || '" Foreign Key');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--DBMS_METADATA:' || g_schema_name        ||
+                                             '.' || buff.foreign_key_name );
+      fh2.put_big_line(fh, g_schema_name || '.' || buff.table_name || ' Ref Constraint'
+                      ,dbms_metadata.get_ddl(object_type  => 'REF_CONSTRAINT'
+                                            ,name         => buff.foreign_key_name
+                                            ,schema       => g_schema_name)
+                      ,common_util.MAXIMUM_SQL_LENGTH);
+   end loop;
+   if fh2.script_is_open(fh)
+   then
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define on');
+      fh2.script_close(fh);
+   end if;
+end grb_foreign_keys;
+
+------------------------------------------------------------
+-- Create Index Scripts
+procedure grb_indexes
+      (in_elmnt  in VARCHAR2)
+is
+   fh                fh2.sf_ptr_type;  -- object script file handle
+   old_own           varchar2(1000);
+   old_tab           varchar2(1000);
+   fname             varchar2(1000);
+   sql_txt           varchar2(1000);
+begin
+   old_own := 'This is not an Owner Name.';
+   old_tab := 'This is not a Table name.';
+   for buff in (select ind.table_owner
+                      ,ind.table_name
+                      ,COMMON_UTIL.fix_filename(ind.table_name) || '.' || ind.file_ext1
+                                                          FILE_NAME
+                      ,ind.table_type
+                      ,ind.index_owner
+                      ,ind.index_name
+                      ,ind.file_ext1                      INDEX_EXT
+                      ,ind.index_type
+                      ,ind.ityp_owner
+                      ,ind.ityp_name
+                      ,ind.build_type_selector
+                 from  obj_install_index_tab  ind
+                 where ind.build_type     = g_build_type
+                  and  ind.index_owner    = g_schema_name
+                  and  ind.element_name    = in_elmnt
+                  and  ind.index_type    != 'LOB'    -- LOB Indexes are auto-created
+                  and  (ind.table_owner, ind.table_name) not in (
+                       select xt.owner, xt.table_name
+                        from  dba_xml_tables  xt)      -- XMLTable Indexes are auto-created
+                  and  not exists (
+                       -- Primary Key and Unique Key Indexes are auto-created
+                       select 'x' from dba_constraints cons
+                        where cons.constraint_type in ('P','U')
+                         and  cons.owner       = ind.table_owner
+                         and  cons.table_name  = ind.table_name
+                         and  cons.index_owner = ind.index_owner
+                         and  cons.index_name  = ind.index_name)
+                  and  NOT regexp_like(ind.index_name, common_util.ORACLE_TEXT_TABLE_REGEXP)
+                  and  ind.index_name not like common_util.RECYCLE_BIN_PATTERN escape '\'
+                  and  ind.index_name != common_util.MVIEW_AUTO_INDEX_PREFIX || ind.table_name
+                 order by ind.table_owner
+                      ,ind.table_name
+                      ,ind.index_owner
+                      ,ind.index_name)
+   loop
+      if    buff.table_owner != old_own
+         or buff.table_name  != old_tab
+      then
+         if fh2.script_is_open(fh)
+         then
+            fh2.script_put_line(fh, '');
+            fh2.script_put_line(fh, 'set define on');
+            fh2.script_close(fh);
+         end if;
+         old_own := buff.table_owner;
+         old_tab := buff.table_name;
+         if buff.table_owner = g_schema_name
+         then
+            fname := buff.file_name;
+         else
+            fname := buff.table_owner || '.' || buff.file_name;
+         end if;
+         fh := fh2.script_open(in_filename     => fname --buff.file_name
+                              ,in_elmnt        => in_elmnt
+                              ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '--  Create Indexes for ' || buff.table_owner ||
+                                                       '.' || buff.table_name  ||
+                                                       ' ' || buff.table_type  );
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, 'set define off');
+         fh2.script_put_line(fh, '');
+      end if;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--  NOTE: This is a "' || buff.build_type_selector || '" Index');
+      fh2.script_put_line(fh, '');
+      if     buff.index_type = 'DOMAIN'
+         AND buff.ityp_owner = 'MDSYS'
+      then
+         fh2.script_put_line(fh, '-- The MDSYS Domain Index "' || buff.index_owner ||
+                                                         '"."' || buff.index_name  || CHR(10) ||
+                                 '--   installation script is located in the "root" folder because' || CHR(10) ||
+                                 '--   it must be executed using the "' || buff.index_owner || '" database login.');
+         fh2.script_put_line(fh, '');
+         --
+         sql_txt := 'begin GRAB_SDO.grb_domain_index(:1, :2, :3, :4, :5, :6, :7, :8); end;';
+         begin
+            execute immediate sql_txt using buff.table_owner, buff.table_name, buff.table_type,
+                                            buff.index_owner, buff.index_name, buff.index_ext,
+                                            buff.ityp_owner,  buff.ityp_name;
+         exception when others then
+            raise_application_error(-20000, 'Execute Immediate ERROR for ' || buff.index_owner || '.' || buff.index_name ||
+                                                              ' index on ' || buff.table_owner || '.' || buff.table_name || CHR(10) ||
+                                             SQL_TXT || CHR(10) ||
+                                             SQLERRM || CHR(10) ||
+                                             dbms_utility.format_error_backtrace );
+         end;
+      else
+         fh2.script_put_line(fh, '--DBMS_METADATA:' || buff.index_owner ||
+                                                '.' || buff.index_name  );
+         fh2.put_big_line(fh, g_schema_name || '.' || buff.table_name || ' ' || buff.table_type
+                         ,dbms_metadata.get_ddl(object_type => 'INDEX'
+                                               ,name        => buff.index_name
+                                               ,schema      => buff.index_owner)
+                         ,common_util.MAXIMUM_SQL_LENGTH);
+      end if;
+   end loop;
+   if fh2.script_is_open(fh)
+   then
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define on');
+      fh2.script_close(fh);
+   end if;
+end grb_indexes;
+
+------------------------------------------------------------
+-- Create Master Installation Script
+procedure grb_install_master
+is
+   fh         fh2.sf_ptr_type;  -- object script file handle
+   fname      varchar2(1000) := 'install.sql';
+   l_loc      varchar2(256)  := 'grb_install_master';
+begin
+   --
+   fh := fh2.script_open(in_filename     => fname
+                        ,in_elmnt        => 'INSTALL_SCRIPT'
+                        ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, '--');
+   fh2.script_put_line(fh, '--  Master Installation Script');
+   fh2.script_put_line(fh, '--    All scripts created by "https://ODBCapture.org"');
+   fh2.script_put_line(fh, '--');
+   fh2.script_put_line(fh, '--  Must be run as SYS');
+   fh2.script_put_line(fh, '--');
+   fh2.script_put_line(fh, '-- Command Line Parameters:');
+   fh2.script_put_line(fh, '--   1 - TOP_PDB_SYSTEM: SYSTEM/password@TNSALIAS');
+   fh2.script_put_line(fh, '--       i.e. pass the username and password for the SYSTEM user');
+   fh2.script_put_line(fh, '--            and the TNSALIAS for the connection to the pluggable database.');
+   fh2.script_put_line(fh, '--       The Data Load installation requires this connection information.');
+   fh2.script_put_line(fh, '--');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, '--  NOTE: If running in a Linux based Docker Container from a Windows FileSystem Mount, run this first:');
+   fh2.script_put_line(fh, '--    dos2unix -f -o ../install/*/*.csv ../install/*/*/*.csv');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, 'define TOP_PDB_SYSTEM="&1."');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, '----------------------------------------');
+   fh2.script_put_line(fh, 'prompt Setup Abort on Error');
+   fh2.script_put_line(fh, 'WHENEVER SQLERROR EXIT SQL.SQLCODE');
+   fh2.script_put_line(fh, 'WHENEVER OSERROR EXIT');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, '----------------------------------------');
+   fh2.script_put_line(fh, 'set serveroutput on size unlimited format wrapped');
+   fh2.script_put_line(fh, 'select ''user: '' || u.username ||');
+   fh2.script_put_line(fh, '       '', db: '' || d.name ||');
+   fh2.script_put_line(fh, '       '', con: '' || sys_context(''USERENV'', ''CON_NAME'') ||');
+   fh2.script_put_line(fh, '       '', tstmp: '' || systimestamp   CONNECTION');
+   fh2.script_put_line(fh, ' from  v$database d');
+   fh2.script_put_line(fh, ' cross join user_users u;');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, '----------------------------------------');
+   fh2.script_put_line(fh, 'prompt Identify this Module in V$SESSION');
+   fh2.script_put_line(fh, 'set appinfo "' || g_build_type || ' Installation"');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, '----------------------------------------');
+   fh2.script_put_line(fh, 'prompt');
+   fh2.script_put_line(fh, 'prompt **************************');
+   fh2.script_put_line(fh, 'prompt *  Run SYS Installation  *');
+   fh2.script_put_line(fh, 'prompt **************************');
+   fh2.script_put_line(fh, 'prompt');
+   fh2.script_put_line(fh, '@install_sys.sql');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, '----------------------------------------');
+   fh2.script_put_line(fh, 'prompt Setup Continue on Error');
+   fh2.script_put_line(fh, 'WHENEVER SQLERROR CONTINUE');
+   fh2.script_put_line(fh, 'WHENEVER OSERROR CONTINUE');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, '----------------------------------------');
+   fh2.script_put_line(fh, 'prompt');
+   fh2.script_put_line(fh, 'prompt *****************************');
+   fh2.script_put_line(fh, 'prompt *  Run SYSTEM Installation  *');
+   fh2.script_put_line(fh, 'prompt *****************************');
+   fh2.script_put_line(fh, 'prompt');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, 'connect &TOP_PDB_SYSTEM.');
+   fh2.script_put_line(fh, 'set serveroutput on size unlimited format wrapped');
+   fh2.script_put_line(fh, 'select ''user: '' || u.username ||');
+   fh2.script_put_line(fh, '       '', db: '' || d.name ||');
+   fh2.script_put_line(fh, '       '', con: '' || sys_context(''USERENV'', ''CON_NAME'') ||');
+   fh2.script_put_line(fh, '       '', tstmp: '' || systimestamp   CONNECTION');
+   fh2.script_put_line(fh, ' from  v$database d');
+   fh2.script_put_line(fh, ' cross join user_users u;');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, '@install_system.sql');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, '----------------------------------------');
+   fh2.script_put_line(fh, 'prompt');
+   fh2.script_put_line(fh, 'prompt *************************');
+   fh2.script_put_line(fh, 'prompt *  Install Application  *');
+   fh2.script_put_line(fh, 'prompt *************************');
+   fh2.script_put_line(fh, 'prompt');
+   fh2.script_put_line(fh, '@install_' || g_build_type || '.sql "&TOP_PDB_SYSTEM."');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, '----------------------------------------');
+   fh2.script_put_line(fh, 'set appinfo "Null"');
+   fh2.script_put_line(fh, 'set appinfo off');
+   fh2.script_put_line(fh, 'prompt');
+   fh2.script_put_line(fh, 'prompt "' || g_build_type || '" Installation is Done.');
+   fh2.script_put_line(fh, '');
+   fh2.script_close(fh);
+   --
+   fh := fh2.script_open(in_filename     => 'dbi.sql'
+                        ,in_elmnt        => 'INSTALL_SCRIPT'
+                        ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+   fh2.put_big_line(in_fh      => fh
+                   ,in_loc     => l_loc
+                   ,in_txt     => root_scripts.dbi_sql(g_build_type)
+                   ,in_max_len => common_util.MAXIMUM_SQL_LENGTH);
+   fh2.script_close(fh);
+   --
+   fh := fh2.script_open(in_filename     => 'installation_finalize.sql'
+                        ,in_elmnt        => 'INSTALL_SCRIPT'
+                        ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+   fh2.put_big_line(in_fh      => fh
+                   ,in_loc     => l_loc
+                   ,in_txt     => root_scripts.installation_finalize_sql(g_build_type)
+                   ,in_max_len => common_util.MAXIMUM_SQL_LENGTH);
+   fh2.script_close(fh);
+   --
+   fh := fh2.script_open(in_filename     => 'installation_prepare.sql'
+                        ,in_elmnt        => 'INSTALL_SCRIPT'
+                        ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+   fh2.put_big_line(in_fh      => fh
+                   ,in_loc     => l_loc
+                   ,in_txt     => root_scripts.installation_prepare_sql(g_build_type)
+                   ,in_max_len => common_util.MAXIMUM_SQL_LENGTH);
+   fh2.script_close(fh);
+   --
+   fh := fh2.script_open(in_filename     => 'odbcapture_installation_logs.cldr'
+                        ,in_elmnt        => 'INSTALL_SCRIPT'
+                        ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+   fh2.put_big_line(in_fh      => fh
+                   ,in_loc     => l_loc
+                   ,in_txt     => root_scripts.odbcapture_installation_logs_cldr(g_build_type)
+                   ,in_max_len => common_util.MAXIMUM_SQL_LENGTH);
+   fh2.script_close(fh);
+   --
+   fh := fh2.script_open(in_filename     => 'odbcapture_installation_logs.csv'
+                        ,in_elmnt        => 'INSTALL_SCRIPT'
+                        ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+   fh2.put_big_line(in_fh      => fh
+                   ,in_loc     => l_loc
+                   ,in_txt     => root_scripts.odbcapture_installation_logs_csv(g_build_type)
+                   ,in_max_len => common_util.MAXIMUM_SQL_LENGTH);
+   fh2.script_close(fh);
+   --
+   fh := fh2.script_open(in_filename     => 'odbcapture_installation_logs.ctl'
+                        ,in_elmnt        => 'INSTALL_SCRIPT'
+                        ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+   fh2.put_big_line(in_fh      => fh
+                   ,in_loc     => l_loc
+                   ,in_txt     => root_scripts.odbcapture_installation_logs_ctl(g_build_type)
+                   ,in_max_len => common_util.MAXIMUM_SQL_LENGTH);
+   fh2.script_close(fh);
+   --
+   fh := fh2.script_open(in_filename     => 'report_status.sql'
+                        ,in_elmnt        => 'INSTALL_SCRIPT'
+                        ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+   fh2.put_big_line(in_fh      => fh
+                   ,in_loc     => l_loc
+                   ,in_txt     => root_scripts.report_status_sql(g_build_type)
+                   ,in_max_len => common_util.MAXIMUM_SQL_LENGTH);
+   fh2.script_close(fh);
+   --
+   fh := fh2.script_open(in_filename     => 'list_invalids.csv'
+                        ,in_elmnt        => 'INSTALL_SCRIPT'
+                        ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+   fh2.put_big_line(in_fh      => fh
+                   ,in_loc     => l_loc
+                   ,in_txt     => root_scripts.list_invalids_csv(g_build_type)
+                   ,in_max_len => common_util.MAXIMUM_SQL_LENGTH);
+   fh2.script_close(fh);
+   --
+   fh := fh2.script_open(in_filename     => 'set_user_authentication.sql'
+                        ,in_elmnt        => 'INSTALL_SCRIPT'
+                        ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+   fh2.put_big_line(in_fh      => fh
+                   ,in_loc     => l_loc
+                   ,in_txt     => root_scripts.set_user_authentication_sql(g_build_type)
+                   ,in_max_len => common_util.MAXIMUM_SQL_LENGTH);
+   fh2.script_close(fh);
+   --
+   grb_ras_acls;               -- Moved from "gen_schemas"
+   --
+end grb_install_master;
+
+------------------------------------------------------------
+-- Create Schema (Non SYS/SYSTEM) Installation Script
+procedure grb_install_schemas
+is
+   fh             fh2.sf_ptr_type;  -- object script file handle
+   fname          varchar2(1000) := 'install_' || COMMON_UTIL.fix_filename(g_build_type) || '.sql';
+   file_id        pls_integer;
+begin
+   fh := fh2.script_open(in_filename     => fname
+                        ,in_elmnt        => 'INSTALL_SCRIPT'
+                        ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+   --
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, '--');
+   fh2.script_put_line(fh, '--  ' || g_build_type || ' Installation Script');
+   fh2.script_put_line(fh, '--');
+   fh2.script_put_line(fh, '--  Must be run as a SYSTEM User (DBA)');
+   fh2.script_put_line(fh, '--');
+   fh2.script_put_line(fh, '-- Command Line Parameters:');
+   fh2.script_put_line(fh, '--   1 - INSTALL_SYSTEM_CONNECT: SYSTEM/password@TNSALIAS');
+   fh2.script_put_line(fh, '--       i.e. pass the username and password for the SYSTEM user');
+   fh2.script_put_line(fh, '--            and the TNSALIAS for the connection to the database.');
+   fh2.script_put_line(fh, '--       The Data Load installation requires this connection information.');
+   fh2.script_put_line(fh, '--');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, 'spool install_' || g_build_type || '.log');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, 'define INSTALL_SYSTEM_CONNECT="&1."');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, '-- For Oracle Change Data Capture (CDC) packages');
+   fh2.script_put_line(fh, 'set sqlprefix "~"');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, '-- Escape character: "^P", CHR(16), DLE');
+   fh2.script_put_line(fh, 'set escape OFF');
+   fh2.script_put_line(fh, 'set escape "' || CHR(16) || '"');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, '----------------------------------------');
+   fh2.script_put_line(fh, '--  Prepare for Install');
+   fh2.script_put_line(fh, '@dbi.sql "./installation_prepare.sql" "" "&INSTALL_SYSTEM_CONNECT."');
+   fh2.script_put_line(fh, '');
+   --
+   for buff in (select element_name, element_seq, pre_compile, file_ext2, file_ext3
+                 from  element_conf
+                 where element_seq > 0
+                 order by element_seq)
+   loop
+      if fh2.sf_aa(g_build_type).EXISTS(buff.element_seq)
+      then
+         if buff.pre_compile = 'Y'
+         then
+            fh2.script_put_line(fh, '----------------------------------------');
+            fh2.script_put_line(fh, 'prompt Compile All started');
+            for sch in (select obj.object_owner
+                         from  schema_objects_tab  obj
+                         where obj.build_type = g_build_type
+                          and  obj.object_owner != 'PUBLIC'
+                         group by obj.object_owner
+                         order by obj.object_owner)
+            loop
+               fh2.script_put_line(fh, 'begin');
+               fh2.script_put_line(fh, '   DBMS_UTILITY.compile_schema(schema      => ''' || sch.object_owner || '''');
+               fh2.script_put_line(fh, '                              ,compile_all => FALSE);');
+               fh2.script_put_line(fh, 'end;');
+               fh2.script_put_line(fh, '/');
+            end loop;
+            fh2.script_put_line(fh, 'prompt Compile All is done.');
+         end if;
+         fh2.script_put_line(fh, '----------------------------------------');
+         fh2.script_put_line(fh, '-- ' || buff.element_name || ' Install');
+         fh2.script_put_line(fh, '');
+         file_id := fh2.sf_aa(g_build_type)(buff.element_seq).FIRST;
+         loop
+            -- RegExp: "([.]ctl|[.]csv)$" Any string ending with ".ctl" or ".csv"
+            if not regexp_like(fh2.sf_aa(g_build_type)(buff.element_seq)(file_id).filename
+                              , '([.]' || buff.file_ext2 ||
+                                '|[.]' || buff.file_ext3 || ')$', 'i')
+            then
+               fh2.script_put_line(fh,
+                  '@dbi.sql "' || fh2.sf_aa(g_build_type)(buff.element_seq)(file_id).schema_name ||
+                           '/' || fh2.sf_aa(g_build_type)(buff.element_seq)(file_id).filename    ||
+                         '" "' || fh2.sf_aa(g_build_type)(buff.element_seq)(file_id).schema_name ||
+                         '" "&INSTALL_SYSTEM_CONNECT."'                                          );
+            end if;
+            exit when file_id = fh2.sf_aa(g_build_type)(buff.element_seq).LAST;
+            file_id := fh2.sf_aa(g_build_type)(buff.element_seq).NEXT(file_id);
+         end loop;
+         fh2.script_put_line(fh, '');
+      end if;
+   end loop;
+   fh2.script_put_line(fh, '----------------------------------------');
+   fh2.script_put_line(fh, '-- Finalize Installation (Includes SPOOL OFF)');
+   fh2.script_put_line(fh, '@dbi.sql "./installation_finalize.sql" "" "&INSTALL_SYSTEM_CONNECT."');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, 'spool off');
+   fh2.script_put_line(fh, '');
+   --
+   fh2.script_close(fh);
+end grb_install_schemas;
+
+------------------------------------------------------------
+-- Create SYS Installation Script
+procedure grb_install_sys
+is
+   fh            fh2.sf_ptr_type;  -- object script file handle
+   fname         varchar2(1000) := 'install_sys.sql';
+   file_id       pls_integer;
+begin
+   fh := fh2.script_open(in_filename     => fname
+                        ,in_elmnt        => 'INSTALL_SCRIPT'
+                        ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+   --
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, '--');
+   fh2.script_put_line(fh, '--  SYS Installation Script');
+   fh2.script_put_line(fh, '--');
+   fh2.script_put_line(fh, '--  Must be run as SYS');
+   fh2.script_put_line(fh, '--');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, 'spool install_sys.log');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, 'set blockterminator off');
+   fh2.script_put_line(fh, 'set sqlblanklines on');
+   fh2.script_put_line(fh, '');
+   --
+   for buff in (select nvl(object_type, element_name)    OBJECT_TYPE
+                      ,element_seq, file_ext2, file_ext3
+                 from  element_conf
+                 where element_seq between -199 and -100
+                 order by element_seq)
+   loop
+      if fh2.sf_aa(g_build_type).EXISTS(buff.element_seq)
+      then
+         fh2.script_put_line(fh, '----------------------------------------');
+         fh2.script_put_line(fh, '-- ' || buff.object_type || ' Install');
+         fh2.script_put_line(fh, '');
+         file_id := fh2.sf_aa(g_build_type)(buff.element_seq).FIRST;
+         loop
+            -- RegExp: "([.]ctl|[.]csv)$" Any string ending with ".ctl" or ".csv"
+            if not regexp_like(fh2.sf_aa(g_build_type)(buff.element_seq)(file_id).filename
+                              , '([.]' || buff.file_ext2 ||
+                                '|[.]' || buff.file_ext3 || ')$', 'i')
+            then
+               fh2.script_put_line(fh,
+                  '@dbi.sql "' || fh2.sf_aa(g_build_type)(buff.element_seq)(file_id).schema_name ||
+                           '/' || fh2.sf_aa(g_build_type)(buff.element_seq)(file_id).filename    || '" "" ""' );
+            end if;
+            exit when file_id = fh2.sf_aa(g_build_type)(buff.element_seq).LAST;
+            file_id := fh2.sf_aa(g_build_type)(buff.element_seq).NEXT(file_id);
+         end loop;
+         fh2.script_put_line(fh, '');
+      end if;
+   end loop;
+   --
+   fh2.script_put_line(fh, '----------------------------------------');
+   fh2.script_put_line(fh, 'set sqlblanklines off');
+   fh2.script_put_line(fh, 'set blockterminator on');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, 'spool off');
+   fh2.script_put_line(fh, '');
+   --
+   fh2.script_close(fh);
+end grb_install_sys;
+
+------------------------------------------------------------
+-- Create SYSTEM Installation Script
+procedure grb_install_system
+is
+   fh            fh2.sf_ptr_type;  -- object script file handle
+   fname         varchar2(1000) := 'install_system.sql';
+   file_id       pls_integer;
+begin
+   fh := fh2.script_open(in_filename     => fname
+                        ,in_elmnt        => 'INSTALL_SCRIPT'
+                        ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+   --
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, '--');
+   fh2.script_put_line(fh, '--  SYSTEM Installation Script');
+   fh2.script_put_line(fh, '--');
+   fh2.script_put_line(fh, '--  Must be run as SYSTEM');
+   fh2.script_put_line(fh, '--');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, 'spool install_system.log');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, 'set blockterminator off');
+   fh2.script_put_line(fh, 'set sqlblanklines on');
+   fh2.script_put_line(fh, '');
+   --
+   for buff in (select nvl(object_type, element_name)    OBJECT_TYPE
+                      ,element_seq, file_ext2, file_ext3
+                 from  element_conf
+                 where element_seq between -99 and 0
+                 order by element_seq)
+   loop
+      if fh2.sf_aa(g_build_type).EXISTS(buff.element_seq)
+      then
+         fh2.script_put_line(fh, '----------------------------------------');
+         fh2.script_put_line(fh, '-- ' || buff.object_type || ' Install');
+         fh2.script_put_line(fh, '');
+         file_id := fh2.sf_aa(g_build_type)(buff.element_seq).FIRST;
+         loop
+            -- RegExp: "([.]ctl|[.]csv)$" Any string ending with ".ctl" or ".csv"
+            if not regexp_like(fh2.sf_aa(g_build_type)(buff.element_seq)(file_id).filename
+                              , '([.]' || buff.file_ext2 ||
+                                '|[.]' || buff.file_ext3 || ')$', 'i')
+            then
+               fh2.script_put_line(fh,
+                  '@dbi.sql "' || fh2.sf_aa(g_build_type)(buff.element_seq)(file_id).schema_name ||
+                           '/' || fh2.sf_aa(g_build_type)(buff.element_seq)(file_id).filename    || '" "" ""' );
+            end if;
+            exit when file_id = fh2.sf_aa(g_build_type)(buff.element_seq).LAST;
+            file_id := fh2.sf_aa(g_build_type)(buff.element_seq).NEXT(file_id);
+         end loop;
+         fh2.script_put_line(fh, '');
+      end if;
+   end loop;
+   --
+   fh2.script_put_line(fh, '----------------------------------------');
+   fh2.script_put_line(fh, 'set sqlblanklines off');
+   fh2.script_put_line(fh, 'set blockterminator on');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, 'spool off');
+   fh2.script_put_line(fh, '');
+   --
+   fh2.script_close(fh);
+end grb_install_system;
+
+------------------------------------------------------------
+-- Create Materialized View Scripts
+procedure grb_materialized_views
+is
+   PELMNT     varchar2(100) := '';
+   ELMNT      varchar2(100) := 'MVIEW';
+   fh         fh2.sf_ptr_type;  -- object script file handle
+begin
+   for buf1 in (with qmain as (
+                select object_name                  MVIEW_NAME
+                      ,COMMON_UTIL.fix_filename(object_name) || '.' || file_ext1
+                                                    FILE_NAME
+                      ,build_timing
+                 from  obj_install_object_tab
+                 where build_type    = g_build_type
+                  and  object_owner  = g_schema_name
+                  and  element_name   = ELMNT
+                 order by object_name
+                ), qdep as (  -- Dependencies
+                select object_name
+                      ,referenced_name
+                 from  dba_dependencies_tab
+                 where object_owner     = g_schema_name
+                  and  object_type      = 'MATERIALIZED VIEW'
+                  and  referenced_owner = g_schema_name
+                  and  referenced_type  = 'MATERIALIZED VIEW'
+                  and  dependency_type  = 'REF'
+                ), qroot as (  -- Root nodes have no dependencies
+                select 0           LVL
+                      ,obj.object_name
+                 from  dba_objects_tab  obj
+                 where obj.object_owner = g_schema_name
+                  and  obj.object_type  = 'MATERIALIZED VIEW'
+                  and  obj.object_name not in (select qdep.object_name from qdep)
+                ), qlvl as (   -- Levels for all nodes
+                select level                 LVL
+                      ,qdep.object_name      OBJECT_NAME
+                 from  qdep
+                 connect by prior qdep.referenced_name = qdep.object_name
+                 start with qdep.referenced_name in (select qroot.object_name from qroot)
+                ), q_all as (  -- Combine root/dependent nodes
+                select lvl, object_name from qroot
+                union all
+                select max(lvl) lvl, object_name from qlvl
+                 group by object_name
+                )  -- Main query
+                select qmain.mview_name
+                      ,ltrim(to_char(nvl(q_all.lvl,-1)+1,'09')) || '_' || qmain.file_name
+                                                   FILE_NAME
+                      ,qmain.build_timing
+                 from  qmain
+                  left join q_all
+                       on (q_all.object_name = qmain.mview_name)
+                order by 1, 2)
+   loop
+      fh := fh2.script_open(in_filename     => buf1.file_name
+                           ,in_elmnt        => ELMNT
+                           ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '--  Create ' || g_schema_name || '.' || buf1.mview_name || ' Materialized View');
+      fh2.script_put_line(fh, '--');
+      if buf1.build_timing != 'CURRENT'
+      then
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '-- NOTE: This is a "' || buf1.build_timing || '" Materialized View');
+      end if;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define off');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--DBMS_METADATA:' || g_schema_name ||
+                                             '.' || buf1.mview_name);
+      fh2.put_big_line(fh, g_schema_name || '.' || buf1.mview_name || ' Materialized View'
+                      ,COMMON_UTIL.split_sql_length
+                         (COMMON_UTIL.escape_at_sign
+                            (dbms_metadata.get_ddl
+                               (object_type => 'MATERIALIZED_VIEW'
+                               ,name        => buf1.mview_name
+                               ,schema      => g_schema_name) ) )
+                      ,common_util.MAXIMUM_SQL_LENGTH);
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--  Comments');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--DBMS_METADATA:' || g_schema_name ||
+                                             '.' || buf1.mview_name);
+      BEGIN
+         fh2.put_big_line(fh, g_schema_name || '.' || buf1.mview_name || ' Materialized View'
+                         ,dbms_metadata.get_dependent_ddl(object_type        => 'COMMENT'
+                                                         ,base_object_name   => buf1.mview_name
+                                                         ,base_object_schema => g_schema_name)
+                         ,common_util.MAXIMUM_SQL_LENGTH);
+      EXCEPTION
+         WHEN DBMS_METADATA.object_not_found2
+         THEN
+            null;
+      END;
+      fh2.script_put_line(fh, '');
+      -- Materialized Views are listed as Tables in DBA_TAB_PRIVS
+      grb_object_grants(fh, buf1.mview_name, 'TABLE');
+      grb_object_synonyms(fh, buf1.mview_name, 'MATERIALIZED VIEW', common_util.MAXIMUM_SQL_LENGTH);
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define on');
+      fh2.script_close(fh);
+   end loop;
+end grb_materialized_views;
+
+------------------------------------------------------------
+-- Create PL/SQL Java Source
+procedure grb_plsql_java
+is
+   SQL_TXT   constant varchar2(1000) := 'begin GRAB_JAVA.GRB_PJAVA; end;';
+begin
+   if NOT installed_types_aa.EXISTS('grbjava') then return; end if;
+   execute immediate SQL_TXT;
+exception when others then
+   if NOT regexp_like (SQLERRM, 'PLS-00201: identifier ''GRAB_JAVA.GRB_PJAVA'' must be declared')
+   then
+      raise_application_error(-20000, 'Execute Immediate ERROR' || CHR(10) ||
+                                       SQL_TXT                  || CHR(10) ||
+                                       SQLERRM                  || CHR(10) ||
+                                       dbms_utility.format_error_backtrace );
+   end if;
+end grb_plsql_java;
+
+------------------------------------------------------------
+-- Create Roles and SYS Grants
+procedure grb_roles
+is
+   ELMNT     CONSTANT varchar2(100) := 'ROLE';
+   fh        fh2.sf_ptr_type;  -- object script file handle
+   sql_txt   varchar2(32767);
+begin
+   for buf1 in
+      (select user_or_role                 ROLENAME
+             ,COMMON_UTIL.fix_filename(user_or_role) || '.' || file_ext1
+                                           FILE_NAME
+        from  uor_install_view
+        where uor_type = 'ROLE'
+         and  build_type    = g_build_type
+         and  oracle_provided = 'N'
+        order by user_or_role)
+   loop
+      fh := fh2.script_open(in_filename     => buf1.file_name
+                           ,in_elmnt        => ELMNT
+                           ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+      dbms_output.put_line('buf1.file_name = ' || buf1.file_name);
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '--  Create ' || buf1.rolename || ' Role');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define off');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'create role ' || buf1.rolename || ';');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--  Current Grant of YS Objects (but not directories)');
+      fh2.script_put_line(fh, '');
+      for buf2 in (select object_owner              OWNER
+                         ,object_name               TABLE_NAME
+                         ,privilege
+                         ,max(grantable)            GRANTABLE
+                    from  priv_sysobj_privileges_view
+                    where grantee      = buf1.rolename
+                     and  build_type   = g_build_type
+                     and  build_timing = 'CURRENT'
+                     and  object_type != 'DIRECTORY' -- All directories are owned by SYS
+                          -- Keep LCR$ Logical Change Record
+                          -- Keep AQ$ Queue Tables and Views
+                          -- Object View OID Types are recreated automatically
+                     and  object_name not like common_util.SYS_OVIEW_OID_PATTERN escape '\'
+                          -- SYS_PLSQL Pipelined Type Objects are recreated automatically
+                     and  object_name not like common_util.SYS_PIPELINE_PATTERN escape '\'
+                          -- Skip QT*_BUFFER Queue Views here. Grant Views with Advanced Queue
+                          --   https://blogs.oracle.com/db/entry/oracle_support_master_note_for_troubleshooting_advanced_queuing_and_oracle_streams_propagation_issue
+                          --   "Note that when queue table is created, a view called QT<nnn>_BUFFER is created in the SYS schema, and the queue table owner is given
+                          --    SELECT privileges on it. The <nnn> corresponds to the object_id of the associated queue table"
+                     and  object_name not like common_util.ADV_QUEUE_VIEW_PATTERN escape '\'
+                    group by object_owner
+                         ,object_name
+                         ,grantee
+                         ,privilege
+                    order by object_owner
+                         ,object_name
+                         ,grantee
+                         ,privilege)
+      loop
+         -- No appropriate DBMS_METADATA.  Manually create the SQL.
+         sql_txt := 'grant ' || buf2.privilege ||
+                     ' on "' || buf2.owner || '"."' || buf2.table_name || '"' ||
+                     ' to "' || buf1.rolename || '"';
+         -- Missing "with hierarchy option" ...
+         -- Does not work for ROLES ...
+         --if buf2.grantable = 'YES'
+         --then
+         --   sql_txt := sql_txt || ' with grant option';
+         --end if;
+         fh2.put_big_line(fh, buf2.owner || '.' || buf2.table_name ||
+                         ' Grant', sql_txt || ';'
+                         ,common_util.MAXIMUM_SQL_LENGTH);
+      END LOOP;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define on');
+      fh2.script_close(fh);
+   end loop;
+end grb_roles;
+
+------------------------------------------------------------
+-- Create Table Scripts
+procedure grb_tables
+is
+   PELMNT     varchar2(100) := '';
+   ELMNT      varchar2(100) := 'TABLE';
+   fh         fh2.sf_ptr_type;  -- object script file handle
+begin
+   for buf1 in (with xmltab as (select table_name
+                                 from  dba_xml_tables
+                                 where owner = g_schema_name
+                                 group by table_name)
+                select obj.object_name                      TABLE_NAME
+                      ,COMMON_UTIL.fix_filename(obj.object_name) || '.' || obj.file_ext1
+                                                            FILE_NAME
+                      ,obj.build_timing
+                      ,xt.table_name                        XML_TABLE_NAME
+                 from  obj_install_object_tab  obj
+                  left join xmltab  xt
+                            on  xt.table_name = obj.object_name
+                 where obj.build_type    = g_build_type
+                  and  obj.object_owner  = g_schema_name
+                  and  obj.element_name   = ELMNT
+                       -- Skip Oracle Text Supplemental Tables
+                  and  NOT regexp_like(obj.object_name, common_util.ORACLE_TEXT_TABLE_REGEXP)
+                       -- Skip Spatial Data Object Supplemental Tables
+                  and  NOT regexp_like(obj.object_name, common_util.SDO_TABLE_REGEXP)
+                       -- Skip Indexed Organized Overflow Tables
+                       -- Skip Indexed Organized Mapping Tables
+                  and  not exists (select 'x' from dba_tables tab
+                                    where tab.owner      = g_schema_name
+                                     and  tab.table_name = obj.object_name
+                                     and  tab.iot_type  in ('IOT_OVERFLOW','IOT_MAPPING') )
+                       -- Skip Materialized View Tables (not the view itself)
+                  and  not exists (select 'x' from dba_mviews mv
+                                    where mv.owner      = g_schema_name
+                                     and  mv.mview_name = obj.object_name)
+                       -- Skip Queue Tables, create with Advanced Queues
+                  and  not exists (select 'x' from dba_queue_tables qt
+                                    where qt.owner = g_schema_name
+                                     and  (   obj.object_name = qt.queue_table
+                                           or regexp_like(obj.object_name,common_util.ADV_QUEUE_PREFIX_REGEXP ||
+                                                                          qt.queue_table                      ||
+                                                                          common_util.ADV_QUEUE_SUFFIX_REGEXP  )  )  )
+       order by obj.object_name )
+   loop
+      fh := fh2.script_open(in_filename     => buf1.file_name
+                           ,in_elmnt        => ELMNT
+                           ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '--  Create ' || g_schema_name || '.' || buf1.table_name || ' Table');
+      fh2.script_put_line(fh, '--');
+      if buf1.build_timing != 'CURRENT'
+      then
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '-- NOTE: This is a "' || buf1.build_timing || '" Table');
+      end if;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define off');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '');
+--      if buf1.table_type = 'XMLTABLE'
+--      then
+--         --  DBMS_METADATA incorrectly creates XMLTables with the
+--         --  "ALLOW NONSCHEMA DISALLOW ANYSCHEMA" clause, but without the
+--         --  "XMLTYPE STORE AS BINARY XML" clause, resulting in an ORA-00922
+--         fh2.script_put_line(fh, 'CREATE TABLE "' || g_schema_name   ||
+--                                            '"."' || buf1.table_name || '" OF XMLTYPE;');
+--      else
+        fh2.script_put_line(fh, '--DBMS_METADATA:' || g_schema_name   ||
+                                               '.' || buf1.table_name );
+         fh2.put_big_line(fh, g_schema_name || '.' || buf1.table_name || ' Table'
+                         ,dbms_metadata.get_ddl(object_type => 'TABLE'
+                                               ,name        => buf1.table_name
+                                               ,schema      => g_schema_name)
+                         ,common_util.MAXIMUM_SQL_LENGTH);
+--      end if;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--  Comments');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--DBMS_METADATA:' || g_schema_name ||
+                                             '.' || buf1.table_name);
+      BEGIN
+         fh2.put_big_line(fh, g_schema_name || '.' || buf1.table_name || ' Table'
+                         ,dbms_metadata.get_dependent_ddl(object_type        => 'COMMENT'
+                                                         ,base_object_name   => buf1.table_name
+                                                         ,base_object_schema => g_schema_name)
+                         ,common_util.MAXIMUM_SQL_LENGTH);
+      EXCEPTION
+         WHEN DBMS_METADATA.object_not_found2
+         THEN
+            null;
+      END;
+      fh2.script_put_line(fh, '');
+      grb_object_grants(fh, buf1.table_name, 'TABLE');
+      grb_object_synonyms(fh, buf1.table_name, 'TABLE', common_util.MAXIMUM_SQL_LENGTH);
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define on');
+      fh2.script_close(fh);
+   end loop;
+end grb_tables;
+
+------------------------------------------------------------
+-- Create Trigger Scripts
+procedure grb_triggers
+      (in_elmnt   in varchar2)
+is
+   fh         fh2.sf_ptr_type;  -- object script file handle
+   old_own    varchar2(1000);
+   old_tab    varchar2(1000);
+   fname      varchar2(1000);
+begin
+   old_own := 'This is not an Owner Name.';
+   old_tab := 'This is not a Table name.';
+   for buff in (select target_name                 TABLE_NAME
+                      ,target_owner                TABLE_OWNER
+                      ,COMMON_UTIL.fix_filename(target_name) || '.' || file_ext1
+                                                   FILE_NAME
+                      ,target_type
+                      ,trigger_name
+                      ,build_type_selector
+                 from  obj_install_trigger_tab
+                 where trigger_owner = g_schema_name
+                  and  element_name   = in_elmnt
+                  and  build_type    = g_build_type
+                 order by target_owner
+                      ,target_name
+                      ,trigger_name  )
+   loop
+      if    buff.table_owner != old_own
+         or buff.table_name  != old_tab
+      then
+         if fh2.script_is_open(fh)
+         then
+            fh2.script_put_line(fh, '');
+            fh2.script_put_line(fh, 'set define on');
+            fh2.script_close(fh);
+         end if;
+         old_own := buff.table_owner;
+         old_tab := buff.table_name;
+         if buff.table_owner = g_schema_name
+         then
+            fname := buff.file_name;
+         else
+            fname := buff.table_owner || '.' || buff.file_name;
+         end if;
+         fh := fh2.script_open(in_filename     => fname    -- buff.file_name
+                              ,in_elmnt        => in_elmnt
+                              ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '--  Create Triggers for ' || buff.table_owner ||
+                                                        '.' || buff.table_name  ||
+                                                        ' ' || buff.target_type );
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, 'set define off');
+         fh2.script_put_line(fh, '');
+      end if;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--  NOTE: This is a "' || buff.build_type_selector || '" Trigger');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--DBMS_METADATA:' || g_schema_name      ||
+                                             '.' || buff.trigger_name  );
+      fh2.put_big_line(fh, g_schema_name || '.' || buff.trigger_name || ' Trigger'
+                      ,COMMON_UTIL.escape_at_sign
+                         (dbms_metadata.get_ddl
+                            (object_type => 'TRIGGER'
+                            ,name        => buff.trigger_name
+                            ,schema      => g_schema_name) )
+                      ,common_util.MAXIMUM_SQL_LENGTH);
+   end loop;
+   if fh2.script_is_open(fh)
+   then
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define on');
+      fh2.script_close(fh);
+   end if;
+end grb_triggers;
+
+------------------------------------------------------------
+-- Create Users and SYS Grants
+procedure grb_users
+is
+   ELMNT     CONSTANT varchar2(100) := 'USER';
+   fh        fh2.sf_ptr_type;  -- object script file handle
+   sql_txt   varchar2(32767);
+begin
+   for buf1 in (select sc.username
+                      ,COMMON_UTIL.fix_filename(sc.username) || '.' || ec.file_ext1
+                                                      FILE_NAME
+                      ,sc.profile
+                      ,sc.temporary_tspace
+                      ,sc.default_tspace
+                      ,sc.ts_quota
+                 from  schema_conf  sc
+                       join element_conf  ec
+                            on  ec.element_name = ELMNT
+                 where sc.build_type      = g_build_type
+                  and  sc.oracle_provided = 'N'
+                 order by sc.username)
+   loop
+      fh := fh2.script_open(in_filename     => buf1.file_name
+                           ,in_elmnt        => ELMNT
+                           ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '--  Create ' || buf1.username || ' Schema');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define off');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'create user "' || buf1.username || '"');
+      fh2.script_put_line(fh, '   no authentication');
+      fh2.script_put_line(fh, '   profile ' || nvl(buf1.profile, 'DEFAULT'));
+      fh2.script_put_line(fh, '   temporary tablespace ' || nvl(buf1.temporary_tspace, 'TEMP'));
+      if buf1.default_tspace is not null
+      then
+         fh2.script_put_line(fh, '   default tablespace ' || buf1.default_tspace);
+         fh2.script_put_line(fh, '   quota ' || nvl(buf1.ts_quota, 'UNLIMITED') ||
+                                      ' on ' || buf1.default_tspace);
+         for buf2 in (select tspace_name, ts_quota
+                       from  tspace_conf
+                       where username = buf1.username)
+         loop
+            fh2.script_put_line(fh, '   quota ' || nvl(buf2.ts_quota, 'UNLIMITED') ||
+                                         ' on ' || buf2.tspace_name);
+         end loop;
+         fh2.script_put_line(fh, '   ;');
+      else
+         fh2.script_put_line(fh, '   ;');
+      end if;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--  Current Grant of SYS Objects (but not directories)');
+      fh2.script_put_line(fh, '');
+      for buf2 in (select object_owner
+                         ,object_name
+                         ,object_type
+                         ,privilege
+                         ,max(grantable)            GRANTABLE
+                    from  priv_sysobj_privileges_view
+                    where grantee      = buf1.username
+                     and  build_type   = g_build_type
+                     and  build_timing = 'CURRENT'
+                     and  object_type != 'DIRECTORY' -- All directories are owned by SYS
+                          -- Keep LCR$ Logical Change Record
+                          -- Keep AQ$ Queue Tables and Views
+                          -- Object View OID Types are recreated automatically
+                     and  object_name not like common_util.SYS_OVIEW_OID_PATTERN escape '\'
+                          -- SYS_PLSQL Pipelined Type Objects are recreated automatically
+                     and  object_name not like common_util.SYS_PIPELINE_PATTERN escape '\'
+                          -- Skip QT*_BUFFER Queue Views here. Grant Views with Advanced Queue
+                          --   https://blogs.oracle.com/db/entry/oracle_support_master_note_for_troubleshooting_advanced_queuing_and_oracle_streams_propagation_issue
+                          --   "Note that when queue table is created, a view called QT<nnn>_BUFFER is created in the SYS schema, and the queue table owner is given
+                          --    SELECT privileges on it. The <nnn> corresponds to the object_id of the associated queue table"
+                     and  object_name not like common_util.ADV_QUEUE_VIEW_PATTERN escape '\'
+                    group by object_owner
+                         ,object_name
+                         ,object_type
+                         ,privilege
+                    order by object_owner
+                         ,object_name
+                         ,object_type
+                         ,privilege)
+      loop
+         -- No appropriate DBMS_METADATA.  Manually create the SQL.
+         --
+         --  These "types" don't require a grant quailifier:
+         --    -) FUNCTION
+         --    -) INDEXTYPE
+         --    -) LIBRARY
+         --    -) MATERIALIZED VIEW
+         --    -) OPERATOR
+         --    -) PACKAGE
+         --    -) PROCEDURE
+         --    -) SEQUENCE
+         --    -) TABLE
+         --    -) TYPE
+         --    -) VIEW
+         --
+         --  Other forms (and "types") include:
+         --    -) ON DIRECTORY (DIRECTORY)         - Handled in "grb_directories"
+         --    -) ON USER (USER)                   - Handled HERE and in "grb_object_grants"
+         --    -) ON EDITION (EDITION)             - Handled HERE and in "grb_object_grants"
+         --    -) ON JAVA SOURCE (JAVA CLASS)      - Handled HERE and in "grb_object_grants" and "grb_plsql_java"
+         --    -) ON JAVA RESOURCE (JAVA RESOURCE) - Handled HERE and in "grb_object_grants"
+         --    -) ON MINING MODEL (MLE LANGUAGE?)  - Not Handled
+         --    -) ON SQL TRANSLATION PROFILE (???) - Not Handled
+         --
+         sql_txt := 'grant ' || buf2.privilege ||
+                      ' on ' || case buf2.object_type when 'JAVA CLASS'    then 'JAVA SOURCE "'   || buf2.object_owner || '"."'
+                                                      when 'JAVA SOURCE'   then 'JAVA SOURCE "'   || buf2.object_owner || '"."'
+                                                      when 'JAVA RESOURCE' then 'JAVA RESOURCE "' || buf2.object_owner || '"."'
+                                                      when 'EDITION'       then 'EDITION "'
+                                                      when 'USER'          then 'USER "'
+                                                                           else '"'               || buf2.object_owner || '"."'
+                                end                                                               || buf2.object_name  ||
+                    '" to "' || buf1.username || '"';
+         -- Missing "with hierarchy option"...
+         if buf2.grantable = 'YES'
+         then
+            sql_txt := sql_txt || ' with grant option';
+         end if;
+         fh2.put_big_line(fh, buf2.object_owner || '"."' || buf2.object_name ||
+                         ' Grant', sql_txt || ';'
+                         ,common_util.MAXIMUM_SQL_LENGTH);
+      END LOOP;
+      --
+      if installed_types_aa.EXISTS('grbjava')
+      then
+         sql_txt := 'begin GRAB_JAVA.GRB_SYSGRNT(:1, ''' || buf1.username  ||
+                                               ''', ''' || buf1.file_name ||
+                                               ''', ''' || ELMNT          ||
+                                               ''', ''CURRENT''); end;';
+         begin
+            execute immediate sql_txt using in out fh;
+         exception when others then
+            if NOT regexp_like (SQLERRM, 'PLS-00201: identifier ''GRAB_JAVA.GRB_SYSGRNT'' must be declared')
+            then
+               raise_application_error(-20000, 'Execute Immediate ERROR for ' || buf1.username || CHR(10) ||
+                                                SQL_TXT || CHR(10) ||
+                                                SQLERRM || CHR(10) ||
+                                                dbms_utility.format_error_backtrace );
+            end if;
+         end;
+      end if;
+      --
+      if installed_types_aa.EXISTS('grbras')
+      then
+         sql_txt := 'begin GRAB_RAS.GRB_USR(:1, ''' || buf1.username || '''); end;';
+         begin
+            execute immediate sql_txt using in out fh;
+         exception when others then
+            if NOT regexp_like (SQLERRM, 'PLS-00201: identifier ''GRAB_RAS.GRB_USR'' must be declared')
+            then
+               raise_application_error(-20000, 'Execute Immediate ERROR' || CHR(10) ||
+                                                SQL_TXT                  || CHR(10) ||
+                                                SQLERRM                  || CHR(10) ||
+                                                dbms_utility.format_error_backtrace );
+            end if;
+         end;
+      end if;
+      --
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define on');
+      fh2.script_close(fh);
+   end loop;
+end grb_users;
+
+------------------------------------------------------------
+-- Create Schema Trigger
+--   There are no PUBLIC Schema Triggers
+--   https://docs.oracle.com/en/database/oracle/oracle-database/21/lnpls/CREATE-TRIGGER-statement.html
+procedure grb_user_triggers
+is
+   ELMNT      CONSTANT varchar2(100) := 'SCHEMA_TRIGGER';
+   fh         fh2.sf_ptr_type;  -- object script file handle
+begin
+   for buff in (select object_name              TRIGGER_NAME
+                      ,file_ext1
+                      ,build_timing
+                 from  obj_install_object_tab
+                 where build_type    = g_build_type
+                  and  object_owner  = g_schema_name
+                  and  element_name   = ELMNT
+                 order by trigger_name
+                      ,file_ext1
+                      ,build_timing)
+   loop
+      if NOT fh2.script_is_open(fh)
+      then
+         fh := fh2.script_open(in_filename     => COMMON_UTIL.fix_filename(g_schema_name) || '.' || buff.file_ext1
+                              ,in_elmnt        => ELMNT
+                              ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '--  Create Schema Triggers for ' || g_build_type);
+         fh2.script_put_line(fh, '--');
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, 'set define off');
+         fh2.script_put_line(fh, '');
+      end if;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--  NOTE: This is a "' || buff.build_timing || '" Trigger');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--DBMS_METADATA:' || g_schema_name      ||
+                                             '.' || buff.trigger_name  );
+      fh2.put_big_line(fh, g_schema_name || '.' || buff.trigger_name || ' Trigger'
+                      ,COMMON_UTIL.escape_at_sign
+                         (dbms_metadata.get_ddl
+                            (object_type => 'TRIGGER'
+                            ,name        => buff.trigger_name
+                            ,schema      => g_schema_name) )
+                      ,common_util.MAXIMUM_SQL_LENGTH);
+   end loop;
+   if fh2.script_is_open(fh)
+   then
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define on');
+      fh2.script_close(fh);
+   end if;
+end grb_user_triggers;
+
+
+------------------------------------------------------------
+-- Create View Scripts
+procedure grb_views
+is
+   PELMNT     varchar2(100) := '';
+   ELMNT      varchar2(100) := 'VIEW';
+   fh         fh2.sf_ptr_type;  -- object script file handle
+begin
+   for buf1 in (select obj.object_name                      VIEW_NAME
+                      ,COMMON_UTIL.fix_filename(obj.object_name) || '.' || obj.file_ext1
+                                                            FILE_NAME
+                      ,obj.build_timing
+                 from  obj_install_object_tab  obj
+                  left join dba_xml_tables  xt
+                            on  xt.owner      = obj.object_owner
+                            and xt.table_name = obj.object_name
+                 where obj.build_type    = g_build_type
+                  and  obj.object_owner  = g_schema_name
+                  and  obj.element_name   = ELMNT
+                       -- Skip Queue Table Views, create with Advanced Queue
+                  and  not exists (select 'x' from dba_queue_tables qt
+                                    where qt.owner = g_schema_name
+                                     and  (   obj.object_name = qt.queue_table
+                                           or regexp_like(obj.object_name,common_util.ADV_QUEUE_PREFIX_REGEXP ||
+                                                                          qt.queue_table                      ||
+                                                                          common_util.ADV_QUEUE_SUFFIX_REGEXP  )  )  )
+       order by obj.object_name )
+   loop
+      fh := fh2.script_open(in_filename     => buf1.file_name
+                           ,in_elmnt        => ELMNT
+                           ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '--  Create ' || g_schema_name || '.' || buf1.view_name || ' view');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define off');
+      fh2.script_put_line(fh, '');
+      if buf1.build_timing != 'CURRENT'
+      then
+         fh2.script_put_line(fh, '');
+         fh2.script_put_line(fh, '-- Note: This is a "' || buf1.build_timing || '" View');
+      end if;
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--');
+      fh2.script_put_line(fh, '--  Cannot grant permisions on a view with an error');
+      fh2.script_put_line(fh, '--  https://asktom.oracle.com/pls/apex/f?p=100:11:0::::P11_QUESTION_ID:43253832697675#2653213300346351987');
+      fh2.script_put_line(fh, 'create view "' || g_schema_name || '"."' || buf1.view_name || '"');
+      fh2.script_put_line(fh, '  as   select * from TEMP_PUBLICLY_UPDATEABLE_TABLE;');
+      grb_object_grants(fh, buf1.view_name, 'VIEW');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--DBMS_METADATA:' || g_schema_name ||
+                                               '.' || buf1.view_name);
+      fh2.put_big_line(fh, g_schema_name || '.' || buf1.view_name || ' View'
+                      ,COMMON_UTIL.split_sql_length
+                         (COMMON_UTIL.escape_at_sign
+                            (dbms_metadata.get_ddl
+                               (object_type => 'VIEW'
+                               ,name        => buf1.view_name
+                               ,schema      => g_schema_name) ) )
+                      ,common_util.MAXIMUM_SQL_LENGTH);
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--  Comments');
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, '--DBMS_METADATA:' || g_schema_name ||
+                                           '.' || buf1.view_name);
+      BEGIN
+         fh2.put_big_line(fh, g_schema_name || '.' || buf1.view_name || ' View'
+                         ,dbms_metadata.get_dependent_ddl(object_type        => 'COMMENT'
+                                                         ,base_object_name   => buf1.view_name
+                                                         ,base_object_schema => g_schema_name)
+                         ,common_util.MAXIMUM_SQL_LENGTH);
+      EXCEPTION
+         WHEN DBMS_METADATA.object_not_found2
+         THEN
+            null;
+      END;
+      fh2.script_put_line(fh, '');
+      grb_object_grants(fh, buf1.view_name, 'VIEW');
+      grb_object_synonyms(fh, buf1.view_name, 'VIEW', common_util.MAXIMUM_SQL_LENGTH);
+      fh2.script_put_line(fh, '');
+      fh2.script_put_line(fh, 'set define on');
+      fh2.script_close(fh);
+   end loop;
+end grb_views;
+
+------------------------------------------------------------
+-- Create XML Schema Scripts
+procedure grb_xmlschema
+is
+   SQL_TXT   constant varchar2(1000) := 'begin GRAB_XDB_REPO.GRB_XMLSCHEMA; end;';
+begin
+   if NOT installed_types_aa.EXISTS('grbxrep') then return; end if;
+   execute immediate SQL_TXT;
+exception when others then
+   if NOT regexp_like (SQLERRM, 'PLS-00201: identifier ''GRAB_XDB_REPO.GRB_XMLSCHEMA'' must be declared')
+   then
+      raise_application_error(-20000, 'Execute Immediate ERROR' || CHR(10) ||
+                                       SQL_TXT                  || CHR(10) ||
+                                       SQLERRM                  || CHR(10) ||
+                                       dbms_utility.format_error_backtrace );
+   end if;
+end grb_xmlschema;
+
+
+------------------------------------------------------------
+---   Setup and Main Control  ---
+------------------------------------------------------------
+
+
+------------------------------------------------------------
+-- Set Installed Types
+procedure set_installed_types
+is
+   -- ORA-00942: table or view does not exist
+   table_does_not_exist  EXCEPTION;
+   PRAGMA EXCEPTION_INIT(table_does_not_exist, -942);
+   TYPE rcurs_type is ref cursor;
+   rcurs     rcurs_type;
+   btype     build_conf.build_type%TYPE;
+begin
+   -- Load INSTALLED_TYPES Array
+   installed_types_aa.DELETE;
+   open rcurs for 'select distinct build_type from odbcapture_installation_logs';
+   loop
+      fetch rcurs into btype;
+      exit when rcurs%NOTFOUND;
+      installed_types_aa(btype) := 'Y';
+   end loop;
+   if NOT installed_types_aa.EXISTS('grbsrc')
+   then
+      raise_application_error(-20000, 'Unable to find "grbsrc" in odbcapture_installation_log');
+   end if;
+   dbms_output.put_line($$PLSQL_UNIT || '.set_installed_types: ' || installed_types_aa.COUNT || ' Build Types in ODBCAPTURE_INSTALLATION_LOG');
+exception when table_does_not_exist then
+   null;
+end set_installed_types;
+
+
+------------------------------------------------------------
+-- Initialize this Package
+procedure initialize
+      (in_build_type  in varchar2)
+is
+   -- Set the Installation Type
+   procedure set_build_type
+   is
+      l_notes   build_conf.notes%type;
+   begin
+      if in_build_type in ('sys','pub')
+      then
+         raise_application_error (-20000, 'Build Type of "sys" or "pub" is not allowed: ' || in_build_type);
+      end if;
+      begin
+         select notes
+          into  l_notes
+          from  BUILD_CONF
+          where build_type = in_build_type;
+      exception when NO_DATA_FOUND then
+         raise_application_error (-20000, 'Invalid Build Type: ' || in_build_type);
+      end;
+      g_build_type  := in_build_type;
+      dbms_output.put_line('g_build_type = ' || g_build_type || ', ' || l_notes);
+   end set_build_type;
+   --
+begin
+   -- Reset
+   fh2.script_close_all;
+   g_build_type   := null;
+   g_schema_name    := null;
+   -- Set Globals
+   set_build_type;
+   if fh2.sf_aa.EXISTS(g_build_type) then fh2.sf_aa(g_build_type).DELETE; end if;
+   --  Checks and Settings
+   COMMON_UTIL.dbms_metadata_settings;
+end initialize;
+
+
+------------------------------------------------------------
+-- Set the Schema Name
+procedure set_schema_name
+      (in_schema_name  in varchar2)
+is
+begin
+   g_schema_name := in_schema_name;
+   dbms_output.put_line('g_schema_name = ' || g_schema_name);
+end set_schema_name;
+
+
+------------------------------------------------------------
+-- Generate SYS/SYSTEM Installation Scripts
+procedure gen_installs
+is
+begin
+   ------------------------------------------------------------
+   set_schema_name('SYS');
+   grb_future_sys_grants;     -- "FUTURE" SYS Object Grants
+   grb_database_triggers;
+   grb_host_acls;
+   grb_wallet_acls;
+   grb_roles;
+   grb_users;
+   ------------------------------------------------------------
+   set_schema_name('SYSTEM');
+   grb_future_grants;       -- Includes "FUTURE" Grants
+   grb_directories;
+   grb_user_triggers;
+   ------------------------------------------------------------
+   set_schema_name('PUBLIC');
+   grb_future_synonyms;
+   grb_database_links;
+   ------------------------------------------------------------
+   set_schema_name('');
+   grb_install_master;
+   grb_install_sys;
+   grb_install_system;
+end gen_installs;
+
+
+------------------------------------------------------------
+-- Generate NON SYS/SYSTEM Installation Scripts
+procedure gen_schemas
+is
+   -- Loop through all scripts
+   procedure all_schema_scripts is
+   begin
+      grb_future_synonyms;
+      grb_advanced_queues;
+      grb_aq_tables;
+      grb_application_context;
+      GRAB_DATA.grb_comp_data_loader;
+      grb_common('FUNCTION'          ,'Function'    );
+      grb_common('PACKAGE_BODY'      ,'Package Body');
+      grb_common('PACKAGE_SPEC'      ,'Package'     );
+      grb_common('PROCEDURE'         ,'Procedure'   );
+      grb_common('SCHEDULER_JOB'     ,'Job'         );
+      grb_common('SCHEDULER_PROGRAM' ,'Program'     );
+      grb_common('SCHEDULER_SCHEDULE','Schedule'    );
+      grb_common('SEQUENCE'          ,'Sequence'    );
+      grb_common('TYPE_BODY'         ,'Type Body'   );
+      grb_common('TYPE_SPEC'         ,'Type'        );
+      grb_database_links;
+      grb_foreign_keys('MVIEW_FOREIGN_KEY');
+      grb_foreign_keys('TABLE_FOREIGN_KEY');
+      grb_foreign_keys('VIEW_FOREIGN_KEY');
+      grb_indexes('MVIEW_INDEX');
+      grb_indexes('TABLE_INDEX');
+      grb_materialized_views;
+      grb_plsql_java;
+      grb_tables;
+      grb_triggers('MVIEW_TRIGGER');
+      grb_triggers('TABLE_TRIGGER');
+      grb_triggers('VIEW_TRIGGER');
+      grb_views;
+      grb_xmlschema;
+   end all_schema_scripts;
+begin
+   for sch in (select obj.object_owner
+                from  schema_objects_tab  obj
+                      join schema_conf  sl
+                          on  sl.username        = obj.object_owner
+                          and sl.oracle_provided = 'N'
+                where obj.build_type    = g_build_type
+                 and  obj.object_owner != 'PUBLIC'
+                group by obj.object_owner
+                order by obj.object_owner)
+   loop
+      set_schema_name(sch.object_owner);
+      all_schema_scripts;
+   end loop;
+   set_schema_name('');
+   grb_install_schemas;
+end gen_schemas;
+
+
+------------------------------------------------------------
+---   PUBLIC API  ---
+------------------------------------------------------------
+
+
+------------------------------------------------------------
+-- Generate All Installation Scripts into the sf_aa array
+procedure all_scripts
+      (in_build_type   in varchar2)
+is
+begin
+   dbms_output.put_line('Running ' || $$PLSQL_UNIT || '.all_scripts'  ||
+                              '(in_build_type "' || in_build_type || '")' );
+   initialize(in_build_type);
+   gen_installs;
+   gen_schemas;
+   fh2.script_close_all;
+end all_scripts;
+
+
+end grab_scripts;
+/
+
+set define on

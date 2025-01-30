@@ -1,0 +1,1237 @@
+
+--
+--  Create ODBCAPTURE.GRAB_DATA Package Body
+--
+
+set define off
+
+
+--DBMS_METADATA:ODBCAPTURE.GRAB_DATA
+
+  CREATE OR REPLACE EDITIONABLE PACKAGE BODY "ODBCAPTURE"."GRAB_DATA" 
+as
+
+
+------------------------------------------------------------
+-- Private Constants
+ELMNT       CONSTANT varchar2(100) := 'DATA_LOAD';
+LF          CONSTANT varchar2(4) := GRAB_SCRIPTS.LF;
+CRTN        CONSTANT varchar2(4) := GRAB_SCRIPTS.CRTN;
+
+------------------------------------------------------------
+-- Private Variables
+grb_prev_user_type  varchar2(256);    -- Column Name from the Previous User Type
+
+------------------------------------------------------------
+--  SYS.DBMS_SQL Package Specification, Named Datatype CONSTANTS
+--
+--  User_Defined_Type is Data Type ID 109. Requires col_type_name
+--    and col_type_name_len from DBMS_SQL.DESC_REC3 Record Type
+--
+--  Ref_Type is Data Type ID 111. Requires a declared "object type".
+--
+g_vc2_buff        varchar2(32767);                        -- Data Type ID   1, CS Form 1
+g_nvc2_buff       nclob;                                  -- Data Type ID   1, CS Form 2
+g_char_buff       char(32767);                            -- Data Type ID  96, CS Form 1
+g_nchar_buff      nclob;                                  -- Data Type ID  96, CS Form 2
+--
+g_num_buff        number;                                 -- Data Type ID   2
+--g_bfloat_buff     binary_double;                          -- Data Type ID 101
+--g_float_buff      binary_float;                           -- Data Type ID 100
+--
+g_date_buff       date;                                   -- Data Type ID  12
+g_tstmp_buff      timestamp(9);                           -- Data Type ID 180
+g_tstmptz_buff    timestamp(9) with time zone;            -- Data Type ID 181
+g_tstmpltz_buff   timestamp(9) with local time zone;      -- Data Type ID 231
+g_intvlds_buff    interval day(9) to second(9);           -- Data Type ID 183
+g_intvlym_buff    interval year(9) to month;              -- Data Type ID 182
+--
+g_clob_buff       clob;                                   -- Data Type ID 112, CS Form 1
+g_nclob_buff      nclob;                                  -- Data Type ID 112, CS Form 2
+g_xml_buff        xmltype;                                -- Data Type ID 109, Also for SDO Types and User Types
+g_blob_buff       blob;                                   -- Data Type ID 113
+g_bfile_buff      bfile;                                  -- Data Type ID 114
+l_bfile_dir     varchar2(512);
+l_bfile_name    varchar2(512);
+--
+$IF DBMS_DB_VERSION.VERSION > 19
+$THEN
+   g_json_buff       json;                                   -- Data Type ID 119;
+$END
+--
+--g_long_buff       long;                                   -- Data Type ID   8
+--g_lraw_buff       long raw;                               -- Data Type ID  24
+--
+--g_mlslbl_buff     mlslabel;                               -- Data Type ID 106
+g_raw_buff        raw(32767);                             -- Data Type ID  23
+--g_rowid_buff      rowid;                                  -- Data Type ID  11
+--g_urowid_buff     urowid;                                 -- Data Type ID 208
+
+
+------------------------------------------------------------
+-- Show Column Error from DBMS_SQL
+procedure show_col_err
+      (in_table_name  in  varchar2
+      ,in_col_type    in  varchar2
+      ,in_col_num     in  number)
+is
+begin
+   -- ORA-01405: fetched column value is NULL
+   if nvl(g_col_err,0) not in (0, 1405)
+   then
+      dbms_output.put_line('COL_ERR is not 0 or 1405 in'                  ||
+                          ' BUILD_TYPE ' || GRAB_SCRIPTS.g_build_type     ||
+                              ', table ' || GRAB_SCRIPTS.g_schema_name    ||
+                                     '.' || in_table_name                 ||
+                                    ', ' || in_col_type                   ||
+                                    ' (' || NLS_CHARSET_NAME(g_desc_tab(in_col_num).col_charsetid) ||
+                             ') column ' || g_desc_tab(in_col_num).col_name ||
+                             ', length ' || g_col_len                       ||
+                                    ': ' || g_col_err                       );
+   end if;
+end show_col_err;
+
+
+------------------------------------------------------------
+-- Show Form Error from DBMS_SQL
+function get_cs_form_err
+      (in_table_name  in  varchar2
+      ,in_col_num     in  number)
+   return varchar2
+is
+begin
+   return 'Unknown col_charsetform: ' || g_desc_tab(in_col_num).col_charsetform ||
+                       ' BUILD_TYPE ' || GRAB_SCRIPTS.g_build_type            ||
+                           ', table ' || GRAB_SCRIPTS.g_schema_name           ||
+                                  '.' || in_table_name                        ||
+                                 ' (' || NLS_CHARSET_NAME(g_desc_tab(in_col_num).col_charsetid) ||
+                          ') column ' || g_desc_tab(in_col_num).col_name        ||
+                          ', length ' || g_col_len                              ||
+                 ': col_charsetform(' || g_desc_tab(in_col_num).col_charsetform || ')';
+end get_cs_form_err;
+
+
+------------------------------------------------------------
+-- Convert National Character Set to UNISTR encoding
+function unistr_encode
+      (in_nclob  in nclob)
+   return clob
+is
+   acode  pls_integer;
+   oclob  clob;
+begin
+   for i in 1 .. length(in_nclob)
+   loop
+      acode := ascii(substr(in_nclob,i,1));
+      case
+      when acode = 92  -- "\"
+      then
+         oclob := oclob || '\\';
+      when acode > 127
+      then
+         oclob := oclob || '\' || to_char(acode,'FM000X');
+      else
+         oclob := oclob || chr(acode);
+      end case;
+   end loop;
+   return oclob;
+end;
+
+------------------------------------------------------------
+-- Split g_clob_buff into multiple lines
+procedure utf_put_clob
+      (in_fh  in out nocopy fh2.sf_ptr_type)
+is
+   ptr     integer := 1;
+   loc     integer;
+begin
+   loop
+      -- Find a linefeed
+      loc := instr(g_clob_buff, LF, ptr);
+      exit when loc = 0;
+      if substr(g_clob_buff, loc-1, 1) = CRTN
+      then
+         fh2.script_put(in_fh, substr(g_clob_buff, ptr, loc-ptr));
+      else
+         fh2.script_put(in_fh, substr(g_clob_buff, ptr, loc-ptr+1));
+      end if;
+      ptr := loc+1;
+   end loop;
+   -- Need Double Quote at end of g_clob_buff.
+   fh2.script_put(in_fh, substr(g_clob_buff, ptr));
+end utf_put_clob;
+
+
+------------------------------------------------------------
+-- Disable Real Application Security
+procedure disable_ras_policy (in_table in varchar2) is
+   SQL_TXT   constant varchar2(1000) := 'begin GRAB_RAS.DISABLE_POLICY(:1, :2); end;';
+begin
+   if NOT GRAB_SCRIPTS.installed_types_aa.EXISTS('grbras') then return; end if;
+   execute immediate SQL_TXT using in GRAB_SCRIPTS.g_schema_name, in_table;
+exception when others then
+   if NOT regexp_like (SQLERRM, 'PLS-00201: identifier ''GRAB_RAS.DISABLE_POLICY'' must be declared')
+   then
+      raise_application_error(-20000, 'Execute Immediate ERROR for ' || GRAB_SCRIPTS.g_schema_name ||
+                                                                 '.' || in_table                   || LF ||
+                                       SQL_TXT || LF ||
+                                       SQLERRM || LF ||
+                                       dbms_utility.format_error_backtrace );
+   end if;
+end disable_ras_policy;
+
+
+------------------------------------------------------------
+-- Enable Real Application Security
+procedure enable_ras_policy (in_table in varchar2) is
+   SQL_TXT   constant varchar2(1000) := 'begin GRAB_RAS.ENABLE_POLICY(:1, :2); end;';
+begin
+   if NOT GRAB_SCRIPTS.installed_types_aa.EXISTS('grbras') then return; end if;
+   execute immediate SQL_TXT using in GRAB_SCRIPTS.g_schema_name, in_table;
+exception when others then
+   if NOT regexp_like (SQLERRM, 'PLS-00201: identifier ''GRAB_RAS.ENABLE_POLICY'' must be declared')
+   then
+      raise_application_error(-20000, 'Execute Immediate ERROR for ' || GRAB_SCRIPTS.g_schema_name ||
+                                                                 '.' || in_table                   ||
+                                       SQL_TXT || LF ||
+                                       SQLERRM || LF ||
+                                       dbms_utility.format_error_backtrace );
+   end if;
+end enable_ras_policy;
+
+
+------------------------------------------------------------
+-- Create Control File
+procedure create_control_file
+      (tabs_ctl_file        in  varchar2
+      ,tabs_table_name      in  varchar2
+      ,tabs_loading_method  in  varchar2)
+is
+   fh_ctl      fh2.sf_ptr_type;  -- Control file handle
+   lc          varchar2(10);     -- Lead Characters
+   lc2         varchar2(10);     -- Secondary Lead Characters
+   l_col_len   pls_integer;
+   l_pname     varchar2(256);
+   sql_txt     varchar2(32767);
+begin
+   ----------------------------
+   -- Setup the Control File --
+   ----------------------------
+   fh_ctl := fh2.script_open(in_filename     => tabs_ctl_file
+                            ,in_elmnt        => ELMNT
+                            ,in_max_linesize => common_util.MAXIMUM_LOADER_LENGTH);
+   fh2.script_put_line(fh_ctl, 'OPTIONS (SKIP=1)');
+   fh2.script_put_line(fh_ctl, 'LOAD DATA');
+   fh2.script_put_line(fh_ctl, 'INTO TABLE "' || GRAB_SCRIPTS.g_schema_name ||
+                                        '"."' || tabs_table_name            || '"');
+   fh2.script_put_line(fh_ctl, nvl(tabs_loading_method, 'APPEND'));
+   fh2.script_put_line(fh_ctl, 'FIELDS CSV WITH EMBEDDED');
+   fh2.script_put_line(fh_ctl, 'TRAILING NULLCOLS');
+   --
+   -----------------------
+   -- Main Control File --
+   -----------------------
+   bincol_aa.DELETE;
+   postload_aa.DELETE;
+   -- Add Column Spec and Bind Variable to Dynamic Cursor
+   grb_prev_user_type := '';
+   grb_cldr_array_lvl := 0;
+   lc2 := '   ,';  -- Secondary Lead Characters
+   lc  := '   (';  -- Initial Lead Characters
+   for col_num in 1 .. g_num_cols
+   loop
+      if length(grb_prev_user_type) > 0
+      then
+         -- "grb_prev_user_type" should never be set on the first column
+         fh2.script_put_line(fh_ctl, lc || 'Z' || substr(grb_prev_user_type,1,127) ||
+                                           ' FILLER CHAR(1) -- Skip Trailing Comma');
+         grb_prev_user_type := '';
+      end if;
+      case
+      when g_desc_tab(col_num).col_type = DBMS_SQL.VARCHAR2_TYPE
+      then
+         case g_desc_tab(col_num).col_charsetform
+         when 1 -- VARCHAR2
+         then
+            fh2.script_put_line(fh_ctl, lc || common_util.old_rpad(g_desc_tab(col_num).col_name,30) ||
+                                  ' CHAR(' ||                      g_desc_tab(col_num).col_max_len  || ')');
+            dbms_sql.define_column(c            => g_dyn_curs
+                                  ,position     => col_num
+                                  ,column       => g_vc2_buff
+                                  ,column_size  => g_desc_tab(col_num).col_max_len);
+         when 2 -- NVARCHAR2 (Avoids ORA-01406: fetched column value was truncated)
+         then
+            l_col_len := g_desc_tab(col_num).col_max_len * 5;
+            fh2.script_put_line(fh_ctl, lc || common_util.old_rpad(g_desc_tab(col_num).col_name,30) ||
+                                  ' CHAR(' ||                                        l_col_len      ||
+                     ') "UNISTR(to_char(:' ||                      g_desc_tab(col_num).col_name     || '))"');
+            dbms_sql.define_column(c            => g_dyn_curs
+                                  ,position     => col_num
+                                  ,column       => g_nvc2_buff
+                                  ,column_size  => g_desc_tab(col_num).col_max_len);
+         else
+            raise_application_error(-20000, get_cs_form_err(tabs_table_name, col_num));
+         end case;
+         --
+      when g_desc_tab(col_num).col_type = DBMS_SQL.CHAR_TYPE
+      then
+         case g_desc_tab(col_num).col_charsetform
+         when 1 -- CHAR
+         then
+            fh2.script_put_line(fh_ctl, lc || common_util.old_rpad(g_desc_tab(col_num).col_name,30) ||
+                                  ' CHAR(' ||                      g_desc_tab(col_num).col_max_len  || ')');
+            dbms_sql.define_column_char(c            => g_dyn_curs
+                                       ,position     => col_num
+                                       ,column       => g_char_buff
+                                       ,column_size  => g_desc_tab(col_num).col_max_len);
+         when 2 -- NCHAR (Avoids ORA-01406: fetched column value was truncated)
+         then
+            l_col_len := g_desc_tab(col_num).col_max_len * 5;
+            fh2.script_put_line(fh_ctl, lc || common_util.old_rpad(g_desc_tab(col_num).col_name,30) ||
+                                  ' CHAR(' ||                                        l_col_len      ||
+                     ') "UNISTR(to_char(:' ||                      g_desc_tab(col_num).col_name     || '))"');
+            dbms_sql.define_column_char(c            => g_dyn_curs
+                                       ,position     => col_num
+                                       ,column       => g_nchar_buff
+                                       ,column_size  => g_desc_tab(col_num).col_max_len);
+         else
+            raise_application_error(-20000, get_cs_form_err(tabs_table_name, col_num));
+         end case;
+         --
+      when g_desc_tab(col_num).col_type = DBMS_SQL.NUMBER_TYPE
+      then
+         fh2.script_put_line(fh_ctl, lc || common_util.old_rpad(g_desc_tab(col_num).col_name,30) ||
+                                     ' FLOAT EXTERNAL' );
+         dbms_sql.define_column(c         => g_dyn_curs
+                               ,position  => col_num
+                               ,column    => g_num_buff);
+         --
+      when g_desc_tab(col_num).col_type = DBMS_SQL.DATE_TYPE
+      then
+         fh2.script_put_line(fh_ctl, lc || common_util.old_rpad(g_desc_tab(col_num).col_name,30) ||
+                             ' DATE ''' || F_DATE                        || '''');
+         dbms_sql.define_column(c         => g_dyn_curs
+                               ,position  => col_num
+                               ,column    => g_date_buff);
+         --
+      when g_desc_tab(col_num).col_type = DBMS_SQL.TIMESTAMP_TYPE
+      then
+         fh2.script_put_line(fh_ctl, lc || common_util.old_rpad(g_desc_tab(col_num).col_name,30) ||
+                        ' TIMESTAMP ''' || F_TST                         || '''');
+         dbms_sql.define_column(c         => g_dyn_curs
+                               ,position  => col_num
+                               ,column    => g_tstmp_buff);
+         --
+      when g_desc_tab(col_num).col_type = DBMS_SQL.TIMESTAMP_WITH_TZ_TYPE
+      then
+         fh2.script_put_line(fh_ctl, lc || common_util.old_rpad(g_desc_tab(col_num).col_name,30) ||
+         ' TIMESTAMP WITH TIME ZONE ''' || F_TSTTZ                       || '''');
+         dbms_sql.define_column(c         => g_dyn_curs
+                               ,position  => col_num
+                               ,column    => g_tstmptz_buff);
+         --
+      when g_desc_tab(col_num).col_type = DBMS_SQL.TIMESTAMP_WITH_LOCAL_TZ_TYPE
+      then
+         fh2.script_put_line(fh_ctl, lc || common_util.old_rpad(g_desc_tab(col_num).col_name,30) ||
+   ' TIMESTAMP WITH LOCAL TIME ZONE ''' || F_TST                         || '''');
+         dbms_sql.define_column(c         => g_dyn_curs
+                               ,position  => col_num
+                               ,column    => g_tstmpltz_buff);
+         --
+      when g_desc_tab(col_num).col_type = DBMS_SQL.INTERVAL_DAY_TO_SECOND_TYPE
+      then
+         fh2.script_put_line(fh_ctl, lc || common_util.old_rpad(g_desc_tab(col_num).col_name,30) ||
+              ' INTERVAL DAY TO SECOND' ); -- Don't use F_IDTOS
+         dbms_sql.define_column(c         => g_dyn_curs
+                               ,position  => col_num
+                               ,column    => g_intvlds_buff);
+         --
+      when g_desc_tab(col_num).col_type = DBMS_SQL.INTERVAL_YEAR_TO_MONTH_TYPE
+      then
+         fh2.script_put_line(fh_ctl, lc || common_util.old_rpad(g_desc_tab(col_num).col_name,30) ||
+              ' INTERVAL YEAR TO MONTH' ); -- Don't use F_IYTOM
+         dbms_sql.define_column(c         => g_dyn_curs
+                               ,position  => col_num
+                               ,column    => g_intvlym_buff);
+         --
+      when g_desc_tab(col_num).col_type = DBMS_SQL.BLOB_TYPE
+      then
+         bincol_aa(g_desc_tab(col_num).col_name) := 'GRAB_DATA.SQL_DECODE_BLOB';
+         fh2.script_put_line(fh_ctl, '      -- BLOB data must be decoded from Base64 after loading');
+         fh2.script_put_line(fh_ctl, lc || common_util.old_rpad(g_desc_tab(col_num).col_name,30) ||
+                       ' CHAR(1572864)' );  -- 1048576 * 1.5
+         dbms_sql.define_column(c         => g_dyn_curs
+                               ,position  => col_num
+                               ,column    => g_blob_buff);
+         --
+      when g_desc_tab(col_num).col_type = DBMS_SQL.BFILE_TYPE
+      then
+         fh2.script_put_line(fh_ctl, lc  || common_util.old_rpad(g_desc_tab(col_num).col_name     || '_dname',30) || ' FILLER char(512)' );
+         fh2.script_put_line(fh_ctl, lc2 || common_util.old_rpad(g_desc_tab(col_num).col_name     || '_fname',30) || ' FILLER char(512)' );
+         fh2.script_put_line(fh_ctl, lc2 || common_util.old_rpad(g_desc_tab(col_num).col_name,30) || ' BFILE('  ||
+                                                                 g_desc_tab(col_num).col_name     || '_dname, ' ||
+                                                                 g_desc_tab(col_num).col_name     || '_fname)'  );
+         dbms_sql.define_column(c         => g_dyn_curs
+                               ,position  => col_num
+                               ,column    => g_bfile_buff);
+         --
+$IF DBMS_DB_VERSION.VERSION > 19
+$THEN
+      when g_desc_tab(col_num).col_type = DBMS_SQL.JSON_TYPE
+      then
+         fh2.script_put_line(fh_ctl, lc || common_util.old_rpad(g_desc_tab(col_num).col_name,30) ||
+                       ' CHAR(1048576)' );
+         dbms_sql.define_column(c         => g_dyn_curs
+                               ,position  => col_num
+                               ,column    => g_json_buff);
+$END
+         --
+      when g_desc_tab(col_num).col_type = DBMS_SQL.CLOB_TYPE
+      then
+         case g_desc_tab(col_num).col_charsetform
+         when 1 -- CLOB
+         then
+            fh2.script_put_line(fh_ctl, lc || common_util.old_rpad(g_desc_tab(col_num).col_name,30) ||
+                          ' CHAR(1048576)' );
+            dbms_sql.define_column(c         => g_dyn_curs
+                                  ,position  => col_num
+                                  ,column    => g_clob_buff);
+         when 2 -- NCLOB (Avoids ORA-01406: fetched column value was truncated)
+         then
+            postload_aa(g_desc_tab(col_num).col_name) := 'GRAB_DATA.SQL_UNISTR_DECODE';
+            fh2.script_put_line(fh_ctl, '      -- NCLOB data must be decoded with UNISTR after loading');
+            fh2.script_put_line(fh_ctl, lc || common_util.old_rpad(g_desc_tab(col_num).col_name,30) ||
+                          ' CHAR(5242880)' );
+            dbms_sql.define_column(c         => g_dyn_curs
+                                  ,position  => col_num
+                                  ,column    => g_nclob_buff);
+         else
+            raise_application_error(-20000, get_cs_form_err(tabs_table_name, col_num));
+         end case;
+         --
+      when g_desc_tab(col_num).col_type = DBMS_SQL.RAW_TYPE
+      then
+         bincol_aa(g_desc_tab(col_num).col_name) := 'GRAB_DATA.SQL_DECODE_BLOB';
+         fh2.script_put_line(fh_ctl, lc || common_util.old_rpad(g_desc_tab(col_num).col_name,30) ||
+                         ' CHAR(32767)' );
+         dbms_sql.define_column_raw(c            => g_dyn_curs
+                                   ,position     => col_num
+                                   ,column       => g_raw_buff
+                                   ,column_size  => g_desc_tab(col_num).col_max_len);
+         --
+      when g_desc_tab(col_num).col_type = DBMS_SQL.USER_DEFINED_TYPE
+      then
+         case
+         when g_desc_tab(col_num).col_type_name = 'XMLTYPE'
+         then
+            fh2.script_put_line(fh_ctl, lc || common_util.old_rpad(g_desc_tab(col_num).col_name,30) ||
+                          ' CHAR(1048576)' );
+            dbms_sql.define_column(c         => g_dyn_curs
+                                  ,position  => col_num
+                                  ,column    => g_xml_buff);
+            --
+         else
+            begin
+               select package_name into l_pname
+                from  user_defined_type_conf
+                where type_name = g_desc_tab(col_num).col_type_name;
+            exception when NO_DATA_FOUND then
+               raise_application_error(-20000, '*** DBMS_SQL.USER_DEFINED_TYPE "' || g_desc_tab(col_num).col_type_name ||
+                                               '" not found in USER_DEFINED_TYPE_CONF table.');
+            end;
+            -- Save the USER TYPE Column Name
+            grab_data.grb_prev_user_type := g_desc_tab(col_num).col_name;
+            sql_txt := 'begin ' || l_pname || '.grb_cldr_define(:1, ' || col_num || ', ''' || lc || '''); end;';
+            begin
+               execute immediate sql_txt using in out fh_ctl;
+            exception when others then
+               raise_application_error(-20000, 'Execute Immediate ERROR for ' || GRAB_SCRIPTS.g_schema_name   ||
+                                                                          '.' || tabs_table_name              ||
+                                                                          '.' || g_desc_tab(col_num).col_name || LF ||
+                                                SQL_TXT || LF ||
+                                                SQLERRM || LF ||
+                                                dbms_utility.format_error_backtrace );
+            end;
+         end case;
+      else
+         raise_application_error(-20000, 'Unknown DBMS_SQL G_DESC_TAB3 col_type ' || g_desc_tab(col_num).col_type ||
+                                       ', col_type_name ' || g_desc_tab(col_num).col_type_name ||
+                                        ' for column ' || g_desc_tab(col_num).col_name ||
+                                         ' in table ' || GRAB_SCRIPTS.g_schema_name ||
+                                        '.' || tabs_table_name );
+         --
+      end case;
+      lc := lc2;
+   end loop;
+   --
+   -------------------------
+   -- Finish Control File --
+   -------------------------
+   fh2.script_put_line(fh_ctl, '   )');
+   fh2.script_close(fh_ctl);
+end create_control_file;
+
+
+------------------------------------------------------------
+-- Create Data File
+procedure create_data_file
+      (tabs_dat_file    in  varchar2
+      ,tabs_table_name  in varchar2)
+is
+   fh_dat      fh2.sf_ptr_type;  -- Data file handle
+   lc          varchar2(10);     -- Lead Characters
+   lc2         varchar2(10);     -- Secondary Lead Characters
+   l_pname     varchar2(256);
+   sql_txt     varchar2(32767);
+   junk        integer;
+begin
+   -------------------------
+   -- Setup the Data File --
+   -------------------------
+   fh_dat := fh2.script_open(in_filename     => tabs_dat_file
+                            ,in_elmnt        => ELMNT
+                            ,in_max_linesize => common_util.MAXIMUM_LOADER_LENGTH);
+   disable_ras_policy(tabs_table_name);
+   --
+   -- Write the column header
+   lc2 := ',';  -- Secondary Lead Characters
+   lc  := '';   -- Initial Lead Characters
+   for col_num in 1 .. g_num_cols
+   loop
+      -- List of column names
+      if g_desc_tab(col_num).col_type = DBMS_SQL.BFILE_TYPE
+      then
+         fh2.script_put(fh_dat, lc || '"' || g_desc_tab(col_num).col_name || '_dname"');
+         fh2.script_put(fh_dat, lc || '"' || g_desc_tab(col_num).col_name || '_fname"');
+      else
+         fh2.script_put(fh_dat, lc || '"' || g_desc_tab(col_num).col_name || '"');
+      end if;
+      lc := lc2;
+   end loop;
+   fh2.script_new_line(fh_dat);
+   --
+   --------------------
+   -- Main Data File --
+   --------------------
+   -- Fetch the Records
+   -- The return from execute is undefined for queries
+   junk := dbms_sql.execute(g_dyn_curs);
+   while dbms_sql.fetch_rows(g_dyn_curs) > 0
+   loop
+      --
+      -- Add the data
+      grb_cldr_array_lvl := 0;
+      lc2 := ',';  -- Secondary Lead Characters
+      lc  := '';   -- Initial Lead Characters
+      for col_num in 1 .. g_num_cols
+      loop
+         case
+         when g_desc_tab(col_num).col_type = DBMS_SQL.VARCHAR2_TYPE
+         then
+            case g_desc_tab(col_num).col_charsetform
+            when 1 -- VARCHAR2
+            then
+               dbms_sql.column_value(c              => g_dyn_curs
+                                    ,position       => col_num
+                                    ,value          => g_vc2_buff
+                                    ,column_error   => g_col_err
+                                    ,actual_length  => g_col_len);
+               show_col_err(tabs_table_name, 'VARCHAR2', col_num);
+               fh2.script_put(fh_dat, lc);
+               if g_vc2_buff is not null
+               then
+                  g_clob_buff := '"' || replace(g_vc2_buff,'"','""')  || '"';
+                  utf_put_clob(fh_dat);
+               end if;
+            when 2 -- NVARCHAR2 (Avoids ORA-01406: fetched column value was truncated)
+            then
+               dbms_sql.column_value(c              => g_dyn_curs
+                                    ,position       => col_num
+                                    ,value          => g_nvc2_buff
+                                    ,column_error   => g_col_err
+                                    ,actual_length  => g_col_len);
+               show_col_err(tabs_table_name, 'NVARCHAR2', col_num);
+               fh2.script_put(fh_dat, lc);
+               if g_nvc2_buff is not null
+               then
+                  g_clob_buff := '"' || unistr_encode(replace(g_nvc2_buff,'"','""'))  || '"';
+                  utf_put_clob(fh_dat);
+               end if;
+            else
+               raise_application_error(-20000, get_cs_form_err(tabs_table_name, col_num));
+            end case;
+            --
+         when g_desc_tab(col_num).col_type = DBMS_SQL.CHAR_TYPE
+         then
+            fh2.script_put(fh_dat, lc);
+            case g_desc_tab(col_num).col_charsetform
+            when 1 -- CHAR
+            then
+               dbms_sql.column_value_char(c              => g_dyn_curs
+                                         ,position       => col_num
+                                         ,value          => g_char_buff
+                                         ,column_error   => g_col_err
+                                         ,actual_length  => g_col_len);
+               show_col_err(tabs_table_name, 'CHAR', col_num);
+               if g_char_buff is not null
+               then
+                  g_clob_buff := '"' || replace(substr(g_char_buff, 1, g_col_len)
+                                             ,'"','""')           || '"';
+                  utf_put_clob(fh_dat);
+               end if;
+            when 2 -- NCHAR (Avoids ORA-01406: fetched column value was truncated)
+            then
+               dbms_sql.column_value_char(c              => g_dyn_curs
+                                         ,position       => col_num
+                                         ,value          => g_nchar_buff
+                                         ,column_error   => g_col_err
+                                         ,actual_length  => g_col_len);
+               show_col_err(tabs_table_name, 'CHAR', col_num);
+               if g_nchar_buff is not null
+               then
+                  g_clob_buff := '"' || unistr_encode(replace(substr(g_nchar_buff, 1, g_col_len)
+                                                     ,'"','""'))           || '"';
+                  utf_put_clob(fh_dat);
+               end if;
+            else
+               raise_application_error(-20000, get_cs_form_err(tabs_table_name, col_num));
+            end case;
+            --
+         when g_desc_tab(col_num).col_type = DBMS_SQL.CLOB_TYPE
+         then
+            case g_desc_tab(col_num).col_charsetform
+            when 1 -- CLOB
+            then
+               dbms_sql.column_value(c         => g_dyn_curs
+                                    ,position  => col_num
+                                    ,value     => g_clob_buff);
+               fh2.script_put(fh_dat, lc);
+               if g_clob_buff is not null
+               then
+                  g_clob_buff := '"' || replace(g_clob_buff,'"','""') || '"';
+                  utf_put_clob(fh_dat);
+               end if;
+            when 2 -- NCLOB (Avoids ORA-01406: fetched column value was truncated)
+            then
+               dbms_sql.column_value(c         => g_dyn_curs
+                                    ,position  => col_num
+                                    ,value     => g_nclob_buff);
+               fh2.script_put(fh_dat, lc);
+               if g_nclob_buff is not null
+               then
+                  g_clob_buff := '"' || unistr_encode(replace(g_nclob_buff,'"','""')) || '"';
+                  utf_put_clob(fh_dat);
+               end if;
+            else
+               raise_application_error(-20000, get_cs_form_err(tabs_table_name, col_num));
+            end case;
+            --
+         when g_desc_tab(col_num).col_type = DBMS_SQL.NUMBER_TYPE
+         then
+            dbms_sql.column_value(c              => g_dyn_curs
+                                 ,position       => col_num
+                                 ,value          => g_num_buff
+                                 ,column_error   => g_col_err
+                                 ,actual_length  => g_col_len);
+            show_col_err(tabs_table_name, 'NUMBER', col_num);
+            fh2.script_put(fh_dat, lc || to_char(g_num_buff));
+            --
+         when g_desc_tab(col_num).col_type = DBMS_SQL.DATE_TYPE
+         then
+            dbms_sql.column_value(c              => g_dyn_curs
+                                 ,position       => col_num
+                                 ,value          => g_date_buff
+                                 ,column_error   => g_col_err
+                                 ,actual_length  => g_col_len);
+            show_col_err(tabs_table_name, 'DATE', col_num);
+            fh2.script_put(fh_dat, lc);
+            if g_date_buff is not null
+            then
+               fh2.script_put(fh_dat, '"' || to_char(g_date_buff, F_DATE) || '"');
+            end if;
+            --
+         when g_desc_tab(col_num).col_type = DBMS_SQL.TIMESTAMP_TYPE
+         then
+            dbms_sql.column_value(c         => g_dyn_curs
+                                 ,position  => col_num
+                                 ,value     => g_tstmp_buff);
+            fh2.script_put(fh_dat, lc);
+            if g_tstmp_buff is not null
+            then
+               fh2.script_put(fh_dat, '"' || to_char(g_tstmp_buff,  F_TST) || '"');
+            end if;
+            --
+         when g_desc_tab(col_num).col_type = DBMS_SQL.TIMESTAMP_WITH_TZ_TYPE
+         then
+            dbms_sql.column_value(c         => g_dyn_curs
+                                 ,position  => col_num
+                                 ,value     => g_tstmptz_buff);
+            fh2.script_put(fh_dat, lc);
+            if g_tstmptz_buff is not null
+            then
+               fh2.script_put(fh_dat, '"' || to_char(g_tstmptz_buff,  F_TSTTZ) || '"');
+            end if;
+            --
+         when g_desc_tab(col_num).col_type = DBMS_SQL.TIMESTAMP_WITH_LOCAL_TZ_TYPE
+         then
+            dbms_sql.column_value(c          => g_dyn_curs
+                                  ,position  => col_num
+                                  ,value     => g_tstmpltz_buff);
+            fh2.script_put(fh_dat, lc);
+            if g_tstmpltz_buff is not null
+            then
+               fh2.script_put(fh_dat, '"' || to_char(g_tstmpltz_buff,  F_TST) || '"');
+            end if;
+            --
+         when g_desc_tab(col_num).col_type = DBMS_SQL.INTERVAL_DAY_TO_SECOND_TYPE
+         then
+            dbms_sql.column_value(c          => g_dyn_curs
+                                  ,position  => col_num
+                                  ,value     => g_intvlds_buff);
+            fh2.script_put(fh_dat, lc);
+            if g_intvlds_buff is not null
+            then
+               fh2.script_put(fh_dat, '"' || to_char(g_intvlds_buff,  F_IDTOS) || '"');
+            end if;
+            --
+         when g_desc_tab(col_num).col_type = DBMS_SQL.INTERVAL_YEAR_TO_MONTH_TYPE
+         then
+            dbms_sql.column_value(c          => g_dyn_curs
+                                  ,position  => col_num
+                                  ,value     => g_intvlym_buff);
+            fh2.script_put(fh_dat, lc);
+            if g_intvlym_buff is not null
+            then
+               fh2.script_put(fh_dat, '"' || to_char(g_intvlym_buff,  F_IYTOM) || '"');
+            end if;
+            --
+         when g_desc_tab(col_num).col_type = DBMS_SQL.BLOB_TYPE
+         then
+            dbms_sql.column_value(c         => g_dyn_curs
+                                 ,position  => col_num
+                                 ,value     => g_blob_buff);
+            fh2.script_put(fh_dat, lc);
+            if g_blob_buff is not null
+            then
+               -- Note: b64_encode inserts Line Feeds in the data
+               g_clob_buff := '"' || COMMON_UTIL.b64_encode(g_blob_buff, TRUE) || '"';
+               utf_put_clob(fh_dat);
+            end if;
+            --
+         when g_desc_tab(col_num).col_type = DBMS_SQL.BFILE_TYPE
+         then
+            dbms_sql.column_value(c         => g_dyn_curs
+                                 ,position  => col_num
+                                 ,value     => g_bfile_buff);
+            fh2.script_put(fh_dat, lc);
+            if g_bfile_buff is not null
+            then
+               DBMS_LOB.FILEGETNAME(g_bfile_buff, l_bfile_dir, l_bfile_name);
+               fh2.script_put(fh_dat, '"' || l_bfile_dir || '"');
+               fh2.script_put(fh_dat, lc);
+               fh2.script_put(fh_dat, '"' || l_bfile_name || '"');
+            else
+               fh2.script_put(fh_dat, lc);
+            end if;
+            --
+$IF DBMS_DB_VERSION.VERSION > 19
+$THEN
+         when g_desc_tab(col_num).col_type = DBMS_SQL.JSON_TYPE
+         then
+            dbms_sql.column_value(c         => g_dyn_curs
+                                 ,position  => col_num
+                                 ,value     => g_json_buff);
+            fh2.script_put(fh_dat, lc);
+            if g_json_buff is not null
+            then
+               g_clob_buff := '"' || replace(json_serialize(g_json_buff returning clob pretty ascii)
+                                          ,'"','""') || '"';
+               utf_put_clob(fh_dat);
+            end if;
+$END
+            --
+         when g_desc_tab(col_num).col_type = DBMS_SQL.RAW_TYPE
+         then
+            dbms_sql.column_value_raw(c              => g_dyn_curs
+                                     ,position       => col_num
+                                     ,value          => g_raw_buff
+                                     ,column_error   => g_col_err
+                                     ,actual_length  => g_col_len);
+            show_col_err(tabs_table_name, 'RAW', col_num);
+            fh2.script_put(fh_dat, lc);
+            if g_raw_buff is not null
+            then
+               -- Note: b64_encode inserts Line Feeds in the data
+               g_clob_buff := '"' || COMMON_UTIL.b64_encode(g_raw_buff, TRUE) || '"';
+               utf_put_clob(fh_dat);
+            end if;
+            --
+         when g_desc_tab(col_num).col_type = DBMS_SQL.USER_DEFINED_TYPE
+         then
+            case
+            when g_desc_tab(col_num).col_type_name = 'XMLTYPE'
+            then
+               dbms_sql.column_value(c         => g_dyn_curs
+                                    ,position  => col_num
+                                    ,value     => g_xml_buff);
+               fh2.script_put(fh_dat, lc);
+               if g_xml_buff is not null
+               then
+                  if nvl(DBMS_LOB.GETLENGTH(xmltype.getClobVal(g_xml_buff)),0) <= 0
+                  then
+                     g_clob_buff := '';
+                  else
+                     -- This avoids a ORA-22275 "invalid LOB locator specified"
+                     --DBMS_LOB.CREATETEMPORARY(lob_loc => g_clob_buff
+                     --                        ,cache   => TRUE
+                     --                        ,dur     => DBMS_LOB.CALL);
+                     -- ORA-03001 from SUBSTR on output from getclobval from a binary XML (Doc ID 2016996.1)
+                     --   The LOB returned by getClobVal() is an abstract CSX LOB
+                     DBMS_LOB.COPY (dest_lob    => g_clob_buff
+                                   ,src_lob     => xmltype.getClobVal(g_xml_buff)
+                                   ,amount      => 2147483647   -- 2Gb - 1
+                                   ,dest_offset => 1
+                                   ,src_offset  => 1);
+                     g_clob_buff := '"' || replace(g_clob_buff, '"', '""') || '"';
+                  end if;
+                  utf_put_clob(fh_dat);
+               end if;
+            else
+               begin
+                  select package_name into l_pname
+                   from  user_defined_type_conf
+                   where type_name = g_desc_tab(col_num).col_type_name;
+               exception when NO_DATA_FOUND then
+                  raise_application_error(-20000, '*** DBMS_SQL.USER_DEFINED_TYPE "' || g_desc_tab(col_num).col_type_name ||
+                                                  '" not found in USER_DEFINED_TYPE_CONF table.');
+               end;
+               sql_txt := 'begin ' || l_pname || '.grb_cldr_value(:1, ' || col_num || ', ''' || lc || '''); end;';
+               begin
+                  execute immediate sql_txt using in out fh_dat;
+               exception when others then
+                  raise_application_error(-20000, 'Execute Immediate ERROR for ' || GRAB_SCRIPTS.g_schema_name   ||
+                                                                             '.' || tabs_table_name              ||
+                                                                             '.' || g_desc_tab(col_num).col_name || LF ||
+                                                   SQL_TXT || LF ||
+                                                   SQLERRM || LF ||
+                                                   dbms_utility.format_error_backtrace );
+               end;
+            end case;
+            --
+         else
+            raise_application_error(-20000, 'Unknown DBMS_SQL G_DESC_TAB3 col_type ' || g_desc_tab(col_num).col_type ||
+                                         ', col_type_name ' || g_desc_tab(col_num).col_type_name ||
+                                          ' for column ' || g_desc_tab(col_num).col_name ||
+                                          ' in table ' || GRAB_SCRIPTS.g_schema_name ||
+                                                   '.' || tabs_table_name );
+            --
+         end case;
+         lc := lc2;  -- Add comma after the first column
+      end loop;
+      --
+      fh2.script_new_line(fh_dat);
+      --
+   end loop;
+   --
+   ----------------------
+   -- Finish Data File --
+   ----------------------
+   enable_ras_policy(tabs_table_name);
+   fh2.script_close(fh_dat);
+end create_data_file;
+
+
+------------------------------------------------------------
+-- Create Comprehensive Data Loader
+procedure grb_comp_data_loader
+is
+   fh_sql      fh2.sf_ptr_type;  -- SQL file handle
+   colname     varchar2(1024);
+   query_txt   varchar2(32767);
+   bcol_txt    varchar2(32767);
+   unis_txt    varchar2(32767);
+begin
+   --
+   for tabs in
+      (select table_name
+             ,COMMON_UTIL.fix_filename(table_name) || '.' || file_ext1  FILE_NAME
+             ,COMMON_UTIL.fix_filename(table_name) || '.' || file_ext2  CTL_FILE
+             ,COMMON_UTIL.fix_filename(table_name) || '.' || file_ext3  DAT_FILE
+             ,COMMON_UTIL.fix_filename(table_name) || '.log'            LOG_FILE
+             ,object_table_type
+             ,loading_method
+             ,before_select_sql
+             ,columns_removed
+             ,where_clause
+             ,order_by_columns
+             ,after_order_by_sql
+             ,build_timing
+        from  obj_install_data_load_tab  sdvw
+        where build_type    = GRAB_SCRIPTS.g_build_type
+         and  table_owner   = GRAB_SCRIPTS.g_schema_name
+         and  element_name  = ELMNT
+        order by table_name)
+   loop
+      --
+      -- DBMS_SQL Open, Parse, Describe
+      if tabs.before_select_sql is not null
+      then
+         query_txt := tabs.before_select_sql || LF;
+      else
+         query_txt := '';
+      end if;
+      --
+      query_txt := query_txt || 'select ';
+      if tabs.object_table_type is NOT NULL
+      then
+         -- This only works for 1 defined type in the table (Issue Z0024.md)
+         query_txt := query_txt || 'OBJECT_VALUE,';
+      else
+         for cols in (select dc.column_name from dba_tab_columns  dc
+                       where dc.owner      = GRAB_SCRIPTS.g_schema_name
+                        and  dc.table_name = tabs.table_name
+                        and (                                   tabs.columns_removed is null
+                             OR NOT regexp_like(dc.column_name, tabs.columns_removed)    )
+                       order by dc.column_id)
+         loop
+            query_txt := query_txt || '"' || cols.column_name || '",';
+         end loop;
+      end if;
+      query_txt := substr(query_txt, 1, length(query_txt)-1);
+      query_txt := query_txt || ' from "' || GRAB_SCRIPTS.g_schema_name || '"' ||
+                                     '."' || tabs.table_name            || '"' ;
+      --
+      if tabs.where_clause is not null
+      then
+         query_txt := query_txt || LF || 'where ' || tabs.where_clause;
+      end if;
+      -- ORDER_BY_COLUMNS is required
+      query_txt := query_txt || LF || 'order by ' || tabs.order_by_columns;
+      --
+      if tabs.after_order_by_sql is not null
+      then
+         query_txt := query_txt || LF || tabs.after_order_by_sql;
+      end if;
+      --
+      g_dyn_curs := dbms_sql.open_cursor;
+      begin
+         dbms_sql.parse(c             => g_dyn_curs
+                       ,statement     => query_txt
+                       ,language_flag => dbms_sql.native );
+      exception when others then
+         raise_application_error(-20000, 'DBMS_SQL Parse Error.' || LF ||
+                      '----------------------------------------' || LF ||
+                                                query_txt || ';' || LF ||
+                      '----------------------------------------' || LF ||
+                                                        SQLERRM  || LF ||
+                                   dbms_utility.format_error_backtrace );
+      end;
+      dbms_sql.describe_columns3(c        => g_dyn_curs
+                                ,col_cnt  => g_num_cols
+                                ,desc_t   => g_desc_tab );
+      -------------------------
+      -- Create Control File --
+      -------------------------
+      begin
+         create_control_file(tabs.ctl_file, tabs.table_name, tabs.loading_method);
+      exception when others then
+         raise_application_error(-20000,
+            'DBMS_SQL "' || tabs.ctl_file || '" File Error.' || LF ||
+                  '----------------------------------------' || LF ||
+                                            query_txt || ';' || LF ||
+                  '----------------------------------------' || LF ||
+                                                    SQLERRM  || LF ||
+                               dbms_utility.format_error_backtrace );
+      end;
+      ----------------------
+      -- Create Data File --
+      ----------------------
+      begin
+         create_data_file(tabs.dat_file, tabs.table_name);
+      exception when others then
+         raise_application_error(-20000,
+            'DBMS_SQL "' || tabs.dat_file || '" File Error.' || LF ||
+                  '----------------------------------------' || LF ||
+                                            query_txt || ';' || LF ||
+                  '----------------------------------------' || LF ||
+                                                    SQLERRM  || LF ||
+                               dbms_utility.format_error_backtrace );
+      end;
+      -------------------------------
+      -- Setup the SQL Script File --
+      -------------------------------
+      fh_sql := fh2.script_open(in_filename     => tabs.file_name
+                               ,in_elmnt        => ELMNT
+                               ,in_max_linesize => common_util.MAXIMUM_SQL_LENGTH);
+      fh2.script_put_line(fh_sql, '');
+      fh2.script_put_line(fh_sql, '--');
+      fh2.script_put_line(fh_sql, '--  Comprehensive Data Loader script for ' || GRAB_SCRIPTS.g_schema_name ||
+                                                                          '.' || tabs.table_name || ' data' );
+      fh2.script_put_line(fh_sql, '--');
+      fh2.script_put_line(fh_sql, '-- Command Line Parameters:');
+      fh2.script_put_line(fh_sql, '--   1 - SYSTEM/password@TNSALIAS');
+      fh2.script_put_line(fh_sql, '--       i.e. pass the username and password for the SYSTEM user');
+      fh2.script_put_line(fh_sql, '--            and the TNSALIAS for the connection to the database.');
+      fh2.script_put_line(fh_sql, '--       The Data Load installation requires this connection information.');
+      fh2.script_put_line(fh_sql, '--');
+      if tabs.build_timing != 'CURRENT'
+      then
+         fh2.script_put_line(fh_sql, '');
+         fh2.script_put_line(fh_sql, '-- Note: This is a "' || tabs.build_timing || '" Comprehensive Data Loader');
+      end if;
+      fh2.script_put_line(fh_sql, '');
+      ------------------------------
+      -- Disable Triggers/FKs SQL --
+      ------------------------------
+      fh2.script_put_line(fh_sql, 'prompt');
+      fh2.script_put_line(fh_sql, 'prompt Disable Triggers and Foreign Keys');
+      fh2.script_put_line(fh_sql, 'declare');
+      fh2.script_put_line(fh_sql, '   procedure run_sql (in_sql in varchar2) is begin');
+      fh2.script_put_line(fh_sql, '      dbms_output.put_line(in_sql || '';'');');
+      fh2.script_put_line(fh_sql, '      execute immediate in_sql;');
+      fh2.script_put_line(fh_sql, '   exception when others then');
+      fh2.script_put_line(fh_sql, '      dbms_output.put_line(''-- '' || SQLERRM || CHR(10));');
+      fh2.script_put_line(fh_sql, '   end run_sql;');
+      fh2.script_put_line(fh_sql, 'begin');
+      fh2.script_put_line(fh_sql, '   for buff in (select owner, trigger_name');
+      fh2.script_put_line(fh_sql, '                 from  dba_triggers');
+      fh2.script_put_line(fh_sql, '                 where table_owner = ''' || GRAB_SCRIPTS.g_schema_name || '''');
+      fh2.script_put_line(fh_sql, '                  and  table_name = ''' || tabs.table_name || '''');
+      fh2.script_put_line(fh_sql, '                 order by owner, trigger_name)');
+      fh2.script_put_line(fh_sql, '   loop');
+      fh2.script_put_line(fh_sql, '      run_sql(''alter trigger "'' || buff.owner        || ''"'' ||');
+      fh2.script_put_line(fh_sql, '                           ''."'' || buff.trigger_name || ''" DISABLE'');');
+      fh2.script_put_line(fh_sql, '   end loop;');
+      fh2.script_put_line(fh_sql, '   for buff in (select constraint_name');
+      fh2.script_put_line(fh_sql, '                 from  dba_constraints');
+      fh2.script_put_line(fh_sql, '                 where constraint_type = ''R''');
+      fh2.script_put_line(fh_sql, '                  and  owner = ''' || GRAB_SCRIPTS.g_schema_name || '''');
+      fh2.script_put_line(fh_sql, '                  and  table_name = ''' || tabs.table_name || '''');
+      fh2.script_put_line(fh_sql, '                 order by constraint_name)');
+      fh2.script_put_line(fh_sql, '   loop');
+      fh2.script_put_line(fh_sql, '      run_sql(''alter table "' || GRAB_SCRIPTS.g_schema_name || '"."' || tabs.table_name || '"'' ||');
+      fh2.script_put_line(fh_sql, '              '' DISABLE constraint "'' || buff.constraint_name || ''"'');');
+      fh2.script_put_line(fh_sql, '   end loop;');
+      fh2.script_put_line(fh_sql, '   for buff in (select owner, index_name');
+      fh2.script_put_line(fh_sql, '                 from  dba_indexes');
+      fh2.script_put_line(fh_sql, '                 where index_type = ''DOMAIN''');
+      fh2.script_put_line(fh_sql, '                  and  table_owner = ''' || GRAB_SCRIPTS.g_schema_name || '''');
+      fh2.script_put_line(fh_sql, '                  and  table_name = ''' || tabs.table_name || '''');
+      fh2.script_put_line(fh_sql, '                 order by owner, index_name)');
+      fh2.script_put_line(fh_sql, '   loop');
+      fh2.script_put_line(fh_sql, '      run_sql(''alter index "'' || buff.owner || ''"."'' || buff.index_name || ''"'' ||');
+      fh2.script_put_line(fh_sql, '              '' DISABLE'');');
+      fh2.script_put_line(fh_sql, '   end loop;');
+      fh2.script_put_line(fh_sql, 'end;');
+      fh2.script_put_line(fh_sql, '/');
+      fh2.script_put_line(fh_sql, '');
+      --------------------------
+      -- Main SQL Script File --
+      --------------------------
+      fh2.script_put_line(fh_sql, '-- Additional file extensions');
+      fh2.script_put_line(fh_sql, '--   .bad - Bad Records');
+      fh2.script_put_line(fh_sql, '--   .dsc - Discard Records');
+      fh2.script_put_line(fh_sql, '--   .log - Log File');
+      fh2.script_put_line(fh_sql, '');
+      fh2.script_put_line(fh_sql, 'prompt');
+      fh2.script_put_line(fh_sql, 'prompt sqlldr_control=' || GRAB_SCRIPTS.g_schema_name || '/' || tabs.ctl_file);
+      fh2.script_put_line(fh_sql, 'host sqlldr ''&1.'' control=' || GRAB_SCRIPTS.g_schema_name || '/' || tabs.ctl_file ||
+                                                        ' data=' || GRAB_SCRIPTS.g_schema_name || '/' || tabs.dat_file ||
+                                                         ' log=' || GRAB_SCRIPTS.g_schema_name || '/' || tabs.log_file ||
+                                                        ' silent=HEADER,FEEDBACK' );
+      fh2.script_put_line(fh_sql, '');
+      fh2.script_put_line(fh_sql, 'begin');
+      fh2.script_put_line(fh_sql, '   if ''&_RC.'' != ''0'' then');
+      fh2.script_put_line(fh_sql, '      raise_application_error(-20000, ''Control file "' || GRAB_SCRIPTS.g_schema_name || '/' || tabs.ctl_file ||
+                                                                        '" returned error: &_RC.'');' );
+      fh2.script_put_line(fh_sql, '   end if;');
+      fh2.script_put_line(fh_sql, 'end;');
+      fh2.script_put_line(fh_sql, '/');
+      fh2.script_put_line(fh_sql, '');
+      -----------------------
+      -- Binary Decode SQL --
+      -----------------------
+      if bincol_aa.COUNT > 0
+      then
+         fh2.script_put_line(fh_sql, 'declare');
+         fh2.script_put_line(fh_sql, '   l_blob          blob;');
+         fh2.script_put_line(fh_sql, '   the_blob        blob;');
+         fh2.script_put_line(fh_sql, '   cnt             pls_integer;');
+         fh2.script_put_line(fh_sql, '   procedure b64_decode');
+         fh2.script_put_line(fh_sql, '         (in_blob  in BLOB)');
+         fh2.script_put_line(fh_sql, '   is');
+         fh2.script_put_line(fh_sql, '      BASE64_ENCODE_HEADER      constant varchar2(30) := ''' || common_util.BASE64_ENCODE_HEADER || ''';');
+         fh2.script_put_line(fh_sql, '      SPLIT_LEN              constant pls_integer  := 32764;    -- Must be divisible by 4');
+         fh2.script_put_line(fh_sql, '      header_txt    varchar2(128);');
+         fh2.script_put_line(fh_sql, '      len_blob      pls_integer;');
+         fh2.script_put_line(fh_sql, '      ptr           pls_integer;');
+         fh2.script_put_line(fh_sql, '   begin');
+         fh2.script_put_line(fh_sql, '      dbms_lob.trim(l_blob, 0);');
+         fh2.script_put_line(fh_sql, '      dbms_lob.trim(the_blob, 0);');
+         fh2.script_put_line(fh_sql, '      ----------------------------------------');
+         fh2.script_put_line(fh_sql, '      -- Check incoming BLOB sizes (and return if needed)');
+         fh2.script_put_line(fh_sql, '      if in_blob is null then return; end if;');
+         fh2.script_put_line(fh_sql, '      len_blob := length(in_blob);');
+         fh2.script_put_line(fh_sql, '      if len_blob = 0 then return; end if;');
+         fh2.script_put_line(fh_sql, '      ----------------------------------------');
+         fh2.script_put_line(fh_sql, '      -- Check for BASE64_ENCODE_HEADER in in_BLOB');
+         fh2.script_put_line(fh_sql, '      header_txt := utl_raw.cast_to_varchar2(dbms_lob.substr(in_blob');
+         fh2.script_put_line(fh_sql, '                                                            ,length(BASE64_ENCODE_HEADER)');
+         fh2.script_put_line(fh_sql, '                                                            ,1)                       );');
+         fh2.script_put_line(fh_sql, '      if header_txt != BASE64_ENCODE_HEADER');
+         fh2.script_put_line(fh_sql, '      then');
+         fh2.script_put_line(fh_sql, '         raise_application_error(-20000, ''BASE64_ENCODE_HEADER missing from data: '' || header_txt);');
+         fh2.script_put_line(fh_sql, '      end if;');
+         fh2.script_put_line(fh_sql, '      ----------------------------------------');
+         fh2.script_put_line(fh_sql, '      -- Create "L_BLOB" after removing BASE64_ENCODE_HEADER, Carriage Returns, and Line Feeds');
+         fh2.script_put_line(fh_sql, '      ptr := 1 + length(BASE64_ENCODE_HEADER);  -- Skip over the header');
+         fh2.script_put_line(fh_sql, '      while ptr <= len_blob');
+         fh2.script_put_line(fh_sql, '      loop');
+         fh2.script_put_line(fh_sql, '         dbms_lob.append(l_blob');
+         fh2.script_put_line(fh_sql, '                        ,utl_raw.translate(dbms_lob.substr(in_blob');
+         fh2.script_put_line(fh_sql, '                                                          ,SPLIT_LEN');
+         fh2.script_put_line(fh_sql, '                                                          ,ptr)');
+         fh2.script_put_line(fh_sql, '                                          ,hextoraw(''000D0A'')       -- NULL, Carriage Return, Line Feed');
+         fh2.script_put_line(fh_sql, '                                          ,hextoraw(''00'')   )   );  -- NULL');
+         fh2.script_put_line(fh_sql, '         ptr := ptr + SPLIT_LEN;');
+         fh2.script_put_line(fh_sql, '      end loop;');
+         fh2.script_put_line(fh_sql, '      len_blob := length(l_blob);');
+         fh2.script_put_line(fh_sql, '      ----------------------------------------');
+         fh2.script_put_line(fh_sql, '      --  Create "THE_BLOB" after Base64 Decoding');
+         fh2.script_put_line(fh_sql, '      ptr := 1;');
+         fh2.script_put_line(fh_sql, '      while ptr <= len_blob');
+         fh2.script_put_line(fh_sql, '      loop');
+         fh2.script_put_line(fh_sql, '         dbms_lob.append(the_blob');
+         fh2.script_put_line(fh_sql, '                        ,UTL_ENCODE.BASE64_DECODE(dbms_lob.substr(l_blob');
+         fh2.script_put_line(fh_sql, '                                                                 ,SPLIT_LEN');
+         fh2.script_put_line(fh_sql, '                                                                 ,ptr)   )   );');
+         fh2.script_put_line(fh_sql, '         ptr := ptr + SPLIT_LEN;');
+         fh2.script_put_line(fh_sql, '      end loop;');
+         fh2.script_put_line(fh_sql, '   end b64_decode;');
+         fh2.script_put_line(fh_sql, 'begin');
+         fh2.script_put_line(fh_sql, '   dbms_output.put_line(''Decode Binary Data'');');
+         fh2.script_put_line(fh_sql, '   dbms_output.put_line(''------------------'');');
+         fh2.script_put_line(fh_sql, '   dbms_lob.createtemporary(l_blob, true);');
+         fh2.script_put_line(fh_sql, '   dbms_lob.createtemporary(the_blob, true);');
+         colname := bincol_aa.FIRST;
+         loop
+            bcol_txt := 'begin ' || bincol_aa(colname) || '(:1, ''' || tabs.table_name || ''', ''' || colname || '''); end;';
+            begin
+               execute immediate bcol_txt using in out fh_sql;
+            exception when others then
+               raise_application_error(-20000, 'Execute Immediate ERROR for ' || GRAB_SCRIPTS.g_schema_name ||
+                                                                          '.' || tabs.table_name            ||
+                                                                          '.' || colname                    || LF ||
+                                                BCOL_TXT || LF ||
+                                                SQLERRM  || LF ||
+                                                dbms_utility.format_error_backtrace );
+            end;
+            exit when colname = bincol_aa.LAST;
+            colname := bincol_aa.NEXT(colname);
+         end loop;
+         fh2.script_put_line(fh_sql, '   dbms_lob.freetemporary(l_blob);');
+         fh2.script_put_line(fh_sql, '   dbms_lob.freetemporary(the_blob);');
+         fh2.script_put_line(fh_sql, 'end;');
+         fh2.script_put_line(fh_sql, '/');
+         fh2.script_put_line(fh_sql, '');
+         fh2.script_put_line(fh_sql, 'commit;');
+         fh2.script_put_line(fh_sql, '');
+      end if;
+      -------------------
+      -- Post Load SQL --
+      -------------------
+      if postload_aa.COUNT > 0
+      then
+         colname := postload_aa.FIRST;
+         loop
+            unis_txt := 'begin ' || postload_aa(colname) || '(:1, ''' || tabs.table_name || ''', ''' || colname || '''); end;';
+            begin
+               execute immediate unis_txt using in out fh_sql;
+            exception when others then
+               raise_application_error(-20000, 'Execute Immediate ERROR for ' || GRAB_SCRIPTS.g_schema_name ||
+                                                                          '.' || tabs.table_name            ||
+                                                                          '.' || colname                    || LF ||
+                                                UNIS_TXT || LF ||
+                                                SQLERRM  || LF ||
+                                                dbms_utility.format_error_backtrace );
+            end;
+            exit when colname = postload_aa.LAST;
+            colname := postload_aa.NEXT(colname);
+         end loop;
+      end if;
+      ----------------------------
+      -- Finish SQL Script File --
+      ----------------------------
+      fh2.script_close(fh_sql);
+      --
+      dbms_sql.close_cursor(g_dyn_curs);
+      --
+   end loop;
+   --
+end grb_comp_data_loader;
+
+
+------------------------------------------------------------
+-- Create SQL to Decode BLOBs and RAWs
+procedure sql_decode_blob
+      (in_fh       in out nocopy fh2.sf_ptr_type
+      ,in_tabname  in            varchar2
+      ,in_colname  in            varchar2)
+is
+begin
+   fh2.script_put_line(in_fh, '   -- Decode Binary Data for column ' || in_colname);
+   fh2.script_put_line(in_fh, '   cnt := 0;');
+   fh2.script_put_line(in_fh, '   for buff in (select ROWID RID, "' || in_colname || '"');
+   fh2.script_put_line(in_fh, '                 from  "' || GRAB_SCRIPTS.g_schema_name || '"."' || in_tabname || '"');
+   fh2.script_put_line(in_fh, '                 where "' || in_colname || '" is not null');
+   fh2.script_put_line(in_fh, '                 for update of "' || in_colname || '")');
+   fh2.script_put_line(in_fh, '   loop');
+   fh2.script_put_line(in_fh, '      b64_decode(buff."' || in_colname || '");');
+   fh2.script_put_line(in_fh, '      -- This overwrites the Base64 Encoded String with the original binary data');
+   fh2.script_put_line(in_fh, '      update "' || GRAB_SCRIPTS.g_schema_name || '"."' || in_tabname || '"');
+   fh2.script_put_line(in_fh, '        set  "' || in_colname || '" = the_blob');
+   fh2.script_put_line(in_fh, '       where rowid = buff.rid;');
+   fh2.script_put_line(in_fh, '      cnt := cnt + 1;');
+   fh2.script_put_line(in_fh, '   end loop;');
+   fh2.script_put_line(in_fh, '   dbms_output.put_line(cnt || '' "' || in_colname || '" updates.'');');
+end sql_decode_blob;
+
+
+------------------------------------------------------------
+-- Create SQL to Decode UNISTR
+procedure sql_unistr_decode
+      (in_fh       in out nocopy fh2.sf_ptr_type
+      ,in_tabname  in            varchar2
+      ,in_colname  in            varchar2)
+is
+begin
+   fh2.script_put_line(in_fh, 'declare');
+   fh2.script_put_line(in_fh, '   cnt    pls_integer := 0;');
+   fh2.script_put_line(in_fh, 'begin');
+   fh2.script_put_line(in_fh, '   dbms_output.put_line(''Decode UNISTR Data'');');
+   fh2.script_put_line(in_fh, '   dbms_output.put_line(''------------------'');');
+   fh2.script_put_line(in_fh, '   -- Decode UNISTR Data for column ' || in_colname);
+   fh2.script_put_line(in_fh, '   for buff in (select ROWID RID, "' || in_colname || '"');
+   fh2.script_put_line(in_fh, '                 from  "' || GRAB_SCRIPTS.g_schema_name || '"."' || in_tabname || '"');
+   fh2.script_put_line(in_fh, '                 where "' || in_colname || '" is not null');
+   fh2.script_put_line(in_fh, '                 for update of "' || in_colname || '")');
+   fh2.script_put_line(in_fh, '   loop');
+   fh2.script_put_line(in_fh, '      -- This overwrites the UNISTR Encoded String with the original UNICODE data');
+   fh2.script_put_line(in_fh, '      update "' || GRAB_SCRIPTS.g_schema_name || '"."' || in_tabname || '"');
+   fh2.script_put_line(in_fh, '        set  "' || in_colname || '" = UNISTR(to_char("' || in_colname || '"))');
+   fh2.script_put_line(in_fh, '       where rowid = buff.rid;');
+   fh2.script_put_line(in_fh, '      cnt := cnt + 1;');
+   fh2.script_put_line(in_fh, '   end loop;');
+   fh2.script_put_line(in_fh, '   dbms_output.put_line(cnt || '' "AD_FLTEXTN" updates.'');');
+   fh2.script_put_line(in_fh, 'end;');
+   fh2.script_put_line(in_fh, '/');
+   fh2.script_put_line(in_fh, '');
+   fh2.script_put_line(in_fh, 'commit;');
+   fh2.script_put_line(in_fh, '');
+end sql_unistr_decode;
+
+
+end grab_data;
+/
+
+set define on

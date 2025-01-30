@@ -1,0 +1,136 @@
+
+--
+--  Create ODBCAPTURE Schema
+--
+
+set define off
+
+create user "ODBCAPTURE"
+   no authentication
+   profile DEFAULT
+   temporary tablespace TEMP
+   default tablespace USERS
+   quota 512M on USERS
+   ;
+
+--  Current Grant of SYS Objects (but not directories)
+
+grant SELECT on "SYS"."DBA_ALL_TABLES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_ASSOCIATIONS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_AUDIT_POLICIES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_AUDIT_TRAIL" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_CLUSTERS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_COL_COMMENTS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_CONSTRAINTS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_CONS_COLUMNS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_CONTEXT" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_CUBES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_CUBE_BUILD_PROCESSES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_CUBE_DIMENSIONS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_DB_LINKS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_DEPENDENCIES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_DIMENSIONS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_DIRECTORIES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_EDITIONS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_EDITION_COMMENTS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_EVALUATION_CONTEXTS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_HOST_ACES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_INDEXES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_INDEXTYPES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_INDEXTYPE_COMMENTS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_IND_COLUMNS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_IND_PARTITIONS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_IND_SUBPARTITIONS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_LIBRARIES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_LOBS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_LOB_PARTITIONS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_LOB_SUBPARTITIONS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_MEASURE_FOLDERS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_MINING_MODELS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_MVIEWS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_MVIEW_COMMENTS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_MVIEW_LOGS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_NESTED_TABLES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_OBJECTS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_OBJECT_TABLES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_OPERATORS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_OPERATOR_COMMENTS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_PDBS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_PDB_HISTORY" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_PROCEDURES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_PROFILES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_QUEUES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_QUEUE_SCHEDULES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_QUEUE_SUBSCRIBERS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_QUEUE_TABLES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_REWRITE_EQUIVALENCES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_ROLES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_ROLE_PRIVS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_RSRC_CONSUMER_GROUPS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_RSRC_PLANS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_RULES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_RULE_SETS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_SCHEDULER_CHAINS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_SCHEDULER_CREDENTIALS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_SCHEDULER_DESTS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_SCHEDULER_FILE_WATCHERS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_SCHEDULER_GROUPS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_SCHEDULER_JOBS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_SCHEDULER_JOB_CLASSES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_SCHEDULER_PROGRAMS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_SCHEDULER_PROGRAM_ARGS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_SCHEDULER_SCHEDULES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_SCHEDULER_WINDOWS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_SEQUENCES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_SOURCE" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_SUBSCR_REGISTRATIONS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_SYNONYMS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_SYS_PRIVS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_TABLES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_TAB_COLS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_TAB_COLUMNS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_TAB_COMMENTS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_TAB_IDENTITY_COLS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_TAB_PARTITIONS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_TAB_PRIVS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_TAB_SUBPARTITIONS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_TRIGGERS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_TS_QUOTAS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_TYPES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_USERS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_VIEWS" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_WALLET_ACES" to "ODBCAPTURE";
+grant SELECT on "SYS"."DBA_XML_TABLES" to "ODBCAPTURE";
+
+-- Real Application Security System Grants
+
+
+prompt XS Admin Grant "ADMIN_ANY_SEC_POLICY" to "ODBCAPTURE"
+begin
+   execute immediate 'begin' ||
+                     '  xs_admin_util.grant_system_privilege(''ADMIN_ANY_SEC_POLICY'', ''ODBCAPTURE''); ' ||
+                     'end;';
+exception when others then
+   if    SQLERRM not like '%PLS-00201: identifier ''XS_ADMIN_UTIL.GRANT_SYSTEM_PRIVILEGE'' must be declared%'
+     AND SQLERRM not like '%ORA-01031: insufficient privileges%'
+   then
+      raise;
+   end if;
+end;
+/
+
+prompt XS Admin Cloud Grant "ADMIN_ANY_SEC_POLICY" to "ODBCAPTURE"
+begin
+   execute immediate 'begin' ||
+                     '  xs_admin_cloud_util.grant_system_privilege(''ADMIN_ANY_SEC_POLICY'', ''ODBCAPTURE''); ' ||
+                     'end;';
+exception when others then
+   if SQLERRM not like '%PLS-00201: identifier ''XS_ADMIN_CLOUD_UTIL.GRANT_SYSTEM_PRIVILEGE'' must be declared%'
+   then
+      raise;
+   end if;
+end;
+/
+
+
+set define on

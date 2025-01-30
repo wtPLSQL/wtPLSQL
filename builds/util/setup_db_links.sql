@@ -1,15 +1,10 @@
 
 --
---  Setup Datbase Linkgs for Unit Testing
+--  Setup Datbase Links for Unit Testing
 --
 --  Run as WTP Schema/User
 --
 
-set serveroutput on size unlimited format wrapped
-
-----------------------------------------
-prompt
-prompt Recreate Database Links
 declare
    procedure run_sql (in_sql in varchar2) is
       -- ORA-02024: database link not found

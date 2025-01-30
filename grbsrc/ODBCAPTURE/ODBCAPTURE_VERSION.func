@@ -1,0 +1,26 @@
+
+--
+--  Create ODBCAPTURE.ODBCAPTURE_VERSION Function
+--
+
+set define off
+
+
+--DBMS_METADATA:ODBCAPTURE.ODBCAPTURE_VERSION
+
+  CREATE OR REPLACE EDITIONABLE FUNCTION "ODBCAPTURE"."ODBCAPTURE_VERSION" 
+   return varchar2
+as
+begin
+   return 'V2.1';
+end odbcapture_version;
+/
+
+
+--  Grants
+
+
+--  Synonyms
+
+
+set define on

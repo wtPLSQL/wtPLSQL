@@ -1,0 +1,42 @@
+"ELEMENT_SEQ","ELEMENT_NAME","FILE_EXT1","FILE_EXT2","FILE_EXT3","OBJECT_TYPE","NAME_CHECK_OBJECT_TYPE","PRE_COMPILE","NOTES"
+-999,"INSTALL_SCRIPT","N/A",,,,,,"Non-Schema Installation Script (The ""EXT"" is Not Applicable)"
+-990,"RAS_ACL","racl",,,,,,"Real Application Security (RAS) Access Control List (ACL) and supporting metadata"
+-150,"ROLE","role",,,,,,"SYS Only, Includes SYS Grants"
+-140,"USER","user",,,,,,"SYS Only, Includes SYS Grants"
+-130,"SYS_GRANT","sgrnt",,,,,,"SYS Only, FUTURE Grants on OBJECT_NAME_REGEXP for Grants to SYS Objects"
+-127,"XDB_ACL","xacl",,,,,,"SYS Only. XDB Repositoty ACL (Deprecated) (Not Implemented)"
+-125,"HOST_ACL","hacl",,,,,,"SYS Only. Host Access Control Lists"
+-120,"WALLET_ACL","wacl",,,,,,"SYS Only. Wallet Access Control Lists"
+-110,"DATABASE_TRIGGER","dbtrg",,,"TRIGGER",,,"System Triggers ""ON DATABASE"""
+-20,"DIRECTORY","dir","sh","bat","DIRECTORY","DIRECTORY",,"SYSTEM Only, FUTURE Directories and used in OBJECT_NAME_REGEXP"
+-10,"GRANT","grnt",,,,,,"SYSTEM Only, FUTURE Grants on OBJECT_NAME_REGEXP for SYSTEM Objects and System Priveleges"
+10,"SYNONYM","syn",,,"SYNONYM",,,"FUTURE Synonyms."
+30,"DB_LINK","dblnk",,,"DATABASE LINK","DATABASE LINK",,
+40,"SEQUENCE","seq",,,"SEQUENCE","SEQUENCE",,
+100,"XML_SCHEMA","pxsd",,,"XML SCHEMA",,,"DBMS_XMLSCHEMA Registered Schema (Deprecated)"
+110,"TYPE_SPEC","tps",,,"TYPE","TYPE",,
+130,"FUNCTION","func",,,"FUNCTION","FUNCTION",,
+140,"PROCEDURE","proc",,,"PROCEDURE","PROCEDURE",,
+150,"PACKAGE_SPEC","pkssql",,,"PACKAGE","PACKAGE",,
+210,"QUEUE_TABLE","aqt",,,,"TABLE",,
+220,"QUEUE","aq",,,"QUEUE","QUEUE",,
+310,"TABLE","tbl",,,"TABLE","TABLE",,
+320,"VIEW","vw",,,"VIEW","VIEW","Y",
+330,"MVIEW","mvw",,,"MATERIALIZED VIEW","MATERIALIZED VIEW",,
+350,"DATA_LOAD","cldr","ctl","csv",,"TABLE",,"DATA_LOAD references are not allowed in OBJECT_CONF.  Also disables Foreign Keys and Triggers"
+360,"TABLE_INDEX","tidx",,,"INDEX",,,"FUTURE Indexes. CURRENT Indexes are included with object creation"
+370,"MVIEW_INDEX","mvidx",,,"INDEX",,,
+410,"TYPE_BODY","tpb",,,"TYPE BODY","TYPE",,
+420,"JAVA_SOURCE","pjv",,,"JAVA SOURCE","JAVA SOURCE",,
+450,"PACKAGE_BODY","pkbsql",,,"PACKAGE BODY","PACKAGE",,
+510,"TABLE_FOREIGN_KEY","tfk",,,,"TABLE",,
+520,"VIEW_FOREIGN_KEY","vfk",,,,"VIEW",,
+530,"MVIEW_FOREIGN_KEY","mvfk",,,,"MATERIALIZED VIEW",,
+540,"TABLE_TRIGGER","ttrg",,,"TRIGGER","TABLE",,
+550,"VIEW_TRIGGER","vtrg",,,"TRIGGER","VIEW",,
+560,"MVIEW_TRIGGER","mvtrg",,,"TRIGGER","MATERIALIZED VIEW",,
+570,"SCHEMA_TRIGGER","utrg",,,"TRIGGER",,,"System Triggers ""ON SCHEMA"""
+610,"SCHEDULER_SCHEDULE","schdsd",,,"SCHEDULE","SCHEDULE",,
+620,"SCHEDULER_PROGRAM","schdpg",,,"PROGRAM","PROGRAM",,
+630,"SCHEDULER_JOB","schdjb",,,"JOB","JOB",,
+710,"CONTEXT","ctxt",,,"CONTEXT","CONTEXT",,"Memory Based Application Context (NOT Oracle Text) (Don't match OBJECT_TYPE)"

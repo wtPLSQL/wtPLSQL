@@ -1,0 +1,61 @@
+
+--
+--  Create ODBCAPTURE.ROOT_SCRIPTS Package
+--
+
+set define off
+
+
+--DBMS_METADATA:ODBCAPTURE.ROOT_SCRIPTS
+
+  CREATE OR REPLACE EDITIONABLE PACKAGE "ODBCAPTURE"."ROOT_SCRIPTS" 
+   authid current_user
+as
+
+   function dbi_sql
+      (in_build_type  in varchar2)
+   return varchar2;
+
+   function installation_finalize_sql
+      (in_build_type  in varchar2)
+   return varchar2;
+
+   function installation_prepare_sql
+      (in_build_type  in varchar2)
+   return varchar2;
+
+   function odbcapture_installation_logs_cldr
+      (in_build_type  in varchar2)
+   return varchar2;
+
+   function odbcapture_installation_logs_csv
+      (in_build_type  in varchar2)
+   return varchar2;
+
+   function odbcapture_installation_logs_ctl
+      (in_build_type  in varchar2)
+   return varchar2;
+
+   function report_status_sql
+      (in_build_type  in varchar2)
+   return varchar2;
+
+   function list_invalids_csv
+      (in_build_type  in varchar2)
+   return varchar2;
+
+   function set_user_authentication_sql
+      (in_build_type  in varchar2)
+   return varchar2;
+
+end root_scripts;
+/
+
+
+--  Grants
+
+
+--  Synonyms
+
+
+set define on

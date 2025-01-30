@@ -1,0 +1,576 @@
+
+--
+--  Create ODBCAPTURE.FH2 Package Body
+--
+
+set define off
+
+
+--DBMS_METADATA:ODBCAPTURE.FH2
+
+  CREATE OR REPLACE EDITIONABLE PACKAGE BODY "ODBCAPTURE"."FH2" 
+as
+
+--
+-- Table of Functions/Procedures
+--
+-- Script Handling Utilities
+--  -) function script_is_open
+--  -) PROCEDURE script_close_all
+--  -) function script_open
+--  -) procedure script_put
+--  -) procedure script_put_line
+--  -) PROCEDURE script_new_line
+--  -) PROCEDURE script_close
+--  -) procedure put_big_line
+--  -) procedure remove_storage_clause
+-- PUBLIC API
+--  -) procedure write_scripts
+--  -) procedure clear_buffers
+--  -) function get_version
+--
+
+
+------------------------------------------------------------
+---   Script Handling Utilities  ---
+------------------------------------------------------------
+
+
+-----------------------------------------------------
+--  Check if a Script File is Open
+function script_is_open
+      (file   in fh2.sf_ptr_type)
+   return boolean
+is
+begin
+   return sf_aa.exists(file.bld_type)
+      and sf_aa(file.bld_type).exists(file.bld_ord)
+      and sf_aa(file.bld_type)(file.bld_ord).exists(file.file_id)
+      and sf_aa(file.bld_type)(file.bld_ord)(file.file_id).is_open = 'Y';
+end script_is_open;
+
+-----------------------------------------------------
+--  Close all Script Files
+PROCEDURE script_close_all
+is
+   bld_ord   pls_integer;
+   file_id    pls_integer;
+begin
+   if NOT sf_aa.EXISTS(grab_scripts.g_build_type)
+   then
+      return;
+   end if;
+   -- ELEMENT SEQ Loop
+   bld_ord := sf_aa(grab_scripts.g_build_type).FIRST;
+   <<DIR_LOOP>>
+   loop
+      -- File ID
+      file_id := sf_aa(grab_scripts.g_build_type)(bld_ord).FIRST;
+      <<FILE_LOOP>>
+      loop
+         --
+         if sf_aa(grab_scripts.g_build_type)(bld_ord)(file_id).is_open = 'Y'
+         then
+            sf_aa(grab_scripts.g_build_type)(bld_ord)(file_id).is_open := 'N';
+            dbms_output.put_line('SCRIPT_CLOSE_ALL: bld_type: ' || grab_scripts.g_build_type ||
+                                                 ', bld_ord: '  || bld_ord ||
+                                                 ', file_id: '   || file_id ||
+                                                 ' was open.'    );
+         end if;
+         --
+         exit FILE_LOOP when file_id = sf_aa(grab_scripts.g_build_type)(bld_ord).LAST;
+         file_id := sf_aa(grab_scripts.g_build_type)(bld_ord).NEXT(file_id);
+      end loop;  --FILE_LOOP
+      --
+      exit DIR_LOOP when bld_ord = sf_aa(grab_scripts.g_build_type).LAST;
+      bld_ord := sf_aa(grab_scripts.g_build_type).NEXT(bld_ord);
+   end loop;  --DIR_LOOP
+end script_close_all;
+
+-----------------------------------------------------
+--  Open a Script File
+function script_open
+      (in_filename      in varchar2
+      ,in_elmnt         in varchar2
+      ,in_max_linesize  in binary_integer default 1024)
+   return fh2.sf_ptr_type
+is
+   sf_ptr       fh2.sf_ptr_type;
+   schema_name  varchar2(128);
+   init_sf_aa   boolean;
+   ----------------------------------------
+   -- Find the ELEMENT SEQ for the in_elmnt
+   procedure get_element_seq is
+   begin
+      sf_ptr.bld_ord := null;
+      select element_seq into sf_ptr.bld_ord
+       from  element_conf
+       where element_name = in_elmnt;
+   exception when OTHERS
+   then
+      script_close_all;
+      raise_application_error(-20000, 'in_elmnt "' || in_elmnt ||
+         '" not found in ELEMENT_CONF in script_open function' || LF ||
+         SQLERRM);
+   end get_element_seq;
+   ----------------------------------------
+   -- Find the File ID for the sf_ptr.bld_ord, and in_filename
+   procedure get_file_id is
+      file_id    pls_integer;
+   begin
+      -- Find In_Filename in Script File Array
+      file_id := sf_aa(grab_scripts.g_build_type)(sf_ptr.bld_ord).FIRST;
+      loop
+         if    (   sf_aa(grab_scripts.g_build_type)(sf_ptr.bld_ord)(file_id).schema_name = schema_name
+                OR (    sf_aa(grab_scripts.g_build_type)(sf_ptr.bld_ord)(file_id).schema_name is null
+                    AND                                                 schema_name is null) )
+           AND sf_aa(grab_scripts.g_build_type)(sf_ptr.bld_ord)(file_id).filename = in_filename
+         then
+            sf_ptr.file_id := file_id;
+            if script_is_open(sf_ptr)
+            then
+               raise_application_error(-20000, 'Script Name: "' || grab_scripts.g_build_type ||
+                                                            '/' || schema_name ||
+                                                            '/' || in_filename ||
+                                                   '" (ELMNT: ' || in_elmnt ||
+                                            ') is already open.');
+            end if;
+            exit;
+         end if;
+         --
+         exit when file_id = sf_aa(grab_scripts.g_build_type)(sf_ptr.bld_ord).LAST;
+         file_id := sf_aa(grab_scripts.g_build_type)(sf_ptr.bld_ord).NEXT(file_id);
+      end loop;
+   end get_file_id;
+begin
+   -- Check the filename for invalid characters
+   COMMON_UTIL.check_filename(in_filename);
+   -- Set Build Type
+   sf_ptr.bld_type := grab_scripts.g_build_type;
+   -- Set the Schema Name
+   schema_name := case when grab_scripts.g_schema_name is null    then NULL
+                       when grab_scripts.g_schema_name = 'PUBLIC' then 'SYSTEM'
+                                                                  else grab_scripts.g_schema_name
+                  end;
+   -- Get the ELEMENT SEQ to sf_ptr
+   get_element_seq;
+   -- Set Filename
+   dbms_output.put_line('Script Open: ' || grab_scripts.g_build_type ||
+                                    '/' || schema_name    ||
+                                    '/' || in_filename    );
+   -- Find File ID
+   sf_ptr.file_id := null;
+   if     sf_aa.EXISTS(grab_scripts.g_build_type)
+      AND sf_aa(grab_scripts.g_build_type).EXISTS(sf_ptr.bld_ord)
+   then
+      -- Get the File ID for sf_ptr
+      get_file_id;
+      if sf_ptr.file_id is not null
+      then
+         sf_ptr.num_lines := sf_aa(sf_ptr.bld_type)(sf_ptr.bld_ord)(sf_ptr.file_id).num_buffers;
+         init_sf_aa       := FALSE;
+         sf_aa(sf_ptr.bld_type)(sf_ptr.bld_ord)(sf_ptr.file_id).is_open := 'Y';
+      else
+         sf_ptr.file_id   := sf_aa(sf_ptr.bld_type)(sf_ptr.bld_ord).COUNT + 1;
+         sf_ptr.num_lines := 1;
+         init_sf_aa       := TRUE;
+      end if;
+   else
+      sf_ptr.file_id   := 1;
+      sf_ptr.num_lines := 1;
+      init_sf_aa       := TRUE;
+   end if;
+   if init_sf_aa
+   then
+      sf_aa(sf_ptr.bld_type)(sf_ptr.bld_ord)(sf_ptr.file_id).max_linesize := in_max_linesize;
+      sf_aa(sf_ptr.bld_type)(sf_ptr.bld_ord)(sf_ptr.file_id).total_bytes  := 0;
+      sf_aa(sf_ptr.bld_type)(sf_ptr.bld_ord)(sf_ptr.file_id).num_buffers  := 1;
+      sf_aa(sf_ptr.bld_type)(sf_ptr.bld_ord)(sf_ptr.file_id).is_open      := 'Y';
+      sf_aa(sf_ptr.bld_type)(sf_ptr.bld_ord)(sf_ptr.file_id).schema_name  := schema_name;
+      sf_aa(sf_ptr.bld_type)(sf_ptr.bld_ord)(sf_ptr.file_id).filename     := in_filename;
+      sf_aa(sf_ptr.bld_type)(sf_ptr.bld_ord)(sf_ptr.file_id).buffer_aa(1).len := 0;
+   end if;
+   return sf_ptr;
+end script_open;
+
+-----------------------------------------------------
+--  Add Characters to a Script File
+procedure script_put
+      (file       IN OUT NOCOPY fh2.sf_ptr_type
+      ,buffer     IN            VARCHAR2)
+is
+   SEARCH_STRING CONSTANT varchar2(30) := '[^' || chr(1) || '-' || chr(127) || ']';
+   len           number(5);
+   ascii_buffer  varchar2(32767);
+begin
+   --
+   if nvl(lengthb(buffer),0) <= 0
+   then
+      return;
+   end if;
+   ascii_buffer := regexp_replace(buffer, SEARCH_STRING, '?');
+   len := length(ascii_buffer);
+   --dbms_output.put_line('/'||file.bld_ord||'/'||file.file_id||'('||file.num_lines||')len='||len||
+   --                     '('||sf_aa(file.bld_ord)(file.file_id).buffer_aa(file.num_lines).len||')');
+   --
+   if sf_aa(file.bld_type)(file.bld_ord)(file.file_id).max_linesize >
+      sf_aa(file.bld_type)(file.bld_ord)(file.file_id).buffer_aa(file.num_lines).len + len
+   then
+      --
+      sf_aa(file.bld_type)(file.bld_ord)(file.file_id).buffer_aa(file.num_lines).buffer    :=
+      sf_aa(file.bld_type)(file.bld_ord)(file.file_id).buffer_aa(file.num_lines).buffer || ascii_buffer;
+      --
+      sf_aa(file.bld_type)(file.bld_ord)(file.file_id).buffer_aa(file.num_lines).len   :=
+      sf_aa(file.bld_type)(file.bld_ord)(file.file_id).buffer_aa(file.num_lines).len + len;
+      --
+   else
+      --
+      file.num_lines := file.num_lines + 1;
+      sf_aa(file.bld_type)(file.bld_ord)(file.file_id).num_buffers := file.num_lines;
+      --
+      sf_aa(file.bld_type)(file.bld_ord)(file.file_id).buffer_aa(file.num_lines).buffer := ascii_buffer;
+      sf_aa(file.bld_type)(file.bld_ord)(file.file_id).buffer_aa(file.num_lines).len    := len;
+      --
+   end if;
+   --
+   sf_aa(file.bld_type)(file.bld_ord)(file.file_id).total_bytes   :=
+   sf_aa(file.bld_type)(file.bld_ord)(file.file_id).total_bytes + len;
+   --
+exception when others then
+   raise_application_error(-20000,
+      substr('script_put error: len = ' || len || LF ||
+             '  sf_aa('||file.bld_type||')('||file.bld_ord||')('||file.file_id||').buffer_aa('||file.num_lines||').len = ' ||
+                sf_aa(   file.bld_type   )(   file.bld_ord   )(   file.file_id   ).buffer_aa(   file.num_lines   ).len || LF ||
+             '  sf_aa('||file.bld_type||')('||file.bld_ord||')('||file.file_id||').max_linesize = ' ||
+                sf_aa(   file.bld_type   )(   file.bld_ord   )(   file.file_id   ).max_linesize || LF ||
+              SQLERRM || LF || dbms_utility.format_error_backtrace || dbms_utility.format_call_stack ||
+             '|' || ascii_buffer || '|'
+             ,1,2000));
+end script_put;
+
+-----------------------------------------------------
+--  Add a Line to a Script File
+procedure script_put_line
+      (file       IN OUT NOCOPY fh2.sf_ptr_type
+      ,buffer     IN            VARCHAR2)
+is
+begin
+   script_put(file, buffer || LF);
+end script_put_line;
+
+-----------------------------------------------------
+--  Add a Line to a Script File
+PROCEDURE script_new_line
+      (file  IN OUT NOCOPY fh2.sf_ptr_type
+      ,lines IN     NATURAL default 1)
+is
+   buff  varchar2(4000);
+begin
+   for i in 1 .. lines
+   loop
+      buff := buff || LF;
+   end loop;
+   script_put(file, buff);
+end script_new_line;
+
+-----------------------------------------------------
+--  Close a Script File
+PROCEDURE script_close
+      (file   IN OUT NOCOPY fh2.sf_ptr_type)
+is
+begin
+   sf_aa(file.bld_type)(file.bld_ord)(file.file_id).is_open := 'N';
+end script_close;
+
+------------------------------------------------------------
+-- Put Big Line
+--
+procedure put_big_line
+      (in_fh      in out NOCOPY fh2.sf_ptr_type
+      ,in_loc     in            varchar2
+      ,in_txt     in            CLOB
+      ,in_max_len in            number)
+is
+   orig_len  number;         -- Original Length of IN_TXT
+   ptr       number;         -- Current Position in IN_TXT
+   ptr_len   number;         -- Length of IN_TXT from PTR, including PTR
+   oset      number;         -- Candidate Offset from PTR
+   oset_len   number;        -- Length of IN_TXT from PTR to OSET,
+                             --   including PTR but excluding OSET
+begin
+   orig_len := DBMS_LOB.GETLENGTH(in_txt);
+   oset := 0;
+   loop
+      -- Update PTR
+      ptr     := oset + 1;
+      ptr_len := orig_len - ptr + 1;
+      -- Find a linefeed.
+      oset := instr(in_txt, LF, ptr);
+      -- Exit if no more LF and line is small enough.
+      -- To process all LF, don't exit loop until here.
+      exit when oset = 0 and ptr_len <= in_max_len;
+      -- oset_len does not include LF
+      oset_len := oset - ptr;
+      -- Allow for empty line
+      if oset_len between 0 and in_max_len
+      then
+         -- Small enough
+         if substr(in_txt, oset-1, 1) = CRTN
+         then
+            -- Remove the CRTN and the LF.
+            script_put_line(in_fh, substr(in_txt, ptr, oset_len-1));
+         else
+            script_put_line(in_fh, substr(in_txt, ptr, oset_len));
+         end if;
+      else
+         -- Cut-off the line
+         oset := in_max_len + ptr - 1;
+         script_put_line(in_fh, substr(in_txt, ptr, in_max_len));
+         script_put_line(in_fh, '---------- The previous line was cut-off at ' ||
+                                in_max_len || ' characters.  ----------' );
+         --raise_application_error
+         --   (-20000, substr('Line too long, exceeds ' ||
+         --                    in_max_len || ' characters at location "' ||
+         --                    substr(in_loc, 1, 150) || '"' || LF ||
+         --                    substr(in_txt, ptr)
+         --                  ,1,2000) );
+      end if;
+   end loop;
+   -- IN_TXT remaining is shorter than IN_MAX_LEN
+  script_put_line(in_fh, substr(in_txt, ptr));
+end put_big_line;
+
+------------------------------------------------------------
+-- Remove STORAGE_CLAUSE_PATTERN
+procedure remove_storage_clause
+      (in_fh       in out NOCOPY fh2.sf_ptr_type
+      ,in_loc      in            varchar2
+      ,in_txt      in            CLOB
+      ,in_max_len  in            number)
+is
+   len     number := length(in_txt);
+   ptr     number := 1;               -- Current Position in IN_TXT
+   oset    number;                    -- Offset from PTR to next LF
+begin
+   while ptr <= len
+   loop
+      oset := instr(substr(in_txt, ptr),LF);
+      if oset = 0
+      then
+         put_big_line(in_fh, in_loc, substr(in_txt, ptr), in_max_len);
+         ptr := len + 1;
+      else
+         if substr(in_txt, ptr, oset-1) not like common_util.STORAGE_CLAUSE_PATTERN escape '\'
+         then
+            put_big_line(in_fh, in_loc, substr(in_txt, ptr, oset-1), in_max_len);
+         end if;
+      end if;
+      ptr := ptr + oset;
+   end loop;
+end remove_storage_clause;
+
+
+------------------------------------------------------------
+---   PUBLIC API  ---
+------------------------------------------------------------
+
+
+------------------------------------------------------------
+-- Write Scripts
+procedure write_scripts
+      (in_zip_file_name  in varchar2
+      ,in_folder_name    in varchar2 default '')
+is
+   FH_BUFFER_SIZE  CONSTANT pls_integer := 32767;
+   fh              UTL_FILE.FILE_TYPE;
+   fh_ptr          pls_integer;
+   bld_type       varchar2(10);
+   bld_ord        pls_integer;
+   file_id         pls_integer;
+   schema_name     varchar2(128);
+   dir_path        varchar2(256);
+   filename        varchar2(500);
+   root_dir_name   varchar2(128);
+   zip_file_size   pls_integer;
+   sql_txt         varchar2(4000);
+   root_dir_path   varchar2(128);
+   buffer_blob     BLOB;
+   zipped_blob     BLOB;
+begin
+   dbms_output.put_line('Running ' || $$PLSQL_UNIT || '.write_scripts' ||
+                             '(in_zip_file_name "' || in_zip_file_name ||
+                           '", in_folder_name "'   || in_folder_name   || '")' );
+   if in_zip_file_name is null
+   then
+      raise_application_error(-20000, 'No Zip File Specified');
+   end if;
+   if NOT sf_aa.COUNT > 0
+   then
+      raise_application_error(-20000, 'No files to write from Buffers: ' || sf_aa.COUNT);
+   end if;
+   ----------------------------------------------
+   -- Write Scripts from sf_aa to ZIP_FILES Table
+   -- Build Type Loop
+   bld_type := sf_aa.FIRST;
+   <<TYPE_LOOP1>>
+   loop
+      -- ELEMENT SEQ Loop
+      bld_ord := sf_aa(bld_type).FIRST;
+      <<ORD_LOOP1>>
+      loop
+         --
+         -- File ID Loop
+         file_id := sf_aa(bld_type)(bld_ord).FIRST;
+         <<FILE_LOOP1>>
+         loop
+            --
+            schema_name := sf_aa(bld_type)(bld_ord)(file_id).schema_name;
+            dir_path    := bld_type;
+            if schema_name is not null
+            then
+               dir_path := dir_path || '/' || schema_name;
+            end if;
+            filename    := sf_aa(bld_type)(bld_ord)(file_id).filename;
+            if sf_aa(bld_type)(bld_ord)(file_id).is_open != 'N'
+            then
+               DBMS_OUTPUT.PUT_LINE('WARNING: ' || dir_path ||
+                                            '/' || filename || ' was not closed');
+            end if;
+            --
+            dbms_output.put(dir_path || '/' || filename ||
+                           ' total_bytes: ' || sf_aa(bld_type)(bld_ord)(file_id).total_bytes);
+            DBMS_LOB.CREATETEMPORARY(buffer_blob, FALSE);
+            --
+            -- BUFFER_LOOP
+            for i in 1 .. sf_aa(bld_type)(bld_ord)(file_id).num_buffers
+            loop
+               DBMS_LOB.APPEND(buffer_blob
+                              ,UTL_RAW.CAST_TO_RAW(sf_aa(bld_type)(bld_ord)(file_id).buffer_aa(i).buffer));
+               dbms_output.put(', ' || i || ':' || sf_aa(bld_type)(bld_ord)(file_id).buffer_aa(i).len);
+            end loop;  --BUFFER_LOOP
+            dbms_output.put_line('.');
+            --
+            --  There should not be any leading "/" in "dir_path"
+            --     ("bld_type" cannot be NULL because Associative Array Indexes cannot be NULL)
+            zip_util_pkg.add_file(zipped_blob
+                                 ,dir_path || '/' || filename
+                                 ,buffer_blob);
+            DBMS_LOB.TRIM(buffer_blob, 0);
+            --
+            exit FILE_LOOP1 when file_id = sf_aa(bld_type)(bld_ord).LAST;
+            file_id := sf_aa(bld_type)(bld_ord).NEXT(file_id);
+         end loop;  --FILE_LOOP1
+         --
+         exit ORD_LOOP1 when bld_ord = sf_aa(bld_type).LAST;
+         bld_ord := sf_aa(bld_type).NEXT(bld_ord);
+      end loop;  --ORD_LOOP1
+      --
+      exit TYPE_LOOP1 when bld_type = sf_aa.LAST;
+      bld_type := sf_aa.NEXT(bld_type);
+   end loop;  --TYPE_LOOP1
+   --
+   zip_util_pkg.finish_zip(zipped_blob);
+   insert into zip_files
+         (file_name
+         ,file_size
+         ,file_blob)
+      values
+         (in_zip_file_name
+         ,DBMS_LOB.GETLENGTH(zipped_blob)
+         ,zipped_blob);
+   commit;
+   if length(in_folder_name) > 0
+   then
+      ---------------------------------------
+      -- Write Zip File to UTL_FILE
+      select zf.file_size
+       into  zip_file_size
+       from  zip_files  zf
+       where zf.file_name = in_zip_file_name;
+      begin
+         select dir.directory_name, dir.directory_path
+          into      root_dir_name ,     root_dir_path
+          from  dba_directories  dir
+          where dir.directory_path = in_folder_name;
+      exception
+         when NO_DATA_FOUND
+         then
+            root_dir_name := 'GRAB_SCRIPTS_DIR';
+            root_dir_path := in_folder_name;
+            execute immediate 'create directory "' || root_dir_name ||
+                              '" as ''' || root_dir_path || '''';
+         when others
+         then
+            raise_application_error(-20000, 'Error with DIRECTORY_PATH: ' ||
+                                            in_folder_name || '. ' || SQLERRM);
+            DBMS_LOB.TRIM(zipped_blob, 0);
+      end;
+      dbms_output.put_line('Writing file "' || in_zip_file_name ||
+                            '" to folder "' || root_dir_path    || '"');
+      fh := utl_file.fopen(location     => root_dir_name
+                          ,filename     => in_zip_file_name
+                          ,open_mode    => 'wb'
+                          ,max_linesize => FH_BUFFER_SIZE);
+      fh_ptr := 1;
+      while fh_ptr <= zip_file_size
+      loop
+         utl_file.put_raw(fh, dbms_lob.substr(zipped_blob, FH_BUFFER_SIZE, fh_ptr), TRUE);
+         fh_ptr := fh_ptr + FH_BUFFER_SIZE;
+      end loop;
+      utl_file.fflush(fh);
+      utl_file.fclose(fh);
+   end if;
+   --
+   DBMS_LOB.TRIM(zipped_blob, 0);
+end write_scripts;
+
+
+------------------------------------------------------------
+-- Report File Contents from Memory Array
+procedure show_file
+      (in_bld_type      in  varchar2
+      ,in_element       in  varchar2
+      ,in_fname_regexp  in  varchar2 default '.*')
+is
+   bld_ord      pls_integer;
+   file_id      pls_integer;
+begin
+   select element_seq into bld_ord from element_conf
+    where element_name = in_element;
+   file_id := sf_aa(in_bld_type)(bld_ord).FIRST;
+   loop
+      if regexp_like(sf_aa(in_bld_type)(bld_ord)(file_id).filename, in_fname_regexp)
+      then
+         dbms_output.put_line('FNAME: ' || sf_aa(in_bld_type)(bld_ord)(file_id).filename);
+         for i in 1 .. sf_aa(in_bld_type)(bld_ord)(file_id).num_buffers
+         loop
+            dbms_output.put_line(sf_aa(in_bld_type)(bld_ord)(file_id).buffer_aa(i).buffer);
+         end loop;
+      else
+         dbms_output.put_line(' ... skipping FNAME: ' || sf_aa(in_bld_type)(bld_ord)(file_id).filename);
+      end if;
+      exit when file_id = sf_aa(in_bld_type)(bld_ord).LAST;
+      file_id := sf_aa(in_bld_type)(bld_ord).NEXT(file_id);
+   end loop;
+end show_file;
+
+
+------------------------------------------------------------
+-- Clear Buffers
+procedure clear_buffers
+      (in_build_type  in varchar2 default null)
+is
+begin
+   if in_build_type is null
+   then
+      sf_aa.DELETE;
+   else
+      sf_aa(in_build_type).DELETE;
+   end if;
+end clear_buffers;
+
+
+end fh2;
+/
+
+set define on

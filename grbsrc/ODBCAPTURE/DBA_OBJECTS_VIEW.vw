@@ -2,19 +2,15 @@
 --
 --  Create ODBCAPTURE.DBA_OBJECTS_VIEW view
 --
---  NOTE: Foreign keys are in a difference script
---        Triggers are in a difference script
---
 
 set define off
 
 
 --
---  Need to avoid errors granting permisions on a view that has errors
---  Found this technique on Ask Tom
+--  Cannot grant permisions on a view with an error
 --  https://asktom.oracle.com/pls/apex/f?p=100:11:0::::P11_QUESTION_ID:43253832697675#2653213300346351987
 create view "ODBCAPTURE"."DBA_OBJECTS_VIEW"
-  as   select * from SYSTEM.TEMP_PUBLICLY_UPDATEABLE_TABLE;
+  as   select * from TEMP_PUBLICLY_UPDATEABLE_TABLE;
 
 --  Grants
 
@@ -22,14 +18,14 @@ create view "ODBCAPTURE"."DBA_OBJECTS_VIEW"
 
 --DBMS_METADATA:ODBCAPTURE.DBA_OBJECTS_VIEW
 
-  CREATE OR REPLACE FORCE EDITIONABLE VIEW "ODBCAPTURE"."DBA_OBJECTS_VIEW" ("OBJECT_OWNER_INSTALL_TYPE", "OBJECT_OWNER", "OBJECT_NAME", "OBJECT_TYPE", "TABLE_FLAG", "SELTYPE") AS 
-  select sc.install_type           OBJECT_OWNER_INSTALL_TYPE
+  CREATE OR REPLACE FORCE EDITIONABLE VIEW "ODBCAPTURE"."DBA_OBJECTS_VIEW" ("OBJECT_OWNER_BUILD_TYPE", "OBJECT_OWNER", "OBJECT_NAME", "OBJECT_TYPE", "TABLE_FLAG", "SELTYPE") AS 
+  select sc.build_type           OBJECT_OWNER_BUILD_TYPE
       ,obj.owner                 OBJECT_OWNER
       ,obj.object_name
       ,obj.object_type
-      ,case when tab.table_name is not null then 'TAB'
+      ,case when  nt.table_name is not null then  'NT'
+            when tab.table_name is not null then 'TAB'
             when xml.table_name is not null then 'XML'
-            when  nt.table_name is not null then  'NT'
                                             else NULL
        end                       TABLE_FLAG
       ,'BASE'                    SELTYPE
@@ -48,18 +44,18 @@ create view "ODBCAPTURE"."DBA_OBJECTS_VIEW"
             on  nt.owner        = obj.owner
             and nt.table_name   = obj.object_name
             and obj.object_type = 'TABLE'
- where sc.install_type not in ('sys', 'pub')
+ where sc.oracle_provided = 'N'      -- Exclude Oracle Provided Object Owner
  group by obj.owner
-      ,sc.install_type
+      ,sc.build_type
       ,obj.object_name
       ,obj.object_type
-      ,case when tab.table_name is not null then 'TAB'
+      ,case when  nt.table_name is not null then  'NT'
+            when tab.table_name is not null then 'TAB'
             when xml.table_name is not null then 'XML'
-            when  nt.table_name is not null then  'NT'
                                             else NULL
        end
 UNION ALL
-select sco.install_type          OBJECT_OWNER_INSTALL_TYPE
+select sco.build_type            OBJECT_OWNER_BUILD_TYPE
       ,syn.owner                 OBJECT_OWNER
       ,syn.synonym_name          OBJECT_NAME
       ,'SYNONYM'                 OBJECT_TYPE
@@ -69,17 +65,17 @@ select sco.install_type          OBJECT_OWNER_INSTALL_TYPE
        join dba_synonyms  syn
             on  syn.owner = sco.username
        join schema_conf  sct
-            on  sct.username     = syn.table_owner
-            and sct.install_type not in ('sys','pub')
- where sco.install_type = 'pub'     -- Public Synonyms
+            on  sct.username        = syn.table_owner
+            and sct.oracle_provided = 'N'   -- Exclude Oracle Provided Synonym Owner
+ where sco.build_type = 'pub'     -- Public Synonyms
 UNION ALL
-select sco.install_type          OBJECT_OWNER_INSTALL_TYPE
+select sco.build_type            OBJECT_OWNER_BUILD_TYPE
       ,priv.owner                OBJECT_OWNER
       ,priv.table_name           OBJECT_NAME
       ,priv.type                 OBJECT_TYPE
-      ,case when tab.table_name is not null then 'TAB'
+      ,case when  nt.table_name is not null then  'NT'
+            when tab.table_name is not null then 'TAB'
             when xml.table_name is not null then 'XML'
-            when  nt.table_name is not null then  'NT'
                                             else NULL
        end                       TABLE_FLAG
       ,'SYS'                     SELTYPE
@@ -87,8 +83,8 @@ select sco.install_type          OBJECT_OWNER_INSTALL_TYPE
        join dba_tab_privs  priv
             on  priv.owner      = sco.username
        join schema_conf  sct
-            on  sct.username     = priv.grantee
-            and sct.install_type not in ('sys','pub')
+            on  sct.username        = priv.grantee
+            and sct.oracle_provided = 'N'   -- Exclude Oracle Provided Grantee
   left join dba_tables  tab
             on  tab.owner      = priv.owner
             and tab.table_name = priv.table_name
@@ -101,14 +97,14 @@ select sco.install_type          OBJECT_OWNER_INSTALL_TYPE
             on  nt.owner      = priv.owner
             and nt.table_name = priv.table_name
             and priv.type     = 'TABLE'
- where sco.install_type = 'sys'             -- 'sys' priv.table owners
+ where sco.oracle_provided = 'Y'          -- ONLY Oracle Provided Object Owners
  group by priv.owner
-      ,sco.install_type
+      ,sco.build_type
       ,priv.table_name
       ,priv.type
-      ,case when tab.table_name is not null then 'TAB'
+      ,case when  nt.table_name is not null then  'NT'
+            when tab.table_name is not null then 'TAB'
             when xml.table_name is not null then 'XML'
-            when  nt.table_name is not null then  'NT'
                                             else NULL
        end;
 

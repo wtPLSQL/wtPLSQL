@@ -2,19 +2,15 @@
 --
 --  Create ODBCAPTURE.OBJ_INSTALL_OBJECT_VIEW view
 --
---  NOTE: Foreign keys are in a difference script
---        Triggers are in a difference script
---
 
 set define off
 
 
 --
---  Need to avoid errors granting permisions on a view that has errors
---  Found this technique on Ask Tom
+--  Cannot grant permisions on a view with an error
 --  https://asktom.oracle.com/pls/apex/f?p=100:11:0::::P11_QUESTION_ID:43253832697675#2653213300346351987
 create view "ODBCAPTURE"."OBJ_INSTALL_OBJECT_VIEW"
-  as   select * from SYSTEM.TEMP_PUBLICLY_UPDATEABLE_TABLE;
+  as   select * from TEMP_PUBLICLY_UPDATEABLE_TABLE;
 
 --  Grants
 
@@ -22,118 +18,118 @@ create view "ODBCAPTURE"."OBJ_INSTALL_OBJECT_VIEW"
 
 --DBMS_METADATA:ODBCAPTURE.OBJ_INSTALL_OBJECT_VIEW
 
-  CREATE OR REPLACE FORCE EDITIONABLE VIEW "ODBCAPTURE"."OBJ_INSTALL_OBJECT_VIEW" ("INSTALL_TYPE", "INSTALL_TIMING", "ONAME_FILTER", "OBJECT_OWNER_INSTALL_TYPE", "OBJECT_OWNER", "OBJECT_INSTALL_TYPE", "OBJECT_NAME", "OBJECT_TYPE", "INSTALL_OTYPE", "EXT", "EXT2", "EXT3") AS 
+  CREATE OR REPLACE FORCE EDITIONABLE VIEW "ODBCAPTURE"."OBJ_INSTALL_OBJECT_VIEW" ("BUILD_TYPE", "BUILD_TIMING", "OBJECT_NAME_REGEXP", "OBJECT_OWNER_BUILD_TYPE", "OBJECT_OWNER", "OBJECT_BUILD_TYPE", "OBJECT_NAME", "OBJECT_TYPE", "ELEMENT_NAME", "FILE_EXT1", "FILE_EXT2", "FILE_EXT3") AS 
   with q_nondflt as (
-  select oc.install_type
-      ,t.install_timing
-      ,oc.oname_filter
-      ,obj.object_owner_install_type
+  select oc.build_type
+      ,t.build_timing
+      ,oc.object_name_regexp
+      ,obj.object_owner_build_type
       ,obj.object_owner
-      ,oc.install_type               OBJECT_INSTALL_TYPE
+      ,oc.build_type               OBJECT_BUILD_TYPE
       ,obj.object_name
       ,obj.object_type
-      ,otc.install_otype
-      ,otc.ext
-      ,otc.ext2
-      ,otc.ext3
+      ,ec.element_name
+      ,ec.file_ext1
+      ,ec.file_ext2
+      ,ec.file_ext3
  from  dba_objects_tab  obj
-       join otype_conf  otc
-            on  otc.object_type = obj.object_type
-            and (   otc.object_type != 'INDEX'
-                 or otc.install_otype = (select case ind.table_type
-                                                when 'MATERIALIZED VIEW' then 'MVIEW'
-                                                                         else ind.table_type
-                                                end      || '_INDEX'
-                                          from  dba_indexes  ind
-                                          where ind.owner = obj.object_owner
-                                           and  ind.index_name = obj.object_name) )
-            and (   otc.object_type != 'TRIGGER'
-                 or otc.install_otype = (select case trg.base_object_type
-                                                when 'MATERIALIZED VIEW' then 'MVIEW'
-                                                                         else trg.base_object_type
-                                                end      || '_TRIGGER'
-                                          from  dba_triggers  trg
-                                          where trg.owner = obj.object_owner
-                                           and  trg.trigger_name = obj.object_name) )
-       join object_conf  oc
-            on  oc.username      = obj.object_owner
-            and oc.install_type != obj.object_owner_install_type
-            and oc.install_otype = otc.install_otype
-            and regexp_like(obj.object_name, oc.oname_filter)
-       join install_type_timing  t
-            -- Ensure the owner is installed before this object
-            on  t.from_install_type = oc.install_type
-            and t.to_install_type   = obj.object_owner_install_type
- where (   obj.table_flag != 'NT'    -- Nested Tables masquarade as tables in DBA_OBJECTS
-        OR obj.table_flag is NULL)
-  and  obj.object_name not like common_util.get_RECYCLE_BIN_NAME_MATCH escape '\'
-), q_dflt as (
-  select obj.object_owner_install_type INSTALL_TYPE
-      ,'CURRENT'                     INSTALL_TIMING
-      ,NULL                          ONAME_FILTER
-      ,obj.object_owner_install_type
-      ,obj.object_owner
-      ,obj.object_owner_install_type OBJECT_INSTALL_TYPE
-      ,obj.object_name
-      ,obj.object_type
-      ,otc.install_otype
-      ,otc.ext
-      ,otc.ext2
-      ,otc.ext3
- from  dba_objects_tab  obj
-       join otype_conf  otc
-            on  otc.object_type = obj.object_type
-            and (   otc.object_type != 'INDEX'
-                 or otc.install_otype = (select case ind.table_type
-                                                when 'MATERIALIZED VIEW' then 'MVIEW'
-                                                                         else ind.table_type
-                                                end      || '_INDEX'
-                                          from  dba_indexes  ind
-                                          where ind.owner = obj.object_owner
-                                           and  ind.index_name = obj.object_name) )
-            and (   otc.object_type  != 'TRIGGER'
-                 or otc.install_otype = (select case trg.base_object_type
+       join element_conf  ec
+            on  ec.object_type = obj.object_type
+            and (   ec.object_type != 'INDEX'
+                 or ec.element_name  = (select case ind.table_type
+                                               when 'MATERIALIZED VIEW' then 'MVIEW'
+                                                                        else ind.table_type
+                                               end      || '_INDEX'
+                                         from  dba_indexes  ind
+                                         where ind.owner = obj.object_owner
+                                          and  ind.index_name = obj.object_name) )
+            and (   ec.object_type != 'TRIGGER'
+                 or ec.element_name  = (select case trg.base_object_type
                                                when 'MATERIALIZED VIEW' then 'MVIEW'
                                                                         else trg.base_object_type
                                                end      || '_TRIGGER'
                                          from  dba_triggers  trg
                                          where trg.owner = obj.object_owner
                                           and  trg.trigger_name = obj.object_name) )
+       join object_conf  oc
+            on  oc.username     = obj.object_owner
+            and oc.build_type  != obj.object_owner_build_type
+            and oc.element_name = ec.element_name
+            and regexp_like(obj.object_name, oc.object_name_regexp)
+       join build_type_timing  t
+            -- Ensure the owner is installed before this object
+            on  t.from_build_type = oc.build_type
+            and t.to_build_type   = obj.object_owner_build_type
+ where (   obj.table_flag != 'NT'    -- Nested Tables masquarade as tables in DBA_OBJECTS
+        OR obj.table_flag is NULL)
+  and  obj.object_name not like common_util.get_RECYCLE_BIN_PATTERN escape '\'
+), q_dflt as (
+  select obj.object_owner_build_type BUILD_TYPE
+      ,'CURRENT'                     BUILD_TIMING
+      ,NULL                          OBJECT_NAME_REGEXP
+      ,obj.object_owner_build_type
+      ,obj.object_owner
+      ,obj.object_owner_build_type   OBJECT_BUILD_TYPE
+      ,obj.object_name
+      ,obj.object_type
+      ,ec.element_name
+      ,ec.file_ext1
+      ,ec.file_ext2
+      ,ec.file_ext3
+ from  dba_objects_tab  obj
+       join element_conf  ec
+            on  ec.object_type = obj.object_type
+            and (   ec.object_type != 'INDEX'
+                 or ec.element_name  = (select case ind.table_type
+                                               when 'MATERIALIZED VIEW' then 'MVIEW'
+                                                                        else ind.table_type
+                                               end      || '_INDEX'
+                                         from  dba_indexes  ind
+                                         where ind.owner = obj.object_owner
+                                          and  ind.index_name = obj.object_name) )
+            and (   ec.object_type  != 'TRIGGER'
+                 or ec.element_name  = (select case trg.base_object_type
+                                              when 'MATERIALIZED VIEW' then 'MVIEW'
+                                                                       else trg.base_object_type
+                                              end      || '_TRIGGER'
+                                        from  dba_triggers  trg
+                                        where trg.owner = obj.object_owner
+                                         and  trg.trigger_name = obj.object_name) )
  where (   obj.table_flag != 'NT'    -- Nested Tables masquarade as tables in DBA_OBJECTS
         OR obj.table_flag is NULL)
   and  (obj.object_owner, obj.object_type, obj.object_name) not in (
         select q_nondflt.object_owner, q_nondflt.object_type, q_nondflt.object_name from q_nondflt)
-  and  obj.object_name not like common_util.get_RECYCLE_BIN_NAME_MATCH escape '\'
+  and  obj.object_name not like common_util.get_RECYCLE_BIN_PATTERN escape '\'
 ), q_sys as (
-  select oc.install_type
-      ,'CURRENT'                     INSTALL_TIMING
-      ,oc.oname_filter
-      ,oc.install_type               OBJECT_OWNER_INSTALL_TYPE
+  select oc.build_type
+      ,'CURRENT'                     BUILD_TIMING
+      ,oc.object_name_regexp
+      ,oc.build_type                 OBJECT_OWNER_BUILD_TYPE
       ,obj.object_owner
-      ,oc.install_type               OBJECT_INSTALL_TYPE
+      ,oc.build_type                 OBJECT_BUILD_TYPE
       ,obj.object_name
       ,obj.object_type
-      ,otc.install_otype
-      ,otc.ext
-      ,otc.ext2
-      ,otc.ext3
+      ,ec.element_name
+      ,ec.file_ext1
+      ,ec.file_ext2
+      ,ec.file_ext3
  from  dba_objects_tab  obj
-       join otype_conf  otc
-            on  otc.object_type = obj.object_type
+       join element_conf  ec
+            on  ec.object_type = obj.object_type
        join object_conf  oc
-            on  oc.username      = obj.object_owner
-            and oc.install_type != obj.object_owner_install_type
-            and oc.install_otype = otc.install_otype
-            and regexp_like(obj.object_name, oc.oname_filter)
- where obj.object_name not like common_util.get_RECYCLE_BIN_NAME_MATCH escape '\'
+            on  oc.username     = obj.object_owner
+            and oc.build_type  != obj.object_owner_build_type
+            and oc.element_name = ec.element_name
+            and regexp_like(obj.object_name, oc.object_name_regexp)
+ where obj.object_name not like common_util.get_RECYCLE_BIN_PATTERN escape '\'
   and  obj.object_owner = 'SYS'
   and  obj.object_type in ('CONTEXT', 'DIRECTORY')
 )
-select "INSTALL_TYPE","INSTALL_TIMING","ONAME_FILTER","OBJECT_OWNER_INSTALL_TYPE","OBJECT_OWNER","OBJECT_INSTALL_TYPE","OBJECT_NAME","OBJECT_TYPE","INSTALL_OTYPE","EXT","EXT2","EXT3" from q_nondflt
+select "BUILD_TYPE","BUILD_TIMING","OBJECT_NAME_REGEXP","OBJECT_OWNER_BUILD_TYPE","OBJECT_OWNER","OBJECT_BUILD_TYPE","OBJECT_NAME","OBJECT_TYPE","ELEMENT_NAME","FILE_EXT1","FILE_EXT2","FILE_EXT3" from q_nondflt
 UNION ALL
-select "INSTALL_TYPE","INSTALL_TIMING","ONAME_FILTER","OBJECT_OWNER_INSTALL_TYPE","OBJECT_OWNER","OBJECT_INSTALL_TYPE","OBJECT_NAME","OBJECT_TYPE","INSTALL_OTYPE","EXT","EXT2","EXT3" from q_dflt
+select "BUILD_TYPE","BUILD_TIMING","OBJECT_NAME_REGEXP","OBJECT_OWNER_BUILD_TYPE","OBJECT_OWNER","OBJECT_BUILD_TYPE","OBJECT_NAME","OBJECT_TYPE","ELEMENT_NAME","FILE_EXT1","FILE_EXT2","FILE_EXT3" from q_dflt
 UNION ALL
-select "INSTALL_TYPE","INSTALL_TIMING","ONAME_FILTER","OBJECT_OWNER_INSTALL_TYPE","OBJECT_OWNER","OBJECT_INSTALL_TYPE","OBJECT_NAME","OBJECT_TYPE","INSTALL_OTYPE","EXT","EXT2","EXT3" from q_sys;
+select "BUILD_TYPE","BUILD_TIMING","OBJECT_NAME_REGEXP","OBJECT_OWNER_BUILD_TYPE","OBJECT_OWNER","OBJECT_BUILD_TYPE","OBJECT_NAME","OBJECT_TYPE","ELEMENT_NAME","FILE_EXT1","FILE_EXT2","FILE_EXT3" from q_sys;
 
 --  Comments
 

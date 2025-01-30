@@ -1,0 +1,428 @@
+
+--
+--  Create ODBCAPTURE.COMMON_UTIL Package Body
+--
+
+set define off
+
+
+--DBMS_METADATA:ODBCAPTURE.COMMON_UTIL
+
+  CREATE OR REPLACE EDITIONABLE PACKAGE BODY "ODBCAPTURE"."COMMON_UTIL" 
+as
+
+------------------------------------------------------------
+-- Add SYS Grants File Header to Script File
+procedure add_sysgrants_file_header
+      (fh  in out nocopy  fh2.sf_ptr_type)
+is
+begin
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, '--');
+   fh2.script_put_line(fh, '--  Future Grant SYS Objects (but not directories)');
+   fh2.script_put_line(fh, '--');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, 'set define off');
+   fh2.script_put_line(fh, '');
+end add_sysgrants_file_header;
+
+
+------------------------------------------------------------
+-- Add Grants File Header to Script File
+procedure add_grants_file_header
+      (fh          in out nocopy  fh2.sf_ptr_type
+      ,in_grantee  in             varchar2)
+is
+begin
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, '--');
+   fh2.script_put_line(fh, '--  Create ' || in_grantee || ' Grants');
+   fh2.script_put_line(fh, '--');
+   fh2.script_put_line(fh, '');
+   fh2.script_put_line(fh, 'set define off');
+   fh2.script_put_line(fh, '');
+end add_grants_file_header;
+
+
+------------------------------------------------------------
+-- Set DBMS_METADATA Transformation Parameters
+procedure dbms_metadata_settings
+is
+begin
+   -- http://docs.oracle.com/database/121/ARPLS/d_metada.htm#ARPLS66910
+   for buff in (select * from metadata_transform_params)
+   loop
+      case buff.value_type
+         when 'BOOLEAN' then
+            dbms_metadata.set_transform_param
+               (transform_handle => dbms_metadata.session_transform
+               ,name             => buff.name
+               ,value            => regexp_like(buff.value, '^[TY]', 'i'));
+         when 'NUMBER' then
+            dbms_metadata.set_transform_param
+               (transform_handle => dbms_metadata.session_transform
+               ,name             => buff.name
+               ,value            => to_number(buff.value));
+         when 'VARCHAR' then
+            dbms_metadata.set_transform_param
+               (transform_handle => dbms_metadata.session_transform
+               ,name             => buff.name
+               ,value            => buff.value);
+      end case;
+   end loop;
+end dbms_metadata_settings;
+
+
+------------------------------------------------------------
+-- RPAD changed to include truncate.
+-- This function brings back the old functionality.
+function old_rpad
+      (in_expr1  in varchar2
+      ,in_n      in number
+      ,in_expr2  in varchar2 default null)
+   return varchar2
+is
+begin
+   if in_expr1 is null or length(in_expr1) >= in_n
+   then
+      return in_expr1;
+   end if;
+   return rpad(in_expr1, in_n, nvl(in_expr2,' '));
+end old_rpad;
+
+------------------------------------------------------------
+-- Return RECYCLE_BIN_PATTERN for SQL Queries
+function get_RECYCLE_BIN_PATTERN
+   return varchar2
+is
+begin
+   return RECYCLE_BIN_PATTERN;
+end get_RECYCLE_BIN_PATTERN;
+
+
+------------------------------------------------------------
+-- Add linefeeds before MAXIMUM_SQL_LENGTH at commas, if possible.
+function split_sql_length
+      (in_str  IN CLOB)
+   return CLOB
+is
+   olen     number;           -- Original Length of IN_STR
+   ptr      number;           -- Current Position in IN_STR
+   out_str  CLOB;             -- Output String
+   oset     number;           -- Line Cut-off at the comma
+begin
+   olen    := length(in_str);
+   ptr     := 1;
+   out_str := '';
+   while olen - ptr + 1 > MAXIMUM_SQL_LENGTH
+   loop
+      oset := instr(substr(in_str, ptr, MAXIMUM_SQL_LENGTH), LF, -1);
+      if oset <= 0
+      then
+         oset := instr(substr(in_str, ptr, MAXIMUM_SQL_LENGTH), ',', -1);
+         if oset <= 0
+         then
+            raise_application_error(-20000
+                                   ,substr('Unable to find "," in string: ' ||
+                                            substr(in_str, ptr, MAXIMUM_SQL_LENGTH)
+                                          ,1,4000                              ) );
+         end if;
+         out_str := out_str || substr(substr(in_str, ptr, MAXIMUM_SQL_LENGTH), 1, oset) || LF;
+      else
+         out_str := out_str || substr(substr(in_str, ptr, MAXIMUM_SQL_LENGTH), 1, oset);
+      end if;
+      ptr   := ptr + oset;
+   end loop;
+   return(out_str || substr(in_str, ptr, MAXIMUM_SQL_LENGTH));
+end split_sql_length;
+
+
+------------------------------------------------------------
+-- Must escape "@" with a CHR(16): ^P, Control-P, DLE
+--   Otherwise, SQL*Plus will attempt to run a script
+function escape_at_sign
+      (in_str      IN   CLOB)
+   return CLOB
+is
+begin
+   return regexp_replace(in_str, '('||LF||'[[:space:]]*)@', '\1'||CHR(16)||'@');
+end escape_at_sign;
+
+
+------------------------------------------------------------
+-- Check for invalid characters in filenames
+--
+--http://stackoverflow.com/questions/1976007/what-characters-are-forbidden-in-windows-and-linux-directory-names
+-- "<" (less than)
+-- ">" (greater than)
+-- ":" (colon)
+-- """ (double quote)
+-- "/" (forward slash)
+-- "\" (backslash)
+-- "|" (vertical bar or pipe)
+-- "?" (question mark)
+-- "*" (asterisk)
+-- "$" - Starting from Oracle Database release 19c, version 19.3, file names
+--       with the $ character will no longer run on Windows.
+-- "%" - https://superuser.com/q/1096208#answer-1096273 - because % has a special
+--       meaning there, you need to use syntax outlined below to create such files
+--
+procedure check_filename
+      (in_filename  in varchar2)
+is
+   char_loc  pls_integer;
+begin
+   char_loc := regexp_instr(in_filename, '[<>:"/\|?*$%]');
+   if char_loc != 0
+   then
+      raise_application_error (-20000,
+         'Found Forbidden Filename Character in ' || in_filename ||
+                                   ' at postion ' || char_loc    ||
+                                            ': "' || substr(in_filename, char_loc, 1) ||
+                                             '".' );
+   end if;
+end check_filename;
+
+------------------------------------------------------------
+-- Fix commonly found invalid filename characters in database object names
+function fix_filename
+      (in_filename  in varchar2)
+   return varchar2 deterministic
+is
+begin
+   return regexp_replace(in_filename, '[$%]', '_');
+end fix_filename;
+
+
+-------------------------------------------
+-- Refresh Data Tables
+procedure update_view_tabs
+is
+   --
+   procedure do_it (in_text varchar2) is
+      dbi_beg_secs    number := dbms_utility.get_time;
+   begin
+      --dbms_output.put_line(in_text);
+      execute immediate in_text;
+      dbms_output.put_line('SUCCESS(' || to_char(SQL%ROWCOUNT,'B9999') ||
+                          ' rows in ' || substr(to_char((dbms_utility.get_time -
+                                                         dbi_beg_secs
+                                                        )/100
+                                                       ,'B99.9')
+                                               ,2   -- Remove Leading space (sign is not needed)
+                                               ,100) ||
+                            ' sec): ' || substr(in_text,1,100)  );
+   exception when others then
+      raise_application_error (-20000, 'FAILED: ' || SQLERRM || CHR(10) ||
+                                       substr(in_text,1,100) || CHR(10) ||
+                                       dbms_utility.format_error_backtrace);
+   end do_it;
+   --
+   procedure update_build_type_timing is
+      dbi_beg_secs    number      := dbms_utility.get_time;
+      num_rows        pls_integer := 0;
+   begin
+      for buff in (select build_type from build_conf)
+      loop
+         insert into build_type_timing (from_build_type, build_timing, to_build_type)
+         with qcur as (
+         select buff.build_type                  FROM_BUILD_TYPE
+               ,'CURRENT'                        BUILD_TIMING
+               ,t.build_type                     TO_BUILD_TYPE
+          from  build_path  m
+                join build_conf  t
+                     on  t.build_seq = m.build_seq
+          connect by prior m.parent_build_seq = m.build_seq
+          start with t.build_type = buff.build_type
+         ), qfut as (
+         select buff.build_type                  FROM_BUILD_TYPE
+               ,'FUTURE'                         BUILD_TIMING
+               ,t.build_type                     TO_BUILD_TYPE
+          from  build_path  m
+                join build_conf  t
+                     on  t.build_seq = m.parent_build_seq
+          connect by m.parent_build_seq = prior m.build_seq
+          start with t.build_type = buff.build_type
+         )
+         select FROM_BUILD_TYPE, BUILD_TIMING, TO_BUILD_TYPE from qcur
+         UNION
+         select FROM_BUILD_TYPE, BUILD_TIMING, TO_BUILD_TYPE from qfut
+          where TO_BUILD_TYPE != buff.build_type
+         UNION
+         select buff.build_type       FROM_BUILD_TYPE
+               ,'CURRENT'             BUILD_TIMING
+               ,'sys'                 TO_BUILD_TYPE
+          from  dual;
+         num_rows := num_rows + SQL%ROWCOUNT;
+      end loop;
+      dbms_output.put_line('SUCCESS(' || to_char(num_rows,'B9999') ||
+                          ' rows in ' || substr(to_char((dbms_utility.get_time -
+                                                         dbi_beg_secs
+                                                        )/100
+                                                       ,'B99.9')
+                                               ,2   -- Remove Leading space (sign is not needed)
+                                               ,100) ||
+                            ' sec): update_build_type_timing');
+   exception when others then
+      raise_application_error (-20000, 'update_build_type_timing FAILED: ' || SQLERRM);
+   end update_build_type_timing;
+   --
+begin
+   dbms_output.put_line('Running ' || $$PLSQL_UNIT || '.update_view_tabs');
+   --
+   dbms_output.put_line('');
+   grab_scripts.set_installed_types;
+   dbms_output.put_line('');
+   --
+   do_it('truncate table schema_objects_tab');
+   do_it('truncate table obj_install_comments_tab');
+   do_it('truncate table obj_install_trigger_tab');
+   do_it('truncate table obj_install_synonym_tab');
+   do_it('truncate table obj_install_data_load_tab');
+   do_it('truncate table obj_install_index_tab');
+   do_it('truncate table obj_install_fkey_tab');
+   do_it('truncate table obj_install_context_tab');
+   do_it('truncate table obj_install_object_tab');
+   do_it('truncate table dba_dependencies_tab');
+   do_it('truncate table dba_tab_privs_tab');
+   do_it('truncate table dba_objects_tab');
+   --
+   do_it('truncate table build_type_timing');
+   update_build_type_timing;
+   --
+   do_it('insert into dba_objects_tab           select * from dba_objects_view');
+   do_it('insert into dba_tab_privs_tab         select * from dba_tab_privs_view');
+   do_it('insert into dba_dependencies_tab      select * from dba_dependencies_view');
+   do_it('insert into obj_install_object_tab    select * from obj_install_object_view');
+   do_it('insert into obj_install_context_tab   select * from obj_install_context_view');
+   do_it('insert into obj_install_fkey_tab      select * from obj_install_fkey_view');
+   do_it('insert into obj_install_index_tab     select * from obj_install_index_view');
+   do_it('insert into obj_install_data_load_tab select * from obj_install_data_load_view');
+   do_it('insert into obj_install_synonym_tab   select * from obj_install_synonym_view');
+   do_it('insert into obj_install_trigger_tab   select * from obj_install_trigger_view');
+   do_it('insert into obj_install_comments_tab  select * from obj_install_comments_view');
+   --
+   -- DISTINCT is required instead of GROUP BY for Oracle Database
+   --   23ai Free Release 23.0.0.0.0 - Develop, Learn, and Run for Free Version 23.4.0.24.05
+   --
+   do_it('insert into schema_objects_tab (BUILD_TYPE,     OBJECT_OWNER,     ELEMENT_NAME) ' || CHR(10) ||
+         'select DISTINCT                 build_type,    context_owner,     element_name  ' || CHR(10) ||
+         ' from obj_install_context_tab' );
+   --
+   do_it('insert into schema_objects_tab (BUILD_TYPE,     OBJECT_OWNER,     ELEMENT_NAME) ' || CHR(10) ||
+         'select DISTINCT                 build_type,      table_owner,     element_name  ' || CHR(10) ||
+         ' from obj_install_data_load_tab' );
+   --
+   do_it('insert into schema_objects_tab (BUILD_TYPE,     OBJECT_OWNER,     ELEMENT_NAME) ' || CHR(10) ||
+         'select DISTINCT                 build_type, base_table_owner,     element_name  ' || CHR(10) ||
+         ' from obj_install_fkey_tab' );
+   --
+   do_it('insert into schema_objects_tab (BUILD_TYPE,     OBJECT_OWNER,     ELEMENT_NAME) ' || CHR(10) ||
+         'select DISTINCT                 build_type,      index_owner,     element_name  ' || CHR(10) ||
+         ' from obj_install_index_tab' );
+   --
+   do_it('insert into schema_objects_tab (BUILD_TYPE,     OBJECT_OWNER,     ELEMENT_NAME) ' || CHR(10) ||
+         'select DISTINCT             obj.build_type, obj.object_owner, obj.element_name  ' || CHR(10) ||
+         ' from obj_install_object_tab  obj '                                               || CHR(10) ||
+         '      join schema_conf  own '                                                     || CHR(10) ||
+         '           on  own.username = obj.object_owner '                                  || CHR(10) ||
+         '           and own.oracle_provided = ''N'' '                                      || CHR(10) ||  -- Exclude Oracle Provided objects
+         ' where obj.object_type not in (''INDEX'', ''SYNONYM'', ''TRIGGER'')' );
+   --
+   do_it('insert into schema_objects_tab (BUILD_TYPE,     OBJECT_OWNER,     ELEMENT_NAME) ' || CHR(10) ||
+         'select DISTINCT                 build_type,    synonym_owner,     element_name  ' || CHR(10) ||
+         ' from obj_install_synonym_TAB' );
+   --
+   do_it('insert into schema_objects_tab (BUILD_TYPE,     OBJECT_OWNER,     ELEMENT_NAME) ' || CHR(10) ||
+         'select DISTINCT                 build_type,    trigger_owner,     element_name  ' || CHR(10) ||
+         ' from obj_install_trigger_tab' );
+   --
+   do_it('insert into schema_objects_tab (BUILD_TYPE,     OBJECT_OWNER,     ELEMENT_NAME) ' || CHR(10) ||
+         'select DISTINCT                 build_type,          grantee,     element_name  ' || CHR(10) ||
+         ' from priv_obj_dir_view' );
+   --
+   do_it('insert into schema_objects_tab (BUILD_TYPE,     OBJECT_OWNER,     ELEMENT_NAME) ' || CHR(10) ||
+         'select DISTINCT                 build_type,          grantee,     element_name  ' || CHR(10) ||
+         ' from priv_obj_hacl_view' );
+   --
+   do_it('insert into schema_objects_tab (BUILD_TYPE,     OBJECT_OWNER,     ELEMENT_NAME) ' || CHR(10) ||
+         'select DISTINCT                 build_type,          grantee,     element_name  ' || CHR(10) ||
+         ' from priv_obj_queue_view' );
+   --
+   do_it('insert into schema_objects_tab (BUILD_TYPE,     OBJECT_OWNER,     ELEMENT_NAME) ' || CHR(10) ||
+         'select DISTINCT                 build_type,          grantee,     element_name  ' || CHR(10) ||
+         ' from priv_obj_wacl_view' );
+   --
+   do_it('insert into schema_objects_tab (BUILD_TYPE,     OBJECT_OWNER,     ELEMENT_NAME) ' || CHR(10) ||
+         'select DISTINCT                 build_type,          grantee,     element_name  ' || CHR(10) ||
+         ' from priv_queue_sysprivs_view' );
+   --
+   if grab_scripts.installed_types_aa.EXISTS('grbras')
+   then
+      do_it('insert into schema_objects_tab (BUILD_TYPE,     OBJECT_OWNER,     ELEMENT_NAME) ' || CHR(10) ||
+            'select DISTINCT                 build_type,            owner,     element_name  ' || CHR(10) ||
+            ' from priv_obj_racl_view' );
+   end if;
+   --
+   commit;
+   --
+   do_it('begin sys.dbms_stats.gather_table_stats(ownname => ''ODBCAPTURE'', tabname => ''DBA_OBJECTS_TAB'',           cascade => TRUE); end;');
+   do_it('begin sys.dbms_stats.gather_table_stats(ownname => ''ODBCAPTURE'', tabname => ''DBA_TAB_PRIVS_TAB'',         cascade => TRUE); end;');
+   do_it('begin sys.dbms_stats.gather_table_stats(ownname => ''ODBCAPTURE'', tabname => ''DBA_DEPENDENCIES_TAB'',      cascade => TRUE); end;');
+   do_it('begin sys.dbms_stats.gather_table_stats(ownname => ''ODBCAPTURE'', tabname => ''OBJ_INSTALL_OBJECT_TAB'',    cascade => TRUE); end;');
+   do_it('begin sys.dbms_stats.gather_table_stats(ownname => ''ODBCAPTURE'', tabname => ''OBJ_INSTALL_CONTEXT_TAB'',   cascade => TRUE); end;');
+   do_it('begin sys.dbms_stats.gather_table_stats(ownname => ''ODBCAPTURE'', tabname => ''OBJ_INSTALL_FKEY_TAB'',      cascade => TRUE); end;');
+   do_it('begin sys.dbms_stats.gather_table_stats(ownname => ''ODBCAPTURE'', tabname => ''OBJ_INSTALL_INDEX_TAB'',     cascade => TRUE); end;');
+   do_it('begin sys.dbms_stats.gather_table_stats(ownname => ''ODBCAPTURE'', tabname => ''OBJ_INSTALL_DATA_LOAD_TAB'', cascade => TRUE); end;');
+   do_it('begin sys.dbms_stats.gather_table_stats(ownname => ''ODBCAPTURE'', tabname => ''OBJ_INSTALL_SYNONYM_TAB'',   cascade => TRUE); end;');
+   do_it('begin sys.dbms_stats.gather_table_stats(ownname => ''ODBCAPTURE'', tabname => ''OBJ_INSTALL_TRIGGER_TAB'',   cascade => TRUE); end;');
+   do_it('begin sys.dbms_stats.gather_table_stats(ownname => ''ODBCAPTURE'', tabname => ''OBJ_INSTALL_COMMENTS_TAB'',  cascade => TRUE); end;');
+   do_it('begin sys.dbms_stats.gather_table_stats(ownname => ''ODBCAPTURE'', tabname => ''SCHEMA_OBJECTS_TAB'',        cascade => TRUE); end;');
+   commit;
+   --
+   do_it('purge recyclebin');
+   --
+end update_view_tabs;
+
+
+-------------------------------------------
+-- Base64 Encoding
+function b64_encode
+      (in_blob     in BLOB
+      ,in_add_hdr  in boolean default FALSE)
+   return CLOB
+is
+   SPLIT_LEN   constant pls_integer  := 21843;    -- Must be divisible by 3
+   l_clob               clob;
+   len_blob             pls_integer;
+   ptr                  pls_integer;
+begin
+   if in_blob is null then return null; end if;
+   len_blob := length(in_blob);
+   if len_blob = 0 then return empty_clob(); end if;
+   dbms_lob.createtemporary(l_clob, true);
+   if in_add_hdr
+   then
+      dbms_lob.append(l_clob, BASE64_ENCODE_HEADER || chr(10));
+   end if;
+   ptr := 1;
+   while ptr <= len_blob
+   loop
+      dbms_lob.append(l_clob
+                     ,UTL_RAW.CAST_TO_VARCHAR2(UTL_ENCODE.BASE64_ENCODE(dbms_lob.substr(in_blob
+                                                                                       ,SPLIT_LEN
+                                                                                       ,ptr
+                                                                       )               )
+                     )                        );
+      ptr := ptr + SPLIT_LEN;
+   end loop;
+   return l_clob || CHR(10);
+end b64_encode;
+
+
+end common_util;
+/
+
+set define on

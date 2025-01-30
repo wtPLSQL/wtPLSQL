@@ -2,19 +2,15 @@
 --
 --  Create ODBCAPTURE.UOR_INSTALL_VIEW view
 --
---  NOTE: Foreign keys are in a difference script
---        Triggers are in a difference script
---
 
 set define off
 
 
 --
---  Need to avoid errors granting permisions on a view that has errors
---  Found this technique on Ask Tom
+--  Cannot grant permisions on a view with an error
 --  https://asktom.oracle.com/pls/apex/f?p=100:11:0::::P11_QUESTION_ID:43253832697675#2653213300346351987
 create view "ODBCAPTURE"."UOR_INSTALL_VIEW"
-  as   select * from SYSTEM.TEMP_PUBLICLY_UPDATEABLE_TABLE;
+  as   select * from TEMP_PUBLICLY_UPDATEABLE_TABLE;
 
 --  Grants
 
@@ -22,24 +18,26 @@ create view "ODBCAPTURE"."UOR_INSTALL_VIEW"
 
 --DBMS_METADATA:ODBCAPTURE.UOR_INSTALL_VIEW
 
-  CREATE OR REPLACE FORCE EDITIONABLE VIEW "ODBCAPTURE"."UOR_INSTALL_VIEW" ("INSTALL_TYPE", "USER_OR_ROLE", "UOR_TYPE", "EXT", "NOTES") AS 
-  select sc.install_type
+  CREATE OR REPLACE FORCE EDITIONABLE VIEW "ODBCAPTURE"."UOR_INSTALL_VIEW" ("BUILD_TYPE", "ORACLE_PROVIDED", "USER_OR_ROLE", "UOR_TYPE", "FILE_EXT1", "NOTES") AS 
+  select sc.build_type
+      ,sc.oracle_provided
       ,sc.username            USER_OR_ROLE
       ,'USER'                 UOR_TYPE
-      ,otc.ext
+      ,ec.file_ext1
       ,sc.notes
  from  schema_conf  sc
-       join otype_conf  otc
-            on  otc.install_otype = 'USER'
+       join element_conf  ec
+            on  ec.element_name = 'USER'
 UNION ALL
-select rl.install_type
+select rl.build_type
+      ,rl.oracle_provided
       ,rl.rolename              USER_OR_ROLE
       ,'ROLE'                   UOR_TYPE
-      ,otc.ext
+      ,ec.file_ext1
       ,rl.notes
  from  role_conf  rl
-       join otype_conf  otc
-            on  otc.install_otype = 'ROLE';
+       join element_conf  ec
+            on  ec.element_name = 'ROLE';
 
 --  Comments
 

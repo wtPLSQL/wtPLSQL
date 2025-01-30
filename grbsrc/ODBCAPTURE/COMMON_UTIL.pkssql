@@ -1,0 +1,88 @@
+
+--
+--  Create ODBCAPTURE.COMMON_UTIL Package
+--
+
+set define off
+
+
+--DBMS_METADATA:ODBCAPTURE.COMMON_UTIL
+
+  CREATE OR REPLACE EDITIONABLE PACKAGE "ODBCAPTURE"."COMMON_UTIL" AUTHID DEFINER
+as
+
+   BASE64_ENCODE_HEADER     CONSTANT varchar2(30) := '(Base64 with Linefeeds)';
+   MAXIMUM_SQL_LENGTH       CONSTANT integer := 2499-2; -- SQL*Plus (Allow 2 EOL characters)
+   MAXIMUM_LOADER_LENGTH    CONSTANT integer := 32767-2; -- SQL*Loader Data File (Allow 2 EOL characters)
+   MAXIMUM_BASH_LENGTH      CONSTANT integer := 32000-2; -- UNIX/Linux scripts (Allow 2 EOL characters)
+   MAXIMUM_CMD_LENGTH       CONSTANT integer := 8191-2; -- Windows scripts (Allow 2 EOL characters)
+   SYS_TYPE_REGEXP          CONSTANT varchar2(10) := 'SYSTP%=='; -- Type Specification and Type Body
+   RECYCLE_BIN_PATTERN      CONSTANT varchar2(10) := 'BIN$%';
+   ORACLE_TEXT_TABLE_REGEXP CONSTANT varchar2(25) := '^DR[$].*[$][A-Z]{1,2}$'; -- Oracle Text Table/Index
+   SDO_TABLE_REGEXP         CONSTANT varchar2(25) := '^MDR[ST]_'; -- Spatial Data Table/Sequence
+   MVIEW_AUTO_INDEX_PREFIX  CONSTANT varchar2(10) := 'I_SNAP$_';
+   SYS_OVIEW_OID_PATTERN    CONSTANT varchar2(20) := 'SYS\_YOID%'; -- object view OID type
+   SYS_PIPELINE_PATTERN     CONSTANT varchar2(20) := 'SYS\_PLSQL\_%'; -- pipeline package/function
+   -- https://blogs.oracle.com/db/entry/oracle_support_master_note_for_troubleshooting_advanced_queuing_and_oracle_streams_propagation_issue
+   ADV_QUEUE_VIEW_PATTERN   CONSTANT varchar2(20) := 'QT%\_BUFFER';
+   ADV_QUEUE_PREFIX_REGEXP  CONSTANT varchar2(20) := '^AQ[$][_]{0,1}';
+   --                                                 ^              - anchor to the start of the line
+   --                                                  AQ[$][_]{0,1} - Matches 'AQ$' or 'AQ$_'
+   ADV_QUEUE_SUFFIX_REGEXP  CONSTANT varchar2(20) := '([_][A-Z]){0,1}$';
+   --                                                 ([_][A-Z]){0,1}  - Matches '', '_A', '_B', '_C', ..., '_Z'
+   --                                                                $ - anchor to the end of the line
+   STORAGE_CLAUSE_PATTERN   CONSTANT varchar2(30) := '     storage_clause     => %'; -- removal of storage clause from SQL
+
+   LF    constant varchar2(1) := CHR(10);
+   CRTN  constant varchar2(1) := CHR(13);
+
+   procedure add_sysgrants_file_header
+      (fh  in out nocopy  fh2.sf_ptr_type);
+
+   procedure add_grants_file_header
+      (fh          in out nocopy  fh2.sf_ptr_type
+      ,in_grantee  in             varchar2);
+
+   procedure dbms_metadata_settings;
+
+   function old_rpad
+      (in_expr1  in varchar2
+      ,in_n      in number
+      ,in_expr2  in varchar2 default null)
+   return varchar2;
+
+   function get_RECYCLE_BIN_PATTERN
+   return varchar2;
+
+   function split_sql_length
+      (in_str  IN CLOB)
+   return CLOB;
+
+   function escape_at_sign
+      (in_str      IN   CLOB)
+   return CLOB;
+
+   procedure check_filename
+      (in_filename  in varchar2);
+   function fix_filename
+      (in_filename  in varchar2)
+   return varchar2 deterministic;
+
+   procedure update_view_tabs;
+
+   function b64_encode
+      (in_blob     in BLOB
+      ,in_add_hdr  in boolean default FALSE)
+   return CLOB;
+
+end common_util;
+/
+
+
+--  Grants
+
+
+--  Synonyms
+
+
+set define on

@@ -1,4 +1,5 @@
 
+
 --
 --  Create ODBCAPTURE Grants
 --
@@ -6,48 +7,25 @@
 set define off
 
 
+
 --  Database System Privileges
 
---DBMS_METADATA:ODBCAPTURE
+grant CREATE ANY DIRECTORY to "ODBCAPTURE";
+grant CREATE PUBLIC SYNONYM to "ODBCAPTURE";
+grant EXECUTE ANY TYPE to "ODBCAPTURE";
+grant PURGE DBA_RECYCLEBIN to "ODBCAPTURE";
+grant SELECT ANY TABLE to "ODBCAPTURE";
+grant UNLIMITED TABLESPACE to "ODBCAPTURE";
 
-  GRANT UNLIMITED TABLESPACE TO "ODBCAPTURE";
-  GRANT PURGE DBA_RECYCLEBIN TO "ODBCAPTURE";
 
---  "sys" INSTALL_TYPE Role Grants
+--  "sys" BUILD_TYPE Role Grants
 --  "GRANTEE" (delayed) Role Grants
 --  Note: "OBJECT" Schema Object Grants are given during Role creation
 
 grant "CONNECT" to "ODBCAPTURE";
-grant "DBA" to "ODBCAPTURE";
-grant "EXP_FULL_DATABASE" to "ODBCAPTURE";
-grant "JAVASYSPRIV" to "ODBCAPTURE";
 grant "RESOURCE" to "ODBCAPTURE";
 grant "SELECT_CATALOG_ROLE" to "ODBCAPTURE";
 
 
---  "sys" INSTALL_TYPE Schema Object Grants, excluding SYS objects
---  "GRANTEE" (delayed) Schema Object Grants
---  Note: "OBJECT" Schema Object Grants are given during object creation
-
-
-
---  Advanced Queue System Privileges
-
-
-
---  Advanced Queue Grants
---  "GRANTEE" (Delayed) Advanced Queue Grants
---  Note: "QUEUE" Advanced Queue Grants are given during object creation
-
---  Advanced Queue Subscriptions
---  "GRANTEE" (Delayed) Advanced Queue Subscription
---  Note: "QUEUE" Advanced Queue Subscriptions are given during object creation
-
-
-
---  "GRANTEE" (Delayed) Fine-Grained Java Permissions
---  Note: "JAVA_CLASS" Fine-Grained Java Permissions are given during object creation
---
-
-
 set define on
+

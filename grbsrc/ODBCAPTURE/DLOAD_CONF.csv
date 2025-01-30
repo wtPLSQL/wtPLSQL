@@ -1,7 +1,0 @@
-"USERNAME","TABLE_NAME","INSTALL_TYPE","BEFORE_SELECT_SQL","WHERE_CLAUSE","ORDER_BY_COLUMNS","AFTER_ORDER_BY_SQL","NOTES"
-"ODBCAPTURE","DLOAD_CONF","grbsrc",,"install_type in ('sys','pub','grbsrc')","USERNAME, TABLE_NAME, INSTALL_TYPE",,
-"ODBCAPTURE","OBJECT_CONF","grbsrc",,"install_type in ('sys','pub','grbsrc')","USERNAME, INSTALL_OTYPE, INSTALL_TYPE",,
-"ODBCAPTURE","OTYPE_CONF","grbsrc",,,"INSTALL_OTYPE",,
-"ODBCAPTURE","ROLE_CONF","grbsrc",,"install_type in ('sys','pub','grbsrc')","ROLENAME, INSTALL_TYPE",,
-"ODBCAPTURE","SCHEMA_CONF","grbsrc",,"install_type in ('sys','pub','grbsrc')","USERNAME",,
-"ODBCAPTURE","TYPE_CONF","grbsrc",,"install_type in ('sys','pub','grbsrc')","INSTALL_TYPE",,

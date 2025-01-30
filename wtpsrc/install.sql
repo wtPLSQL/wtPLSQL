@@ -16,7 +16,6 @@
 --    dos2unix -f -o ../install/*/*.csv ../install/*/*/*.csv
 
 define TOP_PDB_SYSTEM="&1."
-execute DBMS_JAVA.SET_OUTPUT(1000000);
 set serveroutput on size unlimited format wrapped
 
 ----------------------------------------
@@ -48,7 +47,6 @@ prompt *  Run SYSTEM Installation  *
 prompt *****************************
 prompt
 connect &TOP_PDB_SYSTEM.
-execute DBMS_JAVA.SET_OUTPUT(1000000);
 set serveroutput on size unlimited format wrapped
 @install_system.sql "" "" ""
 

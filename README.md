@@ -30,21 +30,21 @@ All software documentation is on the http://wtPLSQL.org website. The document re
 
 ## File/Folder List
 
-File Name | Description
-----------|------------
-apex      | Application Express Scripts Folder
-builds    | Build/Test Scripts Folder
-conv      | Conversion Utility Scripts Folder
-demo      | Demonstrations and Examples Folder
-diffs     | Upgrade/Downgrade Scripts Folder
-docs      | User Documentation Folder. Also contains wtPLSQL website (GitHub.io) source.
-grbsrc    | ODBCapture Source Code Folder.
-junit     | JUnit XML Report Scripts Folder
-wtpgrb    | Configuration Data for ODBCapture Folder
-wtpsav    | Persisting Test Results Add-on Scripts Folder
-wtpsrc    | Core wtPLSQL Component Scripts Folder
-LICENSE   | Open Source Terms and Conditions.
-README.md | Top level Markdown file for the wtPLSQL repository on GitHub
+File Name                  | Description
+---------------------------|------------
+apex                       | Consolidated Install Scripts for APEX DB on OCI
+builds                     | Build/Test Scripts/Log
+conv                       | Conversion Utility Scripts Folder
+demo                       | Demonstrations and Examples Folder
+diffs                      | Upgrade/Downgrade Scripts
+docs                       | User Documentation Folder. Also contains wtPLSQL website (GitHub.io) source.
+grb_linked_install_scripts | Common Scripts Linked by Installation Scripts
+grbsrc                     | Main ODBCapture Installation Scripts
+junit                      | JUnit XML Report Scripts Folder
+wtpgrb                     | Configuration Data for ODBCapture Folder
+wtpsav                     | Persisting Test Results Add-on Scripts Folder
+wtpsrc                     | Core wtPLSQL Component Scripts Folder
+LICENSE                    | Open Source Terms and Conditions.
 
 
 ## Installation

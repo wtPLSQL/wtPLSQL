@@ -1,0 +1,547 @@
+
+--
+--  Create ODBCAPTURE.ROOT_SCRIPTS Package Body
+--
+
+set define off
+
+
+--DBMS_METADATA:ODBCAPTURE.ROOT_SCRIPTS
+
+  CREATE OR REPLACE EDITIONABLE PACKAGE BODY "ODBCAPTURE"."ROOT_SCRIPTS" 
+as
+
+   utl_dir varchar2(50) := '../grb_linked_install_scripts';
+
+
+function get_schema_list
+      (in_build_type  in varchar2)
+   return varchar2
+is
+   schema_list  varchar2(1000);
+begin
+   for sch in (select obj.object_owner
+                from  schema_objects_tab  obj
+                where obj.build_type = in_build_type
+                 and  obj.object_owner != 'PUBLIC'
+                group by obj.object_owner
+                order by obj.object_owner)
+   loop
+      schema_list := schema_list || '''' || sch.object_owner || ''',';
+   end loop;
+   -- Remove the "comma" at the end of schema_list, if any
+   schema_list := regexp_replace(schema_list,',$','');
+   return schema_list;
+end get_schema_list;
+
+
+--------------------------------------------------------------------------------
+-- Database Script Install Wrapper
+function dbi_sql
+      (in_build_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := q'{
+-- Database Installation Assist
+--   Wrapper for Database Installation Scripts
+--
+--   Parameters
+--   1) Script Name
+--   2) Schema Name
+--   3) System Connect String
+
+prompt === DBI Started: &1.
+
+define DBI_SCRIPT_NAME="&1."
+define DBI_SCHEMA_NAME="&2."
+define DBI_SYSTEM_CONNECT="&3."
+
+variable dbi_beg_dtm varchar2(40)
+variable dbi_beg_secs number
+
+set feedback off
+begin
+   -- Initialize Timer
+   :dbi_beg_dtm  := to_char(systimestamp,'YYYY-MM-DD') || 'T' ||
+                    to_char(systimestamp,'HH24:MI:SS');
+   :dbi_beg_secs := dbms_utility.get_time;
+   -- Set Current Schema
+   if length('&DBI_SCHEMA_NAME.') > 0
+   then
+      execute immediate 'alter session set current_schema = "&DBI_SCHEMA_NAME."';
+   end if;
+end;
+}';
+   -- Can't have string declaration with a "/" on a line by itself
+   ret_txt := ret_txt || '/' || CHR(10) || q'{
+set feedback on
+set blockterminator off
+set sqlblanklines on
+
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || q'{@"&DBI_SCRIPT_NAME." "&DBI_SYSTEM_CONNECT."
+set serveroutput on size unlimited format wrapped
+
+set sqlblanklines off
+set blockterminator on
+set feedback off
+begin
+   -- Reset Current Schema
+   if length('&DBI_SCHEMA_NAME.') > 0
+   then
+      execute immediate 'alter session set current_schema = "' || USER || '"';
+   end if;
+   -- Show Timer Results
+   dbms_output.put_line('=== DBI Completed at ' || to_char(systimestamp,'YYYY-MM-DD') || 'T' ||
+                                                   to_char(systimestamp,'HH24:MI:SS') ||
+      ' for a duration of '   || trim( (dbms_utility.get_time - :dbi_beg_secs) / 100 ) ||
+      ' seconds (started at ' || :dbi_beg_dtm || ')');
+end;
+}';
+   -- Can't have string declaration with a "/" on a line by itself
+   ret_txt := ret_txt || '/' || CHR(10) || CHR(10) || 'set feedback on';
+   return ret_txt;
+end dbi_sql;
+
+
+--------------------------------------------------------------------------------
+-- Installation Finalization Script
+function installation_finalize_sql
+      (in_build_type  in varchar2)
+   return varchar2
+is
+   ret_txt      varchar2(32767);
+begin
+   ret_txt := q'{
+--
+--  Finalize Installation
+--
+
+prompt
+prompt Drop Temp Publicly Updateable Table
+drop public synonym TEMP_PUBLICLY_UPDATEABLE_TABLE;
+drop table TEMP_PUBLICLY_UPDATEABLE_TABLE purge;
+
+prompt
+prompt fix_invalid_public_synonyms
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || '@"' || utl_dir ||
+                          q'{/fix_invalid_public_synonyms.sql"
+
+prompt
+prompt compile_all
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || '@"' || utl_dir ||
+                         '/compile_all.sql" "' || get_schema_list(in_build_type) ||
+                          q'{"
+
+prompt
+prompt alter_foreign_keys_ENABLE
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || '@"' || utl_dir ||
+                         '/alter_foreign_keys.sql" "ENABLE" "' || get_schema_list(in_build_type) ||
+                          q'{"
+
+prompt
+prompt alter_triggers_ENABLE
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || '@"' || utl_dir ||
+                         '/alter_triggers.sql" "ENABLE" "' || get_schema_list(in_build_type) ||
+                          q'{"
+
+prompt
+prompt update_id_sequences
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || '@"' || utl_dir ||
+                         '/update_id_sequences.sql" "' || get_schema_list(in_build_type) ||
+                          q'{"
+
+--prompt
+--prompt alter_queues_ENABLE
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || '--@"' || utl_dir ||
+                         '/alter_queues.sql" "ENABLE" "' || get_schema_list(in_build_type) ||
+                          q'{"
+
+--prompt
+--prompt alter_scheduler_jobs_ENABLE
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || '--@"' || utl_dir ||
+                         '/alter_scheduler_jobs.sql" "ENABLE" "' || get_schema_list(in_build_type) ||
+                          q'{"
+
+prompt
+prompt Switch Spooling Off
+spool off
+
+}';
+   return ret_txt;
+end installation_finalize_sql;
+
+
+--------------------------------------------------------------------------------
+-- Installation Preparation Script
+function installation_prepare_sql
+      (in_build_type  in varchar2)
+   return varchar2
+is
+   TYPE btype_nt_type is table of build_conf.build_type%TYPE;
+   btype_nt    btype_nt_type;
+   ret_txt     varchar2(32767);
+begin
+   select to_build_type
+    bulk collect into btype_nt
+    from  build_type_timing
+    where from_build_type = in_build_type
+     and  build_timing = 'CURRENT'
+     and  to_build_type not in (in_build_type, 'sys','pub')
+    order by to_build_type;
+   ret_txt := q'{
+--
+--  Prepare for View Install
+--
+
+prompt
+prompt Create Temp Publicly Updateable Table
+create table TEMP_PUBLICLY_UPDATEABLE_TABLE (c1 number);
+grant all on TEMP_PUBLICLY_UPDATEABLE_TABLE to PUBLIC with grant option;
+create public synonym TEMP_PUBLICLY_UPDATEABLE_TABLE for TEMP_PUBLICLY_UPDATEABLE_TABLE;
+
+prompt
+prompt Check for Prerequisite BUILD_TYPEs
+declare
+   procedure do_it (in_btype varchar2) is
+      TYPE c_main_ref_cur is REF CURSOR;
+      c_main           c_main_ref_cur;
+      b_max_load_dtm   date;
+   begin
+      open c_main for 'select max(load_dtm) max_load_dtm'  ||
+                      ' from ODBCAPTURE_INSTALLATION_LOGS' ||
+                      ' where build_type = ''' || in_btype || '''';
+      fetch c_main into b_max_load_dtm;
+      if b_max_load_dtm IS NULL
+      then
+         dbms_output.put_line('WARNING: Prerequisite BUILD_TYPE "' || in_btype ||
+                              '" not found in ODBCAPTURE_INSTALLATION_LOGS table.');
+      else
+         dbms_output.put_line(' -) "' || in_btype || '" last loaded on ' ||
+                               to_char(b_max_load_dtm, 'DD-Mon-YYYY HH24:MI:SS') );
+      end if;
+      close c_main;
+   exception when others then
+      if SQLCODE = -942    -- Table or view does not exist
+      then
+         dbms_output.put_line('NOTE: ODBCAPTURE_INSTALLATION_LOGS table not available to check "' ||
+                              in_btype || '".');
+         close c_main;
+      else
+         raise;
+      end if;
+   end;
+begin
+}';
+   ret_txt := ret_txt || '   dbms_output.put_line(''Prerequisite BUILD_TYPEs for "' ||
+                                                    in_build_type || '"'');' || CHR(10);
+   for i in 1 .. btype_nt.COUNT
+   loop
+      ret_txt := ret_txt || '   do_it(''' || btype_nt(i) || ''');' || CHR(10);
+   end loop;
+   ret_txt := ret_txt || 'end;' || CHR(10) || '/' || CHR(10);
+   return ret_txt;
+end installation_prepare_sql;
+
+
+--------------------------------------------------------------------------------
+-- ODBCAPTURE Installation Logs Comprehensive Data Loader
+function odbcapture_installation_logs_cldr
+      (in_build_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := q'{
+--
+--  Comprehensive Data Loader script for odbcapture_installation_logs data
+--
+--  Must be run as SYSTEM
+--
+--  Command Line Parameters:
+--   1 - SYSTEM/password@TNSALIAS
+--       i.e. pass the username and password for the SYSTEM user
+--            and the TNSALIAS for the connection to the database.
+--       The Data Load installation requires this connection information.
+--
+
+prompt
+prompt Confirm/Create odbcapture_installation_logs Table
+declare
+   jnk  number := 0;
+   procedure run_sql (in_sql in varchar2) is begin
+      dbms_output.put_line(in_sql || ';');
+      execute immediate in_sql;
+   exception when others then
+      dbms_output.put_line('-- ' || SQLERRM || CHR(10));
+   end run_sql;
+begin
+   begin
+      execute immediate 'insert into odbcapture_installation_logs(load_dtm, build_type, file_name)' ||
+                        ' values(sysdate, ''Test'', ''Test'')';
+      rollback;
+      jnk := 1;
+   exception when others then
+      if SQLCODE != -942    -- Table or view does not exist
+      then
+         dbms_output.put_line('odbcapture_installation_logs table: ' || SQLERRM);
+      end if;
+      jnk := -1;
+   end;
+   if jnk = -1
+   then
+      run_sql('create table odbcapture_installation_logs' || CHR(10) ||
+         ' (load_dtm date' || CHR(10) ||
+         ' ,build_type varchar2(10)' || CHR(10) ||
+         ' ,capver varchar2(20)' || CHR(10) ||
+         ' ,file_name varchar2(512)' || CHR(10) ||
+         ' ,contents clob)');
+      run_sql('comment on column odbcapture_installation_logs.load_dtm is ''Date/Time the installation log file was loaded.''');
+      run_sql('comment on column odbcapture_installation_logs.build_type is ''Type of Build (from BUILD_CONF).''');
+      run_sql('comment on column odbcapture_installation_logs.capver is ''ODBCapture Source Code Version.''');
+      run_sql('comment on column odbcapture_installation_logs.file_name is ''Name of installation log file.''');
+      run_sql('comment on column odbcapture_installation_logs.contents is ''Contents/Text of the installation log file.''');
+      run_sql('comment on table odbcapture_installation_logs is ''ODBCAPTURE installation log files.''');
+      run_sql('grant select on odbcapture_installation_logs to public');
+      run_sql('create public synonym odbcapture_installation_logs for odbcapture_installation_logs');
+   end if;
+end;
+}';
+   -- Can't have string declaration with a "/" on a line by itself
+   ret_txt := ret_txt || '/' || CHR(10) || q'{
+
+-- NOTE: Additional file extensions for SQL*Loader include
+--   .bad - Bad Records
+--   .dsc - Discard Records
+--   .log - Log File
+
+prompt
+prompt sqlldr_control=./odbcapture_installation_logs.ctl
+host sqlldr '&1.' control=odbcapture_installation_logs.ctl data=odbcapture_installation_logs.csv log=odbcapture_installation_logs.log silent=HEADER,FEEDBACK
+
+begin
+   if '&_RC.' != '0' then
+      raise_application_error(-20000, 'Control file "odbcapture_installation_logs.ctl" returned error: &_RC.');
+   end if;
+end;
+}';
+   -- Can't have string declaration with a "/" on a line by itself
+   ret_txt := ret_txt || '/' || CHR(10);
+   return ret_txt;
+end odbcapture_installation_logs_cldr;
+
+
+--------------------------------------------------------------------------------
+-- ODBCAPTURE Installation Logs Comma Separated Values File
+function odbcapture_installation_logs_csv
+      (in_build_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := '"' || in_build_type || '","install_sys.log"'    || CHR(10) ||
+              '"' || in_build_type || '","install_system.log"' || CHR(10) ||
+              '"' || in_build_type || '","install_'            ||
+                     in_build_type || '.log"';
+   for buff in (select table_owner
+                      ,table_name
+                 from  obj_install_data_load_tab
+                 where element_name = 'DATA_LOAD'
+                  and  build_type   = in_build_type
+                 order by table_owner
+                      ,table_name)
+   loop
+      ret_txt := ret_txt || CHR(10) || '"' || in_build_type   ||
+                                     '","' || COMMON_UTIL.fix_filename(buff.table_owner) ||
+                                       '/' || COMMON_UTIL.fix_filename(buff.table_name)  || '.log"';
+   end loop;
+   return ret_txt;
+end odbcapture_installation_logs_csv;
+
+
+--------------------------------------------------------------------------------
+-- ODBCAPTURE Installation Logs Control File
+function odbcapture_installation_logs_ctl
+      (in_build_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := q'{LOAD DATA
+APPEND INTO TABLE "ODBCAPTURE_INSTALLATION_LOGS"
+FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
+   (LOAD_DTM          SYSDATE
+   ,BUILD_TYPE        char(10)
+   ,CAPVER            CONSTANT "}' || odbcapture_version || q'{"
+   ,FILE_NAME         char(512)
+   ,CONTENTS          LOBFILE(FILE_NAME) TERMINATED BY EOF
+   )}';
+   return ret_txt;
+end odbcapture_installation_logs_ctl;
+
+
+--------------------------------------------------------------------------------
+-- Report Status
+function report_status_sql
+      (in_build_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := q'{
+--
+--  Report Status Script
+--
+--  Must be run as SYSTEM User (DBA)
+--
+-- Command Line Parameters:
+--   1 - SYSTEM/password@TNSALIAS
+--       i.e. pass the username and password for the SYSTEM user
+--            and the TNSALIAS for the connection to the database.
+--       The Data Load installation requires this connection information.
+--
+-- Note: odbcapture_installation_logs table will be created
+--   to load installation logs (if not already available).
+--
+
+----------------------------------------
+prompt
+prompt Load Installation Files
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || q'{@"odbcapture_installation_logs.cldr" "&1."}' ||
+                         q'{
+
+----------------------------------------
+-- Setup for Reports
+set linesize 2499
+set trimspool on
+set echo off
+set verify off
+set termout on
+set serveroutput on size unlimited format wrapped
+
+----------------------------------------
+prompt
+prompt Reporting Summary of Build Type Log Errors
+}';
+   -- Can't have string declaration with a "/" on a line by itself
+   ret_txt := ret_txt || '@"' || utl_dir ||
+                         '/summarize_install_log.sql" "' || in_build_type ||
+                          q'{"
+
+----------------------------------------
+prompt
+prompt Reporting Invalid Objects
+set feedback off
+set termout off
+spool list_invalids.csv
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || '@"' || utl_dir ||
+                         '/list_invalids.sql" "' || get_schema_list(in_build_type) ||
+                          q'{"
+spool off
+set termout on
+set feedback on
+
+----------------------------------------
+prompt
+prompt Reporting JUnit XML Database Build Status
+set feedback off
+set termout off
+spool db_build_junit_report.xml
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || '@"' || utl_dir ||
+                         '/db_build_junit_report.sql" "' || get_schema_list(in_build_type) ||
+                          q'{"
+spool off
+set termout on
+set feedback on
+
+----------------------------------------
+prompt
+prompt Reorting JUnit XML Installation Log
+set feedback off
+set termout off
+spool log_files_junit_report.xml
+}';
+   -- Can't start a line with an "@"
+   ret_txt := ret_txt || '@"' || utl_dir ||
+                         '/log_files_junit_report.sql" "' || in_build_type ||
+                          q'{"
+spool off
+set termout on
+set feedback on
+
+----------------------------------------
+-- Done with Reports
+set linesize 80
+set verify on}';
+   return ret_txt;
+end report_status_sql;
+
+
+--------------------------------------------------------------------------------
+-- Set User Authentication
+function list_invalids_csv
+      (in_build_type  in varchar2)
+   return varchar2
+is
+begin
+   return '"OWNER","OBJECT_NAME","OBJECT_TYPE","STATUS"';
+end list_invalids_csv;
+
+
+--------------------------------------------------------------------------------
+-- Set User Authentication
+function set_user_authentication_sql
+      (in_build_type  in varchar2)
+   return varchar2
+is
+   ret_txt  varchar2(32767);
+begin
+   ret_txt := q'{
+--
+-- Set "}' || in_build_type || q'{" USER AUTHENTICATION
+--
+-- Command Line Parameters:
+--   1 - Password Key
+--
+}';
+   for sch in (select sl.username
+                     ,trim(to_char(ora_hash(username,99),'09'))   HASH_VALUE
+                from  schema_conf  sl
+                where sl.build_type = in_build_type
+                 and  sl.oracle_provided = 'N'
+                order by sl.username)
+   loop
+      ret_txt := ret_txt || CHR(10) || 'alter user "' || sch.username   ||
+                                  '" identified by "' || sch.hash_value || '&1.";' ;
+   end loop;
+   return ret_txt;
+end set_user_authentication_sql;
+
+
+end root_scripts;
+/
+
+set define on

@@ -1,0 +1,120 @@
+
+--
+--  Create ODBCAPTURE.FH2 Package
+--
+
+set define off
+
+
+--DBMS_METADATA:ODBCAPTURE.FH2
+
+  CREATE OR REPLACE EDITIONABLE PACKAGE "ODBCAPTURE"."FH2" 
+   authid current_user
+as
+
+   LF    constant varchar2(1) := CHR(10);
+   CRTN  constant varchar2(1) := CHR(13);
+
+   -- Script File Pointer (similar to a file handle)
+   TYPE sf_ptr_type is record
+      (bld_type    varchar2(10)
+      ,bld_ord    pls_integer
+      ,file_id     pls_integer
+      ,num_lines   pls_integer);
+
+   -- Buffer Records: One Line of Text in a Script/File
+   TYPE buffer_rec_type is record
+      (len       number(5)
+      ,buffer    varchar2(32767));
+   -- Associative Array of Script/File Lines
+   TYPE buffer_aa_type is table
+      of buffer_rec_type
+      index by pls_integer;                      -- Line Number
+   -- File Header Record
+   TYPE file_rec_type is record
+      (max_linesize  number(5)
+      ,total_bytes   number(14)
+      ,num_buffers   number(9)
+      ,is_open       varchar2(1)
+      ,schema_name   varchar2(128)
+      ,filename      varchar2(500)
+      ,buffer_aa     buffer_aa_type);
+   -- Associative Array of Files
+   TYPE file_aa_type is table
+      of file_rec_type
+      index by pls_integer;                      -- File ID
+   -- Associative Array of ELEMENT SEQ
+   TYPE seq_aa_type is table
+      of file_aa_type
+      index by pls_integer;                      -- ELEMENT SEQ
+   -- Associative Array of Build Type
+   TYPE it_aa_type is table
+      of seq_aa_type
+      index by varchar2(10);                     -- Build Type
+   -- Associative Array of Script Files by Build Type, ELEMENT SEQ, File ID, and Buffers
+   sf_aa     it_aa_type;
+
+   function script_is_open
+      (file   in fh2.sf_ptr_type)
+   return boolean;
+
+   PROCEDURE script_close_all;
+
+   function script_open
+      (in_filename      in varchar2
+      ,in_elmnt         in varchar2
+      ,in_max_linesize  in binary_integer default 1024)
+   return fh2.sf_ptr_type;
+
+   procedure script_put
+      (file       IN OUT NOCOPY fh2.sf_ptr_type
+      ,buffer     IN            VARCHAR2);
+
+   procedure script_put_line
+      (file       IN OUT NOCOPY fh2.sf_ptr_type
+      ,buffer     IN            VARCHAR2);
+
+   PROCEDURE script_new_line
+      (file  IN OUT NOCOPY fh2.sf_ptr_type
+      ,lines IN     NATURAL default 1);
+
+   PROCEDURE script_close
+      (file   IN OUT NOCOPY fh2.sf_ptr_type);
+
+   procedure put_big_line
+      (in_fh      in out NOCOPY fh2.sf_ptr_type
+      ,in_loc     in            varchar2
+      ,in_txt     in            CLOB
+      ,in_max_len in            number);
+
+   procedure remove_storage_clause
+      (in_fh       in out NOCOPY fh2.sf_ptr_type
+      ,in_loc      in            varchar2
+      ,in_txt      in            CLOB
+      ,in_max_len  in            number);
+
+   ----------------------------------------------------
+
+   procedure write_scripts
+      (in_zip_file_name  in varchar2
+      ,in_folder_name    in varchar2 default '');
+
+   procedure show_file
+      (in_bld_type      in  varchar2
+      ,in_element       in  varchar2
+      ,in_fname_regexp  in  varchar2 default '.*');
+
+   procedure clear_buffers
+      (in_build_type   in varchar2 default null);
+
+end fh2;
+/
+
+
+--  Grants
+
+
+--  Synonyms
+
+
+set define on

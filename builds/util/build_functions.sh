@@ -5,23 +5,30 @@
 function capture_version {
    echo ""
    echo "Capture Version"
+   VERSION_FUNC="${HOME_DIR}/../../grbsrc/ODBCAPTURE/ODBCAPTURE_VERSION.func"
+   BRANCH_NAME="$(git rev-parse --abbrev-ref HEAD 2>&1)"
+   if [ "$?" != 0 ]
+   then
+      BRANCH_NAME='No Branch Name'
+   fi
+   VERSION_ABBR="${BRANCH_NAME:0:20}"
    # 'Branch main at f2c736d0cc6fd80d961414dcae37df2bed0d69e2 - https://github.com/DMSTEX/DMSTEX.git'
-   VERSION_NOTE="Branch $(git rev-parse --abbrev-ref HEAD 2>&1))" &&
-   VERSION_NOTE="${VERSION_NOTE} at $(git rev-parse HEAD 2>&1)" &&
+   VERSION_NOTE="Branch ${BRANCH_NAME} at $(git rev-parse HEAD 2>&1)" &&
    VERSION_NOTE="${VERSION_NOTE} - $(git config --get remote.origin.url 2>&1)"
    if [ $? = 0 ]
    then
-      echo "${VERSION_NOTE}" > "version.txt"
+      echo "${VERSION_NOTE}" > "${HOME_DIR}/version.txt"
    else
-      echo "${VERSION}" > "version.txt"
+      echo "${VERSION_ABBR}" > "${HOME_DIR}/version.txt"
    fi
+   sed -i "1,\$s/^   return ['].*['][;]\$/   return '${VERSION_ABBR}';/1" "${VERSION_FUNC}"
    }
 
 ########################################
 function build_init {
    echo ""
    echo "build_initialize.sql"
-   sqlplus /nolog "@build_initialize.sql" "${PDB_NAME}" "${CDB_SYS}"
+   sqlplus "${SYS_LOGIN}" "@build_initialize.sql" "${PDB_NAME}"
    retcd="${?}"
    if [ "${retcd}" != "0" ]
    then
@@ -32,26 +39,27 @@ function build_init {
 
 ########################################
 function clear_log_files {
+   BUILD_TYPE="${1}"
    echo ""
-   echo "Clear old ${INSTALL_TYPE} logs"
-   rm -f "${INSTALL_TYPE}"/*.xml
-   rm -f "${INSTALL_TYPE}"/*.log
-   rm -f "${INSTALL_TYPE}"/*.bad
-   rm -f "${INSTALL_TYPE}"/*.dsc
-   rm -f "${INSTALL_TYPE}"/*/*.log
-   rm -f "${INSTALL_TYPE}"/*/*.bad
-   rm -f "${INSTALL_TYPE}"/*/*.dsc
+   echo "Clear old ${BUILD_TYPE} logs"
+   rm -f "${BUILD_TYPE}"/*.xml
+   rm -f "${BUILD_TYPE}"/*.log
+   rm -f "${BUILD_TYPE}"/*.bad
+   rm -f "${BUILD_TYPE}"/*.dsc
+   rm -f "${BUILD_TYPE}"/*/*.log
+   rm -f "${BUILD_TYPE}"/*/*.bad
+   rm -f "${BUILD_TYPE}"/*/*.dsc
    }
 
 ########################################
 function run_build {
-   INSTALL_TYPE="${1}"
+   BUILD_TYPE="${1}"
    echo ""
-   echo "Move to ../../${INSTALL_TYPE}"
-   cd "../../${INSTALL_TYPE}"
+   echo "Move to ${HOME_DIR}/../../${BUILD_TYPE}"
+   cd "${HOME_DIR}/../../${BUILD_TYPE}"
    echo ""
-   echo "${BUTIL_PATH}/build.sql ${INSTALL_TYPE}"
-   sqlplus /nolog "@${BUTIL_PATH}/run_build.sql" "${BUTIL_PATH}" "${PDB_SYS}" "${PDB_SYSTEM}" "${USR_PASS}" "${INSTALL_TYPE}" "$(< version.txt)"
+   echo "${BUTIL_PATH}/run_build.sql ${BUILD_TYPE}"
+   sqlplus "${PDB_SYS}" "@${BUTIL_PATH}/run_build.sql" "${PDB_SYSTEM}" "${USR_PASS}"
    retcd="${?}"
    if [ "${retcd}" != "0" ]
    then
@@ -64,56 +72,57 @@ function run_build {
    }
 
 ########################################
-function setup_for_test {
+function run_script {
+   BUILD_TYPE="${1}"
+   SCRIPT_NAME="${2}"
+   DB_CONNECTION="${3}"
    echo ""
-   echo "Running ../util/setup_for_test.sql from ${PWD}"
-   sqlplus "${PDB_SYSTEM}" "@../util/setup_for_test.sql"
-   # Unit Testing Expects NO DB Links
-   #echo "Running ../util/setup_db_links.sql from ${PWD}"
-   #sqlplus "${PDB_WTP}" "@../util/setup_db_links.sql"
+   echo "Move to ${HOME_DIR}/../../${BUILD_TYPE}"
+   cd "${HOME_DIR}/../../${BUILD_TYPE}"
+   echo ""
+   echo "${BUTIL_PATH}/run_script.sql ${BUILD_TYPE} ${SCRIPT_NAME}"
+   sqlplus "${DB_CONNECTION}" "@${BUTIL_PATH}/run_script.sql" "${SCRIPT_NAME}"
+   echo ""
+   echo "Move back to ${HOME_DIR}"
+   cd "${HOME_DIR}"
    }
 
 ########################################
-function run_core_test {
+function run_report {
+   BUILD_TYPE="${1}"
+   DB_CONNECTION="${2}"
    echo ""
-   echo "Running ../util/run_core_test.sql from ${PWD}"
-   sqlplus "${PDB_WTP}" "@../util/run_core_test.sql"
-   }
-
-########################################
-function run_junit_test {
+   echo "Move to ${HOME_DIR}/../../${BUILD_TYPE}"
+   cd "${HOME_DIR}/../../${BUILD_TYPE}"
    echo ""
-   echo "Running ../util/run_junit_test.sql from ${PWD}"
-   sqlplus "${PDB_WTP}" "@../util/run_junit_test.sql"
-   }
-
-########################################
-function run_save_test {
+   echo "report_status.sql ${BUILD_TYPE}"
+   echo "exit" | sqlplus "${DB_CONNECTION}" "@report_status.sql" "${DB_CONNECTION}"
    echo ""
-   echo "Running ../util/run_save_test.sql from ${PWD}"
-   sqlplus "${PDB_WTP}" "@../util/run_save_test.sql"
+   echo "Move back to ${HOME_DIR}"
+   cd "${HOME_DIR}"
    }
 
 ########################################
 function move_log_files {
+   BUILD_TYPE="${1}"
    echo ""
    echo "Move Log Files to Build Folder"
-   echo "Move to ../../${INSTALL_TYPE}"
-   cd "../../${INSTALL_TYPE}"
-   mkdir -p "${BUILD_PATH}/${INSTALL_TYPE}" 2> /dev/null
+   echo "Move to ${HOME_DIR}/../../${BUILD_TYPE}"
+   cd "${HOME_DIR}/../../${BUILD_TYPE}"
+   mkdir -p "${HOME_DIR}/${BUILD_TYPE}" 2> /dev/null
    ls *.xml *.log *.bad *.dsc 2>/dev/null |
       while read FILE
       do
-         mv -v "${FILE}" "${BUILD_PATH}/${INSTALL_TYPE}"
+         mv -v "${FILE}" "${HOME_DIR}/${BUILD_TYPE}"
       done
    ls -F | grep '.*/$' |
       while read DIR
       do
-         mkdir -p "${BUILD_PATH}/${INSTALL_TYPE}/${DIR}" 2> /dev/null
+         mkdir -p "${HOME_DIR}/${BUILD_TYPE}/${DIR}" 2> /dev/null
          ls "${DIR}"*.log "${DIR}"*.bad "${DIR}"*.dsc 2> /dev/null |
             while read FILE
             do
-               mv -v "${FILE}" "${BUILD_PATH}/${INSTALL_TYPE}/${DIR}"
+               mv -v "${FILE}" "${HOME_DIR}/${BUILD_TYPE}/${DIR}"
             done
        done
    echo ""

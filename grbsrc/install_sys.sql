@@ -13,7 +13,7 @@ set sqlblanklines on
 ----------------------------------------
 -- USER Install
 
-@db_install.sql "SYS/ODBCAPTURE.usr" "" ""
+@dbi.sql "SYS/ODBCAPTURE.user" "" ""
 
 ----------------------------------------
 set sqlblanklines off

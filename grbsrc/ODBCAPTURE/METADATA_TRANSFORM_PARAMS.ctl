@@ -1,0 +1,10 @@
+OPTIONS (SKIP=1)
+LOAD DATA
+INTO TABLE "ODBCAPTURE"."METADATA_TRANSFORM_PARAMS"
+APPEND
+FIELDS CSV WITH EMBEDDED
+TRAILING NULLCOLS
+   (NAME                           CHAR(30)
+   ,VALUE_TYPE                     CHAR(8)
+   ,VALUE                          CHAR(30)
+   )

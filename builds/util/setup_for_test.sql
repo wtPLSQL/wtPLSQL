@@ -5,8 +5,6 @@
 --  Run as SYS or SYSTEM
 --
 
-set serveroutput on size unlimited format wrapped
-
 ----------------------------------------
 prompt
 prompt Show the Services for this PDB

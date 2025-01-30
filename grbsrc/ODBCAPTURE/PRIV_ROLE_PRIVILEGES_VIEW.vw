@@ -2,19 +2,15 @@
 --
 --  Create ODBCAPTURE.PRIV_ROLE_PRIVILEGES_VIEW view
 --
---  NOTE: Foreign keys are in a difference script
---        Triggers are in a difference script
---
 
 set define off
 
 
 --
---  Need to avoid errors granting permisions on a view that has errors
---  Found this technique on Ask Tom
+--  Cannot grant permisions on a view with an error
 --  https://asktom.oracle.com/pls/apex/f?p=100:11:0::::P11_QUESTION_ID:43253832697675#2653213300346351987
 create view "ODBCAPTURE"."PRIV_ROLE_PRIVILEGES_VIEW"
-  as   select * from SYSTEM.TEMP_PUBLICLY_UPDATEABLE_TABLE;
+  as   select * from TEMP_PUBLICLY_UPDATEABLE_TABLE;
 
 --  Grants
 
@@ -22,38 +18,81 @@ create view "ODBCAPTURE"."PRIV_ROLE_PRIVILEGES_VIEW"
 
 --DBMS_METADATA:ODBCAPTURE.PRIV_ROLE_PRIVILEGES_VIEW
 
-  CREATE OR REPLACE FORCE EDITIONABLE VIEW "ODBCAPTURE"."PRIV_ROLE_PRIVILEGES_VIEW" ("INSTALL_TYPE", "INSTALL_TYPE_SELECTOR", "ROLE_INSTALL_TYPE", "ROLENAME", "GRANTEE_INSTALL_TYPE", "GRANTEE", "GRANTEE_UOR_TYPE", "DEFAULT_ROLE", "ADMIN_OPTION", "DELEGATE_OPTION", "COMMON", "INHERITED") AS 
-  select case t.install_timing
-            when 'CURRENT'
-            then trc.install_type
-            else uor.install_type
-       end                     INSTALL_TYPE
-      ,case t.install_timing
-            when 'CURRENT'
-            then 'ROLE'
-            else 'GRANTEE'
-       end                     INSTALL_TYPE_SELECTOR
-      ,trc.install_type        ROLE_INSTALL_TYPE
+  CREATE OR REPLACE FORCE EDITIONABLE VIEW "ODBCAPTURE"."PRIV_ROLE_PRIVILEGES_VIEW" ("BUILD_TYPE", "BUILD_TIMING", "BUILD_TYPE_SELECTOR", "OBJECT_NAME_REGEXP", "OBJECT_NAME_REGEXP_BUILD_TYPE", "ROLE_BUILD_TYPE", "ROLENAME", "GRANTEE_BUILD_TYPE", "GRANTEE", "GRANTEE_UOR_TYPE", "DEFAULT_ROLE", "ADMIN_OPTION", "DELEGATE_OPTION", "COMMON", "INHERITED") AS 
+  select case t.build_timing
+          when 'FUTURE' then oc.build_type
+                        else uor.build_type
+       end                                       BUILD_TYPE
+      ,case t.build_timing
+          when 'FUTURE' then 'FUTURE'
+                        else 'CURRENT'
+       end                                       BUILD_TIMING
+      ,case t.build_timing
+          when 'FUTURE' then 'OBJECT_NAME_REGEXP'
+                        else 'GRANTEE'
+       end                                       BUILD_TYPE_SELECTOR
+      ,oc.object_name_regexp
+      ,oc.build_type                             OBJECT_NAME_REGEXP_BUILD_TYPE
+      ,trc.build_type                            ROLE_BUILD_TYPE
       ,trc.rolename
-      ,uor.install_type        GRANTEE_INSTALL_TYPE
-      ,uor.user_or_role        GRANTEE
-      ,uor.uor_type            GRANTEE_UOR_TYPE
+      ,uor.build_type                            GRANTEE_BUILD_TYPE
+      ,uor.user_or_role                          GRANTEE
+      ,uor.uor_type                              GRANTEE_UOR_TYPE
       ,priv.default_role
       ,priv.admin_option
       ,priv.delegate_option
       ,priv.common
       ,priv.inherited
- from  uor_install_view  uor
-       join dba_role_privs  priv
-            on  priv.grantee = uor.user_or_role
+ from  dba_role_privs  priv
+       join uor_install_view  uor
+            on  uor.user_or_role = priv.grantee
+            and uor.oracle_provided = 'N'    -- Exclude Oracle Provided Grantees
        join role_conf  trc
-            on  trc.rolename = priv.granted_role
+            on  trc.rolename        = priv.granted_role
+            and trc.oracle_provided = 'Y'    -- Only Oracle Provided Roles
+  left join object_conf  oc
+            on  oc.element_name = 'ROLE'
+            and oc.username     = priv.grantee
+            and regexp_like(trc.rolename, oc.object_name_regexp)
+  left join build_type_timing  t
+            on  t.from_build_type = uor.build_type
+            and t.to_build_type   = oc.build_type
+UNION ALL
+  select case t.build_timing
+          when 'FUTURE' then trc.build_type
+                        else uor.build_type
+       end                                       BUILD_TYPE
+      ,case t.build_timing
+          when 'FUTURE' then 'FUTURE'
+                        else 'CURRENT'
+       end                                       BUILD_TIMING
+      ,case t.build_timing
+          when 'FUTURE' then 'OBJECT_NAME_REGEXP'
+                        else 'GRANTEE'
+       end                                       BUILD_TYPE_SELECTOR
+      ,NULL                                      OBJECT_NAME_REGEXP
+      ,NULL                                      OBJECT_NAME_REGEXP_BUILD_TYPE
+      ,trc.build_type                            ROLE_BUILD_TYPE
+      ,trc.rolename
+      ,uor.build_type                            GRANTEE_BUILD_TYPE
+      ,uor.user_or_role                          GRANTEE
+      ,uor.uor_type                              GRANTEE_UOR_TYPE
+      ,priv.default_role
+      ,priv.admin_option
+      ,priv.delegate_option
+      ,priv.common
+      ,priv.inherited
+ from  dba_role_privs  priv
+       join uor_install_view  uor
+            on  uor.user_or_role = priv.grantee
+            and uor.oracle_provided = 'N'    -- Exclude Oracle Provided Grantees
+       join role_conf  trc
+            on  trc.rolename        = priv.granted_role
+            and trc.oracle_provided = 'N'    -- Not Oracle Provided Role
        -- Ensure the Grantee is available after installation of the Role
-       join install_type_timing  t
-            on  t.from_install_type = trc.install_type
-            and t.to_install_type   = uor.install_type
-       -- Exclude 'sys' and 'pub' Grantees
- where uor.install_type not in ('sys','pub');
+       join build_type_timing  t
+            on  t.from_build_type = uor.build_type
+            and t.to_build_type   = trc.build_type;
 
 --  Comments
 

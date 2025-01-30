@@ -1,0 +1,84 @@
+
+--
+--  Create ODBCAPTURE.GRAB_DATA Package
+--
+
+set define off
+
+
+--DBMS_METADATA:ODBCAPTURE.GRAB_DATA
+
+  CREATE OR REPLACE EDITIONABLE PACKAGE "ODBCAPTURE"."GRAB_DATA" authid current_user
+as
+
+   ------------------------------------------------------------
+   -- Public Constants
+   F_DATE      CONSTANT varchar2(100) := 'DD-MON-YYYY HH24:MI:SS';
+   F_TSTTZ     CONSTANT varchar2(100) := 'DD-MON-YYYY HH24:MI:SS.FF TZH:TZM';
+   F_TST       CONSTANT varchar2(100) := 'DD-MON-YYYY HH24:MI:SS.FF';
+   F_IDTOS     CONSTANT varchar2(100) := 'DD HH24:MI:SS.FF';
+   F_IYTOM     CONSTANT varchar2(100) := 'YY-MM'; -- Not Strictly Followed for Conversion
+
+   --  SYS.DBMS_SQL Variables
+   g_num_cols    number := 0;
+   g_desc_tab    dbms_sql.desc_tab3;
+   g_dyn_curs    integer;
+   g_col_err     number;
+   g_col_len     integer;
+
+   --  Delimiters for Nested Types
+   TYPE grb_cldr_delim_nt_type is table of varchar2(1);
+   grb_cldr_delim_nt   grb_cldr_delim_nt_type :=
+                       grb_cldr_delim_nt_type (CHR(11)    -- ASCII Vertical Tab
+                                              ,CHR(12)    -- ASCII Form Feed
+                                              ,CHR(28)    -- ASCII File Separator
+                                              ,CHR(29)    -- ASCII Group Separator
+                                              ,CHR(30)    -- ASCII Record Separator
+                                              ,CHR(31)    -- ASCII Unit Separator
+                                              );
+   grb_cldr_array_lvl  pls_integer;              -- Array Levels 0 - 5 (Effective as 1 - 6)
+   grb_cldr_obj_delim  varchar2(1) := CHR(23);   -- ASCII End of Transmission Block
+
+   -- Binary Column Array
+   TYPE bincol_aa_type IS
+      table of varchar2(1024)    -- Binary Decode Procedure to Create Script Statements
+      index by varchar2(1024);   -- Column Name
+   bincol_aa  bincol_aa_type;
+
+   -- PostLoad Column Array
+   TYPE postload_aa_type IS
+      table of varchar2(1024)    -- Post-Load Procedure to Create Script Statements
+      index by varchar2(1024);   -- Column Name
+   postload_aa  postload_aa_type;
+
+   -- Convert National Character Set to UNISTR encoding
+   function unistr_encode
+      (in_nclob  in nclob)
+   return clob;
+
+   --  Main Procedure
+   procedure grb_comp_data_loader;
+
+   -- Create SQL to Decode BLOBs and RAWs
+   procedure sql_decode_blob
+      (in_fh       in out nocopy fh2.sf_ptr_type
+      ,in_tabname  in            varchar2
+      ,in_colname  in            varchar2);
+
+   -- Create SQL to Decode UNISTR
+   procedure sql_unistr_decode
+      (in_fh       in out nocopy fh2.sf_ptr_type
+      ,in_tabname  in            varchar2
+      ,in_colname  in            varchar2);
+
+end grab_data;
+/
+
+
+--  Grants
+
+
+--  Synonyms
+
+
+set define on
