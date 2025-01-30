@@ -12,7 +12,7 @@ set define off
    return varchar2
 as
 begin
-   return 'V2.1';
+   return 'Dev_V1.3.0';
 end odbcapture_version;
 /
 

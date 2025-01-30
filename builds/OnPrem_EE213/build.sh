@@ -40,7 +40,7 @@ PDB_NAME='DEVPDB'
 SYS_LOGIN="SYS/${SYS_PASS}@OnPrem_EE213CDB as sysdba"
 PDB_SYS="SYS/${SYS_PASS}@OnPrem_EE213_${PDB_NAME} as sysdba"
 PDB_SYSTEM="SYSTEM/${SYS_PASS}@OnPrem_EE213_${PDB_NAME}"
-PDB_WTP="WTP/??dev${USR_PASS}@OnPrem_EE213_${PDB_NAME}"
+PDB_WTP="WTP/WTP@OnPrem_EE213_${PDB_NAME}"
 
 ########################################
 # Source the Build Functions
@@ -55,20 +55,23 @@ function build_type_build () {
    }
 
 ########################################
+# Initialize
 capture_version
 build_init
-
+# Build Application
 build_type_build 'wtpsrc' "${PDB_SYSTEM}"
 build_type_build 'wtpsav' "${PDB_SYSTEM}"
-
 build_type_build 'wtptst' "${PDB_SYSTEM}"
-run_script 'wtptst' 'setup_for_test' "${PDB_WTP}"
-# Unit Testing Expects NO DB Links
-#run_script 'wtptst' 'setup_db_links' "${PDB_WTP}"
-run_script 'wtptst' 'run_core_test' "${PDB_WTP}"
-run_script 'wtptst' 'run_junit_test' "${PDB_WTP}"
-run_script 'wtptst' 'run_save_test' "${PDB_WTP}"
-
-#build_type_build 'wtp_gui' "${PDB_SYSTEM}"
+# Test Application
+clear_log_files 'unit_testing'
+run_script 'unit_testing' 'setup_for_test.sql' "${PDB_WTP}"
+exit
+#run_script 'unit_testing' 'setup_db_links' "${PDB_WTP}"  # Unit Testing Expects NO DB Links
+run_script 'unit_testing' 'run_core_test.sql' "${PDB_WTP}"
+run_script 'unit_testing' 'run_junit_test.sql' "${PDB_WTP}"
+run_script 'unit_testing' 'run_save_test.sql' "${PDB_WTP}"
+move_log_files 'unit_testing'
+# Setup ODBCapture
+#build_type_build 'wtp_gui' "${PDB_SYSTEM}"  # No APEX Availabe in OnPrem_EE213
 build_type_build 'grbsrc' "${PDB_SYSTEM}"
 build_type_build 'wtpgrb' "${PDB_SYSTEM}"
