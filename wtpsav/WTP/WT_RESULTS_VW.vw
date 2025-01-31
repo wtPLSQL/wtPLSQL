@@ -2,19 +2,15 @@
 --
 --  Create WTP.WT_RESULTS_VW view
 --
---  NOTE: Foreign keys are in a difference script
---        Triggers are in a difference script
---
 
 set define off
 
 
 --
---  Need to avoid errors granting permisions on a view that has errors
---  Found this technique on Ask Tom
+--  Cannot grant permisions on a view with an error
 --  https://asktom.oracle.com/pls/apex/f?p=100:11:0::::P11_QUESTION_ID:43253832697675#2653213300346351987
 create view "WTP"."WT_RESULTS_VW"
-  as   select * from SYSTEM.TEMP_PUBLICLY_UPDATEABLE_TABLE;
+  as   select * from TEMP_PUBLICLY_UPDATEABLE_TABLE;
 
 --  Grants
 grant SELECT on "WTP"."WT_RESULTS_VW" to "PUBLIC";
@@ -24,23 +20,23 @@ grant SELECT on "WTP"."WT_RESULTS_VW" to "PUBLIC";
 --DBMS_METADATA:WTP.WT_RESULTS_VW
 
   CREATE OR REPLACE FORCE EDITIONABLE VIEW "WTP"."WT_RESULTS_VW" ("TEST_RUN_ID", "TEST_RUNNER_ID", "TEST_RUNNER_OWNER", "TEST_RUNNER_NAME", "START_DTM", "END_DTM", "IS_LAST_RUN", "ERROR_MESSAGE", "RESULT_SEQ", "TESTCASE_ID", "TESTCASE", "EXECUTED_DTM", "INTERVAL_MSEC", "ASSERTION", "STATUS", "MESSAGE", "DETAILS") AS 
-  select run.id                TEST_RUN_ID 
-      ,run.test_runner_id 
+  select run.id                TEST_RUN_ID
+      ,run.test_runner_id
       ,tr.owner              TEST_RUNNER_OWNER
       ,tr.name               TEST_RUNNER_NAME
-      ,run.start_dtm      
-      ,run.end_dtm        
-      ,run.is_last_run    
+      ,run.start_dtm
+      ,run.end_dtm
+      ,run.is_last_run
       ,run.error_message
-      ,res.result_seq    
-      ,res.testcase_id   
+      ,res.result_seq
+      ,res.testcase_id
       ,tc.testcase
-      ,res.executed_dtm  
+      ,res.executed_dtm
       ,res.interval_msec
-      ,res.assertion     
-      ,res.status        
-      ,res.message       
-      ,res.details       
+      ,res.assertion
+      ,res.status
+      ,res.message
+      ,res.details
  from  wt_test_runs  run
        join wt_test_runners  tr
             on  tr.id = run.test_runner_id

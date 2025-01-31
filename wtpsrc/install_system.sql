@@ -13,7 +13,7 @@ set sqlblanklines on
 ----------------------------------------
 -- GRANT Install
 
-@db_install.sql "SYSTEM/WTP_usr.grnt" "" ""
+@dbi.sql "SYSTEM/WTP_usr.grnt" "" ""
 
 ----------------------------------------
 set sqlblanklines off

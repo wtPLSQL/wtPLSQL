@@ -1,5 +1,0 @@
-"INSTALL_TYPE","NOTES","INSTALL_TYPE_PARENT"
-"wtpgrb","ODBCapture Data for wtPLSQL","grbsrc"
-"wtpsav","wtPLSQL Persisted Test Results","wtpsrc"
-"wtpsrc","wtPLSQL Unit Testing Source Code (Core)","pub"
-"wtptst","wtPLSQL Internal Unit Testing","wtpsrc"

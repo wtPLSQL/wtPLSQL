@@ -1,0 +1,69 @@
+
+--
+--  Comprehensive Data Loader script for ODBCAPTURE.SCHEMA_CONF data
+--
+-- Command Line Parameters:
+--   1 - SYSTEM/password@TNSALIAS
+--       i.e. pass the username and password for the SYSTEM user
+--            and the TNSALIAS for the connection to the database.
+--       The Data Load installation requires this connection information.
+--
+
+prompt
+prompt Disable Triggers and Foreign Keys
+declare
+   procedure run_sql (in_sql in varchar2) is begin
+      dbms_output.put_line(in_sql || ';');
+      execute immediate in_sql;
+   exception when others then
+      dbms_output.put_line('-- ' || SQLERRM || CHR(10));
+   end run_sql;
+begin
+   for buff in (select owner, trigger_name
+                 from  dba_triggers
+                 where table_owner = 'ODBCAPTURE'
+                  and  table_name = 'SCHEMA_CONF'
+                 order by owner, trigger_name)
+   loop
+      run_sql('alter trigger "' || buff.owner        || '"' ||
+                           '."' || buff.trigger_name || '" DISABLE');
+   end loop;
+   for buff in (select constraint_name
+                 from  dba_constraints
+                 where constraint_type = 'R'
+                  and  owner = 'ODBCAPTURE'
+                  and  table_name = 'SCHEMA_CONF'
+                 order by constraint_name)
+   loop
+      run_sql('alter table "ODBCAPTURE"."SCHEMA_CONF"' ||
+              ' DISABLE constraint "' || buff.constraint_name || '"');
+   end loop;
+   for buff in (select owner, index_name
+                 from  dba_indexes
+                 where index_type = 'DOMAIN'
+                  and  table_owner = 'ODBCAPTURE'
+                  and  table_name = 'SCHEMA_CONF'
+                 order by owner, index_name)
+   loop
+      run_sql('alter index "' || buff.owner || '"."' || buff.index_name || '"' ||
+              ' DISABLE');
+   end loop;
+end;
+/
+
+-- Additional file extensions
+--   .bad - Bad Records
+--   .dsc - Discard Records
+--   .log - Log File
+
+prompt
+prompt sqlldr_control=ODBCAPTURE/SCHEMA_CONF.ctl
+host sqlldr '&1.' control=ODBCAPTURE/SCHEMA_CONF.ctl data=ODBCAPTURE/SCHEMA_CONF.csv log=ODBCAPTURE/SCHEMA_CONF.log silent=HEADER,FEEDBACK
+
+begin
+   if '&_RC.' != '0' then
+      raise_application_error(-20000, 'Control file "ODBCAPTURE/SCHEMA_CONF.ctl" returned error: &_RC.');
+   end if;
+end;
+/
+

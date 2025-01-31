@@ -15,62 +15,70 @@ spool install_wtpsrc.log
 
 define INSTALL_SYSTEM_CONNECT="&1."
 
--- Must Set SQLPREFIX away from "#" Oracle Change Data Capture packages
+-- For Oracle Change Data Capture (CDC) packages
 set sqlprefix "~"
 
--- Using "^P", CHR(16), DLE as an escape character
+-- Escape character: "^P", CHR(16), DLE
 set escape OFF
 set escape ""
 
 ----------------------------------------
 --  Prepare for Install
-@db_install.sql "./installation_prepare.sql" "" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "./installation_prepare.sql" "" "&INSTALL_SYSTEM_CONNECT."
 
 ----------------------------------------
 -- PROCEDURE Install
 
-@db_install.sql "WTP/WT_AD_HOC_REPORT.proc" "WTP" "&INSTALL_SYSTEM_CONNECT."
-@db_install.sql "WTP/WT_EXECUTE_TEST_RUNNER.proc" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "WTP/WT_AD_HOC_REPORT.proc" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "WTP/WT_EXECUTE_TEST_RUNNER.proc" "WTP" "&INSTALL_SYSTEM_CONNECT."
 
 ----------------------------------------
--- PACKAGE Install
+-- PACKAGE_SPEC Install
 
-@db_install.sql "WTP/CORE_DATA.pspec" "WTP" "&INSTALL_SYSTEM_CONNECT."
-@db_install.sql "WTP/HOOK.pspec" "WTP" "&INSTALL_SYSTEM_CONNECT."
-@db_install.sql "WTP/JUNIT_CORE_REPORT.pspec" "WTP" "&INSTALL_SYSTEM_CONNECT."
-@db_install.sql "WTP/WTPLSQL.pspec" "WTP" "&INSTALL_SYSTEM_CONNECT."
-@db_install.sql "WTP/WT_ASSERT.pspec" "WTP" "&INSTALL_SYSTEM_CONNECT."
-@db_install.sql "WTP/WT_CORE_REPORT.pspec" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "WTP/CORE_DATA.pkssql" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "WTP/HOOK.pkssql" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "WTP/JUNIT_CORE_REPORT.pkssql" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "WTP/WTPLSQL.pkssql" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "WTP/WT_ASSERT.pkssql" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "WTP/WT_CORE_REPORT.pkssql" "WTP" "&INSTALL_SYSTEM_CONNECT."
 
 ----------------------------------------
 -- TABLE Install
 
-@db_install.sql "WTP/HOOKS.tab" "WTP" "&INSTALL_SYSTEM_CONNECT."
-@db_install.sql "WTP/WT_VERSIONS.tab" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "WTP/HOOKS.tbl" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "WTP/WT_VERSIONS.tbl" "WTP" "&INSTALL_SYSTEM_CONNECT."
+
+----------------------------------------
+prompt Compile All started
+begin
+   DBMS_UTILITY.compile_schema(schema      => 'WTP'
+                              ,compile_all => FALSE);
+end;
+/
+prompt Compile All is done.
+----------------------------------------
+-- VIEW Install
+
+@dbi.sql "WTP/WT_QUAL_TEST_RUNNERS_VW.vw" "WTP" "&INSTALL_SYSTEM_CONNECT."
 
 ----------------------------------------
 -- DATA_LOAD Install
 
-@db_install.sql "WTP/HOOKS.cdl" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "WTP/HOOKS.cldr" "WTP" "&INSTALL_SYSTEM_CONNECT."
 
 ----------------------------------------
--- VIEW Install
+-- PACKAGE_BODY Install
 
-@db_install.sql "WTP/WT_QUAL_TEST_RUNNERS_VW.vw" "WTP" "&INSTALL_SYSTEM_CONNECT."
-
-----------------------------------------
--- PACKAGE BODY Install
-
-@db_install.sql "WTP/CORE_DATA.pbody" "WTP" "&INSTALL_SYSTEM_CONNECT."
-@db_install.sql "WTP/HOOK.pbody" "WTP" "&INSTALL_SYSTEM_CONNECT."
-@db_install.sql "WTP/JUNIT_CORE_REPORT.pbody" "WTP" "&INSTALL_SYSTEM_CONNECT."
-@db_install.sql "WTP/WTPLSQL.pbody" "WTP" "&INSTALL_SYSTEM_CONNECT."
-@db_install.sql "WTP/WT_ASSERT.pbody" "WTP" "&INSTALL_SYSTEM_CONNECT."
-@db_install.sql "WTP/WT_CORE_REPORT.pbody" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "WTP/CORE_DATA.pkbsql" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "WTP/HOOK.pkbsql" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "WTP/JUNIT_CORE_REPORT.pkbsql" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "WTP/WTPLSQL.pkbsql" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "WTP/WT_ASSERT.pkbsql" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "WTP/WT_CORE_REPORT.pkbsql" "WTP" "&INSTALL_SYSTEM_CONNECT."
 
 ----------------------------------------
--- Finalize Installation
-@db_install.sql "./installation_finalize.sql" "" "&INSTALL_SYSTEM_CONNECT."
+-- Finalize Installation (Includes SPOOL OFF)
+@dbi.sql "./installation_finalize.sql" "" "&INSTALL_SYSTEM_CONNECT."
 
 spool off
 

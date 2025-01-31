@@ -13,7 +13,7 @@ set sqlblanklines on
 ----------------------------------------
 -- USER Install
 
-@db_install.sql "SYS/WTP.usr" "" ""
+@dbi.sql "SYS/WTP.user" "" ""
 
 ----------------------------------------
 set sqlblanklines off

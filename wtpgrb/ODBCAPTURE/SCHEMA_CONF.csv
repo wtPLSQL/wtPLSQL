@@ -1,2 +1,3 @@
-"USERNAME","INSTALL_TYPE","TS_SIZE","NOTES","TABLESPACE_NAME"
-"WTP","wtpsrc","512M","PL/SQL Unit Testing with wtPLSQL","USERS"
+"USERNAME","BUILD_TYPE","ORACLE_PROVIDED","PROFILE","TEMPORARY_TSPACE","DEFAULT_TSPACE","TS_QUOTA","NOTES"
+"ODBCAPTURE","grbsrc","N",,,"USERS","512M","Oracle Database Source Code Capture Application"
+"WTP","wtpsrc","N",,,"USERS","512M","PL/SQL Unit Testing with wtPLSQL"

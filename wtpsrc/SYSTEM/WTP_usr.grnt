@@ -1,4 +1,5 @@
 
+
 --
 --  Create WTP Grants
 --
@@ -6,51 +7,21 @@
 set define off
 
 
+
 --  Database System Privileges
 
---DBMS_METADATA:WTP
-
-  GRANT CREATE SESSION TO "WTP";
-  GRANT CREATE TABLE TO "WTP";
-  GRANT CREATE PUBLIC SYNONYM TO "WTP";
-  GRANT CREATE VIEW TO "WTP";
-  GRANT CREATE SEQUENCE TO "WTP";
-  GRANT CREATE DATABASE LINK TO "WTP";
-  GRANT CREATE PROCEDURE TO "WTP";
-  GRANT EXECUTE ANY PROCEDURE TO "WTP";
-  GRANT CREATE TRIGGER TO "WTP";
-  GRANT CREATE TYPE TO "WTP";
-  GRANT CREATE JOB TO "WTP";
-
---  "sys" INSTALL_TYPE Role Grants
---  "GRANTEE" (delayed) Role Grants
---  Note: "OBJECT" Schema Object Grants are given during Role creation
-
-
-
---  "sys" INSTALL_TYPE Schema Object Grants, excluding SYS objects
---  "GRANTEE" (delayed) Schema Object Grants
---  Note: "OBJECT" Schema Object Grants are given during object creation
-
-
-
---  Advanced Queue System Privileges
-
-
-
---  Advanced Queue Grants
---  "GRANTEE" (Delayed) Advanced Queue Grants
---  Note: "QUEUE" Advanced Queue Grants are given during object creation
-
---  Advanced Queue Subscriptions
---  "GRANTEE" (Delayed) Advanced Queue Subscription
---  Note: "QUEUE" Advanced Queue Subscriptions are given during object creation
-
-
-
---  "GRANTEE" (Delayed) Fine-Grained Java Permissions
---  Note: "JAVA_CLASS" Fine-Grained Java Permissions are given during object creation
---
+grant CREATE DATABASE LINK to "WTP";
+grant CREATE JOB to "WTP";
+grant CREATE PROCEDURE to "WTP";
+grant CREATE PUBLIC SYNONYM to "WTP";
+grant CREATE SEQUENCE to "WTP";
+grant CREATE SESSION to "WTP";
+grant CREATE TABLE to "WTP";
+grant CREATE TRIGGER to "WTP";
+grant CREATE TYPE to "WTP";
+grant CREATE VIEW to "WTP";
+grant EXECUTE ANY PROCEDURE to "WTP";
 
 
 set define on
+

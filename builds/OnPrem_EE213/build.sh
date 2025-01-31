@@ -64,8 +64,7 @@ build_type_build 'wtpsav' "${PDB_SYSTEM}"
 build_type_build 'wtptst' "${PDB_SYSTEM}"
 # Test Application
 clear_log_files 'unit_testing'
-run_script 'unit_testing' 'setup_for_test.sql' "${PDB_WTP}"
-exit
+run_script 'unit_testing' 'setup_for_test.sql' "${PDB_SYSTEM}"
 #run_script 'unit_testing' 'setup_db_links' "${PDB_WTP}"  # Unit Testing Expects NO DB Links
 run_script 'unit_testing' 'run_core_test.sql' "${PDB_WTP}"
 run_script 'unit_testing' 'run_junit_test.sql' "${PDB_WTP}"

@@ -1,0 +1,237 @@
+
+--
+--  Create WTP.HOOK Package Body
+--
+
+set define off
+
+
+--DBMS_METADATA:WTP.HOOK
+
+  CREATE OR REPLACE EDITIONABLE PACKAGE BODY "WTP"."HOOK" 
+as
+
+   TYPE run_nt_type is table
+      of hooks%ROWTYPE;
+   TYPE run_aa_type is table
+      of run_nt_type
+      index by varchar2(20);
+   g_run_aa  run_aa_type;
+
+----------------------
+--  Private Procedures
+----------------------
+
+---------------------
+--  Public Procedures
+---------------------
+
+------------------------------------------------------------
+procedure run
+      (in_hook_name  in varchar2)
+is
+   l_error_stack          varchar2(32000);
+begin
+   $IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+   $THEN
+      if NOT g_run_assert_hook
+         AND in_hook_name = 'after_assertion'
+      then
+         return;
+      end if;
+   $END  ------%WTPLSQL_end_ignore_lines%------
+   if NOT g_run_aa.EXISTS(in_hook_name)
+   then
+      --dbms_output.put_line('No hook for ' || in_hook_name);
+      return;
+   end if;
+   for i in 1 .. g_run_aa(in_hook_name).COUNT
+   loop
+      begin
+         execute immediate g_run_aa(in_hook_name)(i).run_string;
+      exception when OTHERS then
+         l_error_stack := 'Hook Error in "' || in_hook_name ||
+                           '", SEQ ' || g_run_aa(in_hook_name)(i).seq ||
+                                 '.' || CHR(10) ||
+                           SQLERRM || CHR(10) ||
+                           dbms_utility.format_error_backtrace ||
+                           dbms_utility.format_call_stack;
+         core_data.run_error(l_error_stack);
+      end;
+   end loop;
+end run;
+
+------------------------------------------------------------
+procedure init
+is
+   l_run_nt  run_nt_type;
+begin
+   g_run_aa.DELETE;
+   for buff in (
+      select hook_name
+       from  hooks
+       group by hook_name )
+   loop
+      select * bulk collect into l_run_nt
+       from  hooks
+       where hook_name = buff.hook_name
+       order by hooks.seq;
+      if SQL%FOUND
+      then
+         g_run_aa(buff.hook_name) := l_run_nt;
+      end if;
+   end loop;
+end init;
+
+
+--==============================================================--
+$IF $$WTPLSQL_SELFTEST  ------%WTPLSQL_begin_ignore_lines%------
+$THEN
+   --------------------------------------  WTPLSQL Testing --
+   procedure test_hook
+      (in_msg  in  varchar2)
+   is
+   begin
+      g_test_hook_msg := in_msg;
+   end test_hook;
+   --------------------------------------  WTPLSQL Testing --
+   procedure WTPLSQL_RUN
+   is
+      TYPE  hooks_nt_type is table of hooks%ROWTYPE;
+      l_hooks_ntSAVE  hooks_nt_type;
+      TYPE hname_nt_type is table of hooks.hook_name%TYPE;
+      l_hname_nt      hname_nt_type;
+      l_hooks_rec     hooks%ROWTYPE;
+      l_err_msgSAVE   core_data.g_run_rec.error_message%TYPE;
+      l_err_msgTEST   core_data.g_run_rec.error_message%TYPE;
+      num_recs  number;
+   begin
+      wtplsql.g_DBOUT := 'HOOK:PACKAGE BODY';
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Setup';
+      g_run_assert_hook := FALSE;
+      select count(*) into num_recs from hooks;
+      wt_assert.isnotnull
+         (msg_in           => 'Number of records before setup'
+         ,check_this_in    => num_recs);
+      --------------------------------------  WTPLSQL Testing --
+      l_hname_nt := hname_nt_type('before_test_all'
+                                 ,'before_test_run'
+                                 ,'execute_test_runner'
+                                 ,'after_assertion'
+                                 ,'after_test_run'
+                                 ,'after_test_all'
+                                 ,'ad_hoc_report');
+      select * bulk collect into l_hooks_ntSAVE from hooks;
+      delete from hooks;
+      --------------------------------------  WTPLSQL Testing --
+      l_hooks_rec.seq         := 1;
+      l_hooks_rec.description := 'WTPLSQL Self Test';
+      for i in 1 .. l_hname_nt.COUNT
+      loop
+         l_hooks_rec.hook_name  := l_hname_nt(i);
+         l_hooks_rec.run_string := 'begin hook.test_hook(''' ||
+                                    l_hname_nt(i) || '''); end;';
+         insert into hooks values l_hooks_rec;
+      end loop;
+      commit;
+      --------------------------------------  WTPLSQL Testing --
+      init;
+      wt_assert.eqqueryvalue
+         (msg_in           => 'Confirm number of test records'
+         ,check_query_in   => 'select count(*) from hooks'
+         ,against_value_in => l_hname_nt.COUNT);
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'All Hooks On';
+      for i in 1 .. l_hname_nt.COUNT
+      loop
+         g_test_hook_msg := '';
+         g_run_assert_hook := TRUE;
+         hook.run(l_hname_nt(i));
+         g_run_assert_hook := FALSE;
+         wt_assert.eq
+            (msg_in          => l_hname_nt(i) || ' is active'
+            ,check_this_in   => g_test_hook_msg
+            ,against_this_in => l_hname_nt(i));
+      end loop;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'All Hooks Off';
+      delete from hooks;
+      commit;
+      init;
+      wt_assert.eqqueryvalue
+         (msg_in           => 'Confirm number of test records 2'
+         ,check_query_in   => 'select count(*) from hooks'
+         ,against_value_in => 0);
+      --------------------------------------  WTPLSQL Testing --
+      for i in 1 .. l_hname_nt.COUNT
+      loop
+         g_test_hook_msg := '';
+         hook.run(l_hname_nt(i));
+         wt_assert.isnull
+            (msg_in          => l_hname_nt(i) || ' is not active'
+            ,check_this_in   => g_test_hook_msg);
+      end loop;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Hooks Sad Path 1';
+      l_hooks_rec.seq         := 1;
+      l_hooks_rec.description := 'WTPLSQL Self Test';
+      l_hooks_rec.hook_name   := 'ad_hoc_report';
+      l_hooks_rec.run_string  := 'declare n1 number; begin n1:=1/0; end;';
+      insert into hooks values l_hooks_rec;
+      commit;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.eqqueryvalue
+         (msg_in           => 'Confirm number of test records'
+         ,check_query_in   => 'select count(*) from hooks'
+         ,against_value_in => 1);
+      init;
+      wt_assert.isnull
+         (msg_in        => 'core_data.g_run_rec.error_message'
+         ,check_this_in =>  core_data.g_run_rec.error_message);
+      --------------------------------------  WTPLSQL Testing --
+      l_err_msgSAVE := core_data.g_run_rec.error_message;
+      core_data.g_run_rec.error_message := '';
+      wt_assert.raises
+         (msg_in         => 'Test Exception Handler'
+         ,check_call_in  => 'begin hook.run(''ad_hoc_report''); end;'
+         ,against_exc_in => '');
+      l_err_msgTEST := core_data.g_run_rec.error_message;
+      core_data.g_run_rec.error_message := l_err_msgSAVE;
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.isnotnull
+         (msg_in        => 'Confirm core_data.run_error'
+         ,check_this_in => l_err_msgTEST);
+      wt_assert.this
+         (msg_in        => 'l_err_msgTEST like ''Hook Error in "ad_hoc_report", SEQ 1.' || '\n' ||
+                                                'ORA-01476: divisor is equal to zero'   || '\n' ||
+                                                'ORA-06512: at line 1%'''
+         ,check_this_in =>  l_err_msgTEST like  'Hook Error in "ad_hoc_report", SEQ 1.' || CHR(10) ||
+                                                'ORA-01476: divisor is equal to zero'   || CHR(10) ||
+                                                'ORA-06512: at line 1%');
+      --------------------------------------  WTPLSQL Testing --
+      wt_assert.g_testcase := 'Teardown';
+      delete from hooks;
+      forall i in 1 .. l_hooks_ntSAVE.COUNT
+         insert into hooks values l_hooks_ntSAVE(i);
+      commit;
+      init;
+      wt_assert.eqqueryvalue
+         (msg_in           => 'Number of records after teardown'
+         ,check_query_in   => 'select count(*) from hooks'
+         ,against_value_in => num_recs);
+      g_run_assert_hook := TRUE;
+   end WTPLSQL_RUN;
+
+$END  ----------------%WTPLSQL_end_ignore_lines%----------------
+--==============================================================--
+
+
+------------------------------------------------------------
+------%WTPLSQL_begin_ignore_lines%------ Can't Test This
+begin
+   init;
+end hook;
+/
+
+set define on

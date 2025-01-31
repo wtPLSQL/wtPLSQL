@@ -1,0 +1,174 @@
+
+--
+--  Comprehensive Data Loader script for WTP.WT_SELF_TEST data
+--
+-- Command Line Parameters:
+--   1 - SYSTEM/password@TNSALIAS
+--       i.e. pass the username and password for the SYSTEM user
+--            and the TNSALIAS for the connection to the database.
+--       The Data Load installation requires this connection information.
+--
+
+prompt
+prompt Disable Triggers and Foreign Keys
+declare
+   procedure run_sql (in_sql in varchar2) is begin
+      dbms_output.put_line(in_sql || ';');
+      execute immediate in_sql;
+   exception when others then
+      dbms_output.put_line('-- ' || SQLERRM || CHR(10));
+   end run_sql;
+begin
+   for buff in (select owner, trigger_name
+                 from  dba_triggers
+                 where table_owner = 'WTP'
+                  and  table_name = 'WT_SELF_TEST'
+                 order by owner, trigger_name)
+   loop
+      run_sql('alter trigger "' || buff.owner        || '"' ||
+                           '."' || buff.trigger_name || '" DISABLE');
+   end loop;
+   for buff in (select constraint_name
+                 from  dba_constraints
+                 where constraint_type = 'R'
+                  and  owner = 'WTP'
+                  and  table_name = 'WT_SELF_TEST'
+                 order by constraint_name)
+   loop
+      run_sql('alter table "WTP"."WT_SELF_TEST"' ||
+              ' DISABLE constraint "' || buff.constraint_name || '"');
+   end loop;
+   for buff in (select owner, index_name
+                 from  dba_indexes
+                 where index_type = 'DOMAIN'
+                  and  table_owner = 'WTP'
+                  and  table_name = 'WT_SELF_TEST'
+                 order by owner, index_name)
+   loop
+      run_sql('alter index "' || buff.owner || '"."' || buff.index_name || '"' ||
+              ' DISABLE');
+   end loop;
+end;
+/
+
+-- Additional file extensions
+--   .bad - Bad Records
+--   .dsc - Discard Records
+--   .log - Log File
+
+prompt
+prompt sqlldr_control=WTP/WT_SELF_TEST.ctl
+host sqlldr '&1.' control=WTP/WT_SELF_TEST.ctl data=WTP/WT_SELF_TEST.csv log=WTP/WT_SELF_TEST.log silent=HEADER,FEEDBACK
+
+begin
+   if '&_RC.' != '0' then
+      raise_application_error(-20000, 'Control file "WTP/WT_SELF_TEST.ctl" returned error: &_RC.');
+   end if;
+end;
+/
+
+declare
+   l_blob          blob;
+   the_blob        blob;
+   cnt             pls_integer;
+   procedure b64_decode
+         (in_blob  in BLOB)
+   is
+      BASE64_ENCODE_HEADER      constant varchar2(30) := '(Base64 with Linefeeds)';
+      SPLIT_LEN              constant pls_integer  := 32764;    -- Must be divisible by 4
+      header_txt    varchar2(128);
+      len_blob      pls_integer;
+      ptr           pls_integer;
+   begin
+      dbms_lob.trim(l_blob, 0);
+      dbms_lob.trim(the_blob, 0);
+      ----------------------------------------
+      -- Check incoming BLOB sizes (and return if needed)
+      if in_blob is null then return; end if;
+      len_blob := length(in_blob);
+      if len_blob = 0 then return; end if;
+      ----------------------------------------
+      -- Check for BASE64_ENCODE_HEADER in in_BLOB
+      header_txt := utl_raw.cast_to_varchar2(dbms_lob.substr(in_blob
+                                                            ,length(BASE64_ENCODE_HEADER)
+                                                            ,1)                       );
+      if header_txt != BASE64_ENCODE_HEADER
+      then
+         raise_application_error(-20000, 'BASE64_ENCODE_HEADER missing from data: ' || header_txt);
+      end if;
+      ----------------------------------------
+      -- Create "L_BLOB" after removing BASE64_ENCODE_HEADER, Carriage Returns, and Line Feeds
+      ptr := 1 + length(BASE64_ENCODE_HEADER);  -- Skip over the header
+      while ptr <= len_blob
+      loop
+         dbms_lob.append(l_blob
+                        ,utl_raw.translate(dbms_lob.substr(in_blob
+                                                          ,SPLIT_LEN
+                                                          ,ptr)
+                                          ,hextoraw('000D0A')       -- NULL, Carriage Return, Line Feed
+                                          ,hextoraw('00')   )   );  -- NULL
+         ptr := ptr + SPLIT_LEN;
+      end loop;
+      len_blob := length(l_blob);
+      ----------------------------------------
+      --  Create "THE_BLOB" after Base64 Decoding
+      ptr := 1;
+      while ptr <= len_blob
+      loop
+         dbms_lob.append(the_blob
+                        ,UTL_ENCODE.BASE64_DECODE(dbms_lob.substr(l_blob
+                                                                 ,SPLIT_LEN
+                                                                 ,ptr)   )   );
+         ptr := ptr + SPLIT_LEN;
+      end loop;
+   end b64_decode;
+begin
+   dbms_output.put_line('Decode Binary Data');
+   dbms_output.put_line('------------------');
+   dbms_lob.createtemporary(l_blob, true);
+   dbms_lob.createtemporary(the_blob, true);
+   -- Decode Binary Data for column TEMP_BLOB
+   cnt := 0;
+   for buff in (select ROWID RID, "TEMP_BLOB"
+                 from  "WTP"."WT_SELF_TEST"
+                 where "TEMP_BLOB" is not null
+                 for update of "TEMP_BLOB")
+   loop
+      b64_decode(buff."TEMP_BLOB");
+      -- This overwrites the Base64 Encoded String with the original binary data
+      update "WTP"."WT_SELF_TEST"
+        set  "TEMP_BLOB" = the_blob
+       where rowid = buff.rid;
+      cnt := cnt + 1;
+   end loop;
+   dbms_output.put_line(cnt || ' "TEMP_BLOB" updates.');
+   dbms_lob.freetemporary(l_blob);
+   dbms_lob.freetemporary(the_blob);
+end;
+/
+
+commit;
+
+declare
+   cnt    pls_integer := 0;
+begin
+   dbms_output.put_line('Decode UNISTR Data');
+   dbms_output.put_line('------------------');
+   -- Decode UNISTR Data for column TEMP_NCLOB
+   for buff in (select ROWID RID, "TEMP_NCLOB"
+                 from  "WTP"."WT_SELF_TEST"
+                 where "TEMP_NCLOB" is not null
+                 for update of "TEMP_NCLOB")
+   loop
+      -- This overwrites the UNISTR Encoded String with the original UNICODE data
+      update "WTP"."WT_SELF_TEST"
+        set  "TEMP_NCLOB" = UNISTR(to_char("TEMP_NCLOB"))
+       where rowid = buff.rid;
+      cnt := cnt + 1;
+   end loop;
+   dbms_output.put_line(cnt || ' "AD_FLTEXTN" updates.');
+end;
+/
+
+commit;
+

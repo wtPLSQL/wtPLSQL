@@ -1,8 +1,10 @@
-"USERNAME","TABLE_NAME","INSTALL_TYPE","BEFORE_SELECT_SQL","WHERE_CLAUSE","ORDER_BY_COLUMNS","AFTER_ORDER_BY_SQL","NOTES"
-"ODBCAPTURE","DLOAD_CONF","wtpgrb",,"install_type in ('wtpsrc','wtptst','wtpgrb','wtpsav')","USERNAME, TABLE_NAME, INSTALL_TYPE",,
-"ODBCAPTURE","OBJECT_CONF","wtpgrb",,"install_type in ('wtpsrc','wtptst','wtpgrb','wtpsav')","USERNAME, INSTALL_OTYPE, INSTALL_TYPE",,
-"ODBCAPTURE","ROLE_CONF","wtpgrb",,"install_type in ('wtpsrc','wtptst','wtpgrb','wtpsav')","ROLENAME, INSTALL_TYPE",,
-"ODBCAPTURE","SCHEMA_CONF","wtpgrb",,"install_type in ('wtpsrc','wtptst','wtpgrb','wtpsav')","USERNAME",,
-"ODBCAPTURE","TYPE_CONF","wtpgrb",,"install_type in ('wtpsrc','wtptst','wtpgrb','wtpsav')","INSTALL_TYPE",,
-"WTP","HOOKS","wtpsrc",,,"HOOK_NAME, SEQ",,
-"WTP","WT_SELF_TEST","wtptst",,,"ID",,
+"USERNAME","TABLE_NAME","BUILD_TYPE","ORDER_BY_COLUMNS","LOADING_METHOD","BEFORE_SELECT_SQL","COLUMNS_REMOVED","WHERE_CLAUSE","AFTER_ORDER_BY_SQL","NOTES"
+"ODBCAPTURE","BUILD_CONF","wtpgrb","BUILD_SEQ",,,,"build_type not in ('sys','pub')",,
+"ODBCAPTURE","BUILD_PATH","wtpgrb","PARENT_BUILD_SEQ, BUILD_SEQ",,,,"build_seq in (select build_seq from build_conf where build_type not in ('sys','pub'))",,
+"ODBCAPTURE","DLOAD_CONF","wtpgrb","USERNAME, TABLE_NAME, BUILD_TYPE",,,,,,
+"ODBCAPTURE","OBJECT_CONF","wtpgrb","USERNAME, ELEMENT_NAME, BUILD_TYPE",,,,,,
+"ODBCAPTURE","ROLE_CONF","wtpgrb","ROLENAME, BUILD_TYPE",,,,"build_type not in ('sys','pub')",,
+"ODBCAPTURE","SCHEMA_CONF","wtpgrb","USERNAME",,,,"build_type not in ('sys','pub')",,
+"ODBCAPTURE","TSPACE_CONF","wtpgrb","USERNAME, TSPACE_NAME",,,,,,
+"WTP","HOOKS","wtpsrc","HOOK_NAME, SEQ",,,,,,
+"WTP","WT_SELF_TEST","wtptst","ID",,,,,,

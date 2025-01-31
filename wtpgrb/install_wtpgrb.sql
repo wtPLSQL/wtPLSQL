@@ -15,29 +15,31 @@ spool install_wtpgrb.log
 
 define INSTALL_SYSTEM_CONNECT="&1."
 
--- Must Set SQLPREFIX away from "#" Oracle Change Data Capture packages
+-- For Oracle Change Data Capture (CDC) packages
 set sqlprefix "~"
 
--- Using "^P", CHR(16), DLE as an escape character
+-- Escape character: "^P", CHR(16), DLE
 set escape OFF
 set escape ""
 
 ----------------------------------------
 --  Prepare for Install
-@db_install.sql "./installation_prepare.sql" "" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "./installation_prepare.sql" "" "&INSTALL_SYSTEM_CONNECT."
 
 ----------------------------------------
 -- DATA_LOAD Install
 
-@db_install.sql "ODBCAPTURE/DLOAD_CONF.cdl" "ODBCAPTURE" "&INSTALL_SYSTEM_CONNECT."
-@db_install.sql "ODBCAPTURE/OBJECT_CONF.cdl" "ODBCAPTURE" "&INSTALL_SYSTEM_CONNECT."
-@db_install.sql "ODBCAPTURE/ROLE_CONF.cdl" "ODBCAPTURE" "&INSTALL_SYSTEM_CONNECT."
-@db_install.sql "ODBCAPTURE/SCHEMA_CONF.cdl" "ODBCAPTURE" "&INSTALL_SYSTEM_CONNECT."
-@db_install.sql "ODBCAPTURE/TYPE_CONF.cdl" "ODBCAPTURE" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "ODBCAPTURE/BUILD_CONF.cldr" "ODBCAPTURE" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "ODBCAPTURE/BUILD_PATH.cldr" "ODBCAPTURE" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "ODBCAPTURE/DLOAD_CONF.cldr" "ODBCAPTURE" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "ODBCAPTURE/OBJECT_CONF.cldr" "ODBCAPTURE" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "ODBCAPTURE/ROLE_CONF.cldr" "ODBCAPTURE" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "ODBCAPTURE/SCHEMA_CONF.cldr" "ODBCAPTURE" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "ODBCAPTURE/TSPACE_CONF.cldr" "ODBCAPTURE" "&INSTALL_SYSTEM_CONNECT."
 
 ----------------------------------------
--- Finalize Installation
-@db_install.sql "./installation_finalize.sql" "" "&INSTALL_SYSTEM_CONNECT."
+-- Finalize Installation (Includes SPOOL OFF)
+@dbi.sql "./installation_finalize.sql" "" "&INSTALL_SYSTEM_CONNECT."
 
 spool off
 

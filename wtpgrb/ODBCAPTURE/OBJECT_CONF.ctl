@@ -1,11 +1,12 @@
 OPTIONS (SKIP=1)
 LOAD DATA
-APPEND INTO TABLE "ODBCAPTURE"."OBJECT_CONF"
+INTO TABLE "ODBCAPTURE"."OBJECT_CONF"
+APPEND
 FIELDS CSV WITH EMBEDDED
 TRAILING NULLCOLS
    (USERNAME                       CHAR(128)
-   ,INSTALL_OTYPE                  CHAR(20)
-   ,INSTALL_TYPE                   CHAR(10)
-   ,ONAME_FILTER                   CHAR(4000)
+   ,ELEMENT_NAME                   CHAR(20)
+   ,BUILD_TYPE                     CHAR(10)
+   ,OBJECT_NAME_REGEXP             CHAR(4000)
    ,NOTES                          CHAR(1024)
    )

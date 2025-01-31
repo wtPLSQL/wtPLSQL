@@ -1,0 +1,6 @@
+"BUILD_SEQ","BUILD_TYPE","NOTES"
+10,"wtpsrc","wtPLSQL Unit Testing Source Code (Core)"
+20,"wtpsav","wtPLSQL Persisted Test Results"
+30,"wtptst","wtPLSQL Internal Unit Testing"
+42,"grbsrc","ODBCapture Source Code Script Generation"
+44,"wtpgrb","ODBCapture Data for wtPLSQL"

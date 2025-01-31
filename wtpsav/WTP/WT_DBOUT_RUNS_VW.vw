@@ -2,19 +2,15 @@
 --
 --  Create WTP.WT_DBOUT_RUNS_VW view
 --
---  NOTE: Foreign keys are in a difference script
---        Triggers are in a difference script
---
 
 set define off
 
 
 --
---  Need to avoid errors granting permisions on a view that has errors
---  Found this technique on Ask Tom
+--  Cannot grant permisions on a view with an error
 --  https://asktom.oracle.com/pls/apex/f?p=100:11:0::::P11_QUESTION_ID:43253832697675#2653213300346351987
 create view "WTP"."WT_DBOUT_RUNS_VW"
-  as   select * from SYSTEM.TEMP_PUBLICLY_UPDATEABLE_TABLE;
+  as   select * from TEMP_PUBLICLY_UPDATEABLE_TABLE;
 
 --  Grants
 grant SELECT on "WTP"."WT_DBOUT_RUNS_VW" to "PUBLIC";
@@ -37,7 +33,7 @@ grant SELECT on "WTP"."WT_DBOUT_RUNS_VW" to "PUBLIC";
       ,run.is_last_run
       ,run.error_message
       ,dbr.profiler_runid
-      ,dbr.trigger_offset 
+      ,dbr.trigger_offset
       ,dbr.coverage_pct
       ,dbr.profiled_lines
       ,dbr.executed_lines

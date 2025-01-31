@@ -2,47 +2,42 @@
 --
 --  Finalize Installation
 --
--- Command Line Parameters:
---   1 - SYSTEM/password@TNSALIAS
---       i.e. pass the username and password for the SYSTEM user
---            and the TNSALIAS for the connection to the database.
---       The Data Load installation requires this connection information.
---
-
-define FINAL_SYSTEM_CONNECT="&1."
 
 prompt
-prompt Drop_Temp_Publicly_Updateable_Table_SQL
-drop table SYSTEM.TEMP_PUBLICLY_UPDATEABLE_TABLE purge;
+prompt Drop Temp Publicly Updateable Table
+drop public synonym TEMP_PUBLICLY_UPDATEABLE_TABLE;
+drop table TEMP_PUBLICLY_UPDATEABLE_TABLE purge;
 
 prompt
 prompt fix_invalid_public_synonyms
-@"fix_invalid_public_synonyms.sql" ""
+@"../grb_linked_install_scripts/fix_invalid_public_synonyms.sql"
 
 prompt
 prompt compile_all
-@"compile_all.sql" ""
+@"../grb_linked_install_scripts/compile_all.sql" "'WTP'"
 
 prompt
 prompt alter_foreign_keys_ENABLE
-@"alter_foreign_keys.sql" "ENABLE"
+@"../grb_linked_install_scripts/alter_foreign_keys.sql" "ENABLE" "'WTP'"
 
 prompt
 prompt alter_triggers_ENABLE
-@"alter_triggers.sql" "ENABLE"
+@"../grb_linked_install_scripts/alter_triggers.sql" "ENABLE" "'WTP'"
 
 prompt
 prompt update_id_sequences
-@"update_id_sequences.sql" ""
+@"../grb_linked_install_scripts/update_id_sequences.sql" "'WTP'"
 
 --prompt
 --prompt alter_queues_ENABLE
---@"alter_queues.sql" "ENABLE"
+--@"../grb_linked_install_scripts/alter_queues.sql" "ENABLE" "'WTP'"
 
 --prompt
 --prompt alter_scheduler_jobs_ENABLE
---@"alter_scheduler_jobs.sql" "ENABLE"
+--@"../grb_linked_install_scripts/alter_scheduler_jobs.sql" "ENABLE" "'WTP'"
 
 prompt
-prompt Load Installation Files
-@"odbcapture_installation_logs.cdl" "&FINAL_SYSTEM_CONNECT."
+prompt Switch Spooling Off
+spool off
+
+

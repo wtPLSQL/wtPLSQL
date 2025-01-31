@@ -15,35 +15,35 @@ spool install_wtptst.log
 
 define INSTALL_SYSTEM_CONNECT="&1."
 
--- Must Set SQLPREFIX away from "#" Oracle Change Data Capture packages
+-- For Oracle Change Data Capture (CDC) packages
 set sqlprefix "~"
 
--- Using "^P", CHR(16), DLE as an escape character
+-- Escape character: "^P", CHR(16), DLE
 set escape OFF
 set escape ""
 
 ----------------------------------------
 --  Prepare for Install
-@db_install.sql "./installation_prepare.sql" "" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "./installation_prepare.sql" "" "&INSTALL_SYSTEM_CONNECT."
 
 ----------------------------------------
 -- TABLE Install
 
-@db_install.sql "WTP/WT_SELF_TEST.tab" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "WTP/WT_SELF_TEST.tbl" "WTP" "&INSTALL_SYSTEM_CONNECT."
 
 ----------------------------------------
 -- DATA_LOAD Install
 
-@db_install.sql "WTP/WT_SELF_TEST.cdl" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "WTP/WT_SELF_TEST.cldr" "WTP" "&INSTALL_SYSTEM_CONNECT."
 
 ----------------------------------------
--- TRIGGER Install
+-- TABLE_TRIGGER Install
 
-@db_install.sql "WTP/WT_SELF_TEST.tabtrg" "WTP" "&INSTALL_SYSTEM_CONNECT."
+@dbi.sql "WTP/WT_SELF_TEST.ttrg" "WTP" "&INSTALL_SYSTEM_CONNECT."
 
 ----------------------------------------
--- Finalize Installation
-@db_install.sql "./installation_finalize.sql" "" "&INSTALL_SYSTEM_CONNECT."
+-- Finalize Installation (Includes SPOOL OFF)
+@dbi.sql "./installation_finalize.sql" "" "&INSTALL_SYSTEM_CONNECT."
 
 spool off
 
