@@ -40,7 +40,7 @@ PDB_NAME='DEVPDB'
 SYS_LOGIN="SYS/${SYS_PASS}@OnPrem_EE213CDB as sysdba"
 PDB_SYS="SYS/${SYS_PASS}@OnPrem_EE213_${PDB_NAME} as sysdba"
 PDB_SYSTEM="SYSTEM/${SYS_PASS}@OnPrem_EE213_${PDB_NAME}"
-PDB_WTP="WTP/WTP@OnPrem_EE213_${PDB_NAME}"
+PDB_WTP="WTP/60dev@OnPrem_EE213_${PDB_NAME}"
 
 ########################################
 # Source the Build Functions
