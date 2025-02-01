@@ -117,25 +117,37 @@ function unistr_encode
       (in_nclob  in nclob)
    return clob
 is
-   acode  pls_integer;
+   hxstr  varchar2(20);
+   acode  number;
+   len    number := length(in_nclob);
    oclob  clob;
 begin
-   for i in 1 .. length(in_nclob)
+   for i in 1 .. len
    loop
       acode := ascii(substr(in_nclob,i,1));
       case
-      when acode = 92  -- "\"
-      then
-         oclob := oclob || '\\';
       when acode > 127
       then
-         oclob := oclob || '\' || to_char(acode,'FM000X');
+         hxstr := to_char(acode,'FM0000000X');
+         If acode > 65535
+         then
+            -- Unicode Supplemental Characters
+            oclob := oclob || '\' || substr(hxstr,1,4) || '\' || substr(hxstr,5,4);
+         else
+            -- Unicode Characters
+            oclob := oclob ||                             '\' || substr(hxstr,5,4);
+         end if;
+      when acode = 92 -- "\" Character
+      then
+         -- Escape the "\" Character
+         oclob := oclob || '\\';
       else
+         -- US7ASCII Character
          oclob := oclob || chr(acode);
       end case;
    end loop;
    return oclob;
-end;
+end unistr_encode;
 
 ------------------------------------------------------------
 -- Split g_clob_buff into multiple lines
