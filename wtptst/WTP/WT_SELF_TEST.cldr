@@ -150,7 +150,72 @@ end;
 commit;
 
 declare
-   cnt    pls_integer := 0;
+   g_nclob  nclob;
+   cnt      pls_integer := 0;
+   -- Convert UNISTR encoding to National Character Set
+   function unistr_decode(in_nclob in nclob) return nclob
+   is
+      MAXLEN    number := 16000;
+      l_nclob   nclob;
+      len       number := length(in_nclob);
+      subpos    number := 1;
+      slashpos  number;
+      numchars  number;
+   begin
+      while subpos <= len - MAXLEN
+      loop
+         -- Search for "\" characters in the last 5 positions before MAXLEN
+         slashpos := instr(substr(in_nclob, subpos-1 + MAXLEN-4, 5), '\');
+         if slashpos > 0
+         then
+            -- Check for Escape Character before slashpos (another slash)
+            if    slashpos = 1
+              AND substr(in_nclob, subpos-1 + MAXLEN-4-1, 1) = '\'
+            then
+               -- Escape Character Found Before, cut off before Escape Character
+               numchars := MAXLEN-4 - 1 - 1;
+               l_nclob := l_nclob || UNISTR(to_char(substr(in_nclob, subpos, numchars)));
+            -- Check for Escape Character after slashpos (another slash)
+            elsif substr(in_nclob, subpos-1 + MAXLEN-4 + slashpos-1 + 1, 1) = '\'
+            then
+               -- Escape Character Found After, cut off before slashpos
+               numchars := MAXLEN-4 + slashpos-1 - 1;
+               l_nclob := l_nclob || UNISTR(to_char(substr(in_nclob, subpos, numchars)));
+            -- Check the slashpos - 5 (+1 Character) for a "Unescaped" Unicode Supplemental Character
+            elsif regexp_like(substr(in_nclob, subpos-1 + MAXLEN-4 + slashpos-1 - 5, 6)
+                             ,'^[^\][\]D(8|9|A|B)[0-9][0-9]$')
+                             --   ^          - Anchored to start of line
+                             --   [^\]       - Not a backslash character
+                             --   [\]        - A backslash character
+                             --   D(8|9|A|B) - Either D8, D9, DA, or DB
+                             --   [0-9][0-9] - 2 digit number
+                             --   $          - Anchored to end of line
+            then
+               -- Unicode Supplemental Character Found, Cut off before Supplemental
+               numchars := MAXLEN-4 + slashpos-1 - 5 - 1;
+               l_nclob := l_nclob || UNISTR(to_char(substr(in_nclob, subpos, numchars)));
+            else
+               -- No Escape Character or Supplemental Character found, Cut off before slashpos
+               numchars := MAXLEN-4 + slashpos-1 - 1;
+               l_nclob := l_nclob || UNISTR(to_char(substr(in_nclob, subpos, numchars)));
+            end if;
+         else
+            -- Cut off at MAXLEN
+            numchars := MAXLEN;
+            l_nclob := l_nclob || UNISTR(to_char(substr(in_nclob, subpos, numchars)));
+         end if;
+         subpos := subpos + numchars;
+      end loop;
+      return l_nclob || UNISTR(to_char(substr(in_nclob, subpos, MAXLEN)));
+   exception when OTHERS then
+      raise_application_error(-20000, 'UNISTR Encoding Error. len: ' || len      ||
+                                                        ', subpos: ' || subpos   ||
+                                                      ', slashpos: ' || slashpos ||
+                                                      ', numchars: ' || numchars ||
+                                                           ', cnt: ' || cnt      || CHR(10) ||
+                                                                        SQLERRM  || CHR(10) ||
+                                                        dbms_utility.format_error_backtrace );
+   end unistr_decode;
 begin
    dbms_output.put_line('Decode UNISTR Data');
    dbms_output.put_line('------------------');
@@ -160,13 +225,14 @@ begin
                  where "TEMP_NCLOB" is not null
                  for update of "TEMP_NCLOB")
    loop
+      g_nclob := unistr_decode(buff."TEMP_NCLOB");
       -- This overwrites the UNISTR Encoded String with the original UNICODE data
       update "WTP"."WT_SELF_TEST"
-        set  "TEMP_NCLOB" = UNISTR(to_char("TEMP_NCLOB"))
+        set  "TEMP_NCLOB" = g_nclob
        where rowid = buff.rid;
       cnt := cnt + 1;
    end loop;
-   dbms_output.put_line(cnt || ' "AD_FLTEXTN" updates.');
+   dbms_output.put_line(cnt || ' "WT_SELF_TEST" updates.');
 end;
 /
 
