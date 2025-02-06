@@ -12,7 +12,7 @@ declare
    end_pos     pls_integer;
    procedure add_line is
    begin
-      if regexp_like(line_txt, '(ORA-|SQL-|SP2-|PLS-|PL2-|TNS-|(object|mmap) failed|WARNING: Prerequisite BUILD_TYPE|Record [0-9]+: Rejected)')
+      if regexp_like(line_txt, '(ORA-|SQL-|SP2-|PLS-|PL2-|TNS-|SQL[*]Loader-[0-9]+:|WARNING: Prerequisite BUILD_TYPE|Record [0-9]+: Rejected)')
       then
          line_txt := regexp_replace(line_txt, '\r$');
          begin
