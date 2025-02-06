@@ -1,0 +1,29 @@
+
+PL/SQL procedure successfully completed.
+
+
+CON_NAME
+------------------------------
+DEVPDB
+USER is "WTP"
+Setup Continue on Error
+Running run_junit_test.sql
+
+Initialize Hooks.
+3 "wt_core_report" rows deleted from HOOKS table.
+
+PL/SQL procedure successfully completed.
+
+Elapsed: 00:00:00.11
+0 "wt_test_run" rows deleted from HOOKS table.
+
+PL/SQL procedure successfully completed.
+
+Elapsed: 00:00:00.01
+0 "junit_core_report" rows deleted from HOOKS table.
+
+PL/SQL procedure successfully completed.
+
+Elapsed: 00:00:00.04
+
+Run and Report Unit Tests.

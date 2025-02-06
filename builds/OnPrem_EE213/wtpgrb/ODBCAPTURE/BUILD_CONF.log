@@ -1,0 +1,51 @@
+
+SQL*Loader: Release 19.0.0.0.0 - Production on Thu Feb 6 12:14:32 2025
+Version 19.22.0.0.0
+
+Copyright (c) 1982, 2024, Oracle and/or its affiliates.  All rights reserved.
+
+Control File:   ODBCAPTURE/BUILD_CONF.ctl
+Data File:      ODBCAPTURE/BUILD_CONF.csv
+  Bad File:     ODBCAPTURE/BUILD_CONF.bad
+  Discard File:  none specified
+ 
+ (Allow all discards)
+
+Number to load: ALL
+Number to skip: 1
+Errors allowed: 50
+Bind array:     250 rows, maximum of 1048576 bytes
+Continuation:    none specified
+Path used:      Conventional
+Silent options: FEEDBACK
+Table "ODBCAPTURE"."BUILD_CONF", loaded from every logical record.
+Insert option in effect for this table: APPEND
+TRAILING NULLCOLS option in effect
+
+   Column Name                  Position   Len  Term Encl Datatype
+------------------------------ ---------- ----- ---- ---- ---------------------
+BUILD_SEQ                           FIRST     *   ,  O(") CHARACTER            
+BUILD_TYPE                           NEXT    10   ,  O(") CHARACTER            
+NOTES                                NEXT  1024   ,  O(") CHARACTER            
+
+
+Table "ODBCAPTURE"."BUILD_CONF":
+  5 Rows successfully loaded.
+  0 Rows not loaded due to data errors.
+  0 Rows not loaded because all WHEN clauses were failed.
+  0 Rows not loaded because all fields were null.
+
+
+Space allocated for bind array:                 324000 bytes(250 rows)
+Read   buffer bytes: 1048576
+
+Total logical records skipped:          1
+Total logical records read:             5
+Total logical records rejected:         0
+Total logical records discarded:        0
+
+Run began on Thu Feb 06 12:14:32 2025
+Run ended on Thu Feb 06 12:14:33 2025
+
+Elapsed time was:     00:00:00.57
+CPU time was:         00:00:00.10

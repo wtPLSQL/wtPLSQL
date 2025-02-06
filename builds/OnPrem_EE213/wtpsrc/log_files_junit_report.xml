@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="install_sys.log" tests="1" errors="0" hostname="EE213CDB" id="1" time="0" timestamp="2025-02-06T18:10:55">
+    <testcase name="SYS/WTP.user" assertions="26" classname="SYS.user" status="PASS" time="0">
+      <system-out>
+=== DBI Started: SYS/WTP.user
+
+User created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:13 for a duration of .48 seconds (started at 2025-02-06T18:10:13)
+      </system-out>
+    </testcase>
+  </testsuite>
+  <testsuite name="install_system.log" tests="1" errors="0" hostname="EE213CDB" id="2" time="0" timestamp="2025-02-06T18:10:55">
+    <testcase name="SYSTEM/WTP_usr.grnt" assertions="35" classname="SYSTEM.grnt" status="PASS" time="0">
+      <system-out>
+=== DBI Started: SYSTEM/WTP_usr.grnt
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:14 for a duration of .46 seconds (started at 2025-02-06T18:10:13)
+      </system-out>
+    </testcase>
+  </testsuite>
+  <testsuite name="install_wtpsrc.log" tests="19" errors="0" hostname="EE213CDB" id="3" time="24" timestamp="2025-02-06T18:10:55">
+    <testcase name="./installation_finalize.sql" assertions="" classname="..sql" status="PASS" time="">
+    </testcase>
+    <testcase name="./installation_prepare.sql" assertions="19" classname="..sql" status="PASS" time="0">
+      <system-out>
+=== DBI Started: ./installation_prepare.sql
+
+Create Temp Publicly Updateable Table
+
+Table created.
+
+
+Grant succeeded.
+
+
+Synonym created.
+
+
+Check for Prerequisite BUILD_TYPEs
+Prerequisite BUILD_TYPEs for &quot;wtpsrc&quot;
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:10:14 for a duration of .33 seconds (started at 2025-02-06T18:10:14)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/CORE_DATA.pkbsql" assertions="5" classname="WTP.pkbsql" status="PASS" time="0">
+      <system-out>
+=== DBI Started: WTP/CORE_DATA.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:10:44 for a duration of .12 seconds (started at 2025-02-06T18:10:43)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/CORE_DATA.pkssql" assertions="8" classname="WTP.pkssql" status="PASS" time="0">
+      <system-out>
+=== DBI Started: WTP/CORE_DATA.pkssql
+
+Package created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:15 for a duration of .2 seconds (started at 2025-02-06T18:10:14)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/HOOK.pkbsql" assertions="5" classname="WTP.pkbsql" status="PASS" time="0">
+      <system-out>
+=== DBI Started: WTP/HOOK.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:10:44 for a duration of .09 seconds (started at 2025-02-06T18:10:44)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/HOOK.pkssql" assertions="8" classname="WTP.pkssql" status="PASS" time="0">
+      <system-out>
+=== DBI Started: WTP/HOOK.pkssql
+
+Package created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:15 for a duration of .22 seconds (started at 2025-02-06T18:10:15)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/HOOKS.cldr" assertions="13" classname="WTP.cldr" status="PASS" time="6">
+      <system-out>
+=== DBI Started: WTP/HOOKS.cldr
+
+Disable Triggers and Foreign Keys
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=WTP/HOOKS.ctl
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:10:43 for a duration of 5.87 seconds (started at 2025-02-06T18:10:38)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/HOOKS.tbl" assertions="41" classname="WTP.tbl" status="PASS" time="17">
+      <system-out>
+=== DBI Started: WTP/HOOKS.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:33 for a duration of 16.76 seconds (started at 2025-02-06T18:10:16)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/JUNIT_CORE_REPORT.pkbsql" assertions="5" classname="WTP.pkbsql" status="PASS" time="0">
+      <system-out>
+=== DBI Started: WTP/JUNIT_CORE_REPORT.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:10:44 for a duration of .1 seconds (started at 2025-02-06T18:10:44)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/JUNIT_CORE_REPORT.pkssql" assertions="8" classname="WTP.pkssql" status="PASS" time="0">
+      <system-out>
+=== DBI Started: WTP/JUNIT_CORE_REPORT.pkssql
+
+Package created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:15 for a duration of .42 seconds (started at 2025-02-06T18:10:15)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/WTPLSQL.pkbsql" assertions="5" classname="WTP.pkbsql" status="PASS" time="0">
+      <system-out>
+=== DBI Started: WTP/WTPLSQL.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:10:44 for a duration of .16 seconds (started at 2025-02-06T18:10:44)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/WTPLSQL.pkssql" assertions="14" classname="WTP.pkssql" status="PASS" time="0">
+      <system-out>
+=== DBI Started: WTP/WTPLSQL.pkssql
+
+Package created.
+
+
+Grant succeeded.
+
+
+Synonym created.
+
+
+Synonym created.
+
+=== DBI Completed at 2025-02-06T18:10:16 for a duration of .43 seconds (started at 2025-02-06T18:10:15)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/WT_AD_HOC_REPORT.proc" assertions="8" classname="WTP.proc" status="PASS" time="0">
+      <system-out>
+=== DBI Started: WTP/WT_AD_HOC_REPORT.proc
+
+Warning: Procedure created with compilation errors.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:14 for a duration of .18 seconds (started at 2025-02-06T18:10:14)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/WT_ASSERT.pkbsql" assertions="5" classname="WTP.pkbsql" status="PASS" time="0">
+      <system-out>
+=== DBI Started: WTP/WT_ASSERT.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:10:44 for a duration of .32 seconds (started at 2025-02-06T18:10:44)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/WT_ASSERT.pkssql" assertions="14" classname="WTP.pkssql" status="PASS" time="1">
+      <system-out>
+=== DBI Started: WTP/WT_ASSERT.pkssql
+
+Package created.
+
+
+Grant succeeded.
+
+
+Synonym created.
+
+
+Synonym created.
+
+=== DBI Completed at 2025-02-06T18:10:16 for a duration of .52 seconds (started at 2025-02-06T18:10:16)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/WT_CORE_REPORT.pkbsql" assertions="5" classname="WTP.pkbsql" status="PASS" time="0">
+      <system-out>
+=== DBI Started: WTP/WT_CORE_REPORT.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:10:44 for a duration of .24 seconds (started at 2025-02-06T18:10:44)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/WT_CORE_REPORT.pkssql" assertions="8" classname="WTP.pkssql" status="PASS" time="0">
+      <system-out>
+=== DBI Started: WTP/WT_CORE_REPORT.pkssql
+
+Package created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:16 for a duration of .11 seconds (started at 2025-02-06T18:10:16)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/WT_EXECUTE_TEST_RUNNER.proc" assertions="8" classname="WTP.proc" status="PASS" time="0">
+      <system-out>
+=== DBI Started: WTP/WT_EXECUTE_TEST_RUNNER.proc
+
+Warning: Procedure created with compilation errors.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:14 for a duration of .12 seconds (started at 2025-02-06T18:10:14)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/WT_QUAL_TEST_RUNNERS_VW.vw" assertions="23" classname="WTP.vw" status="PASS" time="0">
+      <system-out>
+=== DBI Started: WTP/WT_QUAL_TEST_RUNNERS_VW.vw
+
+View created.
+
+
+Grant succeeded.
+
+
+View created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:38 for a duration of .41 seconds (started at 2025-02-06T18:10:37)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/WT_VERSIONS.tbl" assertions="32" classname="WTP.tbl" status="PASS" time="0">
+      <system-out>
+=== DBI Started: WTP/WT_VERSIONS.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:34 for a duration of .37 seconds (started at 2025-02-06T18:10:33)
+      </system-out>
+    </testcase>
+    <system-out>
+(WTP/WT_VERSIONS.tbl) Compile All started
+(WTP/WT_VERSIONS.tbl) 
+(WTP/WT_VERSIONS.tbl) PL/SQL procedure successfully completed.
+(WTP/WT_VERSIONS.tbl) 
+(WTP/WT_VERSIONS.tbl) Compile All is done.
+    </system-out>
+  </testsuite>
+</testsuites>

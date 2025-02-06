@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="ODBCAPTURE_schema_build" tests="92" failures="0" time="0" timestamp="2025-02-06T18:13:26">
+    <testcase name="FUNCTION:db_object_status" classname="ODBCAPTURE.ODBCAPTURE_VERSION" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.BUILD_CONF_NK1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.BUILD_CONF_PK" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.BUILD_PATH_PK" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.DBA_DEPENDENCIES_TAB_IDX2" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.DBA_DEPENDENCIES_TAB_IX1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.DBA_OBJECTS_TAB_IX1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.DBA_TAB_PRIVS_TAB_IX1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.DLOAD_CONF_PK" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.ELEMENT_CONF_PK" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.ELEMENT_CONF_UK1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.METADATA_TRANSFORM_PARAMS_PK" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.OBJECT_CONF_PK" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_COMMENTS_TAB_IX1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_CONTEXT_TAB_IX1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_DATA_LOAD_TAB_IX1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_FKEY_TAB_IX1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_INDEX_TAB_IX1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_OBJECT_TAB_IX1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_SYNONYM_TAB_IX1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_SYNONYM_TAB_IX2" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_TRIGGER_TAB_IX1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_TRIGGER_TAB_IX2" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.ROLE_CONF_PK" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.SCHEMA_CONF_PK" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.SCHEMA_OBJECTS_TAB_PK" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.SYS_IL0000075952C00004$$" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.TSPACE_CONF_PK" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.USER_DEFINED_TYPE_CONF_PK" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="ODBCAPTURE.ZIP_FILES_PK" time="0"/>
+    <testcase name="LOB:db_object_status" classname="ODBCAPTURE.SYS_LOB0000075952C00004$$" time="0"/>
+    <testcase name="PACKAGE:db_object_status" classname="ODBCAPTURE.COMMON_UTIL" time="0"/>
+    <testcase name="PACKAGE:db_object_status" classname="ODBCAPTURE.FH2" time="0"/>
+    <testcase name="PACKAGE:db_object_status" classname="ODBCAPTURE.GRAB_DATA" time="0"/>
+    <testcase name="PACKAGE:db_object_status" classname="ODBCAPTURE.GRAB_SCRIPTS" time="0"/>
+    <testcase name="PACKAGE:db_object_status" classname="ODBCAPTURE.ROOT_SCRIPTS" time="0"/>
+    <testcase name="PACKAGE:db_object_status" classname="ODBCAPTURE.ZIP_UTIL_PKG" time="0"/>
+    <testcase name="PACKAGE BODY:db_object_status" classname="ODBCAPTURE.COMMON_UTIL" time="0"/>
+    <testcase name="PACKAGE BODY:db_object_status" classname="ODBCAPTURE.FH2" time="0"/>
+    <testcase name="PACKAGE BODY:db_object_status" classname="ODBCAPTURE.GRAB_DATA" time="0"/>
+    <testcase name="PACKAGE BODY:db_object_status" classname="ODBCAPTURE.GRAB_SCRIPTS" time="0"/>
+    <testcase name="PACKAGE BODY:db_object_status" classname="ODBCAPTURE.ROOT_SCRIPTS" time="0"/>
+    <testcase name="PACKAGE BODY:db_object_status" classname="ODBCAPTURE.ZIP_UTIL_PKG" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.BUILD_CONF" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.BUILD_PATH" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.BUILD_TYPE_TIMING" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.DBA_DEPENDENCIES_TAB" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.DBA_OBJECTS_TAB" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.DBA_TAB_PRIVS_TAB" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.DLOAD_CONF" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.ELEMENT_CONF" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.METADATA_TRANSFORM_PARAMS" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.OBJECT_CONF" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_COMMENTS_TAB" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_CONTEXT_TAB" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_DATA_LOAD_TAB" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_FKEY_TAB" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_INDEX_TAB" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_OBJECT_TAB" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_SYNONYM_TAB" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_TRIGGER_TAB" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.ROLE_CONF" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.SCHEMA_CONF" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.SCHEMA_OBJECTS_TAB" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.TSPACE_CONF" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.USER_DEFINED_TYPE_CONF" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="ODBCAPTURE.ZIP_FILES" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.AQ_SYSTEM_PRIVS_VW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.BUILD_PATH_REVIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.DBA_DEPENDENCIES_VIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.DBA_OBJECTS_VIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.DBA_TAB_PRIVS_VIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_COMMENTS_VIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_CONTEXT_VIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_DATA_LOAD_VIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_FKEY_VIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_INDEX_VIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_OBJECT_VIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_SYNONYM_VIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.OBJ_INSTALL_TRIGGER_VIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.PRIV_OBJ_DIR_VIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.PRIV_OBJ_HACL_VIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.PRIV_OBJ_INSTALL_VW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.PRIV_OBJ_QUEUE_VIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.PRIV_OBJ_WACL_VIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.PRIV_QUEUE_REGISTER_VIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.PRIV_QUEUE_SUBSCRIBE_VIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.PRIV_QUEUE_SYSPRIVS_VIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.PRIV_ROLE_PRIVILEGES_VIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.PRIV_SYSOBJ_PRIVILEGES_VIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.PRIV_SYSTEM_PRIVILEGES_VIEW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="ODBCAPTURE.UOR_INSTALL_VIEW" time="0"/>
+   </testsuite>
+</testsuites>

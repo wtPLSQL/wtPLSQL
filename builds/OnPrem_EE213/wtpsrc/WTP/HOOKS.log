@@ -1,0 +1,53 @@
+
+SQL*Loader: Release 19.0.0.0.0 - Production on Thu Feb 6 12:10:40 2025
+Version 19.22.0.0.0
+
+Copyright (c) 1982, 2024, Oracle and/or its affiliates.  All rights reserved.
+
+Control File:   WTP/HOOKS.ctl
+Data File:      WTP/HOOKS.csv
+  Bad File:     WTP/HOOKS.bad
+  Discard File:  none specified
+ 
+ (Allow all discards)
+
+Number to load: ALL
+Number to skip: 1
+Errors allowed: 50
+Bind array:     250 rows, maximum of 1048576 bytes
+Continuation:    none specified
+Path used:      Conventional
+Silent options: FEEDBACK
+Table "WTP"."HOOKS", loaded from every logical record.
+Insert option in effect for this table: APPEND
+TRAILING NULLCOLS option in effect
+
+   Column Name                  Position   Len  Term Encl Datatype
+------------------------------ ---------- ----- ---- ---- ---------------------
+HOOK_NAME                           FIRST    20   ,  O(") CHARACTER            
+SEQ                                  NEXT     *   ,  O(") CHARACTER            
+RUN_STRING                           NEXT  4000   ,  O(") CHARACTER            
+DESCRIPTION                          NEXT  1000   ,  O(") CHARACTER            
+
+value used for ROWS parameter changed from 250 to 198
+
+Table "WTP"."HOOKS":
+  5 Rows successfully loaded.
+  0 Rows not loaded due to data errors.
+  0 Rows not loaded because all WHEN clauses were failed.
+  0 Rows not loaded because all fields were null.
+
+
+Space allocated for bind array:                1046232 bytes(198 rows)
+Read   buffer bytes: 1048576
+
+Total logical records skipped:          1
+Total logical records read:             5
+Total logical records rejected:         0
+Total logical records discarded:        0
+
+Run began on Thu Feb 06 12:10:40 2025
+Run ended on Thu Feb 06 12:10:43 2025
+
+Elapsed time was:     00:00:03.20
+CPU time was:         00:00:00.17

@@ -1,0 +1,153 @@
+
+  wtPLSQL
+  Start Date/Time: 06-Feb-2025 12:11:42 PM
+  Test Results for WTP.CORE_DATA
+  Database Object Under Test is PACKAGE BODY WTP.CORE_DATA
+  ------------------------------------------------------------------
+  Minimum Elapsed msec:          0      Total Assertions:         64
+  Average Elapsed msec:          0     Failed Assertions:          0
+  Maximum Elapsed msec:         12       Total Testcases:          9
+  Total Run Time (sec):        1.4      Failed Testcases:          0
+                                          Testcase Yield:        100%
+
+
+  wtPLSQL
+  Start Date/Time: 06-Feb-2025 12:11:44 PM
+  Test Results for WTP.HOOK
+  Database Object Under Test is PACKAGE BODY WTP.HOOK
+  ------------------------------------------------------------------
+  Minimum Elapsed msec:          0      Total Assertions:         23
+  Average Elapsed msec:          2     Failed Assertions:          0
+  Maximum Elapsed msec:          9       Total Testcases:          5
+  Total Run Time (sec):        0.3      Failed Testcases:          0
+                                          Testcase Yield:        100%
+
+
+  wtPLSQL
+  Start Date/Time: 06-Feb-2025 12:11:44 PM
+  Test Results for WTP.WTPLSQL
+  ------------------------------------------------------------------
+  Minimum Elapsed msec:          0      Total Assertions:         33
+  Average Elapsed msec:         23     Failed Assertions:          4
+  Maximum Elapsed msec:        240       Total Testcases:         16
+  Total Run Time (sec):        0.8      Failed Testcases:          3
+                                          Testcase Yield:         81%
+
+  WTP.WTPLSQL Test Runner Details
+  --------------------------------------------------------------
+---***  Show Version Setup  ***-------------------------------------------------
+#FAIL#.154ms Saved Original Version. ISNOTNULL - Expected NOT NULL and got ""
+---***  Show Version Happy Path 3  ***------------------------------------------
+#FAIL#1.66ms Show New Version. ISNOTNULL - Expected NOT NULL and got ""
+#FAIL#1.23ms Test New Version. THIS - Expected "TRUE" and got ""
+---***  Show Version Teardown  ***----------------------------------------------
+#FAIL# .14ms Return to Existing Version. EQ - Expected "" and got ""
+
+
+  wtPLSQL
+  Start Date/Time: 06-Feb-2025 12:11:45 PM
+  Test Results for WTP.WT_ASSERT
+  Database Object Under Test is PACKAGE BODY WTP.WT_ASSERT
+  ------------------------------------------------------------------
+  Minimum Elapsed msec:          0      Total Assertions:        414
+  Average Elapsed msec:         30     Failed Assertions:          0
+  Maximum Elapsed msec:       3176       Total Testcases:        152
+  Total Run Time (sec):       12.7      Failed Testcases:          0
+                                          Testcase Yield:        100%
+
+
+  wtPLSQL
+  Start Date/Time: 06-Feb-2025 12:11:57 PM
+  Test Results for WTP.WT_DBOUT
+  Database Object Under Test is PACKAGE BODY WTP.WT_DBOUT
+  ------------------------------------------------------------------
+  Minimum Elapsed msec:          0      Total Assertions:         15
+  Average Elapsed msec:          6     Failed Assertions:          0
+  Maximum Elapsed msec:         53       Total Testcases:         12
+  Total Run Time (sec):        0.9      Failed Testcases:          0
+                                          Testcase Yield:        100%
+
+
+  wtPLSQL
+  Start Date/Time: 06-Feb-2025 12:11:58 PM
+  Test Results for WTP.WT_JOB
+  Database Object Under Test is PACKAGE BODY WTP.WT_JOB
+  ------------------------------------------------------------------
+  Minimum Elapsed msec:          0      Total Assertions:         31
+  Average Elapsed msec:        286     Failed Assertions:          2
+  Maximum Elapsed msec:       1298       Total Testcases:          8
+  Total Run Time (sec):        9.2      Failed Testcases:          1
+                                          Testcase Yield:         88%
+
+  WTP.WT_JOB Test Runner Details
+  --------------------------------------------------------------
+---***  Create and Drop DB Link  ***--------------------------------------------
+#FAIL#1074ms Number of Rows from WT_SELF_TEST@WTP. EQQUERYVALUE - Exception raised for Query: select count(*) from WT_SELF_TEST@WTP\nORA-01017: invalid username/password; logon denied\nORA-06512: at "WTP.WT_ASSERT", line 2672\n----- PL/SQL Call Stack -----\n  object      line  object\n  handle    number  name\n0x72811518      2685  package body WTP.WT_ASSERT.EQQUERYVALUE\n0x6acd5ea8       148  package body WTP.WT_JOB.T_CREATE_DROP_DB_LINK\n0x6acd5ea8       497  package body WTP.WT_JOB.WTPLSQL_RUN\n0x7a544f58         1  anonymous block\n0xa7de1570        11  procedure WTP.WT_EXECUTE_TEST_RUNNER\n0x7ab3ba98         1  anonymous block\n0x65f86a70        41  package body WTP.HOOK.RUN\n0x6a56f298       503  package body WTP.WTPLSQL.TEST_RUN\n0x6a56f298       565  package body WTP.WTPLSQL.TEST_ALL\n0x689a9a00         1  anonymous block\n
+#FAIL#1.04ms Close the Database Link. RAISES/THROWS - No exception was expected. Exception raised was "ORA-02081: database link is not open". Exception raised by: "alter session close database link WTP". Error Stack: ORA-02081: database link is not open\nORA-06512: at "WTP.WT_ASSERT", line 2422\n----- PL/SQL Call Stack -----\n  object      line  object\n  handle    number  name\n0x72811518      2425  package body WTP.WT_ASSERT.RAISES\n0x6acd5ea8       154  package body WTP.WT_JOB.T_CREATE_DROP_DB_LINK\n0x6acd5ea8       497  package body WTP.WT_JOB.WTPLSQL_RUN\n0x7a544f58         1  anonymous block\n0xa7de1570        11  procedure WTP.WT_EXECUTE_TEST_RUNNER\n0x7ab3ba98         1  anonymous block\n0x65f86a70        41  package body WTP.HOOK.RUN\n0x6a56f298       503  package body WTP.WTPLSQL.TEST_RUN\n0x6a56f298       565  package body WTP.WTPLSQL.TEST_ALL\n0x689a9a00         1  anonymous block\n
+
+
+  wtPLSQL
+  Start Date/Time: 06-Feb-2025 12:12:08 PM
+  Test Results for WTP.WT_PROFILE
+  Database Object Under Test is PACKAGE BODY WTP.WT_PROFILE
+  ------------------------------------------------------------------
+  Minimum Elapsed msec:          0      Total Assertions:        302
+  Average Elapsed msec:         15     Failed Assertions:          1
+  Maximum Elapsed msec:        981       Total Testcases:         39
+  Total Run Time (sec):        4.7      Failed Testcases:          1
+                                          Testcase Yield:         97%
+
+  WTP.WT_PROFILE Test Runner Details
+  --------------------------------------------------------------
+---***  Finalize Happy Path 2  ***----------------------------------------------
+#FAIL#.023ms l_recTEST.profiler_runid. ISNOTNULL - Expected NOT NULL and got ""
+
+
+  wtPLSQL
+  Start Date/Time: 06-Feb-2025 12:12:12 PM
+  Test Results for WTP.WT_RESULT
+  Database Object Under Test is PACKAGE BODY WTP.WT_RESULT
+  ------------------------------------------------------------------
+  Minimum Elapsed msec:          0      Total Assertions:         21
+  Average Elapsed msec:          6     Failed Assertions:          0
+  Maximum Elapsed msec:         55       Total Testcases:          3
+  Total Run Time (sec):        0.3      Failed Testcases:          0
+                                          Testcase Yield:        100%
+
+
+  wtPLSQL
+  Start Date/Time: 06-Feb-2025 12:12:13 PM
+  Test Results for WTP.WT_TESTCASE
+  Database Object Under Test is PACKAGE BODY WTP.WT_TESTCASE
+  ------------------------------------------------------------------
+  Minimum Elapsed msec:          0      Total Assertions:         15
+  Average Elapsed msec:          3     Failed Assertions:          0
+  Maximum Elapsed msec:         28       Total Testcases:         12
+  Total Run Time (sec):        0.2      Failed Testcases:          0
+                                          Testcase Yield:        100%
+
+
+  wtPLSQL
+  Start Date/Time: 06-Feb-2025 12:12:13 PM
+  Test Results for WTP.WT_TEST_RUN
+  Database Object Under Test is PACKAGE BODY WTP.WT_TEST_RUN
+  ------------------------------------------------------------------
+  Minimum Elapsed msec:          0      Total Assertions:         75
+  Average Elapsed msec:          3     Failed Assertions:          0
+  Maximum Elapsed msec:         49       Total Testcases:         18
+  Total Run Time (sec):        0.5      Failed Testcases:          0
+                                          Testcase Yield:        100%
+
+
+  wtPLSQL
+  Start Date/Time: 06-Feb-2025 12:12:13 PM
+  Test Results for WTP.WT_TEST_RUNNER
+  Database Object Under Test is PACKAGE BODY WTP.WT_TEST_RUNNER
+  ------------------------------------------------------------------
+  Minimum Elapsed msec:          0      Total Assertions:         27
+  Average Elapsed msec:          2     Failed Assertions:          0
+  Maximum Elapsed msec:         29       Total Testcases:         16
+  Total Run Time (sec):        0.8      Failed Testcases:          0
+                                          Testcase Yield:        100%
+
+Elapsed: 00:00:32.93

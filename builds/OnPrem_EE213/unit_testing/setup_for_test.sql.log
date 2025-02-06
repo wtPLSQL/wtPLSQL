@@ -1,0 +1,63 @@
+
+PL/SQL procedure successfully completed.
+
+
+CON_NAME
+------------------------------
+DEVPDB
+USER is "SYSTEM"
+Setup Continue on Error
+Running setup_for_test.sql
+
+Show the Services for this PDB
+
+NAME
+----------------------------------------------------------------
+devpdb
+
+Elapsed: 00:00:00.04
+Using the following service at localhost:1521
+devpdb
+
+PL/SQL procedure successfully completed.
+
+Elapsed: 00:00:00.01
+
+Update PLSQL_CCFLAGS parameter
+OLD parm_value:
+NEW parm_value: WTPLSQL_SELFTEST:TRUE
+
+PL/SQL procedure successfully completed.
+
+Elapsed: 00:00:00.22
+
+Recompile All Packages
+alter PROCEDURE "WTP"."WT_AD_HOC_REPORT" compile
+alter PROCEDURE "WTP"."WT_EXECUTE_TEST_RUNNER" compile
+alter PACKAGE "WTP"."CORE_DATA" compile
+alter PACKAGE "WTP"."HOOK" compile
+alter PACKAGE "WTP"."JUNIT_CORE_REPORT" compile
+alter PACKAGE "WTP"."WTPLSQL" compile
+alter PACKAGE "WTP"."WT_ASSERT" compile
+alter PACKAGE "WTP"."WT_CORE_REPORT" compile
+alter VIEW "WTP"."WT_QUAL_TEST_RUNNERS_VW" compile
+alter PROCEDURE "WTP"."JUNIT_XML_PERSIST_ALL" compile
+alter PACKAGE "WTP"."WT_DBOUT" compile
+alter PACKAGE "WTP"."WT_JOB" compile
+alter PACKAGE "WTP"."WT_PERSIST_REPORT" compile
+alter PACKAGE "WTP"."WT_PROFILE" compile
+alter PACKAGE "WTP"."WT_RESULT" compile
+alter PACKAGE "WTP"."WT_TESTCASE" compile
+alter PACKAGE "WTP"."WT_TEST_RUN" compile
+alter PACKAGE "WTP"."WT_TEST_RUNNER" compile
+alter VIEW "WTP"."WT_DBOUT_RUNS_VW" compile
+alter VIEW "WTP"."WT_PROFILES_VW" compile
+alter VIEW "WTP"."WT_RESULTS_VW" compile
+alter VIEW "WTP"."WT_SCHEDULER_JOBS_VW" compile
+alter VIEW "WTP"."WT_TESTCASE_RUNS_VW" compile
+alter VIEW "WTP"."WT_TEST_RUNS_VW" compile
+alter TRIGGER "WTP"."WT_SELF_TEST$TEST" compile
+
+PL/SQL procedure successfully completed.
+
+Elapsed: 00:00:03.68

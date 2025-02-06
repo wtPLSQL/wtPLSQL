@@ -1,0 +1,4056 @@
+build.sh
+Running from /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213
+
+Setup Variables
+
+Capture Version
+
+build_initialize.sql
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Thu Feb 6 12:09:39 2025
+Version 19.22.0.0.0
+
+Copyright (c) 1982, 2023, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+
+CONNECTION
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+user: SYS, db: EE213CDB, con: CDB$ROOT, tstmp: 06-FEB-25 06.09.43.652599 PM +00:00
+
+Elapsed: 00:00:00.18
+
+Show PDBs
+
+    CON_ID CON_NAME			  OPEN MODE  RESTRICTED
+---------- ------------------------------ ---------- ----------
+	 2 PDB$SEED			  READ ONLY  NO
+	 3 TESTPDB			  READ WRITE NO
+	 5 AP212PDB			  READ WRITE NO
+	 6 DEVPDB			  READ WRITE NO
+
+Create PDB
+ALTER PLUGGABLE DATABASE "DEVPDB" CLOSE IMMEDIATE INSTANCES=ALL;
+DROP PLUGGABLE DATABASE "DEVPDB" INCLUDING DATAFILES;
+create pluggable database "DEVPDB"
+  admin user "PDB_ADMIN" identified by "PDB_ADMIN_Password"
+  default tablespace users datafile '/opt/oracle/oradata/EE213CDB/DEVPDB/users01.dbf' size 5M autoextend on
+  FILE_NAME_CONVERT = ('pdbseed', 'DEVPDB')
+  STORAGE UNLIMITED TEMPFILE REUSE;
+
+PL/SQL procedure successfully completed.
+
+Elapsed: 00:00:17.67
+
+Open PDB
+
+Pluggable database altered.
+
+Elapsed: 00:00:10.06
+
+Show Services
+
+NAME
+----------------------------------------------------------------
+EE213CDB
+SYS$BACKGROUND
+ap212pdb
+SYS$USERS
+testpdb
+devpdb
+EE213CDBXDB
+
+7 rows selected.
+
+Elapsed: 00:00:00.05
+
+Update DEFAULT Profile
+
+Session altered.
+
+Elapsed: 00:00:00.07
+
+Profile altered.
+
+Elapsed: 00:00:00.14
+
+Session altered.
+
+Elapsed: 00:00:00.00
+Disconnected from Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Clear old wtpsrc logs
+
+Move to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../../wtpsrc
+
+/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../util/run_build.sql wtpsrc
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Thu Feb 6 12:10:12 2025
+Version 19.22.0.0.0
+
+Copyright (c) 1982, 2023, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Setup Abort on Error
+
+CONNECTION
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+user: SYS, db: EE213CDB, con: DEVPDB, tstmp: 06-FEB-25 06.10.13.012474 PM +00:00
+
+Identify this Module in V$SESSION
+
+**************************
+*  Run SYS Installation  *
+**************************
+
+=== DBI Started: SYS/WTP.user
+
+User created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:13 for a duration of .48 seconds (started at 2025-02-06T18:10:13)
+Setup Continue on Error
+
+*****************************
+*  Run SYSTEM Installation  *
+*****************************
+
+Connected.
+
+CONNECTION
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+user: SYSTEM, db: EE213CDB, con: DEVPDB, tstmp: 06-FEB-25 06.10.13.789441 PM +00:00
+
+1 row selected.
+
+=== DBI Started: SYSTEM/WTP_usr.grnt
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:14 for a duration of .46 seconds (started at 2025-02-06T18:10:13)
+
+*************************
+*  Install Application	*
+*************************
+
+=== DBI Started: ./installation_prepare.sql
+
+Create Temp Publicly Updateable Table
+
+Table created.
+
+
+Grant succeeded.
+
+
+Synonym created.
+
+
+Check for Prerequisite BUILD_TYPEs
+Prerequisite BUILD_TYPEs for "wtpsrc"
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:10:14 for a duration of .33 seconds (started at 2025-02-06T18:10:14)
+=== DBI Started: WTP/WT_AD_HOC_REPORT.proc
+
+Warning: Procedure created with compilation errors.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:14 for a duration of .18 seconds (started at 2025-02-06T18:10:14)
+=== DBI Started: WTP/WT_EXECUTE_TEST_RUNNER.proc
+
+Warning: Procedure created with compilation errors.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:14 for a duration of .12 seconds (started at 2025-02-06T18:10:14)
+=== DBI Started: WTP/CORE_DATA.pkssql
+
+Package created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:15 for a duration of .2 seconds (started at 2025-02-06T18:10:14)
+=== DBI Started: WTP/HOOK.pkssql
+
+Package created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:15 for a duration of .22 seconds (started at 2025-02-06T18:10:15)
+=== DBI Started: WTP/JUNIT_CORE_REPORT.pkssql
+
+Package created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:15 for a duration of .42 seconds (started at 2025-02-06T18:10:15)
+=== DBI Started: WTP/WTPLSQL.pkssql
+
+Package created.
+
+
+Grant succeeded.
+
+
+Synonym created.
+
+
+Synonym created.
+
+=== DBI Completed at 2025-02-06T18:10:16 for a duration of .43 seconds (started at 2025-02-06T18:10:15)
+=== DBI Started: WTP/WT_ASSERT.pkssql
+
+Package created.
+
+
+Grant succeeded.
+
+
+Synonym created.
+
+
+Synonym created.
+
+=== DBI Completed at 2025-02-06T18:10:16 for a duration of .52 seconds (started at 2025-02-06T18:10:16)
+=== DBI Started: WTP/WT_CORE_REPORT.pkssql
+
+Package created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:16 for a duration of .11 seconds (started at 2025-02-06T18:10:16)
+=== DBI Started: WTP/HOOKS.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:33 for a duration of 16.76 seconds (started at 2025-02-06T18:10:16)
+=== DBI Started: WTP/WT_VERSIONS.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:34 for a duration of .37 seconds (started at 2025-02-06T18:10:33)
+Compile All started
+
+PL/SQL procedure successfully completed.
+
+Compile All is done.
+=== DBI Started: WTP/WT_QUAL_TEST_RUNNERS_VW.vw
+
+View created.
+
+
+Grant succeeded.
+
+
+View created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:38 for a duration of .41 seconds (started at 2025-02-06T18:10:37)
+=== DBI Started: WTP/HOOKS.cldr
+
+Disable Triggers and Foreign Keys
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=WTP/HOOKS.ctl
+
+  5 Rows successfully loaded.
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:10:43 for a duration of 5.87 seconds (started at 2025-02-06T18:10:38)
+=== DBI Started: WTP/CORE_DATA.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:10:44 for a duration of .12 seconds (started at 2025-02-06T18:10:43)
+=== DBI Started: WTP/HOOK.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:10:44 for a duration of .09 seconds (started at 2025-02-06T18:10:44)
+=== DBI Started: WTP/JUNIT_CORE_REPORT.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:10:44 for a duration of .1 seconds (started at 2025-02-06T18:10:44)
+=== DBI Started: WTP/WTPLSQL.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:10:44 for a duration of .16 seconds (started at 2025-02-06T18:10:44)
+=== DBI Started: WTP/WT_ASSERT.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:10:44 for a duration of .32 seconds (started at 2025-02-06T18:10:44)
+=== DBI Started: WTP/WT_CORE_REPORT.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:10:44 for a duration of .24 seconds (started at 2025-02-06T18:10:44)
+=== DBI Started: ./installation_finalize.sql
+
+Drop Temp Publicly Updateable Table
+
+Synonym dropped.
+
+
+Table dropped.
+
+
+fix_invalid_public_synonyms
+
+Re-create Invalid Public Synonyms
+
+PL/SQL procedure successfully completed.
+
+
+compile_all
+Compile All started
+WTP Compiled.
+Compile All is done.
+
+PL/SQL procedure successfully completed.
+
+
+alter_foreign_keys_ENABLE
+Alter Foreign Keys started.
+  ENABLE 'WTP'
+Alter Foreign Keys is done.
+
+PL/SQL procedure successfully completed.
+
+
+alter_triggers_ENABLE
+Alter Triggers started.
+  ENABLE 'WTP'
+Alter Triggers is done.
+
+PL/SQL procedure successfully completed.
+
+
+update_id_sequences
+Update ID Sequences started
+Identity Sequence Updates is done.
+
+PL/SQL procedure successfully completed.
+
+
+Switch Spooling Off
+=== DBI Completed at 2025-02-06T18:10:50 for a duration of 5.96 seconds (started at 2025-02-06T18:10:44)
+not spooling currently
+
+"wtpsrc" Installation is Done.
+Connected.
+
+CONNECTION
+---------------------------------------------------------------------------------------------------------------------------
+user: SYSTEM, db: EE213CDB, con: DEVPDB, tstmp: 06-FEB-25 06.10.51.078678 PM +00:00
+
+1 row selected.
+
+Elapsed: 00:00:00.01
+
+User altered.
+
+Disconnected from Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Move back to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213
+
+Move to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../../wtpsrc
+
+report_status.sql wtpsrc
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Thu Feb 6 12:10:51 2025
+Version 19.22.0.0.0
+
+Copyright (c) 1982, 2023, Oracle.  All rights reserved.
+
+Last Successful login time: Thu Feb 06 2025 12:10:51 -06:00
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+
+Load Installation Files
+
+Confirm/Create odbcapture_installation_logs Table
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=./odbcapture_installation_logs.ctl
+
+  4 Rows successfully loaded.
+
+old   2:    if '&_RC.' != '0' then
+new   2:    if '0' != '0' then
+old   3:       raise_application_error(-20000, 'Control file "odbcapture_installation_logs.ctl" returned error: &_RC.');
+new   3:       raise_application_error(-20000, 'Control file "odbcapture_installation_logs.ctl" returned error: 0');
+
+PL/SQL procedure successfully completed.
+
+
+Reporting Summary of Build Type Log Errors
+Processing file WTP/HOOKS.log (2025-02-06 18:10:55)
+Processing file install_sys.log (2025-02-06 18:10:55)
+Processing file install_system.log (2025-02-06 18:10:55)
+Processing file install_wtpsrc.log (2025-02-06 18:10:55)
+
+PL/SQL procedure successfully completed.
+
+
+Reporting Invalid Objects
+
+Reporting JUnit XML Database Build Status
+
+Reorting JUnit XML Installation Log
+SQL> Disconnected from Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Move back to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213
+
+Move Log Files to Build Folder
+Move to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../../wtpsrc
+renamed 'db_build_junit_report.xml' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpsrc/db_build_junit_report.xml'
+renamed 'install_sys.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpsrc/install_sys.log'
+renamed 'install_system.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpsrc/install_system.log'
+renamed 'install_wtpsrc.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpsrc/install_wtpsrc.log'
+renamed 'log_files_junit_report.xml' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpsrc/log_files_junit_report.xml'
+renamed 'odbcapture_installation_logs.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpsrc/odbcapture_installation_logs.log'
+renamed 'WTP/HOOKS.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpsrc/WTP/HOOKS.log'
+
+Move back to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213
+
+Clear old wtpsav logs
+
+Move to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../../wtpsav
+
+/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../util/run_build.sql wtpsav
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Thu Feb 6 12:10:58 2025
+Version 19.22.0.0.0
+
+Copyright (c) 1982, 2023, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Setup Abort on Error
+
+CONNECTION
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+user: SYS, db: EE213CDB, con: DEVPDB, tstmp: 06-FEB-25 06.10.59.032501 PM +00:00
+
+Identify this Module in V$SESSION
+
+**************************
+*  Run SYS Installation  *
+**************************
+
+Setup Continue on Error
+
+*****************************
+*  Run SYSTEM Installation  *
+*****************************
+
+Connected.
+
+CONNECTION
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+user: SYSTEM, db: EE213CDB, con: DEVPDB, tstmp: 06-FEB-25 06.10.59.187002 PM +00:00
+
+
+*************************
+*  Install Application	*
+*************************
+
+=== DBI Started: ./installation_prepare.sql
+
+Create Temp Publicly Updateable Table
+
+Table created.
+
+
+Grant succeeded.
+
+
+Synonym created.
+
+
+Check for Prerequisite BUILD_TYPEs
+Prerequisite BUILD_TYPEs for "wtpsav"
+ -) "wtpsrc" last loaded on 06-Feb-2025 18:10:55
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:10:59 for a duration of .19 seconds (started at 2025-02-06T18:10:59)
+=== DBI Started: WTP/PLSQL_PROFILER_RUNNUMBER.seq
+
+Sequence created.
+
+=== DBI Completed at 2025-02-06T18:10:59 for a duration of .07 seconds (started at 2025-02-06T18:10:59)
+=== DBI Started: WTP/WT_DBOUTS_SEQ.seq
+
+Sequence created.
+
+=== DBI Completed at 2025-02-06T18:10:59 for a duration of .05 seconds (started at 2025-02-06T18:10:59)
+=== DBI Started: WTP/WT_TESTCASES_SEQ.seq
+
+Sequence created.
+
+=== DBI Completed at 2025-02-06T18:10:59 for a duration of .05 seconds (started at 2025-02-06T18:10:59)
+=== DBI Started: WTP/WT_TEST_RUNNERS_SEQ.seq
+
+Sequence created.
+
+=== DBI Completed at 2025-02-06T18:10:59 for a duration of .05 seconds (started at 2025-02-06T18:10:59)
+=== DBI Started: WTP/WT_TEST_RUNS_SEQ.seq
+
+Sequence created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:10:59 for a duration of .09 seconds (started at 2025-02-06T18:10:59)
+=== DBI Started: WTP/JUNIT_XML_PERSIST_ALL.proc
+
+Warning: Procedure created with compilation errors.
+
+=== DBI Completed at 2025-02-06T18:10:59 for a duration of .07 seconds (started at 2025-02-06T18:10:59)
+=== DBI Started: WTP/WT_DBOUT.pkssql
+
+Package created.
+
+=== DBI Completed at 2025-02-06T18:10:59 for a duration of .07 seconds (started at 2025-02-06T18:10:59)
+=== DBI Started: WTP/WT_JOB.pkssql
+
+Package created.
+
+=== DBI Completed at 2025-02-06T18:10:59 for a duration of .05 seconds (started at 2025-02-06T18:10:59)
+=== DBI Started: WTP/WT_PERSIST_REPORT.pkssql
+
+Package created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:11:00 for a duration of .12 seconds (started at 2025-02-06T18:10:59)
+=== DBI Started: WTP/WT_PROFILE.pkssql
+
+Warning: Package created with compilation errors.
+
+=== DBI Completed at 2025-02-06T18:11:00 for a duration of .18 seconds (started at 2025-02-06T18:11:00)
+=== DBI Started: WTP/WT_RESULT.pkssql
+
+Package created.
+
+=== DBI Completed at 2025-02-06T18:11:00 for a duration of .19 seconds (started at 2025-02-06T18:11:00)
+=== DBI Started: WTP/WT_TESTCASE.pkssql
+
+Package created.
+
+=== DBI Completed at 2025-02-06T18:11:00 for a duration of .11 seconds (started at 2025-02-06T18:11:00)
+=== DBI Started: WTP/WT_TEST_RUN.pkssql
+
+Package created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:11:00 for a duration of .12 seconds (started at 2025-02-06T18:11:00)
+=== DBI Started: WTP/WT_TEST_RUNNER.pkssql
+
+Package created.
+
+=== DBI Completed at 2025-02-06T18:11:00 for a duration of .07 seconds (started at 2025-02-06T18:11:00)
+=== DBI Started: WTP/PLSQL_PROFILER_DATA.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+=== DBI Completed at 2025-02-06T18:11:01 for a duration of .48 seconds (started at 2025-02-06T18:11:00)
+=== DBI Started: WTP/PLSQL_PROFILER_RUNS.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+=== DBI Completed at 2025-02-06T18:11:01 for a duration of .4 seconds (started at 2025-02-06T18:11:01)
+=== DBI Started: WTP/PLSQL_PROFILER_UNITS.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+=== DBI Completed at 2025-02-06T18:11:02 for a duration of .41 seconds (started at 2025-02-06T18:11:01)
+=== DBI Started: WTP/WT_DBOUTS.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:11:02 for a duration of .42 seconds (started at 2025-02-06T18:11:02)
+=== DBI Started: WTP/WT_DBOUT_RUNS.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:11:03 for a duration of .71 seconds (started at 2025-02-06T18:11:02)
+=== DBI Started: WTP/WT_PROFILES.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:11:03 for a duration of .49 seconds (started at 2025-02-06T18:11:03)
+=== DBI Started: WTP/WT_RESULTS.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:11:04 for a duration of .56 seconds (started at 2025-02-06T18:11:03)
+=== DBI Started: WTP/WT_TESTCASES.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:11:04 for a duration of .38 seconds (started at 2025-02-06T18:11:04)
+=== DBI Started: WTP/WT_TESTCASE_RUNS.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:11:05 for a duration of .53 seconds (started at 2025-02-06T18:11:04)
+=== DBI Started: WTP/WT_TEST_RUNNERS.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:11:05 for a duration of .37 seconds (started at 2025-02-06T18:11:05)
+=== DBI Started: WTP/WT_TEST_RUNS.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:11:06 for a duration of .88 seconds (started at 2025-02-06T18:11:05)
+Compile All started
+
+PL/SQL procedure successfully completed.
+
+Compile All is done.
+=== DBI Started: WTP/WT_DBOUT_RUNS_VW.vw
+
+View created.
+
+
+Grant succeeded.
+
+
+View created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:11:09 for a duration of .85 seconds (started at 2025-02-06T18:11:08)
+=== DBI Started: WTP/WT_PROFILES_VW.vw
+
+View created.
+
+
+Grant succeeded.
+
+
+View created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:11:09 for a duration of .57 seconds (started at 2025-02-06T18:11:09)
+=== DBI Started: WTP/WT_RESULTS_VW.vw
+
+View created.
+
+
+Grant succeeded.
+
+
+View created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:11:10 for a duration of .91 seconds (started at 2025-02-06T18:11:09)
+=== DBI Started: WTP/WT_SCHEDULER_JOBS_VW.vw
+
+View created.
+
+
+View created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+=== DBI Completed at 2025-02-06T18:11:11 for a duration of .49 seconds (started at 2025-02-06T18:11:10)
+=== DBI Started: WTP/WT_TESTCASE_RUNS_VW.vw
+
+View created.
+
+
+Grant succeeded.
+
+
+View created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:11:11 for a duration of .61 seconds (started at 2025-02-06T18:11:11)
+=== DBI Started: WTP/WT_TEST_RUNS_VW.vw
+
+View created.
+
+
+Grant succeeded.
+
+
+View created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:11:12 for a duration of .71 seconds (started at 2025-02-06T18:11:11)
+=== DBI Started: WTP/PLSQL_PROFILER_RUNS.tidx
+
+Index created.
+
+=== DBI Completed at 2025-02-06T18:11:12 for a duration of .06 seconds (started at 2025-02-06T18:11:12)
+=== DBI Started: WTP/WT_DBOUTS.tidx
+
+Index created.
+
+=== DBI Completed at 2025-02-06T18:11:12 for a duration of .07 seconds (started at 2025-02-06T18:11:12)
+=== DBI Started: WTP/WT_RESULTS.tidx
+
+Index created.
+
+=== DBI Completed at 2025-02-06T18:11:12 for a duration of .06 seconds (started at 2025-02-06T18:11:12)
+=== DBI Started: WTP/WT_TESTCASE_RUNS.tidx
+
+Index created.
+
+=== DBI Completed at 2025-02-06T18:11:12 for a duration of .06 seconds (started at 2025-02-06T18:11:12)
+=== DBI Started: WTP/WT_TEST_RUNS.tidx
+
+Index created.
+
+
+Index created.
+
+=== DBI Completed at 2025-02-06T18:11:12 for a duration of .12 seconds (started at 2025-02-06T18:11:12)
+=== DBI Started: WTP/WT_DBOUT.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:11:12 for a duration of .07 seconds (started at 2025-02-06T18:11:12)
+=== DBI Started: WTP/WT_JOB.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:11:13 for a duration of .12 seconds (started at 2025-02-06T18:11:12)
+=== DBI Started: WTP/WT_PERSIST_REPORT.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:11:13 for a duration of .14 seconds (started at 2025-02-06T18:11:13)
+=== DBI Started: WTP/WT_PROFILE.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:11:13 for a duration of .2 seconds (started at 2025-02-06T18:11:13)
+=== DBI Started: WTP/WT_RESULT.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:11:13 for a duration of .08 seconds (started at 2025-02-06T18:11:13)
+=== DBI Started: WTP/WT_TESTCASE.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:11:13 for a duration of .06 seconds (started at 2025-02-06T18:11:13)
+=== DBI Started: WTP/WT_TEST_RUN.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:11:13 for a duration of .14 seconds (started at 2025-02-06T18:11:13)
+=== DBI Started: WTP/WT_TEST_RUNNER.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:11:13 for a duration of .08 seconds (started at 2025-02-06T18:11:13)
+=== DBI Started: WTP/PLSQL_PROFILER_DATA.tfk
+
+Table altered.
+
+=== DBI Completed at 2025-02-06T18:11:13 for a duration of .07 seconds (started at 2025-02-06T18:11:13)
+=== DBI Started: WTP/PLSQL_PROFILER_UNITS.tfk
+
+Table altered.
+
+=== DBI Completed at 2025-02-06T18:11:13 for a duration of .08 seconds (started at 2025-02-06T18:11:13)
+=== DBI Started: WTP/WT_DBOUT_RUNS.tfk
+
+Table altered.
+
+=== DBI Completed at 2025-02-06T18:11:14 for a duration of .07 seconds (started at 2025-02-06T18:11:13)
+=== DBI Started: WTP/WT_PROFILES.tfk
+
+Table altered.
+
+=== DBI Completed at 2025-02-06T18:11:14 for a duration of .07 seconds (started at 2025-02-06T18:11:14)
+=== DBI Started: WTP/WT_RESULTS.tfk
+
+Table altered.
+
+
+Table altered.
+
+=== DBI Completed at 2025-02-06T18:11:14 for a duration of .12 seconds (started at 2025-02-06T18:11:14)
+=== DBI Started: WTP/WT_TESTCASE_RUNS.tfk
+
+Table altered.
+
+
+Table altered.
+
+=== DBI Completed at 2025-02-06T18:11:14 for a duration of .15 seconds (started at 2025-02-06T18:11:14)
+=== DBI Started: WTP/WT_TEST_RUNS.tfk
+
+Table altered.
+
+
+Table altered.
+
+=== DBI Completed at 2025-02-06T18:11:14 for a duration of .13 seconds (started at 2025-02-06T18:11:14)
+=== DBI Started: ./installation_finalize.sql
+
+Drop Temp Publicly Updateable Table
+
+Synonym dropped.
+
+
+Table dropped.
+
+
+fix_invalid_public_synonyms
+
+Re-create Invalid Public Synonyms
+
+PL/SQL procedure successfully completed.
+
+
+compile_all
+Compile All started
+WTP Compiled.
+Compile All is done.
+
+PL/SQL procedure successfully completed.
+
+
+alter_foreign_keys_ENABLE
+Alter Foreign Keys started.
+  ENABLE 'WTP'
+alter table "WTP"."PLSQL_PROFILER_DATA" ENABLE constraint "PLSQL_PROFILER_DATA_FK1";
+alter table "WTP"."PLSQL_PROFILER_UNITS" ENABLE constraint "PLSQL_PROFILER_UNITS_FK1";
+alter table "WTP"."WT_DBOUT_RUNS" ENABLE constraint "WT_DBOUT_RUNS_FK1";
+alter table "WTP"."WT_PROFILES" ENABLE constraint "WT_PROFILES_FK1";
+alter table "WTP"."WT_RESULTS" ENABLE constraint "WT_RESULTS_FK1";
+alter table "WTP"."WT_RESULTS" ENABLE constraint "WT_RESULTS_FK2";
+alter table "WTP"."WT_TESTCASE_RUNS" ENABLE constraint "WT_TESTCASE_RUNS_FK1";
+alter table "WTP"."WT_TESTCASE_RUNS" ENABLE constraint "WT_TESTCASE_RUNS_FK2";
+alter table "WTP"."WT_TEST_RUNS" ENABLE constraint "WT_TEST_RUNS_FK1";
+alter table "WTP"."WT_TEST_RUNS" ENABLE constraint "WT_TEST_RUNS_FK2";
+Alter Foreign Keys is done.
+
+PL/SQL procedure successfully completed.
+
+
+alter_triggers_ENABLE
+Alter Triggers started.
+  ENABLE 'WTP'
+Alter Triggers is done.
+
+PL/SQL procedure successfully completed.
+
+
+update_id_sequences
+Update ID Sequences started
+Identity Sequence Updates is done.
+
+PL/SQL procedure successfully completed.
+
+
+Switch Spooling Off
+=== DBI Completed at 2025-02-06T18:11:16 for a duration of 1.7 seconds (started at 2025-02-06T18:11:14)
+not spooling currently
+
+"wtpsav" Installation is Done.
+Connected.
+
+CONNECTION
+---------------------------------------------------------------------------------------------------------------------------
+user: SYSTEM, db: EE213CDB, con: DEVPDB, tstmp: 06-FEB-25 06.11.16.428398 PM +00:00
+
+1 row selected.
+
+Elapsed: 00:00:00.01
+Disconnected from Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Move back to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213
+
+Move to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../../wtpsav
+
+report_status.sql wtpsav
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Thu Feb 6 12:11:16 2025
+Version 19.22.0.0.0
+
+Copyright (c) 1982, 2023, Oracle.  All rights reserved.
+
+Last Successful login time: Thu Feb 06 2025 12:11:16 -06:00
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+
+Load Installation Files
+
+Confirm/Create odbcapture_installation_logs Table
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=./odbcapture_installation_logs.ctl
+
+  3 Rows successfully loaded.
+
+old   2:    if '&_RC.' != '0' then
+new   2:    if '0' != '0' then
+old   3:       raise_application_error(-20000, 'Control file "odbcapture_installation_logs.ctl" returned error: &_RC.');
+new   3:       raise_application_error(-20000, 'Control file "odbcapture_installation_logs.ctl" returned error: 0');
+
+PL/SQL procedure successfully completed.
+
+
+Reporting Summary of Build Type Log Errors
+Processing file install_sys.log (2025-02-06 18:11:17)
+Processing file install_system.log (2025-02-06 18:11:17)
+Processing file install_wtpsav.log (2025-02-06 18:11:17)
+
+PL/SQL procedure successfully completed.
+
+
+Reporting Invalid Objects
+
+Reporting JUnit XML Database Build Status
+
+Reorting JUnit XML Installation Log
+SQL> Disconnected from Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Move back to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213
+
+Move Log Files to Build Folder
+Move to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../../wtpsav
+renamed 'db_build_junit_report.xml' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpsav/db_build_junit_report.xml'
+renamed 'install_sys.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpsav/install_sys.log'
+renamed 'install_system.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpsav/install_system.log'
+renamed 'install_wtpsav.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpsav/install_wtpsav.log'
+renamed 'log_files_junit_report.xml' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpsav/log_files_junit_report.xml'
+renamed 'odbcapture_installation_logs.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpsav/odbcapture_installation_logs.log'
+
+Move back to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213
+
+Clear old wtptst logs
+
+Move to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../../wtptst
+
+/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../util/run_build.sql wtptst
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Thu Feb 6 12:11:19 2025
+Version 19.22.0.0.0
+
+Copyright (c) 1982, 2023, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Setup Abort on Error
+
+CONNECTION
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+user: SYS, db: EE213CDB, con: DEVPDB, tstmp: 06-FEB-25 06.11.19.673089 PM +00:00
+
+Identify this Module in V$SESSION
+
+**************************
+*  Run SYS Installation  *
+**************************
+
+Setup Continue on Error
+
+*****************************
+*  Run SYSTEM Installation  *
+*****************************
+
+Connected.
+
+CONNECTION
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+user: SYSTEM, db: EE213CDB, con: DEVPDB, tstmp: 06-FEB-25 06.11.19.821082 PM +00:00
+
+
+*************************
+*  Install Application	*
+*************************
+
+=== DBI Started: ./installation_prepare.sql
+
+Create Temp Publicly Updateable Table
+
+Table created.
+
+
+Grant succeeded.
+
+
+Synonym created.
+
+
+Check for Prerequisite BUILD_TYPEs
+Prerequisite BUILD_TYPEs for "wtptst"
+ -) "wtpsav" last loaded on 06-Feb-2025 18:11:17
+ -) "wtpsrc" last loaded on 06-Feb-2025 18:10:55
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:11:20 for a duration of .17 seconds (started at 2025-02-06T18:11:19)
+=== DBI Started: WTP/WT_SELF_TEST.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+=== DBI Completed at 2025-02-06T18:11:22 for a duration of 2.47 seconds (started at 2025-02-06T18:11:20)
+=== DBI Started: WTP/WT_SELF_TEST.cldr
+
+Disable Triggers and Foreign Keys
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=WTP/WT_SELF_TEST.ctl
+
+  2 Rows successfully loaded.
+
+
+PL/SQL procedure successfully completed.
+
+Decode Binary Data
+------------------
+2 "TEMP_BLOB" updates.
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+Decode UNISTR Data
+------------------
+2 "WT_SELF_TEST" updates.
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+=== DBI Completed at 2025-02-06T18:11:29 for a duration of 6.75 seconds (started at 2025-02-06T18:11:22)
+=== DBI Started: WTP/WT_SELF_TEST.ttrg
+
+Trigger created.
+
+
+Trigger altered.
+
+=== DBI Completed at 2025-02-06T18:11:29 for a duration of .21 seconds (started at 2025-02-06T18:11:29)
+=== DBI Started: ./installation_finalize.sql
+
+Drop Temp Publicly Updateable Table
+
+Synonym dropped.
+
+
+Table dropped.
+
+
+fix_invalid_public_synonyms
+
+Re-create Invalid Public Synonyms
+
+PL/SQL procedure successfully completed.
+
+
+compile_all
+Compile All started
+WTP Compiled.
+Compile All is done.
+
+PL/SQL procedure successfully completed.
+
+
+alter_foreign_keys_ENABLE
+Alter Foreign Keys started.
+  ENABLE 'WTP'
+alter table "WTP"."PLSQL_PROFILER_DATA" ENABLE constraint "PLSQL_PROFILER_DATA_FK1";
+alter table "WTP"."PLSQL_PROFILER_UNITS" ENABLE constraint "PLSQL_PROFILER_UNITS_FK1";
+alter table "WTP"."WT_DBOUT_RUNS" ENABLE constraint "WT_DBOUT_RUNS_FK1";
+alter table "WTP"."WT_PROFILES" ENABLE constraint "WT_PROFILES_FK1";
+alter table "WTP"."WT_RESULTS" ENABLE constraint "WT_RESULTS_FK1";
+alter table "WTP"."WT_RESULTS" ENABLE constraint "WT_RESULTS_FK2";
+alter table "WTP"."WT_TESTCASE_RUNS" ENABLE constraint "WT_TESTCASE_RUNS_FK1";
+alter table "WTP"."WT_TESTCASE_RUNS" ENABLE constraint "WT_TESTCASE_RUNS_FK2";
+alter table "WTP"."WT_TEST_RUNS" ENABLE constraint "WT_TEST_RUNS_FK1";
+alter table "WTP"."WT_TEST_RUNS" ENABLE constraint "WT_TEST_RUNS_FK2";
+Alter Foreign Keys is done.
+
+PL/SQL procedure successfully completed.
+
+
+alter_triggers_ENABLE
+Alter Triggers started.
+  ENABLE 'WTP'
+alter trigger "WTP"."WT_SELF_TEST$TEST" ENABLE;
+Alter Triggers is done.
+
+PL/SQL procedure successfully completed.
+
+
+update_id_sequences
+Update ID Sequences started
+Identity Sequence Updates is done.
+
+PL/SQL procedure successfully completed.
+
+
+Switch Spooling Off
+=== DBI Completed at 2025-02-06T18:11:31 for a duration of 2.35 seconds (started at 2025-02-06T18:11:29)
+not spooling currently
+
+"wtptst" Installation is Done.
+Connected.
+
+CONNECTION
+---------------------------------------------------------------------------------------------------------------------------
+user: SYSTEM, db: EE213CDB, con: DEVPDB, tstmp: 06-FEB-25 06.11.32.059079 PM +00:00
+
+1 row selected.
+
+Elapsed: 00:00:00.02
+Disconnected from Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Move back to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213
+
+Move to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../../wtptst
+
+report_status.sql wtptst
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Thu Feb 6 12:11:32 2025
+Version 19.22.0.0.0
+
+Copyright (c) 1982, 2023, Oracle.  All rights reserved.
+
+Last Successful login time: Thu Feb 06 2025 12:11:31 -06:00
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+
+Load Installation Files
+
+Confirm/Create odbcapture_installation_logs Table
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=./odbcapture_installation_logs.ctl
+
+  4 Rows successfully loaded.
+
+old   2:    if '&_RC.' != '0' then
+new   2:    if '0' != '0' then
+old   3:       raise_application_error(-20000, 'Control file "odbcapture_installation_logs.ctl" returned error: &_RC.');
+new   3:       raise_application_error(-20000, 'Control file "odbcapture_installation_logs.ctl" returned error: 0');
+
+PL/SQL procedure successfully completed.
+
+
+Reporting Summary of Build Type Log Errors
+Processing file WTP/WT_SELF_TEST.log (2025-02-06 18:11:35)
+Processing file install_sys.log (2025-02-06 18:11:35)
+Processing file install_system.log (2025-02-06 18:11:35)
+Processing file install_wtptst.log (2025-02-06 18:11:35)
+
+PL/SQL procedure successfully completed.
+
+
+Reporting Invalid Objects
+
+Reporting JUnit XML Database Build Status
+
+Reorting JUnit XML Installation Log
+SQL> Disconnected from Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Move back to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213
+
+Move Log Files to Build Folder
+Move to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../../wtptst
+renamed 'db_build_junit_report.xml' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtptst/db_build_junit_report.xml'
+renamed 'install_sys.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtptst/install_sys.log'
+renamed 'install_system.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtptst/install_system.log'
+renamed 'install_wtptst.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtptst/install_wtptst.log'
+renamed 'log_files_junit_report.xml' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtptst/log_files_junit_report.xml'
+renamed 'odbcapture_installation_logs.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtptst/odbcapture_installation_logs.log'
+renamed 'WTP/WT_SELF_TEST.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtptst/WTP/WT_SELF_TEST.log'
+
+Move back to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213
+
+Clear old unit_testing logs
+
+Move to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../../unit_testing
+
+/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../util/run_script.sql unit_testing setup_for_test.sql
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Thu Feb 6 12:11:37 2025
+Version 19.22.0.0.0
+
+Copyright (c) 1982, 2023, Oracle.  All rights reserved.
+
+Last Successful login time: Thu Feb 06 2025 12:11:33 -06:00
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+
+PL/SQL procedure successfully completed.
+
+
+CON_NAME
+------------------------------
+DEVPDB
+USER is "SYSTEM"
+Setup Continue on Error
+Running setup_for_test.sql
+
+Show the Services for this PDB
+
+NAME
+----------------------------------------------------------------
+devpdb
+
+Elapsed: 00:00:00.04
+Using the following service at localhost:1521
+devpdb
+
+PL/SQL procedure successfully completed.
+
+Elapsed: 00:00:00.01
+
+Update PLSQL_CCFLAGS parameter
+OLD parm_value:
+NEW parm_value: WTPLSQL_SELFTEST:TRUE
+
+PL/SQL procedure successfully completed.
+
+Elapsed: 00:00:00.22
+
+Recompile All Packages
+alter PROCEDURE "WTP"."WT_AD_HOC_REPORT" compile
+alter PROCEDURE "WTP"."WT_EXECUTE_TEST_RUNNER" compile
+alter PACKAGE "WTP"."CORE_DATA" compile
+alter PACKAGE "WTP"."HOOK" compile
+alter PACKAGE "WTP"."JUNIT_CORE_REPORT" compile
+alter PACKAGE "WTP"."WTPLSQL" compile
+alter PACKAGE "WTP"."WT_ASSERT" compile
+alter PACKAGE "WTP"."WT_CORE_REPORT" compile
+alter VIEW "WTP"."WT_QUAL_TEST_RUNNERS_VW" compile
+alter PROCEDURE "WTP"."JUNIT_XML_PERSIST_ALL" compile
+alter PACKAGE "WTP"."WT_DBOUT" compile
+alter PACKAGE "WTP"."WT_JOB" compile
+alter PACKAGE "WTP"."WT_PERSIST_REPORT" compile
+alter PACKAGE "WTP"."WT_PROFILE" compile
+alter PACKAGE "WTP"."WT_RESULT" compile
+alter PACKAGE "WTP"."WT_TESTCASE" compile
+alter PACKAGE "WTP"."WT_TEST_RUN" compile
+alter PACKAGE "WTP"."WT_TEST_RUNNER" compile
+alter VIEW "WTP"."WT_DBOUT_RUNS_VW" compile
+alter VIEW "WTP"."WT_PROFILES_VW" compile
+alter VIEW "WTP"."WT_RESULTS_VW" compile
+alter VIEW "WTP"."WT_SCHEDULER_JOBS_VW" compile
+alter VIEW "WTP"."WT_TESTCASE_RUNS_VW" compile
+alter VIEW "WTP"."WT_TEST_RUNS_VW" compile
+alter TRIGGER "WTP"."WT_SELF_TEST$TEST" compile
+
+PL/SQL procedure successfully completed.
+
+Elapsed: 00:00:03.68
+Disconnected from Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Move back to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213
+
+Move to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../../unit_testing
+
+/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../util/run_script.sql unit_testing run_core_test.sql
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Thu Feb 6 12:11:41 2025
+Version 19.22.0.0.0
+
+Copyright (c) 1982, 2023, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+
+PL/SQL procedure successfully completed.
+
+
+CON_NAME
+------------------------------
+DEVPDB
+USER is "WTP"
+Setup Continue on Error
+Running run_core_test.sql
+
+Run Unit Test and Report.
+Disconnected from Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Move back to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213
+
+Move to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../../unit_testing
+
+/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../util/run_script.sql unit_testing run_junit_test.sql
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Thu Feb 6 12:12:14 2025
+Version 19.22.0.0.0
+
+Copyright (c) 1982, 2023, Oracle.  All rights reserved.
+
+Last Successful login time: Thu Feb 06 2025 12:11:41 -06:00
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+
+PL/SQL procedure successfully completed.
+
+
+CON_NAME
+------------------------------
+DEVPDB
+USER is "WTP"
+Setup Continue on Error
+Running run_junit_test.sql
+
+Initialize Hooks.
+3 "wt_core_report" rows deleted from HOOKS table.
+
+PL/SQL procedure successfully completed.
+
+Elapsed: 00:00:00.11
+0 "wt_test_run" rows deleted from HOOKS table.
+
+PL/SQL procedure successfully completed.
+
+Elapsed: 00:00:00.01
+0 "junit_core_report" rows deleted from HOOKS table.
+
+PL/SQL procedure successfully completed.
+
+Elapsed: 00:00:00.04
+
+Run and Report Unit Tests.
+Disconnected from Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Move back to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213
+
+Move to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../../unit_testing
+
+/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../util/run_script.sql unit_testing run_save_test.sql
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Thu Feb 6 12:12:44 2025
+Version 19.22.0.0.0
+
+Copyright (c) 1982, 2023, Oracle.  All rights reserved.
+
+Last Successful login time: Thu Feb 06 2025 12:12:15 -06:00
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+
+PL/SQL procedure successfully completed.
+
+
+CON_NAME
+------------------------------
+DEVPDB
+USER is "WTP"
+Setup Continue on Error
+Running run_save_test.sql
+
+Initialize Hooks.
+0 "wt_core_report" rows deleted from HOOKS table.
+
+PL/SQL procedure successfully completed.
+
+Elapsed: 00:00:00.02
+3 "junit_core_report" rows deleted from HOOKS table.
+
+PL/SQL procedure successfully completed.
+
+Elapsed: 00:00:00.03
+0 "wt_test_run" rows deleted from HOOKS table.
+
+PL/SQL procedure successfully completed.
+
+Elapsed: 00:00:00.03
+
+Run Unit Tests and Report.
+
+JUnit Report Unit Tests.
+Disconnected from Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Move back to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213
+
+Move Log Files to Build Folder
+Move to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../../unit_testing
+renamed 'junit_core_report_show_current.xml' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/unit_testing/junit_core_report_show_current.xml'
+renamed 'junit_xml_persist_all.xml' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/unit_testing/junit_xml_persist_all.xml'
+renamed 'run_core_test.sql.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/unit_testing/run_core_test.sql.log'
+renamed 'run_junit_test.sql.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/unit_testing/run_junit_test.sql.log'
+renamed 'run_save_test.sql.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/unit_testing/run_save_test.sql.log'
+renamed 'setup_for_test.sql.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/unit_testing/setup_for_test.sql.log'
+renamed 'wt_core_report_dbms_out.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/unit_testing/wt_core_report_dbms_out.log'
+renamed 'wt_persist_report_dbms_out.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/unit_testing/wt_persist_report_dbms_out.log'
+
+Move back to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213
+
+Clear old grbsrc logs
+
+Move to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../../grbsrc
+
+/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../util/run_build.sql grbsrc
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Thu Feb 6 12:13:19 2025
+Version 19.22.0.0.0
+
+Copyright (c) 1982, 2023, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Setup Abort on Error
+
+CONNECTION
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+user: SYS, db: EE213CDB, con: DEVPDB, tstmp: 06-FEB-25 06.13.20.033106 PM +00:00
+
+Identify this Module in V$SESSION
+
+**************************
+*  Run SYS Installation  *
+**************************
+
+=== DBI Started: SYS/ODBCAPTURE.user
+
+User created.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+XS Admin Grant "ADMIN_ANY_SEC_POLICY" to "ODBCAPTURE"
+
+PL/SQL procedure successfully completed.
+
+XS Admin Cloud Grant "ADMIN_ANY_SEC_POLICY" to "ODBCAPTURE"
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:13:25 for a duration of 5.16 seconds (started at 2025-02-06T18:13:20)
+Setup Continue on Error
+
+*****************************
+*  Run SYSTEM Installation  *
+*****************************
+
+Connected.
+
+CONNECTION
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+user: SYSTEM, db: EE213CDB, con: DEVPDB, tstmp: 06-FEB-25 06.13.25.741161 PM +00:00
+
+1 row selected.
+
+=== DBI Started: SYSTEM/ODBCAPTURE_usr.grnt
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+=== DBI Completed at 2025-02-06T18:13:26 for a duration of .45 seconds (started at 2025-02-06T18:13:25)
+
+*************************
+*  Install Application	*
+*************************
+
+=== DBI Started: ./installation_prepare.sql
+
+Create Temp Publicly Updateable Table
+
+Table created.
+
+
+Grant succeeded.
+
+
+Synonym created.
+
+
+Check for Prerequisite BUILD_TYPEs
+Prerequisite BUILD_TYPEs for "grbsrc"
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:13:26 for a duration of .32 seconds (started at 2025-02-06T18:13:26)
+=== DBI Started: ODBCAPTURE/ODBCAPTURE_VERSION.func
+
+Function created.
+
+=== DBI Completed at 2025-02-06T18:13:26 for a duration of .09 seconds (started at 2025-02-06T18:13:26)
+=== DBI Started: ODBCAPTURE/COMMON_UTIL.pkssql
+
+Warning: Package created with compilation errors.
+
+=== DBI Completed at 2025-02-06T18:13:26 for a duration of .21 seconds (started at 2025-02-06T18:13:26)
+=== DBI Started: ODBCAPTURE/FH2.pkssql
+
+Package created.
+
+=== DBI Completed at 2025-02-06T18:13:27 for a duration of .15 seconds (started at 2025-02-06T18:13:26)
+=== DBI Started: ODBCAPTURE/GRAB_DATA.pkssql
+
+Package created.
+
+=== DBI Completed at 2025-02-06T18:13:27 for a duration of .1 seconds (started at 2025-02-06T18:13:27)
+=== DBI Started: ODBCAPTURE/GRAB_SCRIPTS.pkssql
+
+Warning: Package created with compilation errors.
+
+=== DBI Completed at 2025-02-06T18:13:27 for a duration of .16 seconds (started at 2025-02-06T18:13:27)
+=== DBI Started: ODBCAPTURE/ROOT_SCRIPTS.pkssql
+
+Package created.
+
+=== DBI Completed at 2025-02-06T18:13:27 for a duration of .17 seconds (started at 2025-02-06T18:13:27)
+=== DBI Started: ODBCAPTURE/ZIP_UTIL_PKG.pkssql
+
+Package created.
+
+=== DBI Completed at 2025-02-06T18:13:27 for a duration of .12 seconds (started at 2025-02-06T18:13:27)
+=== DBI Started: ODBCAPTURE/BUILD_CONF.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+=== DBI Completed at 2025-02-06T18:13:28 for a duration of .42 seconds (started at 2025-02-06T18:13:27)
+=== DBI Started: ODBCAPTURE/BUILD_PATH.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+=== DBI Completed at 2025-02-06T18:13:28 for a duration of .3 seconds (started at 2025-02-06T18:13:28)
+=== DBI Started: ODBCAPTURE/BUILD_TYPE_TIMING.tbl
+
+Table created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+=== DBI Completed at 2025-02-06T18:13:28 for a duration of .18 seconds (started at 2025-02-06T18:13:28)
+=== DBI Started: ODBCAPTURE/DBA_DEPENDENCIES_TAB.tbl
+
+Table created.
+
+=== DBI Completed at 2025-02-06T18:13:28 for a duration of .09 seconds (started at 2025-02-06T18:13:28)
+=== DBI Started: ODBCAPTURE/DBA_OBJECTS_TAB.tbl
+
+Table created.
+
+=== DBI Completed at 2025-02-06T18:13:28 for a duration of .07 seconds (started at 2025-02-06T18:13:28)
+=== DBI Started: ODBCAPTURE/DBA_TAB_PRIVS_TAB.tbl
+
+Table created.
+
+=== DBI Completed at 2025-02-06T18:13:28 for a duration of .08 seconds (started at 2025-02-06T18:13:28)
+=== DBI Started: ODBCAPTURE/DLOAD_CONF.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+=== DBI Completed at 2025-02-06T18:13:29 for a duration of .45 seconds (started at 2025-02-06T18:13:28)
+=== DBI Started: ODBCAPTURE/ELEMENT_CONF.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+=== DBI Completed at 2025-02-06T18:13:29 for a duration of .49 seconds (started at 2025-02-06T18:13:29)
+=== DBI Started: ODBCAPTURE/METADATA_TRANSFORM_PARAMS.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+=== DBI Completed at 2025-02-06T18:13:30 for a duration of .32 seconds (started at 2025-02-06T18:13:29)
+=== DBI Started: ODBCAPTURE/OBJECT_CONF.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+=== DBI Completed at 2025-02-06T18:13:30 for a duration of .63 seconds (started at 2025-02-06T18:13:30)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_COMMENTS_TAB.tbl
+
+Table created.
+
+=== DBI Completed at 2025-02-06T18:13:30 for a duration of .09 seconds (started at 2025-02-06T18:13:30)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_CONTEXT_TAB.tbl
+
+Table created.
+
+=== DBI Completed at 2025-02-06T18:13:30 for a duration of .07 seconds (started at 2025-02-06T18:13:30)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_DATA_LOAD_TAB.tbl
+
+Table created.
+
+=== DBI Completed at 2025-02-06T18:13:31 for a duration of .08 seconds (started at 2025-02-06T18:13:30)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_FKEY_TAB.tbl
+
+Table created.
+
+=== DBI Completed at 2025-02-06T18:13:31 for a duration of .07 seconds (started at 2025-02-06T18:13:31)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_INDEX_TAB.tbl
+
+Table created.
+
+=== DBI Completed at 2025-02-06T18:13:31 for a duration of .08 seconds (started at 2025-02-06T18:13:31)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_OBJECT_TAB.tbl
+
+Table created.
+
+=== DBI Completed at 2025-02-06T18:13:31 for a duration of .08 seconds (started at 2025-02-06T18:13:31)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_SYNONYM_TAB.tbl
+
+Table created.
+
+=== DBI Completed at 2025-02-06T18:13:31 for a duration of .09 seconds (started at 2025-02-06T18:13:31)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_TRIGGER_TAB.tbl
+
+Table created.
+
+=== DBI Completed at 2025-02-06T18:13:31 for a duration of .07 seconds (started at 2025-02-06T18:13:31)
+=== DBI Started: ODBCAPTURE/ROLE_CONF.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+=== DBI Completed at 2025-02-06T18:13:31 for a duration of .43 seconds (started at 2025-02-06T18:13:31)
+=== DBI Started: ODBCAPTURE/SCHEMA_CONF.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+=== DBI Completed at 2025-02-06T18:13:32 for a duration of .65 seconds (started at 2025-02-06T18:13:31)
+=== DBI Started: ODBCAPTURE/SCHEMA_OBJECTS_TAB.tbl
+
+Table created.
+
+=== DBI Completed at 2025-02-06T18:13:32 for a duration of .09 seconds (started at 2025-02-06T18:13:32)
+=== DBI Started: ODBCAPTURE/TSPACE_CONF.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+=== DBI Completed at 2025-02-06T18:13:32 for a duration of .23 seconds (started at 2025-02-06T18:13:32)
+=== DBI Started: ODBCAPTURE/USER_DEFINED_TYPE_CONF.tbl
+
+Table created.
+
+
+Table altered.
+
+=== DBI Completed at 2025-02-06T18:13:33 for a duration of .3 seconds (started at 2025-02-06T18:13:32)
+=== DBI Started: ODBCAPTURE/ZIP_FILES.tbl
+
+Table created.
+
+
+Table altered.
+
+=== DBI Completed at 2025-02-06T18:13:33 for a duration of .21 seconds (started at 2025-02-06T18:13:33)
+Compile All started
+
+PL/SQL procedure successfully completed.
+
+Compile All is done.
+=== DBI Started: ODBCAPTURE/AQ_SYSTEM_PRIVS_VW.vw
+
+View created.
+
+
+View created.
+
+=== DBI Completed at 2025-02-06T18:13:37 for a duration of .23 seconds (started at 2025-02-06T18:13:37)
+=== DBI Started: ODBCAPTURE/BUILD_PATH_REVIEW.vw
+
+View created.
+
+
+View created.
+
+=== DBI Completed at 2025-02-06T18:13:37 for a duration of .12 seconds (started at 2025-02-06T18:13:37)
+=== DBI Started: ODBCAPTURE/DBA_DEPENDENCIES_VIEW.vw
+
+View created.
+
+
+View created.
+
+=== DBI Completed at 2025-02-06T18:13:37 for a duration of .15 seconds (started at 2025-02-06T18:13:37)
+=== DBI Started: ODBCAPTURE/DBA_OBJECTS_VIEW.vw
+
+View created.
+
+
+View created.
+
+=== DBI Completed at 2025-02-06T18:13:38 for a duration of .33 seconds (started at 2025-02-06T18:13:37)
+=== DBI Started: ODBCAPTURE/DBA_TAB_PRIVS_VIEW.vw
+
+View created.
+
+
+Warning: View created with compilation errors.
+
+=== DBI Completed at 2025-02-06T18:13:38 for a duration of .11 seconds (started at 2025-02-06T18:13:38)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_COMMENTS_VIEW.vw
+
+View created.
+
+
+View created.
+
+=== DBI Completed at 2025-02-06T18:13:38 for a duration of .18 seconds (started at 2025-02-06T18:13:38)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_CONTEXT_VIEW.vw
+
+View created.
+
+
+View created.
+
+=== DBI Completed at 2025-02-06T18:13:38 for a duration of .13 seconds (started at 2025-02-06T18:13:38)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_DATA_LOAD_VIEW.vw
+
+View created.
+
+
+View created.
+
+=== DBI Completed at 2025-02-06T18:13:38 for a duration of .17 seconds (started at 2025-02-06T18:13:38)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_FKEY_VIEW.vw
+
+View created.
+
+
+View created.
+
+=== DBI Completed at 2025-02-06T18:13:38 for a duration of .19 seconds (started at 2025-02-06T18:13:38)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_INDEX_VIEW.vw
+
+View created.
+
+
+View created.
+
+=== DBI Completed at 2025-02-06T18:13:39 for a duration of .14 seconds (started at 2025-02-06T18:13:38)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_OBJECT_VIEW.vw
+
+View created.
+
+
+View created.
+
+=== DBI Completed at 2025-02-06T18:13:39 for a duration of .2 seconds (started at 2025-02-06T18:13:39)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_SYNONYM_VIEW.vw
+
+View created.
+
+
+View created.
+
+=== DBI Completed at 2025-02-06T18:13:39 for a duration of .14 seconds (started at 2025-02-06T18:13:39)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_TRIGGER_VIEW.vw
+
+View created.
+
+
+View created.
+
+=== DBI Completed at 2025-02-06T18:13:39 for a duration of .15 seconds (started at 2025-02-06T18:13:39)
+=== DBI Started: ODBCAPTURE/PRIV_OBJ_DIR_VIEW.vw
+
+View created.
+
+
+Warning: View created with compilation errors.
+
+=== DBI Completed at 2025-02-06T18:13:39 for a duration of .15 seconds (started at 2025-02-06T18:13:39)
+=== DBI Started: ODBCAPTURE/PRIV_OBJ_HACL_VIEW.vw
+
+View created.
+
+
+Warning: View created with compilation errors.
+
+=== DBI Completed at 2025-02-06T18:13:39 for a duration of .13 seconds (started at 2025-02-06T18:13:39)
+=== DBI Started: ODBCAPTURE/PRIV_OBJ_INSTALL_VW.vw
+
+View created.
+
+
+Warning: View created with compilation errors.
+
+=== DBI Completed at 2025-02-06T18:13:40 for a duration of .14 seconds (started at 2025-02-06T18:13:39)
+=== DBI Started: ODBCAPTURE/PRIV_OBJ_QUEUE_VIEW.vw
+
+View created.
+
+
+Warning: View created with compilation errors.
+
+=== DBI Completed at 2025-02-06T18:13:40 for a duration of .16 seconds (started at 2025-02-06T18:13:40)
+=== DBI Started: ODBCAPTURE/PRIV_OBJ_WACL_VIEW.vw
+
+View created.
+
+
+Warning: View created with compilation errors.
+
+=== DBI Completed at 2025-02-06T18:13:40 for a duration of .13 seconds (started at 2025-02-06T18:13:40)
+=== DBI Started: ODBCAPTURE/PRIV_QUEUE_REGISTER_VIEW.vw
+
+View created.
+
+
+Warning: View created with compilation errors.
+
+=== DBI Completed at 2025-02-06T18:13:40 for a duration of .14 seconds (started at 2025-02-06T18:13:40)
+=== DBI Started: ODBCAPTURE/PRIV_QUEUE_SUBSCRIBE_VIEW.vw
+
+View created.
+
+
+Warning: View created with compilation errors.
+
+=== DBI Completed at 2025-02-06T18:13:40 for a duration of .17 seconds (started at 2025-02-06T18:13:40)
+=== DBI Started: ODBCAPTURE/PRIV_QUEUE_SYSPRIVS_VIEW.vw
+
+View created.
+
+
+Warning: View created with compilation errors.
+
+=== DBI Completed at 2025-02-06T18:13:40 for a duration of .15 seconds (started at 2025-02-06T18:13:40)
+=== DBI Started: ODBCAPTURE/PRIV_ROLE_PRIVILEGES_VIEW.vw
+
+View created.
+
+
+Warning: View created with compilation errors.
+
+=== DBI Completed at 2025-02-06T18:13:40 for a duration of .16 seconds (started at 2025-02-06T18:13:40)
+=== DBI Started: ODBCAPTURE/PRIV_SYSOBJ_PRIVILEGES_VIEW.vw
+
+View created.
+
+
+Warning: View created with compilation errors.
+
+=== DBI Completed at 2025-02-06T18:13:41 for a duration of .16 seconds (started at 2025-02-06T18:13:41)
+=== DBI Started: ODBCAPTURE/PRIV_SYSTEM_PRIVILEGES_VIEW.vw
+
+View created.
+
+
+Warning: View created with compilation errors.
+
+=== DBI Completed at 2025-02-06T18:13:41 for a duration of .15 seconds (started at 2025-02-06T18:13:41)
+=== DBI Started: ODBCAPTURE/UOR_INSTALL_VIEW.vw
+
+View created.
+
+
+View created.
+
+=== DBI Completed at 2025-02-06T18:13:41 for a duration of .17 seconds (started at 2025-02-06T18:13:41)
+=== DBI Started: ODBCAPTURE/BUILD_CONF.cldr
+
+Disable Triggers and Foreign Keys
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/BUILD_CONF.ctl
+
+  2 Rows successfully loaded.
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:13:49 for a duration of 7.58 seconds (started at 2025-02-06T18:13:41)
+=== DBI Started: ODBCAPTURE/BUILD_PATH.cldr
+
+Disable Triggers and Foreign Keys
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/BUILD_PATH.ctl
+
+  1 Row successfully loaded.
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:13:52 for a duration of 3.09 seconds (started at 2025-02-06T18:13:49)
+=== DBI Started: ODBCAPTURE/ELEMENT_CONF.cldr
+
+Disable Triggers and Foreign Keys
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/ELEMENT_CONF.ctl
+
+  41 Rows successfully loaded.
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:13:57 for a duration of 5.58 seconds (started at 2025-02-06T18:13:52)
+=== DBI Started: ODBCAPTURE/METADATA_TRANSFORM_PARAMS.cldr
+
+Disable Triggers and Foreign Keys
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/METADATA_TRANSFORM_PARAMS.ctl
+
+  14 Rows successfully loaded.
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:14:01 for a duration of 3.54 seconds (started at 2025-02-06T18:13:57)
+=== DBI Started: ODBCAPTURE/ROLE_CONF.cldr
+
+Disable Triggers and Foreign Keys
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/ROLE_CONF.ctl
+
+  105 Rows successfully loaded.
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:14:04 for a duration of 3.07 seconds (started at 2025-02-06T18:14:01)
+=== DBI Started: ODBCAPTURE/SCHEMA_CONF.cldr
+
+Disable Triggers and Foreign Keys
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/SCHEMA_CONF.ctl
+
+  24 Rows successfully loaded.
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:14:07 for a duration of 3.4 seconds (started at 2025-02-06T18:14:04)
+=== DBI Started: ODBCAPTURE/DBA_DEPENDENCIES_TAB.tidx
+
+Index created.
+
+
+Index created.
+
+=== DBI Completed at 2025-02-06T18:14:08 for a duration of .14 seconds (started at 2025-02-06T18:14:07)
+=== DBI Started: ODBCAPTURE/DBA_OBJECTS_TAB.tidx
+
+Index created.
+
+=== DBI Completed at 2025-02-06T18:14:08 for a duration of .09 seconds (started at 2025-02-06T18:14:08)
+=== DBI Started: ODBCAPTURE/DBA_TAB_PRIVS_TAB.tidx
+
+Index created.
+
+=== DBI Completed at 2025-02-06T18:14:08 for a duration of .1 seconds (started at 2025-02-06T18:14:08)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_COMMENTS_TAB.tidx
+
+Index created.
+
+=== DBI Completed at 2025-02-06T18:14:08 for a duration of .09 seconds (started at 2025-02-06T18:14:08)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_CONTEXT_TAB.tidx
+
+Index created.
+
+=== DBI Completed at 2025-02-06T18:14:08 for a duration of .1 seconds (started at 2025-02-06T18:14:08)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_DATA_LOAD_TAB.tidx
+
+Index created.
+
+=== DBI Completed at 2025-02-06T18:14:08 for a duration of .07 seconds (started at 2025-02-06T18:14:08)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_FKEY_TAB.tidx
+
+Index created.
+
+=== DBI Completed at 2025-02-06T18:14:08 for a duration of .07 seconds (started at 2025-02-06T18:14:08)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_INDEX_TAB.tidx
+
+Index created.
+
+=== DBI Completed at 2025-02-06T18:14:08 for a duration of .07 seconds (started at 2025-02-06T18:14:08)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_OBJECT_TAB.tidx
+
+Index created.
+
+=== DBI Completed at 2025-02-06T18:14:09 for a duration of .39 seconds (started at 2025-02-06T18:14:08)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_SYNONYM_TAB.tidx
+
+Index created.
+
+
+Index created.
+
+=== DBI Completed at 2025-02-06T18:14:09 for a duration of .7 seconds (started at 2025-02-06T18:14:09)
+=== DBI Started: ODBCAPTURE/OBJ_INSTALL_TRIGGER_TAB.tidx
+
+Index created.
+
+
+Index created.
+
+=== DBI Completed at 2025-02-06T18:14:09 for a duration of .16 seconds (started at 2025-02-06T18:14:09)
+=== DBI Started: ODBCAPTURE/COMMON_UTIL.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:14:10 for a duration of .19 seconds (started at 2025-02-06T18:14:09)
+=== DBI Started: ODBCAPTURE/FH2.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:14:10 for a duration of .36 seconds (started at 2025-02-06T18:14:10)
+=== DBI Started: ODBCAPTURE/GRAB_DATA.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:14:12 for a duration of 1.43 seconds (started at 2025-02-06T18:14:10)
+=== DBI Started: ODBCAPTURE/GRAB_SCRIPTS.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:14:14 for a duration of 2.25 seconds (started at 2025-02-06T18:14:12)
+=== DBI Started: ODBCAPTURE/ROOT_SCRIPTS.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:14:14 for a duration of .25 seconds (started at 2025-02-06T18:14:14)
+=== DBI Started: ODBCAPTURE/ZIP_UTIL_PKG.pkbsql
+
+Package body created.
+
+=== DBI Completed at 2025-02-06T18:14:15 for a duration of .47 seconds (started at 2025-02-06T18:14:14)
+=== DBI Started: ODBCAPTURE/BUILD_PATH.tfk
+
+Table altered.
+
+
+Table altered.
+
+=== DBI Completed at 2025-02-06T18:14:15 for a duration of .39 seconds (started at 2025-02-06T18:14:15)
+=== DBI Started: ODBCAPTURE/DLOAD_CONF.tfk
+
+Table altered.
+
+
+Table altered.
+
+=== DBI Completed at 2025-02-06T18:14:15 for a duration of .44 seconds (started at 2025-02-06T18:14:15)
+=== DBI Started: ODBCAPTURE/OBJECT_CONF.tfk
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+=== DBI Completed at 2025-02-06T18:14:16 for a duration of .6 seconds (started at 2025-02-06T18:14:15)
+=== DBI Started: ODBCAPTURE/ROLE_CONF.tfk
+
+Table altered.
+
+=== DBI Completed at 2025-02-06T18:14:16 for a duration of .2 seconds (started at 2025-02-06T18:14:16)
+=== DBI Started: ODBCAPTURE/SCHEMA_CONF.tfk
+
+Table altered.
+
+=== DBI Completed at 2025-02-06T18:14:17 for a duration of .29 seconds (started at 2025-02-06T18:14:16)
+=== DBI Started: ODBCAPTURE/TSPACE_CONF.tfk
+
+Table altered.
+
+=== DBI Completed at 2025-02-06T18:14:17 for a duration of .15 seconds (started at 2025-02-06T18:14:17)
+=== DBI Started: ./installation_finalize.sql
+
+Drop Temp Publicly Updateable Table
+
+Synonym dropped.
+
+
+Table dropped.
+
+
+fix_invalid_public_synonyms
+
+Re-create Invalid Public Synonyms
+
+PL/SQL procedure successfully completed.
+
+
+compile_all
+Compile All started
+ODBCAPTURE Compiled.
+Compile All is done.
+
+PL/SQL procedure successfully completed.
+
+
+alter_foreign_keys_ENABLE
+Alter Foreign Keys started.
+  ENABLE 'ODBCAPTURE'
+alter table "ODBCAPTURE"."BUILD_PATH" ENABLE constraint "BUILD_PATH_FK1";
+alter table "ODBCAPTURE"."BUILD_PATH" ENABLE constraint "BUILD_PATH_FK2";
+alter table "ODBCAPTURE"."DLOAD_CONF" ENABLE constraint "DLOAD_CONF_FK1";
+alter table "ODBCAPTURE"."DLOAD_CONF" ENABLE constraint "DLOAD_CONF_FK2";
+alter table "ODBCAPTURE"."OBJECT_CONF" ENABLE constraint "OBJECT_CONF_FK1";
+alter table "ODBCAPTURE"."OBJECT_CONF" ENABLE constraint "OBJECT_CONF_FK2";
+alter table "ODBCAPTURE"."OBJECT_CONF" ENABLE constraint "OBJECT_CONF_FK3";
+alter table "ODBCAPTURE"."ROLE_CONF" ENABLE constraint "ROLE_CONF_FK1";
+alter table "ODBCAPTURE"."SCHEMA_CONF" ENABLE constraint "SCHEMA_CONF_FK1";
+alter table "ODBCAPTURE"."TSPACE_CONF" ENABLE constraint "TSPACE_CONF_FK1";
+Alter Foreign Keys is done.
+
+PL/SQL procedure successfully completed.
+
+
+alter_triggers_ENABLE
+Alter Triggers started.
+  ENABLE 'ODBCAPTURE'
+Alter Triggers is done.
+
+PL/SQL procedure successfully completed.
+
+
+update_id_sequences
+Update ID Sequences started
+Identity Sequence Updates is done.
+
+PL/SQL procedure successfully completed.
+
+
+Switch Spooling Off
+=== DBI Completed at 2025-02-06T18:14:23 for a duration of 6.36 seconds (started at 2025-02-06T18:14:17)
+not spooling currently
+
+"grbsrc" Installation is Done.
+Connected.
+
+CONNECTION
+---------------------------------------------------------------------------------------------------------------------------
+user: SYSTEM, db: EE213CDB, con: DEVPDB, tstmp: 06-FEB-25 06.14.23.790334 PM +00:00
+
+1 row selected.
+
+Elapsed: 00:00:00.01
+
+User altered.
+
+Disconnected from Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Move back to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213
+
+Move to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../../grbsrc
+
+report_status.sql grbsrc
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Thu Feb 6 12:14:24 2025
+Version 19.22.0.0.0
+
+Copyright (c) 1982, 2023, Oracle.  All rights reserved.
+
+Last Successful login time: Thu Feb 06 2025 12:14:23 -06:00
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+
+Load Installation Files
+
+Confirm/Create odbcapture_installation_logs Table
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=./odbcapture_installation_logs.ctl
+
+  9 Rows successfully loaded.
+
+old   2:    if '&_RC.' != '0' then
+new   2:    if '0' != '0' then
+old   3:       raise_application_error(-20000, 'Control file "odbcapture_installation_logs.ctl" returned error: &_RC.');
+new   3:       raise_application_error(-20000, 'Control file "odbcapture_installation_logs.ctl" returned error: 0');
+
+PL/SQL procedure successfully completed.
+
+
+Reporting Summary of Build Type Log Errors
+Processing file ODBCAPTURE/BUILD_CONF.log (2025-02-06 18:14:27)
+Processing file ODBCAPTURE/BUILD_PATH.log (2025-02-06 18:14:27)
+Processing file ODBCAPTURE/ELEMENT_CONF.log (2025-02-06 18:14:27)
+Processing file ODBCAPTURE/METADATA_TRANSFORM_PARAMS.log (2025-02-06 18:14:27)
+Processing file ODBCAPTURE/ROLE_CONF.log (2025-02-06 18:14:27)
+Processing file ODBCAPTURE/SCHEMA_CONF.log (2025-02-06 18:14:27)
+Processing file install_grbsrc.log (2025-02-06 18:14:27)
+Processing file install_sys.log (2025-02-06 18:14:27)
+Processing file install_system.log (2025-02-06 18:14:27)
+
+PL/SQL procedure successfully completed.
+
+
+Reporting Invalid Objects
+
+Reporting JUnit XML Database Build Status
+
+Reorting JUnit XML Installation Log
+SQL> Disconnected from Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Move back to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213
+
+Move Log Files to Build Folder
+Move to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../../grbsrc
+renamed 'db_build_junit_report.xml' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/grbsrc/db_build_junit_report.xml'
+renamed 'install_grbsrc.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/grbsrc/install_grbsrc.log'
+renamed 'install_sys.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/grbsrc/install_sys.log'
+renamed 'install_system.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/grbsrc/install_system.log'
+renamed 'log_files_junit_report.xml' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/grbsrc/log_files_junit_report.xml'
+renamed 'odbcapture_installation_logs.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/grbsrc/odbcapture_installation_logs.log'
+renamed 'ODBCAPTURE/BUILD_CONF.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/grbsrc/ODBCAPTURE/BUILD_CONF.log'
+renamed 'ODBCAPTURE/BUILD_PATH.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/grbsrc/ODBCAPTURE/BUILD_PATH.log'
+renamed 'ODBCAPTURE/ELEMENT_CONF.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/grbsrc/ODBCAPTURE/ELEMENT_CONF.log'
+renamed 'ODBCAPTURE/METADATA_TRANSFORM_PARAMS.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/grbsrc/ODBCAPTURE/METADATA_TRANSFORM_PARAMS.log'
+renamed 'ODBCAPTURE/ROLE_CONF.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/grbsrc/ODBCAPTURE/ROLE_CONF.log'
+renamed 'ODBCAPTURE/SCHEMA_CONF.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/grbsrc/ODBCAPTURE/SCHEMA_CONF.log'
+
+Move back to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213
+
+Clear old wtpgrb logs
+
+Move to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../../wtpgrb
+
+/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../util/run_build.sql wtpgrb
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Thu Feb 6 12:14:31 2025
+Version 19.22.0.0.0
+
+Copyright (c) 1982, 2023, Oracle.  All rights reserved.
+
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Setup Abort on Error
+
+CONNECTION
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+user: SYS, db: EE213CDB, con: DEVPDB, tstmp: 06-FEB-25 06.14.32.012971 PM +00:00
+
+Identify this Module in V$SESSION
+
+**************************
+*  Run SYS Installation  *
+**************************
+
+Setup Continue on Error
+
+*****************************
+*  Run SYSTEM Installation  *
+*****************************
+
+Connected.
+
+CONNECTION
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+user: SYSTEM, db: EE213CDB, con: DEVPDB, tstmp: 06-FEB-25 06.14.32.197187 PM +00:00
+
+
+*************************
+*  Install Application	*
+*************************
+
+=== DBI Started: ./installation_prepare.sql
+
+Create Temp Publicly Updateable Table
+
+Table created.
+
+
+Grant succeeded.
+
+
+Synonym created.
+
+
+Check for Prerequisite BUILD_TYPEs
+Prerequisite BUILD_TYPEs for "wtpgrb"
+ -) "grbsrc" last loaded on 06-Feb-2025 18:14:27
+ -) "wtpsav" last loaded on 06-Feb-2025 18:11:17
+ -) "wtpsrc" last loaded on 06-Feb-2025 18:10:55
+ -) "wtptst" last loaded on 06-Feb-2025 18:11:35
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:14:32 for a duration of .23 seconds (started at 2025-02-06T18:14:32)
+=== DBI Started: ODBCAPTURE/BUILD_CONF.cldr
+
+Disable Triggers and Foreign Keys
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/BUILD_CONF.ctl
+
+  5 Rows successfully loaded.
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:14:33 for a duration of .72 seconds (started at 2025-02-06T18:14:32)
+=== DBI Started: ODBCAPTURE/BUILD_PATH.cldr
+
+Disable Triggers and Foreign Keys
+alter table "ODBCAPTURE"."BUILD_PATH" DISABLE constraint "BUILD_PATH_FK1";
+alter table "ODBCAPTURE"."BUILD_PATH" DISABLE constraint "BUILD_PATH_FK2";
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/BUILD_PATH.ctl
+
+  5 Rows successfully loaded.
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:14:33 for a duration of .8 seconds (started at 2025-02-06T18:14:33)
+=== DBI Started: ODBCAPTURE/DLOAD_CONF.cldr
+
+Disable Triggers and Foreign Keys
+alter table "ODBCAPTURE"."DLOAD_CONF" DISABLE constraint "DLOAD_CONF_FK1";
+alter table "ODBCAPTURE"."DLOAD_CONF" DISABLE constraint "DLOAD_CONF_FK2";
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/DLOAD_CONF.ctl
+
+  9 Rows successfully loaded.
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:14:37 for a duration of 3.89 seconds (started at 2025-02-06T18:14:34)
+=== DBI Started: ODBCAPTURE/OBJECT_CONF.cldr
+
+Disable Triggers and Foreign Keys
+alter table "ODBCAPTURE"."OBJECT_CONF" DISABLE constraint "OBJECT_CONF_FK1";
+alter table "ODBCAPTURE"."OBJECT_CONF" DISABLE constraint "OBJECT_CONF_FK2";
+alter table "ODBCAPTURE"."OBJECT_CONF" DISABLE constraint "OBJECT_CONF_FK3";
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/OBJECT_CONF.ctl
+
+  8 Rows successfully loaded.
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:14:41 for a duration of 3.64 seconds (started at 2025-02-06T18:14:37)
+=== DBI Started: ODBCAPTURE/ROLE_CONF.cldr
+
+Disable Triggers and Foreign Keys
+alter table "ODBCAPTURE"."ROLE_CONF" DISABLE constraint "ROLE_CONF_FK1";
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/ROLE_CONF.ctl
+
+  0 Rows successfully loaded.
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:14:42 for a duration of .68 seconds (started at 2025-02-06T18:14:41)
+=== DBI Started: ODBCAPTURE/SCHEMA_CONF.cldr
+
+Disable Triggers and Foreign Keys
+alter table "ODBCAPTURE"."SCHEMA_CONF" DISABLE constraint "SCHEMA_CONF_FK1";
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/SCHEMA_CONF.ctl
+
+  2 Rows successfully loaded.
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:14:42 for a duration of .73 seconds (started at 2025-02-06T18:14:42)
+=== DBI Started: ODBCAPTURE/TSPACE_CONF.cldr
+
+Disable Triggers and Foreign Keys
+alter table "ODBCAPTURE"."TSPACE_CONF" DISABLE constraint "TSPACE_CONF_FK1";
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/TSPACE_CONF.ctl
+
+  0 Rows successfully loaded.
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:14:49 for a duration of 6.27 seconds (started at 2025-02-06T18:14:42)
+=== DBI Started: ./installation_finalize.sql
+
+Drop Temp Publicly Updateable Table
+
+Synonym dropped.
+
+
+Table dropped.
+
+
+fix_invalid_public_synonyms
+
+Re-create Invalid Public Synonyms
+
+PL/SQL procedure successfully completed.
+
+
+compile_all
+Compile All started
+ODBCAPTURE Compiled.
+Compile All is done.
+
+PL/SQL procedure successfully completed.
+
+
+alter_foreign_keys_ENABLE
+Alter Foreign Keys started.
+  ENABLE 'ODBCAPTURE'
+alter table "ODBCAPTURE"."BUILD_PATH" ENABLE constraint "BUILD_PATH_FK1";
+alter table "ODBCAPTURE"."BUILD_PATH" ENABLE constraint "BUILD_PATH_FK2";
+alter table "ODBCAPTURE"."DLOAD_CONF" ENABLE constraint "DLOAD_CONF_FK1";
+alter table "ODBCAPTURE"."DLOAD_CONF" ENABLE constraint "DLOAD_CONF_FK2";
+alter table "ODBCAPTURE"."OBJECT_CONF" ENABLE constraint "OBJECT_CONF_FK1";
+alter table "ODBCAPTURE"."OBJECT_CONF" ENABLE constraint "OBJECT_CONF_FK2";
+alter table "ODBCAPTURE"."OBJECT_CONF" ENABLE constraint "OBJECT_CONF_FK3";
+alter table "ODBCAPTURE"."ROLE_CONF" ENABLE constraint "ROLE_CONF_FK1";
+alter table "ODBCAPTURE"."SCHEMA_CONF" ENABLE constraint "SCHEMA_CONF_FK1";
+alter table "ODBCAPTURE"."TSPACE_CONF" ENABLE constraint "TSPACE_CONF_FK1";
+Alter Foreign Keys is done.
+
+PL/SQL procedure successfully completed.
+
+
+alter_triggers_ENABLE
+Alter Triggers started.
+  ENABLE 'ODBCAPTURE'
+Alter Triggers is done.
+
+PL/SQL procedure successfully completed.
+
+
+update_id_sequences
+Update ID Sequences started
+Identity Sequence Updates is done.
+
+PL/SQL procedure successfully completed.
+
+
+Switch Spooling Off
+=== DBI Completed at 2025-02-06T18:14:51 for a duration of 2.07 seconds (started at 2025-02-06T18:14:49)
+not spooling currently
+
+"wtpgrb" Installation is Done.
+Connected.
+
+CONNECTION
+---------------------------------------------------------------------------------------------------------------------------
+user: SYSTEM, db: EE213CDB, con: DEVPDB, tstmp: 06-FEB-25 06.14.51.505234 PM +00:00
+
+1 row selected.
+
+Elapsed: 00:00:00.01
+Disconnected from Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Move back to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213
+
+Move to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../../wtpgrb
+
+report_status.sql wtpgrb
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Thu Feb 6 12:14:51 2025
+Version 19.22.0.0.0
+
+Copyright (c) 1982, 2023, Oracle.  All rights reserved.
+
+Last Successful login time: Thu Feb 06 2025 12:14:51 -06:00
+
+Connected to:
+Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+
+Load Installation Files
+
+Confirm/Create odbcapture_installation_logs Table
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=./odbcapture_installation_logs.ctl
+
+  10 Rows successfully loaded.
+
+old   2:    if '&_RC.' != '0' then
+new   2:    if '0' != '0' then
+old   3:       raise_application_error(-20000, 'Control file "odbcapture_installation_logs.ctl" returned error: &_RC.');
+new   3:       raise_application_error(-20000, 'Control file "odbcapture_installation_logs.ctl" returned error: 0');
+
+PL/SQL procedure successfully completed.
+
+
+Reporting Summary of Build Type Log Errors
+Processing file ODBCAPTURE/BUILD_CONF.log (2025-02-06 18:14:52)
+Processing file ODBCAPTURE/BUILD_PATH.log (2025-02-06 18:14:52)
+Processing file ODBCAPTURE/DLOAD_CONF.log (2025-02-06 18:14:52)
+Processing file ODBCAPTURE/OBJECT_CONF.log (2025-02-06 18:14:52)
+Processing file ODBCAPTURE/ROLE_CONF.log (2025-02-06 18:14:52)
+Processing file ODBCAPTURE/SCHEMA_CONF.log (2025-02-06 18:14:52)
+Processing file ODBCAPTURE/TSPACE_CONF.log (2025-02-06 18:14:52)
+Processing file install_sys.log (2025-02-06 18:14:52)
+Processing file install_system.log (2025-02-06 18:14:52)
+Processing file install_wtpgrb.log (2025-02-06 18:14:52)
+
+PL/SQL procedure successfully completed.
+
+
+Reporting Invalid Objects
+
+Reporting JUnit XML Database Build Status
+
+Reorting JUnit XML Installation Log
+SQL> Disconnected from Oracle Database 21c Enterprise Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+Move back to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213
+
+Move Log Files to Build Folder
+Move to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/../../wtpgrb
+renamed 'db_build_junit_report.xml' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpgrb/db_build_junit_report.xml'
+renamed 'install_sys.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpgrb/install_sys.log'
+renamed 'install_system.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpgrb/install_system.log'
+renamed 'install_wtpgrb.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpgrb/install_wtpgrb.log'
+renamed 'log_files_junit_report.xml' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpgrb/log_files_junit_report.xml'
+renamed 'odbcapture_installation_logs.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpgrb/odbcapture_installation_logs.log'
+renamed 'ODBCAPTURE/BUILD_CONF.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpgrb/ODBCAPTURE/BUILD_CONF.log'
+renamed 'ODBCAPTURE/BUILD_PATH.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpgrb/ODBCAPTURE/BUILD_PATH.log'
+renamed 'ODBCAPTURE/DLOAD_CONF.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpgrb/ODBCAPTURE/DLOAD_CONF.log'
+renamed 'ODBCAPTURE/OBJECT_CONF.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpgrb/ODBCAPTURE/OBJECT_CONF.log'
+renamed 'ODBCAPTURE/ROLE_CONF.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpgrb/ODBCAPTURE/ROLE_CONF.log'
+renamed 'ODBCAPTURE/SCHEMA_CONF.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpgrb/ODBCAPTURE/SCHEMA_CONF.log'
+renamed 'ODBCAPTURE/TSPACE_CONF.log' -> '/c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213/wtpgrb/ODBCAPTURE/TSPACE_CONF.log'
+
+Move back to /c/DMSTEX_dev/wtplsql/builds/OnPrem_EE213

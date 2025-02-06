@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="install_sys.log" tests="0" errors="0" hostname="EE213CDB" id="1" time="0" timestamp="2025-02-06T18:14:52">
+  </testsuite>
+  <testsuite name="install_system.log" tests="0" errors="0" hostname="EE213CDB" id="2" time="0" timestamp="2025-02-06T18:14:52">
+  </testsuite>
+  <testsuite name="install_wtpgrb.log" tests="8" errors="0" hostname="EE213CDB" id="3" time="18" timestamp="2025-02-06T18:14:52">
+    <testcase name="./installation_finalize.sql" assertions="" classname="..sql" status="PASS" time="">
+    </testcase>
+    <testcase name="./installation_prepare.sql" assertions="23" classname="..sql" status="PASS" time="0">
+      <system-out>
+=== DBI Started: ./installation_prepare.sql
+
+Create Temp Publicly Updateable Table
+
+Table created.
+
+
+Grant succeeded.
+
+
+Synonym created.
+
+
+Check for Prerequisite BUILD_TYPEs
+Prerequisite BUILD_TYPEs for &quot;wtpgrb&quot;
+ -) &quot;grbsrc&quot; last loaded on 06-Feb-2025 18:14:27
+ -) &quot;wtpsav&quot; last loaded on 06-Feb-2025 18:11:17
+ -) &quot;wtpsrc&quot; last loaded on 06-Feb-2025 18:10:55
+ -) &quot;wtptst&quot; last loaded on 06-Feb-2025 18:11:35
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:14:32 for a duration of .23 seconds (started at 2025-02-06T18:14:32)
+      </system-out>
+    </testcase>
+    <testcase name="ODBCAPTURE/BUILD_CONF.cldr" assertions="13" classname="ODBCAPTURE.cldr" status="PASS" time="1">
+      <system-out>
+=== DBI Started: ODBCAPTURE/BUILD_CONF.cldr
+
+Disable Triggers and Foreign Keys
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/BUILD_CONF.ctl
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:14:33 for a duration of .72 seconds (started at 2025-02-06T18:14:32)
+      </system-out>
+    </testcase>
+    <testcase name="ODBCAPTURE/BUILD_PATH.cldr" assertions="15" classname="ODBCAPTURE.cldr" status="PASS" time="1">
+      <system-out>
+=== DBI Started: ODBCAPTURE/BUILD_PATH.cldr
+
+Disable Triggers and Foreign Keys
+alter table &quot;ODBCAPTURE&quot;.&quot;BUILD_PATH&quot; DISABLE constraint &quot;BUILD_PATH_FK1&quot;;
+alter table &quot;ODBCAPTURE&quot;.&quot;BUILD_PATH&quot; DISABLE constraint &quot;BUILD_PATH_FK2&quot;;
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/BUILD_PATH.ctl
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:14:33 for a duration of .8 seconds (started at 2025-02-06T18:14:33)
+      </system-out>
+    </testcase>
+    <testcase name="ODBCAPTURE/DLOAD_CONF.cldr" assertions="15" classname="ODBCAPTURE.cldr" status="PASS" time="4">
+      <system-out>
+=== DBI Started: ODBCAPTURE/DLOAD_CONF.cldr
+
+Disable Triggers and Foreign Keys
+alter table &quot;ODBCAPTURE&quot;.&quot;DLOAD_CONF&quot; DISABLE constraint &quot;DLOAD_CONF_FK1&quot;;
+alter table &quot;ODBCAPTURE&quot;.&quot;DLOAD_CONF&quot; DISABLE constraint &quot;DLOAD_CONF_FK2&quot;;
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/DLOAD_CONF.ctl
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:14:37 for a duration of 3.89 seconds (started at 2025-02-06T18:14:34)
+      </system-out>
+    </testcase>
+    <testcase name="ODBCAPTURE/OBJECT_CONF.cldr" assertions="16" classname="ODBCAPTURE.cldr" status="PASS" time="4">
+      <system-out>
+=== DBI Started: ODBCAPTURE/OBJECT_CONF.cldr
+
+Disable Triggers and Foreign Keys
+alter table &quot;ODBCAPTURE&quot;.&quot;OBJECT_CONF&quot; DISABLE constraint &quot;OBJECT_CONF_FK1&quot;;
+alter table &quot;ODBCAPTURE&quot;.&quot;OBJECT_CONF&quot; DISABLE constraint &quot;OBJECT_CONF_FK2&quot;;
+alter table &quot;ODBCAPTURE&quot;.&quot;OBJECT_CONF&quot; DISABLE constraint &quot;OBJECT_CONF_FK3&quot;;
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/OBJECT_CONF.ctl
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:14:41 for a duration of 3.64 seconds (started at 2025-02-06T18:14:37)
+      </system-out>
+    </testcase>
+    <testcase name="ODBCAPTURE/ROLE_CONF.cldr" assertions="14" classname="ODBCAPTURE.cldr" status="PASS" time="1">
+      <system-out>
+=== DBI Started: ODBCAPTURE/ROLE_CONF.cldr
+
+Disable Triggers and Foreign Keys
+alter table &quot;ODBCAPTURE&quot;.&quot;ROLE_CONF&quot; DISABLE constraint &quot;ROLE_CONF_FK1&quot;;
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/ROLE_CONF.ctl
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:14:42 for a duration of .68 seconds (started at 2025-02-06T18:14:41)
+      </system-out>
+    </testcase>
+    <testcase name="ODBCAPTURE/SCHEMA_CONF.cldr" assertions="14" classname="ODBCAPTURE.cldr" status="PASS" time="1">
+      <system-out>
+=== DBI Started: ODBCAPTURE/SCHEMA_CONF.cldr
+
+Disable Triggers and Foreign Keys
+alter table &quot;ODBCAPTURE&quot;.&quot;SCHEMA_CONF&quot; DISABLE constraint &quot;SCHEMA_CONF_FK1&quot;;
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/SCHEMA_CONF.ctl
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:14:42 for a duration of .73 seconds (started at 2025-02-06T18:14:42)
+      </system-out>
+    </testcase>
+    <testcase name="ODBCAPTURE/TSPACE_CONF.cldr" assertions="14" classname="ODBCAPTURE.cldr" status="PASS" time="6">
+      <system-out>
+=== DBI Started: ODBCAPTURE/TSPACE_CONF.cldr
+
+Disable Triggers and Foreign Keys
+alter table &quot;ODBCAPTURE&quot;.&quot;TSPACE_CONF&quot; DISABLE constraint &quot;TSPACE_CONF_FK1&quot;;
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=ODBCAPTURE/TSPACE_CONF.ctl
+
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:14:49 for a duration of 6.27 seconds (started at 2025-02-06T18:14:42)
+      </system-out>
+    </testcase>
+  </testsuite>
+</testsuites>

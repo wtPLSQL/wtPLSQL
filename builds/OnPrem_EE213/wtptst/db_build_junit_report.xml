@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="WTP_schema_build" tests="95" failures="0" time="0" timestamp="2025-02-06T18:10:16">
+    <testcase name="INDEX:db_object_status" classname="WTP.HOOKS_PK" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.PLSQL_PROFILER_RUNS_IDX1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.SYS_C008232" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.SYS_C008233" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.SYS_C008235" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075873C00002$$" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075873C00003$$" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075873C00005$$" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.SYS_IL0000075873C00006$$" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.WT_DBOUTS_IX1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.WT_DBOUTS_NK1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.WT_DBOUTS_PK" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.WT_DBOUT_RUNS_NK1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.WT_DBOUT_RUNS_PK" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.WT_PROFILES_PK" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.WT_RESULTS_IX1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.WT_RESULTS_PK" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.WT_SELF_TEST_PK" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.WT_TESTCASES_NK1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.WT_TESTCASES_PK" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.WT_TESTCASE_RUNS_IX1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.WT_TESTCASE_RUNS_PK" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.WT_TEST_RUNNERS_NK1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.WT_TEST_RUNNERS_PK" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.WT_TEST_RUNS_IX1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.WT_TEST_RUNS_IX2" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.WT_TEST_RUNS_NK1" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.WT_TEST_RUNS_PK" time="0"/>
+    <testcase name="INDEX:db_object_status" classname="WTP.WT_VERSIONS_PK" time="0"/>
+    <testcase name="LOB:db_object_status" classname="WTP.SYS_LOB0000075873C00002$$" time="0"/>
+    <testcase name="LOB:db_object_status" classname="WTP.SYS_LOB0000075873C00003$$" time="0"/>
+    <testcase name="LOB:db_object_status" classname="WTP.SYS_LOB0000075873C00005$$" time="0"/>
+    <testcase name="LOB:db_object_status" classname="WTP.SYS_LOB0000075873C00006$$" time="0"/>
+    <testcase name="PACKAGE:db_object_status" classname="WTP.CORE_DATA" time="0"/>
+    <testcase name="PACKAGE:db_object_status" classname="WTP.HOOK" time="0"/>
+    <testcase name="PACKAGE:db_object_status" classname="WTP.JUNIT_CORE_REPORT" time="0"/>
+    <testcase name="PACKAGE:db_object_status" classname="WTP.WTPLSQL" time="0"/>
+    <testcase name="PACKAGE:db_object_status" classname="WTP.WT_ASSERT" time="0"/>
+    <testcase name="PACKAGE:db_object_status" classname="WTP.WT_CORE_REPORT" time="0"/>
+    <testcase name="PACKAGE:db_object_status" classname="WTP.WT_DBOUT" time="0"/>
+    <testcase name="PACKAGE:db_object_status" classname="WTP.WT_JOB" time="0"/>
+    <testcase name="PACKAGE:db_object_status" classname="WTP.WT_PERSIST_REPORT" time="0"/>
+    <testcase name="PACKAGE:db_object_status" classname="WTP.WT_PROFILE" time="0"/>
+    <testcase name="PACKAGE:db_object_status" classname="WTP.WT_RESULT" time="0"/>
+    <testcase name="PACKAGE:db_object_status" classname="WTP.WT_TESTCASE" time="0"/>
+    <testcase name="PACKAGE:db_object_status" classname="WTP.WT_TEST_RUN" time="0"/>
+    <testcase name="PACKAGE:db_object_status" classname="WTP.WT_TEST_RUNNER" time="0"/>
+    <testcase name="PACKAGE BODY:db_object_status" classname="WTP.CORE_DATA" time="0"/>
+    <testcase name="PACKAGE BODY:db_object_status" classname="WTP.HOOK" time="0"/>
+    <testcase name="PACKAGE BODY:db_object_status" classname="WTP.JUNIT_CORE_REPORT" time="0"/>
+    <testcase name="PACKAGE BODY:db_object_status" classname="WTP.WTPLSQL" time="0"/>
+    <testcase name="PACKAGE BODY:db_object_status" classname="WTP.WT_ASSERT" time="0"/>
+    <testcase name="PACKAGE BODY:db_object_status" classname="WTP.WT_CORE_REPORT" time="0"/>
+    <testcase name="PACKAGE BODY:db_object_status" classname="WTP.WT_DBOUT" time="0"/>
+    <testcase name="PACKAGE BODY:db_object_status" classname="WTP.WT_JOB" time="0"/>
+    <testcase name="PACKAGE BODY:db_object_status" classname="WTP.WT_PERSIST_REPORT" time="0"/>
+    <testcase name="PACKAGE BODY:db_object_status" classname="WTP.WT_PROFILE" time="0"/>
+    <testcase name="PACKAGE BODY:db_object_status" classname="WTP.WT_RESULT" time="0"/>
+    <testcase name="PACKAGE BODY:db_object_status" classname="WTP.WT_TESTCASE" time="0"/>
+    <testcase name="PACKAGE BODY:db_object_status" classname="WTP.WT_TEST_RUN" time="0"/>
+    <testcase name="PACKAGE BODY:db_object_status" classname="WTP.WT_TEST_RUNNER" time="0"/>
+    <testcase name="PROCEDURE:db_object_status" classname="WTP.JUNIT_XML_PERSIST_ALL" time="0"/>
+    <testcase name="PROCEDURE:db_object_status" classname="WTP.WT_AD_HOC_REPORT" time="0"/>
+    <testcase name="PROCEDURE:db_object_status" classname="WTP.WT_EXECUTE_TEST_RUNNER" time="0"/>
+    <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.UTASSERT" time="0"/>
+    <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WTPLSQL" time="0"/>
+    <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_ASSERT" time="0"/>
+    <testcase name="PUBLIC_SYNONYM:db_object_status" classname="WTP.WT_WTPLSQL" time="0"/>
+    <testcase name="SEQUENCE:db_object_status" classname="WTP.PLSQL_PROFILER_RUNNUMBER" time="0"/>
+    <testcase name="SEQUENCE:db_object_status" classname="WTP.WT_DBOUTS_SEQ" time="0"/>
+    <testcase name="SEQUENCE:db_object_status" classname="WTP.WT_TESTCASES_SEQ" time="0"/>
+    <testcase name="SEQUENCE:db_object_status" classname="WTP.WT_TEST_RUNNERS_SEQ" time="0"/>
+    <testcase name="SEQUENCE:db_object_status" classname="WTP.WT_TEST_RUNS_SEQ" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="WTP.HOOKS" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="WTP.PLSQL_PROFILER_DATA" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="WTP.PLSQL_PROFILER_RUNS" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="WTP.PLSQL_PROFILER_UNITS" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="WTP.WT_DBOUTS" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="WTP.WT_DBOUT_RUNS" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="WTP.WT_PROFILES" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="WTP.WT_RESULTS" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="WTP.WT_SELF_TEST" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="WTP.WT_TESTCASES" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="WTP.WT_TESTCASE_RUNS" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="WTP.WT_TEST_RUNNERS" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="WTP.WT_TEST_RUNS" time="0"/>
+    <testcase name="TABLE:db_object_status" classname="WTP.WT_VERSIONS" time="0"/>
+    <testcase name="TRIGGER:db_object_status" classname="WTP.WT_SELF_TEST$TEST" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="WTP.WT_DBOUT_RUNS_VW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="WTP.WT_PROFILES_VW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="WTP.WT_QUAL_TEST_RUNNERS_VW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="WTP.WT_RESULTS_VW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="WTP.WT_SCHEDULER_JOBS_VW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="WTP.WT_TESTCASE_RUNS_VW" time="0"/>
+    <testcase name="VIEW:db_object_status" classname="WTP.WT_TEST_RUNS_VW" time="0"/>
+   </testsuite>
+</testsuites>

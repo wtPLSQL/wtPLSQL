@@ -1,0 +1,146 @@
+=== DBI Started: ./installation_prepare.sql
+
+Create Temp Publicly Updateable Table
+
+Table created.
+
+
+Grant succeeded.
+
+
+Synonym created.
+
+
+Check for Prerequisite BUILD_TYPEs
+Prerequisite BUILD_TYPEs for "wtptst"
+ -) "wtpsav" last loaded on 06-Feb-2025 18:11:17
+ -) "wtpsrc" last loaded on 06-Feb-2025 18:10:55
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:11:20 for a duration of .17 seconds (started at 2025-02-06T18:11:19)
+=== DBI Started: WTP/WT_SELF_TEST.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+=== DBI Completed at 2025-02-06T18:11:22 for a duration of 2.47 seconds (started at 2025-02-06T18:11:20)
+=== DBI Started: WTP/WT_SELF_TEST.cldr
+
+Disable Triggers and Foreign Keys
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=WTP/WT_SELF_TEST.ctl
+
+
+PL/SQL procedure successfully completed.
+
+Decode Binary Data
+------------------
+2 "TEMP_BLOB" updates.
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+Decode UNISTR Data
+------------------
+2 "WT_SELF_TEST" updates.
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+=== DBI Completed at 2025-02-06T18:11:29 for a duration of 6.75 seconds (started at 2025-02-06T18:11:22)
+=== DBI Started: WTP/WT_SELF_TEST.ttrg
+
+Trigger created.
+
+
+Trigger altered.
+
+=== DBI Completed at 2025-02-06T18:11:29 for a duration of .21 seconds (started at 2025-02-06T18:11:29)
+=== DBI Started: ./installation_finalize.sql
+
+Drop Temp Publicly Updateable Table
+
+Synonym dropped.
+
+
+Table dropped.
+
+
+fix_invalid_public_synonyms
+
+Re-create Invalid Public Synonyms
+
+PL/SQL procedure successfully completed.
+
+
+compile_all
+Compile All started
+WTP Compiled.
+Compile All is done.
+
+PL/SQL procedure successfully completed.
+
+
+alter_foreign_keys_ENABLE
+Alter Foreign Keys started.
+  ENABLE 'WTP'
+alter table "WTP"."PLSQL_PROFILER_DATA" ENABLE constraint "PLSQL_PROFILER_DATA_FK1";
+alter table "WTP"."PLSQL_PROFILER_UNITS" ENABLE constraint "PLSQL_PROFILER_UNITS_FK1";
+alter table "WTP"."WT_DBOUT_RUNS" ENABLE constraint "WT_DBOUT_RUNS_FK1";
+alter table "WTP"."WT_PROFILES" ENABLE constraint "WT_PROFILES_FK1";
+alter table "WTP"."WT_RESULTS" ENABLE constraint "WT_RESULTS_FK1";
+alter table "WTP"."WT_RESULTS" ENABLE constraint "WT_RESULTS_FK2";
+alter table "WTP"."WT_TESTCASE_RUNS" ENABLE constraint "WT_TESTCASE_RUNS_FK1";
+alter table "WTP"."WT_TESTCASE_RUNS" ENABLE constraint "WT_TESTCASE_RUNS_FK2";
+alter table "WTP"."WT_TEST_RUNS" ENABLE constraint "WT_TEST_RUNS_FK1";
+alter table "WTP"."WT_TEST_RUNS" ENABLE constraint "WT_TEST_RUNS_FK2";
+Alter Foreign Keys is done.
+
+PL/SQL procedure successfully completed.
+
+
+alter_triggers_ENABLE
+Alter Triggers started.
+  ENABLE 'WTP'
+alter trigger "WTP"."WT_SELF_TEST$TEST" ENABLE;
+Alter Triggers is done.
+
+PL/SQL procedure successfully completed.
+
+
+update_id_sequences
+Update ID Sequences started
+Identity Sequence Updates is done.
+
+PL/SQL procedure successfully completed.
+
+
+Switch Spooling Off

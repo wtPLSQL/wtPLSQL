@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="install_sys.log" tests="0" errors="0" hostname="EE213CDB" id="1" time="0" timestamp="2025-02-06T18:11:35">
+  </testsuite>
+  <testsuite name="install_system.log" tests="0" errors="0" hostname="EE213CDB" id="2" time="0" timestamp="2025-02-06T18:11:35">
+  </testsuite>
+  <testsuite name="install_wtptst.log" tests="4" errors="0" hostname="EE213CDB" id="3" time="9" timestamp="2025-02-06T18:11:35">
+    <testcase name="./installation_finalize.sql" assertions="" classname="..sql" status="PASS" time="">
+    </testcase>
+    <testcase name="./installation_prepare.sql" assertions="21" classname="..sql" status="PASS" time="0">
+      <system-out>
+=== DBI Started: ./installation_prepare.sql
+
+Create Temp Publicly Updateable Table
+
+Table created.
+
+
+Grant succeeded.
+
+
+Synonym created.
+
+
+Check for Prerequisite BUILD_TYPEs
+Prerequisite BUILD_TYPEs for &quot;wtptst&quot;
+ -) &quot;wtpsav&quot; last loaded on 06-Feb-2025 18:11:17
+ -) &quot;wtpsrc&quot; last loaded on 06-Feb-2025 18:10:55
+
+PL/SQL procedure successfully completed.
+
+=== DBI Completed at 2025-02-06T18:11:20 for a duration of .17 seconds (started at 2025-02-06T18:11:19)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/WT_SELF_TEST.cldr" assertions="31" classname="WTP.cldr" status="PASS" time="7">
+      <system-out>
+=== DBI Started: WTP/WT_SELF_TEST.cldr
+
+Disable Triggers and Foreign Keys
+
+PL/SQL procedure successfully completed.
+
+
+sqlldr_control=WTP/WT_SELF_TEST.ctl
+
+
+PL/SQL procedure successfully completed.
+
+Decode Binary Data
+------------------
+2 &quot;TEMP_BLOB&quot; updates.
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+Decode UNISTR Data
+------------------
+2 &quot;WT_SELF_TEST&quot; updates.
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+=== DBI Completed at 2025-02-06T18:11:29 for a duration of 6.75 seconds (started at 2025-02-06T18:11:22)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/WT_SELF_TEST.tbl" assertions="26" classname="WTP.tbl" status="PASS" time="2">
+      <system-out>
+=== DBI Started: WTP/WT_SELF_TEST.tbl
+
+Table created.
+
+
+Table altered.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+=== DBI Completed at 2025-02-06T18:11:22 for a duration of 2.47 seconds (started at 2025-02-06T18:11:20)
+      </system-out>
+    </testcase>
+    <testcase name="WTP/WT_SELF_TEST.ttrg" assertions="8" classname="WTP.ttrg" status="PASS" time="0">
+      <system-out>
+=== DBI Started: WTP/WT_SELF_TEST.ttrg
+
+Trigger created.
+
+
+Trigger altered.
+
+=== DBI Completed at 2025-02-06T18:11:29 for a duration of .21 seconds (started at 2025-02-06T18:11:29)
+      </system-out>
+    </testcase>
+  </testsuite>
+</testsuites>
