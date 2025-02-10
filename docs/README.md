@@ -97,16 +97,27 @@ For project information, see the [wtPLSQL wiki](https://github.com/DDieterich/wt
 
 File Name     | Description
 --------------|------------
-core          | Core Documentation Directory
 demo          | Demonstration Documentation Directory
-gui           | Graphical User Interface Documentation
+design        | Design Documents and Diagrams
 images        | Image Files referenced by MD and HTML
-persist       | Persist Documentation Directory
-_config.yml   | YAML Configuration File for Markdown
-*.md          | Markdown files for "github.io"
-*.htm         | HTML files for local documentation
 md-to-htm.bat | MS-Dos Batch File to convert MD to HTML
 md-to-htm.lua | Lua script used by Pandoc for MD to HTML
+md-to-htm.sh  | Bash Batch File to convert MD to HTML
+*.md          | Markdown files for "github.io"
+*.htm         | HTML files for local documentation
+.             | .
+_includes     | Markdown: Theme Support Folder
+_layouts      | Markdown: Theme Support Folder
+_sass         | Markdown: Theme Support Folder
+assets        | Markdown: Theme Assets Folder
+CNAME         | Markdown: GitHub Pages Site Name
+docs          | Markdown: Theme Policies Folder
+Gemfile       | Markdown: RubyGem File
+jekyll-theme-leap-day.gemspec | Markdown: RubyGem Page Information
+LICENSE       | Markdown: Theme License
+script        | Markdown: Theme Script Folder
+*.yml         | Markdown: YAML Configuration Files
+
 
 To view documentation use the URL "file://README.htm" or Double-click on the README.htm file.
 
